@@ -5,3 +5,8 @@ CelesteMod.props
 Common.props
 ChroniaHelper.csproj.user
 Folder.DotSettings.user
+
+.idea/
+.vs/
+obj/
+bin/

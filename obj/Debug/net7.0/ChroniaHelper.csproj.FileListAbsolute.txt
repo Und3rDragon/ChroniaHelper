@@ -23,3 +23,15 @@ E:\Celeste+\!! ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.dll
 E:\Celeste+\!! ChroniaHelper\obj\Debug\net7.0\refint\ChroniaHelper.dll
 E:\Celeste+\!! ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.pdb
 E:\Celeste+\!! ChroniaHelper\obj\Debug\net7.0\ref\ChroniaHelper.dll
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.csproj.AssemblyReference.cache
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.GeneratedMSBuildEditorConfig.editorconfig
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.AssemblyInfoInputs.cache
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.AssemblyInfo.cs
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.csproj.CoreCompileInputs.cache
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.sourcelink.json
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.dll
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\refint\ChroniaHelper.dll
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ChroniaHelper.pdb
+D:\Misc\Celeste\ChroniaHelper\bin\Debug\net7.0\ChroniaHelper.dll
+D:\Misc\Celeste\ChroniaHelper\bin\Debug\net7.0\ChroniaHelper.pdb
+D:\Misc\Celeste\ChroniaHelper\obj\Debug\net7.0\ref\ChroniaHelper.dll
