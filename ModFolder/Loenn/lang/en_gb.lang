@@ -1,0 +1,674 @@
+mods.ChroniaHelper.name=ChroniaHelper
+
+style.effects.ChroniaHelper/CustomRain.name=Custom Rain
+style.effects.ChroniaHelper/WindRainFG.name=Wind Rain
+
+entities.ChroniaHelper/DecreaseRefill.placements.name.DecreaseRefill=Decrease Refill
+entities.ChroniaHelper/GroupedKillerBlock.placements.name.GroupedKillerBlock=Grouped Killer Block
+entities.ChroniaHelper/KillerBlock.placements.name.KillerBlock=Killer Block
+entities.ChroniaHelper/KillerWall.placements.name.KillerWall=Killer Wall
+entities.ChroniaHelper/PlayerIndicatorZone.placements.name.PlayerIndicatorZone=Player Indicator Zone (Old)
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.normal= Player Indicator Zone
+entities.ChroniaHelper/SeamlessSpinner.placements.name.SeamlessSpinner=Seamless Spinner
+entities.ChroniaHelper/UpSpikes.placements.name.UpSpikes=Spikes (Up)
+entities.ChroniaHelper/DownSpikes.placements.name.DownSpikes=Spikes (Down)
+entities.ChroniaHelper/LeftSpikes.placements.name.LeftSpikes=Spikes (Left)
+entities.ChroniaHelper/RightSpikes.placements.name.RightSpikes=Spikes (Right)
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.PlayerIndicatorZoneCustom=Player Indicator Zone (Custom)
+entities.ChroniaHelper/AnimatedZipMover.placements.name.start=Animated Zipmover
+
+triggers.ChroniaHelper/AxisCameraOffset.placements.name.AxisCameraOffset=Camera Offset
+triggers.ChroniaHelper/FlagTrigger.placements.name.FlagTrigger=Flag
+triggers.ChroniaHelper/SmoothToOffsetCamera.placements.name.SmoothToOffsetCamera=Smooth Camera Offset
+
+# WIPs
+entities.ChroniaHelper/LineIndicator.placements.name.default=Line Indicator
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.block=Multi-Node Flag Switch Gate (default)
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.mirror=Multi-Node Flag Switch Gate (mirror)
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.temple=Multi-Node Flag Switch Gate (temple)
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.stars=Multi-Node Flag Switch Gate (stars)
+
+# Animated Zipmover
+entities.ChroniaHelper/AnimatedZipMover.attributes.description.spritePath=You need several picture arrays inside the path folder\n"idle" for the static state of zipmover block\n"active" for the active state of the block\n"return" for return animation of the block\n"unlit" for back to static animation of the block\n"innerSprite_idle" is the same but for the center sprite\n"innerSprite_active" is the same but for the center sprite\n"innerSprite_return" is the same but for the center sprite\n"innerSprite_unlit" is the same but for the center sprite
+
+# Decrease Refill
+
+entities.ChroniaHelper/DecreaseRefill.attributes.description.dashes=The number of dashes that will be decreased by the refill, \nor be used to trade for stamina
+entities.ChroniaHelper/DecreaseRefill.attributes.description.decreaseStamina=Whether the stamina will be taken from Madeline, ignored when "Trade for Stamina"
+entities.ChroniaHelper/DecreaseRefill.attributes.description.clearAllDashes=All the dashes will be taken, ignoring the "Dashes" parameter
+entities.ChroniaHelper/DecreaseRefill.attributes.description.tradeDashesToStamina=Whether the refill take dashes away but refills stamina
+entities.ChroniaHelper/DecreaseRefill.attributes.description.sprites=The texture to apply on the refill, the directory is relative to Gameplay/,\nyou must end with a "/", the files in your folder must include "idle", "flash", and "outline"
+entities.ChroniaHelper/DecreaseRefill.attributes.description.frameRates=The Frame Rate of "idle" and "flash" animation, there is a space after the comma\nExample:"xxx, xxx"
+
+# Seamless Spinner
+
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.hitboxType="default" - official game hitbox\n"loosened" - the hitbox would be a r=6 circle\n"seamless round" - the hitbox would be a r=8 circle\n"seamless square" - the hitbox would be a 16x16 px square
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.foreDirectory=Starting after "Gameplay/" and ends with the file name with no suffix.\nFor example, if your file is "Gameplay/danger/yourspinner/texture00.png"\nYou should fill in "danger/yourspinner/texture" here.
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.backDirectory=Starting after "Gameplay/" and ends with the file name with no suffix.\nFor example, if your file is "Gameplay/danger/yourspinner/texture00.png"\nYou should fill in "danger/yourspinner/texture" here.
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.customHitbox=When "Hitbox Type" is set to "custom", you can create your own hitbox here.\n"r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"\nIf leave empty, the spinner will process by default values or ignored.
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.solidTileCutoff=Whether the spinner sprite should be cutoff by the solid hitbox
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.dynamic=Whether the sprite should be an animation in-game\ninstead of a random image from the image array\nNOTICE: Re-open this window to see the new options
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.trigger=Whether this Spinner should works like Timed Trigger Spikes, being disabled by default\nAnd triggered when player touches it\nCustomization is only allowed on the main sprites, not the connection parts for indication purposes\nTo customize the trigger animation, if your ForeDirectory is ".../xxx", you'll need another animation array ".../xxx_base"
+
+# Player Indicator Zone
+
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.mode="Limited mode", the indicator would only appear in the zone\n"Toggle Mode", when there's at least one zone in the room, however big it is,\nthe working area would be the whole room, but the icons would only be toggled if the player touches the zone\neg. If you placed a zone outside the room area, it would still work, but the settings inside\nto toggle the idicator wouldn't work since the player couldn't touch the zone
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.renderBorder=Whether the zone border should be rendered in game
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.renderInside=Whether there whould be a filler area rendered inside the zone
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.continuousLine=Whether the rendered borderline should be dotted or straight line
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.flagToggle=How the zone controls the "flag"
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.flag=The flag that "flag mode" controls
+
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.mode="Limited mode", the indicator would only appear in the zone\n"Toggle Mode", when there's at least one zone in the room, however big it is,\nthe working area would be the whole room, but the icons would only be toggled if the player touches the zone\neg. If you placed a zone outside the room area, it would still work, but the settings inside\nto toggle the idicator wouldn't work since the player couldn't touch the zone
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderBorder=Whether the zone border should be rendered in game
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderInside=Whether there whould be a filler area rendered inside the zone
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderContinuousLine=Whether the rendered borderline should be dotted or straight line
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.flagMode=How the zone controls the "flag"\n"Zone" means the flag will only be activated in the zone\nAnd removed once player leaves
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.flag=The flag that "flag toggle" controls
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconPrefix=The root directories of the icons, like "icons/" for "Gameplay/icons/xxx.png"
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.icons=The icon file names, like "xxx" for "Gameplay/icons/xxx.png"
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconOffsets=The coordinates of each icon, formatted as\nx1, y1; x2, y2; x3, y3; ...
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconColors=The color hex code of each icon, seperated by a comma
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.independentFlag=Whether the zone controlling the flag requires "Mode" being not "None"
+
+# Killer Series
+
+entities.ChroniaHelper/KillerBlock.attributes.description.standFall=Whether the player standing on the block will cause the block to fall
+entities.ChroniaHelper/KillerBlock.attributes.description.fallDelay=The shaking time before the block finally starts to fall
+entities.ChroniaHelper/KillerBlock.attributes.description.movement=Four parameters seperated by comma\nFirst number: The speed when the block is just starting to fall, default 0\nSecond number: The maximum speed, default 130\nThird number: Acceleration, default 500\nFourth number: The maximum speed under 'finalBoss' mode, default 160
+entities.ChroniaHelper/KillerBlock.attributes.description.canTrigger=Whether the block can be triggered to fall by entities like springs\nWIP: If disabled, this switch will cut off any interactions to this block, including standing, climbing and springs etc.
+
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.standFall=Whether the player standing on the block will cause the block to fall
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.fallDelay=The shaking time before the block finally starts to fall
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.movement=Four parameters seperated by comma\nFirst number: The speed when the block is just starting to fall, default 0\nSecond number: The maximum speed, default 130\nThird number: Acceleration, default 500\nFourth number: The maximum speed under 'finalBoss' mode, default 160
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.canTrigger=Whether the block can be triggered to fall by entities like springs\nWIP: If disabled, this switch will cut off any interactions to this block, including standing, climbing and springs etc.
+
+entities.ChroniaHelper/UpSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/UpSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/UpSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/UpSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/UpSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+entities.ChroniaHelper/DownSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/DownSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/DownSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/DownSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/DownSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+entities.ChroniaHelper/LeftSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/LeftSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/LeftSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/LeftSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/LeftSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+entities.ChroniaHelper/RightSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/RightSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/RightSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/RightSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/RightSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+entities.ChroniaHelper/BubbleField.attributes.description.particleDirs=A series of particle directories seperated by a comma\nThe directory starts after "Gameplay/"\nFor example, "Gameplay/yourMod/yourParticle" would be "yourMod/yourParticle" here
+
+entities.ChroniaHelper/OmniZipMover.placements.name.normal=Omni Zip Mover (Normal)
+entities.ChroniaHelper/OmniZipMover.placements.name.moon=Omni Zip Mover (Moon)
+entities.ChroniaHelper/OmniZipMover.placements.name.cliffside=Omni Zip Mover (Cliffside)
+entities.ChroniaHelper/OmniZipMover.attributes.description.customBlockTexture=Legacy. Replace this zip mover and use Custom Skin instead. \nThe path to the custom texture for the Connected Block, starting from Graphics/Atlases/Gameplay/objects/. \nA template is provided in Mods/ChroniaHelper/Graphics/Atlases/Gameplay/objects/ChroniaHelper/customConnectedBlock. \nThe filename should NOT include the file extension (.png).
+entities.ChroniaHelper/OmniZipMover.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay. \nIf set, this overrides the Theme option. \nSetting the Cliffside theme is equivalent to setting this field to objects/ChroniaHelper/OmniZipMover/cliffside. \nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"block.png", "light01.png", "cog.png", "innerCorners.png"\nIn order to make the zipmover work, you'd also need "innercog00.png"...
+entities.ChroniaHelper/OmniZipMover.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
+entities.ChroniaHelper/OmniZipMover.attributes.description.permanent=Whether the Connected Zip Mover should stay completely static after stopping.
+entities.ChroniaHelper/OmniZipMover.attributes.description.waiting=Whether the Connected Zip Mover should wait for the player at each node. \nOnly useful if has more than one node.
+entities.ChroniaHelper/OmniZipMover.attributes.description.ticking=Whether the Connected Zip Mover should be ticking at each node, forcing the player to reactivate it within a limited amount of time. \nWill return to initial position if the player doesn't reactivate it, or locks in place completely if "permanent" is on. \nOnly useful if has more than one node.
+entities.ChroniaHelper/OmniZipMover.attributes.description.delays=Time that the zipmover will wait on each node by order, if you don't set it, \nthe default time would be 0.2s
+entities.ChroniaHelper/OmniZipMover.attributes.description.easing=How zipmover will move between each node
+entities.ChroniaHelper/OmniZipMover.attributes.description.nodeSpeeds=The speed multiplier for zipmover moving to each node, if not setting properly, the default value is 1\nIf the array length is smaller than the node counts, the last number will be used as the value for later nodes
+entities.ChroniaHelper/OmniZipMover.attributes.description.ticks=How many ticks should there be before it returns if "ticking" enabled
+entities.ChroniaHelper/OmniZipMover.attributes.description.tickDelay=The interval between each tick if "ticking" enabled
+entities.ChroniaHelper/OmniZipMover.attributes.description.synced=If enabled, all synced zipmovers of the same "rope Color" will be activated together
+entities.ChroniaHelper/OmniZipMover.attributes.description.syncTag=If empty, the tag will automatically be set to rope color\nYou can use the flag "ZipMoverSync:(Your SyncTag)" to activate this zipmover if "synced" enabled
+entities.ChroniaHelper/OmniZipMover.attributes.description.dashable=Whether this zipmover can be activated and bounce the player up when player hit it with a dash\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipMover.attributes.description.onlyDashActivate=If enabled, player won't be able to activate it by touching it anymore
+entities.ChroniaHelper/OmniZipMover.attributes.description.dashableOnce=You can only dash it for once\nThen you'll have to wait for it to stop to dash it again
+entities.ChroniaHelper/OmniZipMover.attributes.description.customSound=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipMover.attributes.description.tweakShakes=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipMover.attributes.description.tweakReturnParams=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipMover.attributes.description.returnedIrrespondingTime=Zipmover won't be responding to player's interactions after its return for some time
+entities.ChroniaHelper/OmniZipMover.attributes.description.nodeSound=Whether the "start sound" will play on each node when zipmover leaves the node
+entities.ChroniaHelper/OmniZipMover.attributes.description.startDelay=The delay before the zipmover moves at the start
+entities.ChroniaHelper/OmniZipMover.attributes.description.timeUnits=If enabled, the speeds parameter will be read as time instead of multipliers
+entities.ChroniaHelper/OmniZipMover.attributes.description.nodeFlags=Use "{}" to create a group for multiple flags, if the group has only one flag, "{}" wouldn't be necessary\nSeperate groups by using a comma, example:"{a,b,c},d,{e,f}"\nIf this option isn't empty, the zipmover will be forced to wait at the nodes until all flags in the relative group are activated\nAs the example shown above, Group 1 would be flags "a", "b" and "c"\nGroup 2 would be flag "d", Group 3 would be flags "e" and "f"\nSo in order to allow zipmover go past node 1, all flags in Group 1 have to be true\nIn order to allow zipmover go past node 2, all flags in Group 2 have to be true\nNode 3 would be the same. If there is a node 4 but there's no group 4, the node 4 will be using flags of Group 3\nNotice that when this field isn't empty, each node delay in "delays" will work as a new "Start Delay" when the node flag is enabled
+entities.ChroniaHelper/OmniZipMover.attributes.description.returnSpeeds=The same as "node speeds", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the speed between final node and the node before final node
+entities.ChroniaHelper/OmniZipMover.attributes.description.returnDelays=The same as "delays", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the interval the zipmover will stay when reaching the first node backwards
+entities.ChroniaHelper/OmniZipMover.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
+entities.ChroniaHelper/OmniZipMover.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
+
+# ZipGlass
+entities.ChroniaHelper/ZipGlass.placements.name.zipglass=Omni Zip Mover (Glass Block Skin)
+entities.ChroniaHelper/ZipGlass.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
+entities.ChroniaHelper/ZipGlass.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
+entities.ChroniaHelper/ZipGlass.attributes.description.permanent=Whether the Connected Zip Mover should stay completely static after stopping.
+entities.ChroniaHelper/ZipGlass.attributes.description.waiting=Whether the Connected Zip Mover should wait for the player at each node. \nOnly useful if has more than one node.
+entities.ChroniaHelper/ZipGlass.attributes.description.ticking=Whether the Connected Zip Mover should be ticking at each node, forcing the player to reactivate it within a limited amount of time. \nWill return to initial position if the player doesn't reactivate it, or locks in place completely if "permanent" is on. \nOnly useful if has more than one node.
+entities.ChroniaHelper/ZipGlass.attributes.description.delays=Time that the zipmover will wait on each node by order, if you don't set it, \nthe default time would be 0.2s
+entities.ChroniaHelper/ZipGlass.attributes.description.easing=How zipmover will move between each node
+entities.ChroniaHelper/ZipGlass.attributes.description.nodeSpeeds=The speed multiplier for zipmover moving to each node, if not setting properly, the default value is 1\nIf the array length is smaller than the node counts, the last number will be used as the value for later nodes
+entities.ChroniaHelper/ZipGlass.attributes.description.ticks=How many ticks should there be before it returns if "ticking" enabled
+entities.ChroniaHelper/ZipGlass.attributes.description.tickDelay=The interval between each tick if "ticking" enabled
+entities.ChroniaHelper/ZipGlass.attributes.description.synced=If enabled, all synced zipmovers of the same "rope Color" will be activated together
+entities.ChroniaHelper/ZipGlass.attributes.description.syncTag=If empty, the tag will automatically be set to rope color\nYou can use the flag "ZipMoverSync:(Your SyncTag)" to activate this zipmover if "synced" enabled
+entities.ChroniaHelper/ZipGlass.attributes.description.dashable=Whether this zipmover can be activated and bounce the player up when player hit it with a dash\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipGlass.attributes.description.onlyDashActivate=If enabled, player won't be able to activate it by touching it anymore
+entities.ChroniaHelper/ZipGlass.attributes.description.dashableOnce=You can only dash it for once\nThen you'll have to wait for it to stop to dash it again
+entities.ChroniaHelper/ZipGlass.attributes.description.customSound=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipGlass.attributes.description.tweakShakes=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipGlass.attributes.description.tweakReturnParams=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipGlass.attributes.description.returnedIrrespondingTime=Zipmover won't be responding to player's interactions after its return for some time
+entities.ChroniaHelper/ZipGlass.attributes.description.nodeSound=Whether the "start sound" will play on each node when zipmover leaves the node
+entities.ChroniaHelper/ZipGlass.attributes.description.startDelay=The delay before the zipmover moves at the start
+entities.ChroniaHelper/ZipGlass.attributes.description.starPath=A path relative to "Gameplay/"
+entities.ChroniaHelper/ZipGlass.attributes.description.backgroundColor=The color that defines the water color, or the glass block body color
+entities.ChroniaHelper/ZipGlass.attributes.description.timeUnits=If enabled, the speeds parameter will be read as time instead of multipliers
+entities.ChroniaHelper/ZipGlass.attributes.description.nodeFlags=Use "{}" to create a group for multiple flags, if the group has only one flag, "{}" wouldn't be necessary\nSeperate groups by using a comma, example:"{a,b,c},d,{e,f}"\nIf this option isn't empty, the zipmover will be forced to wait at the nodes until all flags in the relative group are activated\nAs the example shown above, Group 1 would be flags "a", "b" and "c"\nGroup 2 would be flag "d", Group 3 would be flags "e" and "f"\nSo in order to allow zipmover go past node 1, all flags in Group 1 have to be true\nIn order to allow zipmover go past node 2, all flags in Group 2 have to be true\nNode 3 would be the same. If there is a node 4 but there's no group 4, the node 4 will be using flags of Group 3\nNotice that when this field isn't empty, each node delay in "delays" will work as a new "Start Delay" when the node flag is enabled
+entities.ChroniaHelper/ZipGlass.attributes.description.returnSpeeds=The same as "node speeds", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the speed between final node and the node before final node
+entities.ChroniaHelper/ZipGlass.attributes.description.returnDelays=The same as "delays", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the interval the zipmover will stay when reaching the first node backwards
+entities.ChroniaHelper/ZipGlass.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
+entities.ChroniaHelper/ZipGlass.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
+
+# ZipWater
+entities.ChroniaHelper/ZipWater.placements.name.zipwater=Omni Zip Mover (Water Skin)
+entities.ChroniaHelper/ZipWater.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
+entities.ChroniaHelper/ZipWater.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
+entities.ChroniaHelper/ZipWater.attributes.description.permanent=Whether the Connected Zip Mover should stay completely static after stopping.
+entities.ChroniaHelper/ZipWater.attributes.description.waiting=Whether the Connected Zip Mover should wait for the player at each node. \nOnly useful if has more than one node.
+entities.ChroniaHelper/ZipWater.attributes.description.ticking=Whether the Connected Zip Mover should be ticking at each node, forcing the player to reactivate it within a limited amount of time. \nWill return to initial position if the player doesn't reactivate it, or locks in place completely if "permanent" is on. \nOnly useful if has more than one node.
+entities.ChroniaHelper/ZipWater.attributes.description.delays=Time that the zipmover will wait on each node by order, if you don't set it, \nthe default time would be 0.2s
+entities.ChroniaHelper/ZipWater.attributes.description.easing=How zipmover will move between each node
+entities.ChroniaHelper/ZipWater.attributes.description.nodeSpeeds=The speed multiplier for zipmover moving to each node, if not setting properly, the default value is 1\nIf the array length is smaller than the node counts, the last number will be used as the value for later nodes
+entities.ChroniaHelper/ZipWater.attributes.description.ticks=How many ticks should there be before it returns if "ticking" enabled
+entities.ChroniaHelper/ZipWater.attributes.description.tickDelay=The interval between each tick if "ticking" enabled
+entities.ChroniaHelper/ZipWater.attributes.description.synced=If enabled, all synced zipmovers of the same "rope Color" will be activated together
+entities.ChroniaHelper/ZipWater.attributes.description.syncTag=If empty, the tag will automatically be set to rope color\nYou can use the flag "ZipMoverSync:(Your SyncTag)" to activate this zipmover if "synced" enabled
+entities.ChroniaHelper/ZipWater.attributes.description.dashable=Whether this zipmover can be activated and bounce the player up when player hit it with a dash\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipWater.attributes.description.onlyDashActivate=If enabled, player won't be able to activate it by touching it anymore
+entities.ChroniaHelper/ZipWater.attributes.description.dashableOnce=You can only dash it for once\nThen you'll have to wait for it to stop to dash it again
+entities.ChroniaHelper/ZipWater.attributes.description.customSound=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipWater.attributes.description.tweakShakes=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipWater.attributes.description.tweakReturnParams=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipWater.attributes.description.returnedIrrespondingTime=Zipmover won't be responding to player's interactions after its return for some time
+entities.ChroniaHelper/ZipWater.attributes.description.nodeSound=Whether the "start sound" will play on each node when zipmover leaves the node
+entities.ChroniaHelper/ZipWater.attributes.description.startDelay=The delay before the zipmover moves at the start
+entities.ChroniaHelper/ZipWater.attributes.description.starPath=A path relative to "Gameplay/"
+entities.ChroniaHelper/ZipWater.attributes.description.backgroundColor=The color that defines the water color, or the glass block body color
+entities.ChroniaHelper/ZipWater.attributes.description.renderTank=Whether the water should look like it's contained in a glass tank
+entities.ChroniaHelper/ZipWater.attributes.description.timeUnits=If enabled, the speeds parameter will be read as time instead of multipliers
+entities.ChroniaHelper/ZipWater.attributes.description.nodeFlags=Use "{}" to create a group for multiple flags, if the group has only one flag, "{}" wouldn't be necessary\nSeperate groups by using a comma, example:"{a,b,c},d,{e,f}"\nIf this option isn't empty, the zipmover will be forced to wait at the nodes until all flags in the relative group are activated\nAs the example shown above, Group 1 would be flags "a", "b" and "c"\nGroup 2 would be flag "d", Group 3 would be flags "e" and "f"\nSo in order to allow zipmover go past node 1, all flags in Group 1 have to be true\nIn order to allow zipmover go past node 2, all flags in Group 2 have to be true\nNode 3 would be the same. If there is a node 4 but there's no group 4, the node 4 will be using flags of Group 3\nNotice that when this field isn't empty, each node delay in "delays" will work as a new "Start Delay" when the node flag is enabled
+entities.ChroniaHelper/ZipWater.attributes.description.returnSpeeds=The same as "node speeds", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the speed between final node and the node before final node
+entities.ChroniaHelper/ZipWater.attributes.description.returnDelays=The same as "delays", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the interval the zipmover will stay when reaching the first node backwards
+entities.ChroniaHelper/ZipWater.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
+entities.ChroniaHelper/ZipWater.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
+
+# real Zip Water
+entities.ChroniaHelper/OmniZipWater.placements.name.zipwater=Omni Zip Water
+entities.ChroniaHelper/OmniZipWater.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
+entities.ChroniaHelper/OmniZipWater.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
+entities.ChroniaHelper/OmniZipWater.attributes.description.permanent=Whether the Connected Zip Mover should stay completely static after stopping.
+entities.ChroniaHelper/OmniZipWater.attributes.description.waiting=Whether the Connected Zip Mover should wait for the player at each node. \nOnly useful if has more than one node.
+entities.ChroniaHelper/OmniZipWater.attributes.description.ticking=Whether the Connected Zip Mover should be ticking at each node, forcing the player to reactivate it within a limited amount of time. \nWill return to initial position if the player doesn't reactivate it, or locks in place completely if "permanent" is on. \nOnly useful if has more than one node.
+entities.ChroniaHelper/OmniZipWater.attributes.description.delays=Time that the zipmover will wait on each node by order, if you don't set it, \nthe default time would be 0.2s
+entities.ChroniaHelper/OmniZipWater.attributes.description.easing=How zipmover will move between each node
+entities.ChroniaHelper/OmniZipWater.attributes.description.nodeSpeeds=The speed multiplier for zipmover moving to each node, if not setting properly, the default value is 1\nIf the array length is smaller than the node counts, the last number will be used as the value for later nodes
+entities.ChroniaHelper/OmniZipWater.attributes.description.ticks=How many ticks should there be before it returns if "ticking" enabled
+entities.ChroniaHelper/OmniZipWater.attributes.description.tickDelay=The interval between each tick if "ticking" enabled
+entities.ChroniaHelper/OmniZipWater.attributes.description.synced=If enabled, all synced zipmovers of the same "rope Color" will be activated together
+entities.ChroniaHelper/OmniZipWater.attributes.description.syncTag=If empty, the tag will automatically be set to rope color\nYou can use the flag "ZipMoverSync:(Your SyncTag)" to activate this zipmover if "synced" enabled
+entities.ChroniaHelper/OmniZipWater.attributes.description.dashable=Whether this zipmover can be activated and bounce the player up when player hit it with a dash\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipWater.attributes.description.onlyDashActivate=If enabled, player won't be able to activate it by touching it anymore
+entities.ChroniaHelper/OmniZipWater.attributes.description.dashableOnce=You can only dash it for once\nThen you'll have to wait for it to stop to dash it again
+entities.ChroniaHelper/OmniZipWater.attributes.description.customSound=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipWater.attributes.description.tweakShakes=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipWater.attributes.description.tweakReturnParams=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipWater.attributes.description.returnedIrrespondingTime=Zipmover won't be responding to player's interactions after its return for some time
+entities.ChroniaHelper/OmniZipWater.attributes.description.nodeSound=Whether the "start sound" will play on each node when zipmover leaves the node
+entities.ChroniaHelper/OmniZipWater.attributes.description.startDelay=The delay before the zipmover moves at the start
+entities.ChroniaHelper/OmniZipWater.attributes.description.starPath=A path relative to "Gameplay/"
+entities.ChroniaHelper/OmniZipWater.attributes.description.backgroundColor=The color that defines the water color, or the glass block body color
+entities.ChroniaHelper/OmniZipWater.attributes.description.renderTank=Whether the water should look like it's contained in a glass tank
+entities.ChroniaHelper/OmniZipWater.attributes.description.timeUnits=If enabled, the speeds parameter will be read as time instead of multipliers
+entities.ChroniaHelper/OmniZipWater.attributes.description.nodeFlags=Use "{}" to create a group for multiple flags, if the group has only one flag, "{}" wouldn't be necessary\nSeperate groups by using a comma, example:"{a,b,c},d,{e,f}"\nIf this option isn't empty, the zipmover will be forced to wait at the nodes until all flags in the relative group are activated\nAs the example shown above, Group 1 would be flags "a", "b" and "c"\nGroup 2 would be flag "d", Group 3 would be flags "e" and "f"\nSo in order to allow zipmover go past node 1, all flags in Group 1 have to be true\nIn order to allow zipmover go past node 2, all flags in Group 2 have to be true\nNode 3 would be the same. If there is a node 4 but there's no group 4, the node 4 will be using flags of Group 3\nNotice that when this field isn't empty, each node delay in "delays" will work as a new "Start Delay" when the node flag is enabled
+entities.ChroniaHelper/OmniZipWater.attributes.description.returnSpeeds=The same as "node speeds", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the speed between final node and the node before final node
+entities.ChroniaHelper/OmniZipWater.attributes.description.returnDelays=The same as "delays", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the interval the zipmover will stay when reaching the first node backwards
+entities.ChroniaHelper/OmniZipWater.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
+entities.ChroniaHelper/OmniZipWater.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
+
+# Zip Bumper
+entities.ChroniaHelper/OmniZipBumper.placements.name.zipbumper=Omni Zip Bumper
+entities.ChroniaHelper/OmniZipBumper.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
+entities.ChroniaHelper/OmniZipBumper.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
+entities.ChroniaHelper/OmniZipBumper.attributes.description.permanent=Whether the Connected Zip Mover should stay completely static after stopping.
+entities.ChroniaHelper/OmniZipBumper.attributes.description.waiting=Whether the Connected Zip Mover should wait for the player at each node. \nOnly useful if has more than one node.
+entities.ChroniaHelper/OmniZipBumper.attributes.description.ticking=Whether the Connected Zip Mover should be ticking at each node, forcing the player to reactivate it within a limited amount of time. \nWill return to initial position if the player doesn't reactivate it, or locks in place completely if "permanent" is on. \nOnly useful if has more than one node.
+entities.ChroniaHelper/OmniZipBumper.attributes.description.delays=Time that the zipmover will wait on each node by order, if you don't set it, \nthe default time would be 0.2s
+entities.ChroniaHelper/OmniZipBumper.attributes.description.easing=How zipmover will move between each node
+entities.ChroniaHelper/OmniZipBumper.attributes.description.nodeSpeeds=The speed multiplier for zipmover moving to each node, if not setting properly, the default value is 1\nIf the array length is smaller than the node counts, the last number will be used as the value for later nodes
+entities.ChroniaHelper/OmniZipBumper.attributes.description.ticks=How many ticks should there be before it returns if "ticking" enabled
+entities.ChroniaHelper/OmniZipBumper.attributes.description.tickDelay=The interval between each tick if "ticking" enabled
+entities.ChroniaHelper/OmniZipBumper.attributes.description.synced=If enabled, all synced zipmovers of the same "rope Color" will be activated together
+entities.ChroniaHelper/OmniZipBumper.attributes.description.syncTag=If empty, the tag will automatically be set to rope color\nYou can use the flag "ZipMoverSync:(Your SyncTag)" to activate this zipmover if "synced" enabled
+entities.ChroniaHelper/OmniZipBumper.attributes.description.dashable=Whether this zipmover can be activated and bounce the player up when player hit it with a dash\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipBumper.attributes.description.onlyDashActivate=If enabled, player won't be able to activate it by touching it anymore
+entities.ChroniaHelper/OmniZipBumper.attributes.description.dashableOnce=You can only dash it for once\nThen you'll have to wait for it to stop to dash it again
+entities.ChroniaHelper/OmniZipBumper.attributes.description.customSound=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipBumper.attributes.description.tweakShakes=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipBumper.attributes.description.tweakReturnParams=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/OmniZipBumper.attributes.description.returnedIrrespondingTime=Zipmover won't be responding to player's interactions after its return for some time
+entities.ChroniaHelper/OmniZipBumper.attributes.description.nodeSound=Whether the "start sound" will play on each node when zipmover leaves the node
+entities.ChroniaHelper/OmniZipBumper.attributes.description.startDelay=The delay before the zipmover moves at the start
+entities.ChroniaHelper/OmniZipBumper.attributes.description.starPath=A path relative to "Gameplay/"
+entities.ChroniaHelper/OmniZipBumper.attributes.description.backgroundColor=The color that defines the water color, or the glass block body color
+entities.ChroniaHelper/OmniZipBumper.attributes.description.renderTank=Whether the water should look like it's contained in a glass tank
+entities.ChroniaHelper/OmniZipBumper.attributes.description.timeUnits=If enabled, the speeds parameter will be read as time instead of multipliers
+entities.ChroniaHelper/OmniZipBumper.attributes.description.nodeFlags=Use "{}" to create a group for multiple flags, if the group has only one flag, "{}" wouldn't be necessary\nSeperate groups by using a comma, example:"{a,b,c},d,{e,f}"\nIf this option isn't empty, the zipmover will be forced to wait at the nodes until all flags in the relative group are activated\nAs the example shown above, Group 1 would be flags "a", "b" and "c"\nGroup 2 would be flag "d", Group 3 would be flags "e" and "f"\nSo in order to allow zipmover go past node 1, all flags in Group 1 have to be true\nIn order to allow zipmover go past node 2, all flags in Group 2 have to be true\nNode 3 would be the same. If there is a node 4 but there's no group 4, the node 4 will be using flags of Group 3\nNotice that when this field isn't empty, each node delay in "delays" will work as a new "Start Delay" when the node flag is enabled
+entities.ChroniaHelper/OmniZipBumper.attributes.description.returnSpeeds=The same as "node speeds", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the speed between final node and the node before final node
+entities.ChroniaHelper/OmniZipBumper.attributes.description.returnDelays=The same as "delays", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the interval the zipmover will stay when reaching the first node backwards
+entities.ChroniaHelper/OmniZipBumper.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
+entities.ChroniaHelper/OmniZipBumper.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
+
+# ZipDream
+entities.ChroniaHelper/ZipDream.placements.name.zipdreamblock=Omni Zip Mover (Dream Block Skin)
+entities.ChroniaHelper/ZipDream.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
+entities.ChroniaHelper/ZipDream.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
+entities.ChroniaHelper/ZipDream.attributes.description.permanent=Whether the Connected Zip Mover should stay completely static after stopping.
+entities.ChroniaHelper/ZipDream.attributes.description.waiting=Whether the Connected Zip Mover should wait for the player at each node. \nOnly useful if has more than one node.
+entities.ChroniaHelper/ZipDream.attributes.description.ticking=Whether the Connected Zip Mover should be ticking at each node, forcing the player to reactivate it within a limited amount of time. \nWill return to initial position if the player doesn't reactivate it, or locks in place completely if "permanent" is on. \nOnly useful if has more than one node.
+entities.ChroniaHelper/ZipDream.attributes.description.delays=Time that the zipmover will wait on each node by order, if you don't set it, \nthe default time would be 0.2s
+entities.ChroniaHelper/ZipDream.attributes.description.easing=How zipmover will move between each node
+entities.ChroniaHelper/ZipDream.attributes.description.nodeSpeeds=The speed multiplier for zipmover moving to each node, if not setting properly, the default value is 1\nIf the array length is smaller than the node counts, the last number will be used as the value for later nodes
+entities.ChroniaHelper/ZipDream.attributes.description.ticks=How many ticks should there be before it returns if "ticking" enabled
+entities.ChroniaHelper/ZipDream.attributes.description.tickDelay=The interval between each tick if "ticking" enabled
+entities.ChroniaHelper/ZipDream.attributes.description.synced=If enabled, all synced zipmovers of the same "rope Color" will be activated together
+entities.ChroniaHelper/ZipDream.attributes.description.syncTag=If empty, the tag will automatically be set to rope color\nYou can use the flag "ZipMoverSync:(Your SyncTag)" to activate this zipmover if "synced" enabled
+entities.ChroniaHelper/ZipDream.attributes.description.dashable=Whether this zipmover can be activated and bounce the player up when player hit it with a dash\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipDream.attributes.description.onlyDashActivate=If enabled, player won't be able to activate it by touching it anymore
+entities.ChroniaHelper/ZipDream.attributes.description.dashableOnce=You can only dash it for once\nThen you'll have to wait for it to stop to dash it again
+entities.ChroniaHelper/ZipDream.attributes.description.customSound=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipDream.attributes.description.tweakShakes=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipDream.attributes.description.tweakReturnParams=ENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/ZipDream.attributes.description.returnedIrrespondingTime=Zipmover won't be responding to player's interactions after its return for some time
+entities.ChroniaHelper/ZipDream.attributes.description.nodeSound=Whether the "start sound" will play on each node when zipmover leaves the node
+entities.ChroniaHelper/ZipDream.attributes.description.startDelay=The delay before the zipmover moves at the start
+entities.ChroniaHelper/ZipDream.attributes.description.starPath=A path relative to "Gameplay/"
+entities.ChroniaHelper/ZipDream.attributes.description.backgroundColor=The color that defines the water color, or the glass block body color
+entities.ChroniaHelper/ZipDream.attributes.description.timeUnits=If enabled, the speeds parameter will be read as time instead of multipliers
+entities.ChroniaHelper/ZipDream.attributes.description.nodeFlags=Use "{}" to create a group for multiple flags, if the group has only one flag, "{}" wouldn't be necessary\nSeperate groups by using a comma, example:"{a,b,c},d,{e,f}"\nIf this option isn't empty, the zipmover will be forced to wait at the nodes until all flags in the relative group are activated\nAs the example shown above, Group 1 would be flags "a", "b" and "c"\nGroup 2 would be flag "d", Group 3 would be flags "e" and "f"\nSo in order to allow zipmover go past node 1, all flags in Group 1 have to be true\nIn order to allow zipmover go past node 2, all flags in Group 2 have to be true\nNode 3 would be the same. If there is a node 4 but there's no group 4, the node 4 will be using flags of Group 3\nNotice that when this field isn't empty, each node delay in "delays" will work as a new "Start Delay" when the node flag is enabled
+entities.ChroniaHelper/ZipDream.attributes.description.returnSpeeds=The same as "node speeds", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the speed between final node and the node before final node
+entities.ChroniaHelper/ZipDream.attributes.description.returnDelays=The same as "delays", but the number sequence is reversed when working on zipmover\nSimply speaking, the first number refers to the interval the zipmover will stay when reaching the first node backwards
+entities.ChroniaHelper/ZipDream.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
+entities.ChroniaHelper/ZipDream.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
+
+# Flag Touch Switch Wall
+entities.ChroniaHelper/FlagTouchSwitch.placements.name.touch_switch=(Obsoleted) Chronia Touch Switch / Chronia Switch Wall
+entities.ChroniaHelper/FlagTouchSwitch.placements.description.touch_switch=This entity is now mended into and handled by Maddie's Helping Hand
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.flag=The session flag this touch switch sets. Give the same to multiple touch switches and switch gates to group them.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.icon=The name of the icon for the touch switch (relative to objects/MaxHelpingHand/flagTouchSwitch), or "vanilla" for the default one.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.borderTexture=The path to the texture to use for the background of the icon.\nTo make your own, place it in your mod folder in Graphics/Atlases/Gameplay/myfolder/myborder.png, then type "myfolder/myborder" here.\nThe vanilla border can be found in the graphics dump, at Graphics/Atlases/Gameplay/objects/touchswitch/container.png.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.persistent=If enabled, the touch switch will stay active when the player dies or changes rooms.\nThis touch switch will also set a flag when it is enabled: [flagName]_switch[entityID]
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.inactiveColor=The switch color when not triggered yet.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.activeColor=The switch color when triggered, but the group is not complete yet.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.finishColor=The switch color when the group is complete.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.smoke=Whether the touch switch emits smoke when the group is complete.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.inverted=Whether the touch switch should turn off the flag instead of turning it on. The option should match on all touch switches of the group.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.allowDisable=Whether the touch switch can be disabled once the group is complete, if the flag change is reverted. Does not work with non-persistent flag switch gates.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.playerCanActivate=Whether the player can activate the touch switch. If not, only throwables can activate it.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.hitSound=The sound played when the switch is hit by the player.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.completeSoundFromSwitch=The sound emitted by the latest switch collected when the group is complete.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.completeSoundFromScene=A global sound emitted when the group is complete. As opposed to "Complete Sound (Switch)", this sound isn't emitted by a particular switch.
+entities.ChroniaHelper/FlagTouchSwitch.attributes.name.completeSoundFromSwitch=Complete Sound (Switch)
+entities.ChroniaHelper/FlagTouchSwitch.attributes.name.completeSoundFromScene=Complete Sound (Global)
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.hideIfFlag=If a session flag is specified here, turning it on will make the touch switch disappear, and will make other touch switches in the room ignore it for the group's completion.
+
+# Moving Flag Touch Switch
+entities.ChroniaHelper/MovingFlagTouchSwitch.placements.name.touch_switch=Flag Touch Switch (Moving)
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.flag=The session flag this touch switch sets. Give the same to multiple touch switches and switch gates to group them.
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.icon=The name of the icon for the touch switch (relative to objects/ChroniaHelper/flagTouchSwitch), or "vanilla" for the default one.
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.persistent=If enabled, the touch switch will stay active when the player dies or changes rooms.\nThis touch switch will also set a flag when it is enabled: [flagName]_switch[entityID]
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.movingDelay=The time (in seconds) the touch switch takes to move from one position to another.
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.inactiveColor=The switch color when not triggered yet.
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.movingColor=The switch color when it is moving between two positions.
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.activeColor=The switch color when triggered, but the group is not complete yet.
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.finishColor=The switch color when the group is complete.
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.hideIfFlag=If a session flag is specified here, turning it on will make the touch switch disappear, and will make other touch switches in the room ignore it for the group's completion.
+
+# Flag Switch Gate
+entities.ChroniaHelper/FlagSwitchGate.placements.name.block=(Obsoleted) Chronia Switch Gate (Block)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.mirror=(Obsoleted) Chronia Switch Gate (Mirror)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.temple=(Obsoleted) Chronia Switch Gate (Temple)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.stars=(Obsoleted) Chronia Switch Gate (Stars)
+entities.ChroniaHelper/FlagSwitchGate.placements.description.block=This entity is now mended into and handled by Maddie's Helping Hand
+entities.ChroniaHelper/FlagSwitchGate.placements.description.mirror=This entity is now mended into and handled by Maddie's Helping Hand
+entities.ChroniaHelper/FlagSwitchGate.placements.description.temple=This entity is now mended into and handled by Maddie's Helping Hand
+entities.ChroniaHelper/FlagSwitchGate.placements.description.stars=This entity is now mended into and handled by Maddie's Helping Hand
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.flag=The session flag this switch gate reacts to. Give the same to multiple touch switches and switch gates to group them.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.icon=The name of the icon for the switch gate (relative to objects/MaxHelpingHand/flagSwitchGate), or "vanilla" for the default one.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.persistent=If enabled, the switch gate will stay open when the player dies or changes rooms.\nThis switch gate will also set a flag when it is enabled: [flagName]_gate[entityID]
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.inactiveColor=The gate icon color when not triggered yet.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.activeColor=The gate icon color when triggered, but the group is not complete yet.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.finishColor=The gate icon color when the group is complete.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.sprite=The texture for the gate block.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.shakeTime=The time (in seconds) the block spends shaking before starting to move. Vanilla value is 0.5 seconds.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.moveTime=The time (in seconds) the block takes to move to its destination after shaking. Vanilla value is 1.8 seconds.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.moveEased=Whether the block should slow down before reaching its final position. If unchecked, the block will move at constant speed.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.allowReturn=Whether the block should return to its original position if the flag is turned off. Only works if the gate is persistent.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.moveSound=The sound played by the gate when it starts moving.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.finishedSound=The sound played by the gate when it is done moving.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.smoke=Whether the switch gate should emit smoke when reaching its final position.
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.surfaceIndex=Footstep sound when walking on the switch gate.
+
+triggers.ChroniaHelper/AxisCameraOffset.attributes.description.units=The offset length unit presets\n"offset", using the default setting\n"offsetSquared", offset 1.0 = 48 px\n"tiles", offset 1.0 = 8 px
+
+
+# Migration from ChroniaHelper
+
+# Refill
+entities.ChroniaHelper/Refill.placements.name.Refill=Refill
+entities.ChroniaHelper/Refill.placements.name.TwoDashesRefill=Refill (Two Dashes)
+entities.ChroniaHelper/Refill.attributes.description.freeze=The number of freeze frames
+entities.ChroniaHelper/Refill.attributes.description.fewerMode=When player's certain value is less than the "fewer" parameters,\nthe player will be able to interact with this entity\notherwise, they can't
+entities.ChroniaHelper/Refill.attributes.description.resetMode=The effect of this entity when player interacts
+entities.ChroniaHelper/Refill.attributes.description.sprite=The sprite or animation folder for the refill, relative to Gameplay folder\nIf it ends with a "/", then it will read the image arrays inside it\nIf not, it'll be read as a standalone image\nIf it's a folder, you should have several image arrays: "idle", "flash", and "outline"
+
+# Refill Wall
+entities.ChroniaHelper/RefillWall.placements.name.RefillWall=Refill Wall
+entities.ChroniaHelper/RefillWall.placements.name.TwoDashesRefillWall=Refill Wall (Two Dashes)
+entities.ChroniaHelper/RefillWall.attributes.description.freeze=The number of freeze frames
+entities.ChroniaHelper/RefillWall.attributes.description.fewerMode=When player's certain value is less than the "fewer" parameters,\nthe player will be able to interact with this entity\notherwise, they can't
+entities.ChroniaHelper/RefillWall.attributes.description.resetMode=The effect of this entity when player interacts
+entities.ChroniaHelper/RefillWall.attributes.description.sprite=The sprite or animation folder for the refill, relative to Gameplay folder\nIf it ends with a "/", then it will read the image arrays inside it\nIf not, it'll be read as a standalone image\nIf it's a folder, you should have several image arrays: "idle", "flash", and "outline"
+
+# Advanced Spikes
+entities.ChroniaHelper/UpAdvancedSpikes.placements.name.UpAdvancedSpikes=Advanced Spikes (Up)
+entities.ChroniaHelper/DownAdvancedSpikes.placements.name.DownAdvancedSpikes=Advanced Spikes (Down)
+entities.ChroniaHelper/LeftAdvancedSpikes.placements.name.LeftAdvancedSpikes=Advanced Spikes (Left)
+entities.ChroniaHelper/RightAdvancedSpikes.placements.name.RightAdvancedSpikes=Advanced Spikes (Right)
+
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
+
+
+# Animated Spikes
+entities.ChroniaHelper/UpAnimatedSpikes.placements.name.UpAnimatedSpikes=Animated Spikes (Up)
+entities.ChroniaHelper/DownAnimatedSpikes.placements.name.DownAnimatedSpikes=Animated Spikes (Down)
+entities.ChroniaHelper/LeftAnimatedSpikes.placements.name.LeftAnimatedSpikes=Animated Spikes (Left)
+entities.ChroniaHelper/RightAnimatedSpikes.placements.name.RightAnimatedSpikes=Animated Spikes (Right)
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.disabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.disabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.disabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.disabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.enabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.enabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.enabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.enabledSprite=The sprite to use for the spikes when it's not triggered, the path begins after "Gameplay/"\nYour file should be named like "textureName_up00.png", for example if your file is "Gameplay/danger/mySpikes_up00.png"\nYou'd want to fill in "danger/mySpikes"
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+
+# Crumble Block
+entities.ChroniaHelper/CrumbleBlock.placements.name.CrumbleBlock=Crumble Block
+entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayTouchTop=If player's touching the top of this block\nTouchTop Delay or JumpOff delay being above 0 will activate the crumbling\nBut Jumpoff Delay prioritizes
+entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayOnClimb=If player is climbing, this timer will override the other timers
+entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayJumpoff=If player's touching the top of this block\nTouchTop Delay or JumpOff delay being above 0 will activate the crumbling\nBut Jumpoff Delay prioritizes
+
+# Corner Boost Block
+entities.ChroniaHelper/CornerBoostBlock.placements.name.CornerBoostBlock=Corner Boost Block
+
+# Moon Boost Block
+entities.ChroniaHelper/MoonBoostBlock.placements.name.MoonBoostBlock=Moon Boost Block
+
+# No Coyote Time Block
+entities.ChroniaHelper/NoCoyoteTimeBlock.placements.name.NoCoyoteTimeBlock=No Coyote Time Block
+
+# Flag Trigger
+triggers.ChroniaHelper/FlagAddTrigger.placements.name.FlagAddTrigger=Flag Add Trigger
+triggers.ChroniaHelper/FlagRemoveTrigger.placements.name.FlagRemoveTrigger=Flag Remove Trigger
+triggers.ChroniaHelper/FlagClearTrigger.placements.name.FlagClearTrigger=Flag Clear Trigger
+triggers.ChroniaHelper/FlagReplaceTrigger.placements.name.FlagReplaceTrigger=Flag Replace Trigger
+triggers.ChroniaHelper/FlagIfTrigger.placements.name.FlagIfTrigger=Flag If Trigger
+triggers.ChroniaHelper/FlagSwitchTrigger.placements.name.FlagSwitchTrigger=Flag Switch Trigger
+triggers.ChroniaHelper/FlagListTrigger.placements.name.FlagListTrigger=Flag List Trigger
+triggers.ChroniaHelper/FlagChooseTrigger.placements.name.FlagChooseTrigger=Flag Choose Trigger
+triggers.ChroniaHelper/FlagRandomTrigger.placements.name.FlagRandomTrigger=Flag Random Trigger
+triggers.ChroniaHelper/FlagCarouselTrigger.placements.name.FlagCarouselTrigger=Flag Carousel Trigger
+triggers.ChroniaHelper/FlagCarouselManageTrigger.placements.name.FlagCarouselManageTrigger=Flag Carousel Manage Trigger
+triggers.ChroniaHelper/FlagStateTrigger.placements.name.FlagStateTrigger=Flag State Trigger
+
+triggers.ChroniaHelper/FlagCarouselTrigger.attributes.description.carouselId=The id number for this carousel list.\nNotice! Each trigger can only have ONE carousel id.
+triggers.ChroniaHelper/FlagCarouselManageTrigger.attributes.description.carouselId=The id number for this carousel list.\nNotice! Each trigger can only have ONE carousel id.
+triggers.ChroniaHelper/FlagListTrigger.attributes.description.flagList=A list of flags like "{a,b,c},{d,e},f..."\nEach time a player interact with this trigger, this list will step forward\nOn the given example, the first time you touch this trigger, flag "a","b" and "c" will be active\nYou touch it again, those flags will be removed and "d" and "e" will be active. Then next time "f" will be active.
+triggers.ChroniaHelper/FlagChooseTrigger.attributes.description.flagDictionary=A list of flags like "{a1, a2: b}"\nWhen "a1" and "a2" are both acvtive and player touches the trigger, "b" will be active.\nIf "MultiExecute" enabled, you can input multiple lines of this seperated by a comma.\nFor example, "{a1, a2: b}, {b1, b2: c1, c2}..."
+
+triggers.ChroniaHelper/FlagIfTrigger.attributes.description.trueFlag=The flag to activate when interacting with the trigger and "If Flag" is true
+triggers.ChroniaHelper/FlagIfTrigger.attributes.description.falseFlag=The flag to activate when interacting with the trigger and "If Flag" is false
+
+triggers.ChroniaHelper/FlagRandomTrigger.attributes.description.randomFlagDictionary=A list of flags and numbers, the number defines the probability scale when player interact with this trigger and the trigger randomly activate flags\nEach definition group is seperated by a comma, and each group looks like this:"{flags:scale}"\nFor example. if I write "{a,b:1},{c,d,e:2.5},{f:6.5}"\When players interact with flags "a" and "b" have 10% chance to be triggered,\nflags "c" ,"d" and "e" have 25% chance to be triggered,\nflag "f" have 65% chance to be triggered
+
+triggers.ChroniaHelper/FlagSwitchTrigger.attributes.description.defaultFlag=Whether one of the flags needs to be active for this trigger to work
+
+# Teleport Trigger
+triggers.ChroniaHelper/TeleportPositionTrigger.placements.name.TeleportPositionTrigger=Teleport Position Trigger
+triggers.ChroniaHelper/TeleportTargetTrigger.placements.name.TeleportTargetTrigger=Teleport Target Trigger
+
+# Target Id Trigger
+triggers.ChroniaHelper/TargetIdTrigger.placements.name.TargetIdTrigger=Target Id Trigger
+
+# Bloom Trigger
+triggers.ChroniaHelper/BloomTrigger.placements.name.BloomTrigger=Bloom Trigger
+triggers.ChroniaHelper/BloomFadeTrigger.placements.name.BloomFadeTrigger=Bloom Fade Trigger
+
+# Lighting Trigger
+triggers.ChroniaHelper/LightingTrigger.placements.name.LightingTrigger=Lighting Trigger
+triggers.ChroniaHelper/LightingFadeTrigger.placements.name.LightingFadeTrigger=Lighting Fade Trigger
+
+# Music Trigger
+triggers.ChroniaHelper/MusicTrigger.placements.name.MusicTrigger=Music Trigger
+triggers.ChroniaHelper/MusicFadeTrigger.placements.name.MusicFadeTrigger=Music Fade Trigger
+
+# Ambience Trigger
+triggers.ChroniaHelper/AmbienceTrigger.placements.name.AmbienceTrigger=Ambience Trigger
+triggers.ChroniaHelper/AmbienceFadeTrigger.placements.name.AmbienceFadeTrigger=Ambience Fade Trigger
+
+# Sub Pixel Trigger
+triggers.ChroniaHelper/SubPixelTrigger.placements.name.SubPixelTrigger=Sub Pixel Trigger
+triggers.ChroniaHelper/SubPixelTrigger.attributes.description.subPixelX=When player enters the map, their default subpixelX is 0.5,\nand this value is the relative to it, for example, if you want to set the player sub-pixelX to 0.9\nyou should fill in 0.4
+triggers.ChroniaHelper/SubPixelTrigger.attributes.description.subPixelY=When player enters the map, their default subpixelY is 0.5,\nand this value is the relative to it, for example, if you want to set the player sub-pixelX to 0.9\nyou should fill in 0.4
+
+# Fast Fall Collider Trigger
+triggers.ChroniaHelper/FastFallColliderTrigger.placements.name.FastFallColliderTrigger=Fast Fall Collider Trigger
+
+# Custom Core Message
+entities.ChroniaHelper/CustomCoreMessage.placements.name.CustomCoreMessage=Custom Core Message
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.dialog=ChroniaHelper CustomCoreMessage supports frame-based timer display\nYou can check the option menu for timer display\nThe Dialog names followed by "Static" will only change per room load\nUse flag "ChroniaHelperTimer.pause" to pause the timer\nUse flag "ChroniaHelperTimer.reset" to reset the timer
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.wholeDialog=This option will ignore the "line" option and show all Dialogs instead of one line
+
+# Custom Timer by AppleSheep
+entities.ChroniaHelper/TimerRecordStuff.placements.name.timeRecordStuff=Custom Timer Recorder
+entities.ChroniaHelper/CustomTimer.placements.name.CustomTimer=Custom Timer
+triggers.ChroniaHelper/TimerControlTrigger.placements.name.TimerControlTrigger=Custom Timer Control Trigger
+
+entities.ChroniaHelper/CustomTimer.attributes.description.checkIsValidRun=The entity will check if the player used debug map, if so the time won't be seen as valid
+entities.ChroniaHelper/TimerRecordStuff.attributes.description.text=The title over the timer
+entities.ChroniaHelper/CustomTimer.attributes.description.checkTimeLimit=Enable the time limit checker, if the time is overdue, the text color will change
+entities.ChroniaHelper/CustomTimer.attributes.description.text=The title over the timer
+
+# Tile Block
+entities.ChroniaHelper/TileBlock.placements.name.TileBlock=Tile Block
+
+entities.ChroniaHelper/AlternateTileBlock.placements.name.TileBlock=Tile Block (Nine Patch)
+
+# Custom Billboard
+entities.ChroniaHelper/CustomBillboard.placements.name.customBillboard=Custom Billboard
+
+# Custom Dust Bunny
+entities.ChroniaHelper/CustomDustBunny.placements.name.CustomDustBunny=Custom Dust Bunny
+
+# Seperated Tile
+entities.ChroniaHelper/SeperatedTile.placements.name.SeperatedTile=Floaty Bg Tile (Seperated)
+
+# Auto Skip Dialog Trigger
+triggers.ChroniaHelper/AutoDialogSkipTrigger.placements.name.AutoSkipTrigger=Auto Dialog Skip Trigger
+
+# Custom Torch
+entities.ChroniaHelper/CustomTorch.placements.name.main=Custom Torch
+entities.ChroniaHelper/CustomTorch.attributes.description.RegisterRadius=The collider size of this entity which player can turn on the light with
+
+# Open URL
+triggers.ChroniaHelper/OpenUrlTrigger.placements.name.normal=Open URL Trigger
+
+# Custom Booster
+entities.ChroniaHelper/CustomBooster.placements.name.normal=Custom Booster
+entities.ChroniaHelper/CustomBooster.attributes.description.directory=The folder path relative to Gameplay\nSeveral animations (image arrays) must be inside the folder:\n"loop", "inside", "spin", and "pop"\nIf this booster is a red booster ("red" option enabled)\n Then "appear" animation is also required
+entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillDashes=If enabled, this booster will set up the player dashes instead of refilling it
+entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillStamina=If enabled, this booster will set up the player stamina instead of refilling it
+entities.ChroniaHelper/CustomBooster.attributes.description.XMLOverride=If enabled, the "directory" will work as the XML object tag\nAnd all the animation parameters in the options will be ignored
+
+# Custom Glider
+entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Glider
+entities.ChroniaHelper/CustomGlider.attributes.description.Directory=The folder path of your sprite files\nThe sprites should contain: "idle", "held", "fall", "fallLoop" and "death" animations
+entities.ChroniaHelper/CustomGlider.attributes.description.hitboxParameters=A series of numbers representing\nHitbox Width, Hitbox Height, Hitbox X, and Hitbox Y
+entities.ChroniaHelper/CustomGlider.attributes.description.holdableParameters=A series of nmbers representing\nHoldable Hitbox Width, Holdable Hitbox Height,\nHoldable Hitbox X, and Holdable Hitbox Y
+entities.ChroniaHelper/CustomGlider.attributes.description.XMLOverride=If enabled, the "directory" will work as the XML object tag\nAnd all the animation parameters in the options will be ignored
+entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedY=The maximum falling speed of the glider when there are no winds or else
+entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedX=After you throw the glider, the glider will decelerate on its Speed X\nAnd this option will set up the final Speed X of this glider
+entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedXMultiplier=If enabled, the value filled in "dropping speed x" will be a multiplier to the throwing speed\ninstead of a certain value
+
+# Real Flag Switch
+entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitch=Flag Button Wall (2-in-1)
+# Real Flag Switch Alt
+entities.ChroniaHelper/RealFlagSwitchAlt.placements.name.flagswitch=Flag Button (Button Only)
+
+# Summit Cloud
+entities.ChroniaHelper/CustomSummitCloud.placements.name.cloud=Custom Summit Cloud
+entities.ChroniaHelper/CustomSummitCloud.attributes.description.alignment=Base Position would be top left
+
+# Summit Cloud 2
+entities.ChroniaHelper/CustomSummitCloud2.placements.name.cloud=Custom Summit Cloud 2
+
+# Auto Skip Trigger
+triggers.ChroniaHelper/AutoDialogSkipTrigger.placements.name.AutoSkipTrigger=Auto Dialog Trigger
+triggers.ChroniaHelper/AutoDialogSkipTrigger.attributes.description.dialogId=If you want to use the auto skip feature\nInclude {trigger 0} to start the auto skip\nInclude {trigger 1} to stop the auto skip
+
+# Flag String Trigger
+triggers.ChroniaHelper/FlagStringTrigger.placements.name.FlagStringTrigger=Flag String Trigger
+triggers.ChroniaHelper/FlagStringTrigger.attributes.description.baseString=The base string to find as an argument for editing the flag string
+triggers.ChroniaHelper/FlagStringTrigger.attributes.description.newString=The new string to be operated
+
+# Wind Tunnels
+entities.ChroniaHelper/WindTunnel.attributes.description.direction=You can choose between the options\nOr input a specific number inside, 0 is right, and 90 is up
+
+# Resort Lantern
+entities.ChroniaHelper/CustomResortLantern.placements.name.lantern=Custom Resort Lantern
+entities.ChroniaHelper/CustomResortLantern.attributes.description.spriteDirectory=The folder of your sprites, relative to "Gameplay/"\nThere should be a static image "holder.png" and an image array "lantern" inside this folder\nNotice: The "holder" image isn't a must, if your folder doesn't have this image, the holder for this lantern will be automatically ignored\nIf you do want a holder for your lantern, check Graphics Dump for the initial facing of your holder image
+
+# Flag Date Trigger
+triggers.ChroniaHelper/FlagDateTrigger.placements.name.FlagDateTrigger=Flag Date Trigger
+triggers.ChroniaHelper/FlagDateTrigger.attributes.description.requirements=A series of requirements seperated by ';'\nEach requirement should look like this: "format, A, B"\nA and B represents two integers, the formula like this means certain format of time should be larger than A (contained)\nand smaller than B (not contained), all the requirements must be met for this trigger to activate\nSpecially, requirement like "format, A" means the time should be larger than A\nRequirement like "format, , B" means the time should be smaller than B\nIf the first slot of requirement begins with an exclamation point '!'\nFor example, "!second, 10, 20", then this requirement will be inverted when being judged\nNotice that if the requirement you fill in is invalid or not correctly formatted,\nit will be ignored and signal "true" when the trigger is checking this requirement
+
+# Custom Playback
+entities.ChroniaHelper/CustomPlayback.placements.name.main=Custom Playback (Flag-control)
+
+# Patient Booster
+entities.ChroniaHelper/PatientBooster.placements.name.default=Patient Booster
+entities.ChroniaHelper/PatientBooster.placements.name.red=Patient Booster (Red)
+entities.ChroniaHelper/PatientBooster.attributes.description.customHitbox=You can create your own hitbox here.\n"r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"\nIf leave empty, the spinner will process by default values or ignored.
+
+# Dash gate block
+# most tooltips stolen from maddie's helping hand
+# https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang#L194
+entities.ChroniaHelper/DashGateBlock.placements.name.Both=Omni Dash Gate Block (Both, Multi-node)
+entities.ChroniaHelper/DashGateBlock.placements.name.Horizontal=Omni Dash Gate Block (Horizontal, Multi-node)
+entities.ChroniaHelper/DashGateBlock.placements.name.Vertical=Omni Dash Gate Block (Vertical, Multi-node)
+entities.ChroniaHelper/DashGateBlock.placements.name.kevinswitchgate=Omni Kevin Switch Gate (Multi-node)
+entities.ChroniaHelper/DashGateBlock.attributes.description.inactiveColor=The color of the block when not triggered yet.
+entities.ChroniaHelper/DashGateBlock.attributes.description.activeColor=The color of the block while moving.
+entities.ChroniaHelper/DashGateBlock.attributes.description.finishColor=The color of the block when it has reached its destination.
+entities.ChroniaHelper/DashGateBlock.attributes.description.blockSprite=The texture path for the block.\nSee Graphics/Atlases/Gameplay/objects/SorbetHelper/gateblock/dash/ in SorbetHelper.zip for how the files should be organised.
+entities.ChroniaHelper/DashGateBlock.attributes.description.iconSprite=The texture path for the icon in the center of the block.
+entities.ChroniaHelper/DashGateBlock.attributes.description.shakeTime=The time (in seconds) the block spends shaking before starting to move. Default value is 0.5 seconds.
+entities.ChroniaHelper/DashGateBlock.attributes.description.moveTime=The time (in seconds) the block takes to move to its destination after shaking. Default value is 1.8 seconds.
+entities.ChroniaHelper/DashGateBlock.attributes.description.moveEased=Whether the block should slow down before reaching its final position. If unchecked, the block will move at constant speed.
+entities.ChroniaHelper/DashGateBlock.attributes.description.allowReturn=Whether the block will cycle between its start position and node if activated multiple times.
+entities.ChroniaHelper/DashGateBlock.attributes.description.persistent=If enabled, the block will stay activated even if the player dies or changes rooms.
+entities.ChroniaHelper/DashGateBlock.attributes.description.moveSound=The sound played by the gate when it starts moving.
+entities.ChroniaHelper/DashGateBlock.attributes.description.finishedSound=The sound played by the gate when it is done moving.
+entities.ChroniaHelper/DashGateBlock.attributes.description.smoke=Whether the block should emit smoke when reaching its final position.
+entities.ChroniaHelper/DashGateBlock.attributes.description.allowWavedash=Whether it is possible to wavedash on top of the block.
+entities.ChroniaHelper/DashGateBlock.attributes.name.dashCornerCorrection=Easier Wallbounce
+entities.ChroniaHelper/DashGateBlock.attributes.description.dashCornerCorrection=Makes wallbouncing off of the block less precise (by allowing it up to 4 pixels deep into the block horizontally, dashing from the bottom).
+entities.ChroniaHelper/DashGateBlock.attributes.name.axes=Dashable Axes
+entities.ChroniaHelper/DashGateBlock.attributes.description.axes=Determines which sides of the block can be dashed into.
+entities.ChroniaHelper/DashGateBlock.attributes.name.linkTag=Flag On Activate
+entities.ChroniaHelper/DashGateBlock.attributes.description.linkTag=An optional session flag to enable when the block activates.
+
+# Touch gate block
+# most tooltips stolen from maddie's helping hand
+# https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang#L194
+entities.ChroniaHelper/TouchGateBlock.placements.name.normal=Omni Touch Gate Block (Multi-node)
+entities.ChroniaHelper/TouchGateBlock.placements.name.normalaltname=Omni Gate Block (Touch Activated) (Activate On Touch) (Multi-node)
+entities.ChroniaHelper/TouchGateBlock.attributes.description.inactiveColor=The color of the block when not triggered yet.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.activeColor=The color of the block while moving.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.finishColor=The color of the block when it has reached its destination.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.blockSprite=The texture path for the block.\nSee Graphics/Atlases/Gameplay/objects/SorbetHelper/gateblock/dash/ in SorbetHelper.zip for how the files should be organised.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.iconSprite=The texture path for the icon in the center of the block.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.shakeTime=The time (in seconds) the block spends shaking before starting to move. Default value is 0.5 seconds.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveTime=The time (in seconds) the block takes to move to its destination after shaking. Default value is 1.8 seconds.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveEased=Whether the block should slow down before reaching its final position. If unchecked, the block will move at constant speed.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.allowReturn=Whether the block will cycle between its start position and node if activated multiple times.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.persistent=If enabled, the block will stay activated even if the player dies or changes rooms.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveSound=The sound played by the gate when it starts moving.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.finishedSound=The sound played by the gate when it is done moving.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.smoke=Whether the block should emit smoke when reaching its final position.
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveOnGrab=Whether the block should be activated if the player climbs on its sides.
+entities.ChroniaHelper/TouchGateBlock.attributes.name.moveOnStaticMover=Static Mover Activated
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveOnStaticMover=Whether the block can be activated by static movers (such as springs) attached to it.
+entities.ChroniaHelper/TouchGateBlock.attributes.name.linkTag=Flag On Activate
+entities.ChroniaHelper/TouchGateBlock.attributes.description.linkTag=An optional session flag to enable when the block activates.
+
+# Zip Booster
+entities.ChroniaHelper/BoosterZipper.placements.name.zipbooster=Zip Booster
+
+# Sprite Entity'
+entities.ChroniaHelper/SpriteEntity.placements.name.SpriteEntity=Sprite Entity
+entities.ChroniaHelper/SpriteEntity.attributes.description.commands=Currently supported indicators and pramaters: \nset_flag: flagName, flagState \nplay: spriteName \nflag_play: flag, spriteName \nwait: period \nwait_flag: flag, (inverted) \nmove: deltaX, deltaY, (moveTime, easing) \nmove_to: X, Y, (moveTime, easing) \nalpha: setAlpha, (changeTime, easing) \ncolor: HEX, (changeTime, easing) \nscale: scaleX, scaleY, (changetime, easing) \nrotate: angle, (rotateTime, easing, isDelta) \ndepth: setDepth, (transferTime, easing) \nrepeat: repeatFromCommandIndex, overrideFlag \nmove_around: center dX, center dY, deltaAngle, spinTime, (easing) \norigin: originX, originY, (changeTime, easing) \nrate: animationRate, (changeTime, easing) \nignore: ignoreFlag, flagInverted, num1, (num2...) \nsound: soundFX name \nmusic: trackName \nhitbox: width, height, (x, y) 
