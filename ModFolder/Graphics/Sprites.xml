@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Sprites>
+
+	<ChroniaHelper_teraPlayer path="ChroniaHelper/objects/tera/Player/" start="Normal">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="Normal" path="Normal" delay="0"/>
+		<Loop id="Fire" path="Fire" delay="0"/>
+		<Loop id="Water" path="Water" delay="0"/>
+		<Loop id="Grass" path="Grass" delay="0"/>
+		<Loop id="Electric" path="Electric" delay="0"/>
+		<Loop id="Bug" path="Bug" delay="0"/>
+		<Loop id="Poison" path="Poison" delay="0"/>
+		<Loop id="Psychic" path="Psychic" delay="0"/>
+		<Loop id="Ghost" path="Ghost" delay="0"/>
+		<Loop id="Steel" path="Steel" delay="0"/>
+		<Loop id="Rock" path="Rock" delay="0"/>
+		<Loop id="Ground" path="Ground" delay="0"/>
+		<Loop id="Fighting" path="Fighting" delay="0"/>
+		<Loop id="Flying" path="Flying" delay="0"/>
+		<Loop id="Dragon" path="Dragon" delay="0"/>
+		<Loop id="Ice" path="Ice" delay="0"/>
+		<Loop id="Dark" path="Dark" delay="0"/>
+		<Loop id="Fairy" path="Fairy" delay="0"/>
+	</ChroniaHelper_teraPlayer>
+	
+	<ChroniaHelper_teraCrystal path="ChroniaHelper/objects/tera/Crystal/" start="idle">
+		<Origin x="32" y="42"/>
+		<Loop id="idle" path="idle" delay="0.08"/>
+		<Anim id="shatter" path="shatter" delay="0.08"/>
+	</ChroniaHelper_teraCrystal>
+	
+	<ChroniaHelper_goomy path="ChroniaHelper/objects/tera/Goomy/" start="idle">
+		<Justify x="0.5" y="1"/>
+		<Loop id="idle" path="goomy" delay="0.03"/>
+	</ChroniaHelper_goomy>
+	
+	<ChroniaHelper_goomyShiny path="ChroniaHelper/objects/tera/Goomy/" start="idle">
+		<Justify x="0.5" y="1"/>
+		<Loop id="idle" path="goomy_s" delay="0.03"/>
+	</ChroniaHelper_goomyShiny>
+	
+	<CustomTorch path="ChroniaHelper/CustomTorch/" start="off">
+    	<Justify x="0.5" y="0.5"/>
+    	<Loop id="off" path="CustomTorch" delay="0.1" frames="0"/>
+    	<Anim id="turnOn" path="CustomTorch" delay="0.08" frames="1-3" goto="on"/>
+    	<Loop id="on" path="CustomTorch" delay="0.08" frames="3-8"/>
+  	</CustomTorch>
+
+	<Custom_glider path="objects/glider/" start="idle">
+		<Justify x="0.5" y="0.58"/>
+		<Loop id="idle" path="idle" delay="0.1"/>
+		<Loop id="held" path="held" delay="0.1"/>
+		<Anim id="fall" path="fall" delay="0.06" goto="fallLoop"/>
+		<Loop id="fallLoop" path="fallLoop" delay="0.06"/>
+		<Anim id="death" path="death" delay="0.06"/>
+	</Custom_glider>
+
+	<Default_booster path="objects/ChroniaHelper/customBoosterPresets/grey/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Default_booster>
+
+	<Preset_red path="objects/ChroniaHelper/customBoosterPresets/red/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_red>
+
+	<Preset_green path="objects/ChroniaHelper/customBoosterPresets/green/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_green>
+
+	<boosterZipper path="objects/ChroniaHelper/boosterZipper/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="idle" delay="0.1" />
+		<Anim id="inside" path="idle_player" frames ="0" delay="0.1" goto="inside_loop"/>
+		<Loop id="inside_loop" path="idle_player" delay="0.1" />
+		<Loop id="spin" path="idle_player" delay="0.06" />
+		<Anim id="pop" path="bursts" delay="0.08" />
+
+		<Anim id="toEndloop" path="change" delay="0.1" goto="loop_end"/>
+		<Anim id="toEndinside" path="change_player" delay="0.1" goto="inside_end"/>
+		<Anim id="toEndinsideLoop" path="change_player" delay="0.1" goto="inside_loop_end"/>
+		<Anim id="fromEndinsideLoop" path="changeBack_player" delay="0.1" goto="inside_loop"/>
+		<Anim id="fromEndLoop" path="changeBack" delay="0.1" goto="loop"/>
+		<Anim id="fromEndinside" path="changeBack_player" delay="0.1" goto="inside"/>
+
+		<Loop id="loop_end" path="o_idle" delay="0.1" />
+		<Anim id="inside_end" path="o_idle_player" frames="0" delay="0.1" goto="inside_loop_end"/>
+		<Loop id="inside_loop_end" path="o_idle_player" delay="0.1" />
+		<Loop id="spin_end" path="o_idle_player" delay="0.06" />
+		<Anim id="pop_end" path="o_bursts" delay="0.08" />
+	</boosterZipper>
+
+	<spriteEntity path ="objects/ChroniaHelper/spriteEntity/">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="testA" path="testA" delay="0.1"/>
+		<Loop id="testB" path="testB" delay ="0.1"/>
+		<Loop id="testC" path="testC" delay ="0.1"/>
+	</spriteEntity>
+		
+</Sprites>

@@ -1,0 +1,24 @@
+local drawableSprite = require("structs.drawable_sprite")
+local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local goomy = {}
+
+goomy.name = "ChroniaHelper/goomy"
+goomy.depth = 1000
+goomy.placements = {
+	name = "Goomy",
+    data = {
+        range = 1,
+    }
+}
+goomy.fieldInformation = {
+    range = {
+        fieldType = "integer",
+    }
+}
+function goomy.sprite(room, entity, viewport)
+    local x, y = entity.x or 0, entity.y or 0
+    local texture = "ChroniaHelper/objects/tera/Goomy/goomy00"
+    return drawableSprite.fromTexture(texture, { x = x, y = y - 23 }) 
+end
+
+return goomy
