@@ -1,0 +1,39 @@
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.csproj.AssemblyReference.cache
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.AssemblyInfoInputs.cache
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.AssemblyInfo.cs
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.csproj.CoreCompileInputs.cache
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.sourcelink.json
+C:\Users\Yocto\Desktop\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.deps.json
+C:\Users\Yocto\Desktop\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.dll
+C:\Users\Yocto\Desktop\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.pdb
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.dll
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\refint\ChroniaHelper.dll
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.pdb
+C:\Users\Yocto\Desktop\!! ChroniaHelper\obj\Debug\net8.0\ref\ChroniaHelper.dll
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.dll
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\refint\ChroniaHelper.dll
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.pdb
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.deps.json
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.dll
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.pdb
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.csproj.AssemblyReference.cache
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.AssemblyInfoInputs.cache
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.AssemblyInfo.cs
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.csproj.CoreCompileInputs.cache
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.sourcelink.json
+C:\Users\AppleSheep\Documents\Tencent Files\534310154\FileRecv\!! ChroniaHelper-stable0805-0-bugfix in seamless spinner\!! ChroniaHelper\obj\Debug\net8.0\ref\ChroniaHelper.dll
+E:\Celeste Plus\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.deps.json
+E:\Celeste Plus\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.dll
+E:\Celeste Plus\!! ChroniaHelper\bin\Debug\net8.0\ChroniaHelper.pdb
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.csproj.AssemblyReference.cache
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.GeneratedMSBuildEditorConfig.editorconfig
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.AssemblyInfoInputs.cache
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.AssemblyInfo.cs
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.csproj.CoreCompileInputs.cache
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.sourcelink.json
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.dll
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\refint\ChroniaHelper.dll
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ChroniaHelper.pdb
+E:\Celeste Plus\!! ChroniaHelper\obj\Debug\net8.0\ref\ChroniaHelper.dll

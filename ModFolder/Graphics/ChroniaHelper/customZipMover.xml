@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Sprites>
+
+  <customZipMoverInnerSprite path="objects/ChroniaHelper/customZipMover/" start="idle">
+    <Justify x="0.5" y="0.5"/>
+    <Loop id="idle" path="innerSprite_idle" delay="0.08"/>
+    <Loop id="active" path="innerSprite_active" delay="0.08"/>
+    <Loop id="return" path="innerSprite_return" delay="0.08"/>
+    <Loop id="unlit" path="innerSprite_unlit" delay="0.08"/>
+  </customZipMoverInnerSprite>
+
+  <customZipMoverEdge path="objects/ChroniaHelper/customZipMover/" start="idle">
+    <Justify x="0.5" y="0.5"/>
+    <Loop id="idle" path="edge_idle" delay="0.08"/>
+    <Loop id="active" path="edge_active" delay="0.08"/>
+    <Loop id="return" path="edge_return" delay="0.08"/>
+    <Loop id="unlit" path="egde_unlit" delay="0.08"/>
+  </customZipMoverEdge>
+
+  <customZipMoverSide path="objects/ChroniaHelper/customZipMover/" start="idle">
+    <Justify x="0.5" y="0.5"/>
+    <Loop id="idle" path="side_idle" delay="0.08"/>
+    <Loop id="active" path="side_active" delay="0.08"/>
+    <Loop id="return" path="side_return" delay="0.08"/>
+    <Loop id="unlit" path="side_unlit" delay="0.08"/>
+  </customZipMoverSide>
+
+</Sprites>
