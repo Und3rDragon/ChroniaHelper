@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Celeste+\\ChroniaHelper\\ChroniaHelper.csproj": {}
+    "D:\\Misc\\Celeste\\ChroniaHelper\\ChroniaHelper.csproj": {}
   },
   "projects": {
-    "E:\\Celeste+\\ChroniaHelper\\ChroniaHelper.csproj": {
+    "D:\\Misc\\Celeste\\ChroniaHelper\\ChroniaHelper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Celeste+\\ChroniaHelper\\ChroniaHelper.csproj",
+        "projectUniqueName": "D:\\Misc\\Celeste\\ChroniaHelper\\ChroniaHelper.csproj",
         "projectName": "ChroniaHelper",
-        "projectPath": "E:\\Celeste+\\ChroniaHelper\\ChroniaHelper.csproj",
-        "packagesPath": "C:\\Users\\UnderDragon\\.nuget\\packages\\",
-        "outputPath": "E:\\Celeste+\\ChroniaHelper\\obj\\",
+        "projectPath": "D:\\Misc\\Celeste\\ChroniaHelper\\ChroniaHelper.csproj",
+        "packagesPath": "C:\\Users\\Lucky_boy\\.nuget\\packages\\",
+        "outputPath": "D:\\Misc\\Celeste\\ChroniaHelper\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\Visual Studio Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\UnderDragon\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Lucky_boy\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -42,7 +36,7 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
+          "auditMode": "all"
         },
         "SdkAnalysisLevel": "9.0.100"
       },
@@ -72,12 +66,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[7.0.20, 7.0.20]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\Lucky_boy\\.dotnet\\sdk\\9.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

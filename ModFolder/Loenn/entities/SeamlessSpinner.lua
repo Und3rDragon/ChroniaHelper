@@ -34,6 +34,12 @@ seamlessSpinner.placements = {
         bgFlipY = "none",
         trigger = false,
         rainbow = false,
+        
+        useCoreModeStyle = false,
+        coldCoreModeSpritePath = "danger/crystal/fg_blue",
+        hotCoreModeSpritePath = "danger/crystal/fg_red",
+        coldCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/blue/fg_blue_base",
+        hotCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/red/fg_red_base",
     },
 }
 seamlessSpinner.depth = function(room,entity) return entity.depth or -8500 end
@@ -83,7 +89,10 @@ seamlessSpinner.fieldInformation = {
 seamlessSpinner.fieldOrder = {
     -- texts
     "foreDirectory", "backDirectory",
-    "depth", "hitboxType", 
+    "depth", "useCoreModeStyle",
+    "coldCoreModeSpritePath", "hotCoreModeSpritePath",
+    "coldCoreModeTriggerSpritePath", "hotCoreModeTriggerSpritePath",
+    "hitboxType", 
     "customHitbox", "colorOverlay",
     "bloomAlpha", "bloomRadius",
     "fgAnimDelay", "bgAnimDelay",
