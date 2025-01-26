@@ -20,9 +20,9 @@ return{
 		},
 	},
 	triggerText = function(room, entity)
-		local base = "flag (" ..entity.flag .. ")"
+		local base = "flag\n(" ..entity.flag .. ")"
 		if entity.set == false then
-			base = "flag (!" ..entity.flag .. ")"
+			base = "inverted\nflag (!" ..entity.flag .. ")"
 		end
 		if entity.temporary then
 			base = "temporary " .. base

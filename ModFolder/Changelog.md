@@ -1,3 +1,8 @@
+# 28.13
+# Small improvements
+SpriteEntity indicator option fix
+Flag trigger indication fix
+
 # 28.9
 # Bugfix
 Loenn input bugfixes

@@ -14,7 +14,7 @@ se.placements = {
 	name = "SpriteEntity",
 	data = {
 		depth = 9500,
-		indicatorSprite = "objects/ChroniaHelper/spriteEntity/testB0",
+		indicatorSprite = "objects/ChroniaHelper/spriteEntity/testB",
 		xmlLabel = "SpriteEntity",
 		commands = "",
 	}
@@ -54,11 +54,12 @@ se.fieldInformation = {
 	depth = {
 		options = depthOptions,
 		editable = true,
-	}
+	},
+	indicatorSprite = vivUtilsMig.GetFilePathWithNoTrailingNumbers(false),
 }
 
 se.sprite = function(room, entity)
-	return drawableSprite.fromTexture("objects/ChroniaHelper/spriteEntity/testB0", entity)
+	return vivUtilsMig.getImageWithNumbers(entity.indicatorSprite, 0, entity)
 end
 
 

@@ -3,28 +3,28 @@
   "WorkspaceRootPath": "E:\\Celeste\u002B\\ChroniaHelper\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\everest.yaml||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:modfolder\\everest.yaml||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
       "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:modfolder\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\loenn\\entities\\seamlessspinner.lua||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:modfolder\\loenn\\entities\\seamlessspinner.lua||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\entities\\seamlessspinner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:entities\\seamlessspinner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\entities\\spriteentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:entities\\spriteentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\everest.yaml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:modfolder\\everest.yaml||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\loenn\\entities\\spriteentity.lua||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:modfolder\\loenn\\entities\\spriteentity.lua||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\loenn\\libraries\\vivutilsmig.lua||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:modfolder\\loenn\\libraries\\vivutilsmig.lua||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\loenn\\triggers\\flagtrigger.lua||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:modfolder\\loenn\\triggers\\flagtrigger.lua||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\chroniahelper.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:chroniahelper.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\modfolder\\loenn\\lang\\en_gb.lang||{8B382828-6202-11D1-8870-0000F87579D2}",
@@ -37,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\chroniahelpermodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:chroniahelpermodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\chroniahelper.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|solutionrelative:chroniahelper.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1DE5A513-4684-47A2-8701-BD1FF19F1C12}|ChroniaHelper.csproj|e:\\celeste\u002B\\chroniahelper\\cores\\mapprocessor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -58,11 +54,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 5,
               "Title": "ChroniaHelper.csproj",
               "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ChroniaHelper.csproj",
               "RelativeDocumentMoniker": "ChroniaHelper.csproj",
@@ -71,7 +67,8 @@
               "ViewState": "AgIAAAAAAAAAAAAAAADwvxkAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2024-12-24T15:29:06.415Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -101,7 +98,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 10,
               "Title": "ChroniaHelperSession.cs",
               "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\Modules\\ChroniaHelperSession.cs",
               "RelativeDocumentMoniker": "Modules\\ChroniaHelperSession.cs",
@@ -114,7 +111,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "MapProcessor.cs",
               "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\Cores\\MapProcessor.cs",
               "RelativeDocumentMoniker": "Cores\\MapProcessor.cs",
@@ -127,26 +124,27 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Changelog.md",
               "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Changelog.md",
               "RelativeDocumentMoniker": "ModFolder\\Changelog.md",
-              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Changelog.md",
-              "RelativeToolTip": "ModFolder\\Changelog.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAUAAAAAAAAAA==",
+              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Changelog.md*",
+              "RelativeToolTip": "ModFolder\\Changelog.md*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
               "WhenOpened": "2024-12-24T15:28:44.924Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "everest.yaml",
               "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\everest.yaml",
               "RelativeDocumentMoniker": "ModFolder\\everest.yaml",
               "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\everest.yaml",
               "RelativeToolTip": "ModFolder\\everest.yaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwEAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwEAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
               "WhenOpened": "2024-12-24T15:28:44.232Z",
               "IsPinned": true,
@@ -166,56 +164,47 @@
               "IsPinned": true
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "SpriteEntity.lua",
-              "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\entities\\SpriteEntity.lua",
-              "RelativeDocumentMoniker": "ModFolder\\Loenn\\entities\\SpriteEntity.lua",
-              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\entities\\SpriteEntity.lua",
-              "RelativeToolTip": "ModFolder\\Loenn\\entities\\SpriteEntity.lua",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAAC8AAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-01-23T12:35:07.994Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SpriteEntity.cs",
-              "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\Entities\\SpriteEntity.cs",
-              "RelativeDocumentMoniker": "Entities\\SpriteEntity.cs",
-              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\Entities\\SpriteEntity.cs",
-              "RelativeToolTip": "Entities\\SpriteEntity.cs",
-              "ViewState": "AgIAAK8CAAAAAAAAAAAuwMECAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-23T12:35:02.856Z"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "SeamlessSpinner.cs",
-              "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\Entities\\SeamlessSpinner.cs",
-              "RelativeDocumentMoniker": "Entities\\SeamlessSpinner.cs",
-              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\Entities\\SeamlessSpinner.cs",
-              "RelativeToolTip": "Entities\\SeamlessSpinner.cs",
-              "ViewState": "AgIAAKwAAAAAAAAAAADwv3gCAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-22T15:51:19.047Z"
+              "Title": "vivUtilsMig.lua",
+              "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\libraries\\vivUtilsMig.lua",
+              "RelativeDocumentMoniker": "ModFolder\\Loenn\\libraries\\vivUtilsMig.lua",
+              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\libraries\\vivUtilsMig.lua",
+              "RelativeToolTip": "ModFolder\\Loenn\\libraries\\vivUtilsMig.lua",
+              "ViewState": "AgIAAPAAAAAAAAAAAAAhwAEBAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-01-26T19:31:03.305Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "SeamlessSpinner.lua",
-              "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\entities\\SeamlessSpinner.lua",
-              "RelativeDocumentMoniker": "ModFolder\\Loenn\\entities\\SeamlessSpinner.lua",
-              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\entities\\SeamlessSpinner.lua",
-              "RelativeToolTip": "ModFolder\\Loenn\\entities\\SeamlessSpinner.lua",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAcAAAAeAAAAAAAAAA==",
+              "Title": "SpriteEntity.lua",
+              "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\entities\\SpriteEntity.lua",
+              "RelativeDocumentMoniker": "ModFolder\\Loenn\\entities\\SpriteEntity.lua",
+              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\entities\\SpriteEntity.lua*",
+              "RelativeToolTip": "ModFolder\\Loenn\\entities\\SpriteEntity.lua*",
+              "ViewState": "AgIAAAUAAAAAAAAAAADgvxAAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-01-22T15:41:02.176Z"
+              "WhenOpened": "2025-01-26T19:27:50.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FlagTrigger.lua",
+              "DocumentMoniker": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\triggers\\FlagTrigger.lua",
+              "RelativeDocumentMoniker": "ModFolder\\Loenn\\triggers\\FlagTrigger.lua",
+              "ToolTip": "E:\\Celeste\u002B\\ChroniaHelper\\ModFolder\\Loenn\\triggers\\FlagTrigger.lua",
+              "RelativeToolTip": "ModFolder\\Loenn\\triggers\\FlagTrigger.lua",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvxsAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-01-26T19:26:29.572Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             }
           ]
         }
