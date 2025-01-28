@@ -12,7 +12,7 @@ return {
             musicParameterValueFrom = 1,
             musicParameterValueTo = 0,
             musicParameter = "",
-            positionMode = fieldOptions.positionMode,
+            positionMode = "NoEffect",
             levelDeath = "-1",
             totalDeath = "-1",
             enterMode = "Any",
@@ -37,7 +37,7 @@ return {
         {
             minimumValue = 0
         },
-        positionMode = fieldOptions.positionMode.info,
+        positionMode = fieldOptions.positionMode,
         enterMode = fieldOptions.enterMode,
         enterDelay =
         {
