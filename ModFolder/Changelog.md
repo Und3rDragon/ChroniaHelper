@@ -1,3 +1,6 @@
+# 28.14
+Everest dependency changes, applying data.String from Everest update
+
 # 28.13
 # Small improvements
 SpriteEntity indicator option fix
