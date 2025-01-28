@@ -22,21 +22,22 @@ public class SpriteEntity : Actor
     {
         Wait_Flag, Set_Flag, Play, Flag_Play, Wait, None, MoveTo, 
         Move, Alpha, Color, Scale, Rotate, Depth, Repeat, Move_Around, Rate, Origin,
-        Ignore,//done
-        Sound, Music, Hitbox, Holdable_Collider//undone
+        Ignore, Sound, Music, Hitbox, Bloom, Light,
+        Bloom_Move, Bloom_Moveto, Bloom_Movearound, 
+        Light_Move, Light_Moveto, Light_Movearound,
+        //done
+        Holdable_Collider, 
+        //undone
     }
     private Command execute = Command.None;
     public Dictionary<string, Command> GetCommand = new Dictionary<string, Command>()
     {
-        { "set_flag", Command.Set_Flag }, 
         { "setflag", Command.Set_Flag },
         { "moveto", Command.MoveTo },
         { "move", Command.Move },
         { "play", Command.Play },
-        { "flag_play", Command.Flag_Play },
         { "flagplay", Command.Flag_Play },
         { "wait", Command.Wait },
-        { "wait_flag", Command.Wait_Flag },
         { "waitflag", Command.Wait_Flag },
         { "alpha", Command.Alpha },
         { "color", Command.Color },
@@ -44,7 +45,6 @@ public class SpriteEntity : Actor
         { "rotate", Command.Rotate },
         { "depth", Command.Depth },
         { "repeat", Command.Repeat },
-        { "move_around", Command.Move_Around },
         { "movearound", Command.Move_Around },
         { "origin", Command.Origin },
         { "rate", Command.Rate },
@@ -52,8 +52,15 @@ public class SpriteEntity : Actor
         { "sound", Command.Sound },
         { "music", Command.Music },
         { "hitbox", Command.Hitbox },
-        { "holdable_collider", Command.Holdable_Collider },
         { "holdablecollider", Command.Holdable_Collider },
+        { "bloom", Command.Bloom },
+        { "light", Command.Light },
+        { "bloommove", Command.Bloom_Move },
+        { "bloommoveto", Command.Bloom_Moveto },
+        { "bloommovearound", Command.Bloom_Movearound },
+        { "lightmove", Command.Light_Move },
+        { "lightmoveto", Command.Light_Moveto },
+        { "lightmovearound", Command.Light_Movearound }
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
@@ -71,7 +78,7 @@ public class SpriteEntity : Actor
         sprite = GFX.SpriteBank.Create(spriteName);
         Add(sprite);
         // sprite center == entity position
-        
+
         string command = data.Attr("commands");
         // commands syntax: "command1,param1,param2...;command2,param1,param2..."
         commands = command.Split(';', StringSplitOptions.TrimEntries); // commands stored
@@ -80,6 +87,8 @@ public class SpriteEntity : Actor
         base.Depth = data.Int("depth", 9500);
 
         Add(sfx = new SoundSource());
+        Add(light = new VertexLight(Color.White, 0f, 32, 64));
+        Add(bloom = new BloomPoint(0f, 0f));
 
         Add(holdable = new Holdable(0.3f));
         holdable.SpeedGetter = () => Speed;
@@ -93,6 +102,8 @@ public class SpriteEntity : Actor
     private string[] commands;
     private SoundSource sfx;
     private Holdable holdable;
+    private VertexLight light;
+    private BloomPoint bloom;
 
     public override void Added(Scene scene)
     {
@@ -133,12 +144,19 @@ public class SpriteEntity : Actor
                 if (shouldSkip) { continue; }
             }
 
+            // split the commands, see if empty or invalid
             string[] commandLine = commands[index].Split(',', StringSplitOptions.TrimEntries);
             if (commandLine.Length == 0) { continue; }
-            string indicator = commandLine[0].ToLower().Trim();
-            bool sideRoutine = indicator.StartsWith("passby ");
-            indicator = sideRoutine ? indicator.RemoveFirst("passby ") : indicator;
-            execute = GetCommand.Keys.Contains(indicator) ? GetCommand[indicator] : Command.None;
+            if (commandLine.Length == 1)
+            {
+                if (string.IsNullOrEmpty(commandLine[0])) { continue; }
+            }
+
+            // processing indicator data
+            string indicator = commandLine[0].ToLower().Trim().RemoveAll("_");
+            bool sideRoutine = indicator.Contains("passby ");
+            indicator = indicator.RemoveAll("passby ");
+            execute = GetCommand.GetValueOrDefault(indicator, Command.None);
 
             if (execute == Command.Repeat)
             {
@@ -280,35 +298,39 @@ public class SpriteEntity : Actor
 
         IsRoutineRunning[execute] = true;
 
+        int segs = commandLine.Length;
+
         bool instant = false;
 
         if (execute == Command.Set_Flag)
         {
             string flagName = string.Empty; bool flagValue = true;
             // valid syntax: "setflag,flagName,value"
-            if (commandLine.Length == 1) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 2) { flagName = commandLine[1]; }
-            if (commandLine.Length >= 3) { bool.TryParse(commandLine[2], out flagValue); }
+            if (segs == 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 2) { flagName = commandLine[1]; }
+            if (segs >= 3) { bool.TryParse(commandLine[2], out flagValue); }
 
             MapProcessor.session.SetFlag(flagName, flagValue);
         }
+
         else if (execute == Command.Play)
         {
             string playSprite = string.Empty;
             // valid syntax: "play,spriteName"
-            if (commandLine.Length == 1) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 2) { playSprite = commandLine[1]; }
+            if (segs == 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 2) { playSprite = commandLine[1]; }
 
             sprite.Play(playSprite);
         }
+
         else if (execute == Command.Flag_Play)
         {
             string playSprite = string.Empty, flag = string.Empty;
             // valid syntax: "flagplay,flag,spriteName,(inverted)"
-            if (commandLine.Length < 3) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
+            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
             bool inverted = false;
-            if (commandLine.Length >= 4) { bool.TryParse(commandLine[3], out inverted); }
+            if (segs >= 4) { bool.TryParse(commandLine[3], out inverted); }
 
             if (inverted && MapProcessor.session.GetFlag(flag))
             {
@@ -320,14 +342,15 @@ public class SpriteEntity : Actor
             }
             sprite.Play(playSprite);
         }
+
         else if (execute == Command.Wait_Flag)
         {
             // valid syntax: "waitflag,flag", "waitflag, flag, true"
             string flag = string.Empty;
-            if (commandLine.Length < 2) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 2) { flag = commandLine[1]; }
+            if (segs < 2) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 2) { flag = commandLine[1]; }
             bool inverted = false;
-            if (commandLine.Length >= 3) { bool.TryParse(commandLine[2], out inverted); }
+            if (segs >= 3) { bool.TryParse(commandLine[2], out inverted); }
 
             while (true)
             {
@@ -344,12 +367,13 @@ public class SpriteEntity : Actor
 
             IsRoutineRunning[execute] = false; yield break;
         }
+
         else if (execute == Command.Wait)
         {
             float timer = 0.1f;
             // valid syntax: "wait, time"
-            if (commandLine.Length <= 1) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 2)
+            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 2)
             {
                 float.TryParse(commandLine[1], out timer);
                 timer.MakeAbs();
@@ -363,88 +387,214 @@ public class SpriteEntity : Actor
 
             IsRoutineRunning[execute] = false; yield break;
         }
-        else if (execute == Command.Move)
+
+        else if (execute == Command.Move || execute == Command.Light_Move || execute == Command.Bloom_Move)
         {
             // valid syntax: "move,3,5", "move,3,5,1", "move,3,5,1,cubein"
             float dx = 0f, dy = 0f, timer = 1f;
-            if (commandLine.Length < 3) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 3)
+            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 3)
             {
                 float.TryParse(commandLine[1], out dx);
                 float.TryParse(commandLine[2], out dy);
             }
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 float.TryParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer.GetAbs() < Engine.DeltaTime;
             }
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 5)
+            if (segs >= 5)
             {
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
 
-            Vector2 pos1 = Position, pos2 = pos1 + new Vector2(dx, dy);
-            if (instant) { Position = pos2; yield break; }
+            Vector2 obj;
+            switch (execute)
+            {
+                case Command.Move: obj = Position; break;
+                case Command.Light_Move: obj = light.Position; break;
+                case Command.Bloom_Move: obj = bloom.Position; break;
+                default: obj = Position; break;
+            }
+            Vector2 pos1 = obj, pos2 = pos1 + new Vector2(dx, dy);
+            if (instant) { 
+                obj = pos2;
+
+                switch (execute)
+                {
+                    case Command.Move: Position = obj; break;
+                    case Command.Light_Move: light.Position = obj; break;
+                    case Command.Bloom_Move: bloom.Position = obj; break;
+                    default: Position = obj; break;
+                }
+
+                yield break; 
+            }
             float percent = 0f;
             while (percent < 1f)
             {
                 percent = Calc.Approach(percent, 1f, Engine.DeltaTime / timer);
-                Position = Vector2.Lerp(pos1, pos2, ease(percent));
+                obj = Vector2.Lerp(pos1, pos2, ease(percent));
+
+                switch (execute)
+                {
+                    case Command.Move: Position = obj; break;
+                    case Command.Light_Move: light.Position = obj; break;
+                    case Command.Bloom_Move: bloom.Position = obj; break;
+                    default: obj = Position; break;
+                }
 
                 yield return null;
             }
         }
-        else if (execute == Command.MoveTo)
+
+        else if (execute == Command.MoveTo || execute == Command.Light_Moveto || execute == Command.Bloom_Moveto)
         {
             // valid syntax: "moveto,3,5", "moveto,3,5,1", "moveto,3,5,1,cubein"
             float x = 0f, y = 0f, timer = 1f;
-            if (commandLine.Length < 3) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 3)
+            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 3)
             {
                 float.TryParse(commandLine[1], out x);
                 float.TryParse(commandLine[2], out y);
             }
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 float.TryParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer.GetAbs() < Engine.DeltaTime;
             }
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 5)
+            if (segs >= 5)
             {
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
 
-            Vector2 pos1 = Position, pos2 = new Vector2(x, y);
-            if (instant) { Position = pos2; yield break; }
+            Vector2 obj;
+            switch (execute)
+            {
+                case Command.MoveTo: obj = Position; break;
+                case Command.Light_Moveto: obj = light.Position; break;
+                case Command.Bloom_Moveto: obj = bloom.Position; break;
+                default: obj = Position; break;
+            }
+            Vector2 pos1 = obj, pos2 = new Vector2(x, y);
+            if (instant) { 
+                obj = pos2;
+
+                switch (execute)
+                {
+                    case Command.MoveTo: Position = obj; break;
+                    case Command.Light_Moveto: light.Position = obj; break;
+                    case Command.Bloom_Moveto: bloom.Position = obj; break;
+                    default: Position = obj; break;
+                }
+
+                yield break; 
+            }
             float percent = 0f;
             while (percent < 1f)
             {
                 percent = Calc.Approach(percent, 1f, Engine.DeltaTime / timer);
-                Position = Vector2.Lerp(pos1, pos2, ease(percent));
+                obj = Vector2.Lerp(pos1, pos2, ease(percent));
+
+                switch (execute)
+                {
+                    case Command.MoveTo: Position = obj; break;
+                    case Command.Light_Moveto: light.Position = obj; break;
+                    case Command.Bloom_Moveto: bloom.Position = obj; break;
+                    default: Position = obj; break;
+                }
 
                 yield return null;
             }
         }
+
+        else if (execute == Command.Move_Around || execute == Command.Light_Movearound || execute == Command.Bloom_Movearound)
+        {
+            // valid syntax: "movearound, center-dx, center-dy, deltaAngle, spinTime, (easing)"
+            float dx = 0f, dy = 0f, angle = 45f, timer = 1f;
+            if (segs < 5) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs >= 5)
+            {
+                float.TryParse(commandLine[1], out dx);
+                float.TryParse(commandLine[2], out dy);
+                if (dx == 0f && dy == 0f) { IsRoutineRunning[execute] = false; yield break; }
+
+                float.TryParse(commandLine[3], out angle);
+                float.TryParse(commandLine[4], out timer);
+                timer.MakeAbs();
+                instant = timer.GetAbs() < Engine.DeltaTime;
+            }
+
+            Ease.Easer ease = Ease.Linear;
+            if (segs >= 6)
+            {
+                ease = EaseUtils.StringToEase(commandLine[5].ToLower());
+            }
+
+            Vector2 obj;
+            switch (execute)
+            {
+                case Command.Move_Around: obj = Position; break;
+                case Command.Light_Movearound: obj = light.Position; break;
+                case Command.Bloom_Movearound: obj = bloom.Position; break;
+                default: obj = Position; break;
+            }
+            float targetAngle = angle * Calc.DegToRad;
+            Vector2 start = obj, center = start + new Vector2(dx, dy),
+                needle = start - center, progressVector = needle;
+            if (instant)
+            {
+                obj = center + needle.Rotate(targetAngle);
+
+                switch (execute)
+                {
+                    case Command.Move_Around: Position = obj; break;
+                    case Command.Light_Movearound: light.Position = obj; break;
+                    case Command.Bloom_Movearound: bloom.Position = obj; break;
+                    default: Position = obj; break;
+                }
+
+                yield break;
+            }
+            float progress = 0f;
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                progressVector = needle.Rotate(targetAngle * ease(progress));
+                obj = center + progressVector;
+
+                switch (execute)
+                {
+                    case Command.Move_Around: Position = obj; break;
+                    case Command.Light_Movearound: light.Position = obj; break;
+                    case Command.Bloom_Movearound: bloom.Position = obj; break;
+                    default: Position = obj; break;
+                }
+
+                yield return null;
+            }
+        }
+
         else if (execute == Command.Alpha)
         {
             // valid syntax: "alpha,0.3", "alpha,0.3,1", "alpha,0.3,1,linear"
             float alpha = 1f;
-            if (commandLine.Length <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
 
-            if (commandLine.Length >= 2) { float.TryParse(commandLine[1], out alpha); }
+            if (segs >= 2) { float.TryParse(commandLine[1], out alpha); }
             alpha = float.Clamp(alpha, 0f, 1f);
 
             float timer = 0.1f;
-            if (commandLine.Length >= 3) { float.TryParse(commandLine[2], out timer); }
+            if (segs >= 3) { float.TryParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 ease = EaseUtils.StringToEase(commandLine[3].ToLower());
             }
@@ -460,21 +610,22 @@ public class SpriteEntity : Actor
                 yield return null;
             }
         }
+
         else if (execute == Command.Color)
         {
             // valid syntax: "color,ffffff", "color,ffffff,0.1", "color,ffffff,0.1,sinein"
-            if (commandLine.Length <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
 
             Color color = Color.White;
-            if (commandLine.Length >= 2) { color = Calc.HexToColor(commandLine[1]); }
+            if (segs >= 2) { color = Calc.HexToColor(commandLine[1]); }
 
             float timer = 0.1f;
-            if (commandLine.Length >= 3) { float.TryParse(commandLine[2], out timer); }
+            if (segs >= 3) { float.TryParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 ease = EaseUtils.StringToEase(commandLine[3].ToLower());
             }
@@ -490,25 +641,26 @@ public class SpriteEntity : Actor
                 yield return null;
             }
         }
+
         else if (execute == Command.Scale)
         {
             // valid syntax: "scale,1,1", "scale,1,1,1", "scale,1,1,1,linear"
-            if (commandLine.Length < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
 
             float scaleX = 1f, scaleY = 1f;
-            if (commandLine.Length >= 3)
+            if (segs >= 3)
             {
                 float.TryParse(commandLine[1], out scaleX);
                 float.TryParse(commandLine[2], out scaleY);
             }
 
             float timer = 0.1f;
-            if (commandLine.Length >= 4) { float.TryParse(commandLine[3], out timer); }
+            if (segs >= 4) { float.TryParse(commandLine[3], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 5)
+            if (segs >= 5)
             {
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
@@ -524,27 +676,28 @@ public class SpriteEntity : Actor
                 yield return null;
             }
         }
+
         else if (execute == Command.Rotate)
         {
             // valid syntax: "rotate, angle, (rotateTime, easing, isDelta)"
             float angle = 0f;
-            if (commandLine.Length < 2) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 2) { IsRoutineRunning[execute] = false; yield break; }
 
-            if (commandLine.Length >= 2) { float.TryParse(commandLine[1], out angle); }
+            if (segs >= 2) { float.TryParse(commandLine[1], out angle); }
 
             float timer = Engine.DeltaTime;
-            if (commandLine.Length >= 3) { float.TryParse(commandLine[2], out timer); }
+            if (segs >= 3) { float.TryParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 ease = EaseUtils.StringToEase(commandLine[3].ToLower());
             }
 
             bool isDelta = false;
-            if (commandLine.Length >= 5) { bool.TryParse(commandLine[4], out isDelta); }
+            if (segs >= 5) { bool.TryParse(commandLine[4], out isDelta); }
 
             float progress = 0f;
             float from = sprite.Rotation, to = isDelta ? sprite.Rotation + Calc.DegToRad * angle : Calc.DegToRad * angle;
@@ -557,21 +710,22 @@ public class SpriteEntity : Actor
                 yield return null;
             }
         }
+
         else if (execute == Command.Depth)
         {
             // valid syntax: "depth, 9500, (1, linear)"
             int depth = 9500;
-            if (commandLine.Length <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
 
-            if (commandLine.Length >= 2) { int.TryParse(commandLine[1], out depth); }
+            if (segs >= 2) { int.TryParse(commandLine[1], out depth); }
 
             float timer = 0.1f;
-            if (commandLine.Length >= 3) { float.TryParse(commandLine[2], out timer); }
+            if (segs >= 3) { float.TryParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 ease = EaseUtils.StringToEase(commandLine[3].ToLower());
             }
@@ -587,55 +741,19 @@ public class SpriteEntity : Actor
                 yield return null;
             }
         }
-        else if (execute == Command.Move_Around)
-        {
-            // valid syntax: "movearound, center-dx, center-dy, deltaAngle, spinTime, (easing)"
-            float dx = 0f, dy = 0f, angle = 45f, timer = 1f;
-            if (commandLine.Length < 5) { IsRoutineRunning[execute] = false; yield break; }
-            if (commandLine.Length >= 5)
-            {
-                float.TryParse(commandLine[1], out dx);
-                float.TryParse(commandLine[2], out dy);
-                if (dx == 0f && dy == 0f) { IsRoutineRunning[execute] = false; yield break; }
 
-                float.TryParse(commandLine[3], out angle);
-                float.TryParse(commandLine[4], out timer);
-                timer.MakeAbs();
-                instant = timer.GetAbs() < Engine.DeltaTime;
-            }
-
-            Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 6)
-            {
-                ease = EaseUtils.StringToEase(commandLine[5].ToLower());
-            }
-
-            float targetAngle = angle * Calc.DegToRad;
-            Vector2 start = Position, center = start + new Vector2(dx, dy),
-                needle = start - center, progressVector = needle;
-            if (instant) { Position = center + needle.Rotate(targetAngle); yield break; }
-            float progress = 0f;
-            while (progress < 1f)
-            {
-                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
-                progressVector = needle.Rotate(targetAngle * ease(progress));
-                Position = center + progressVector;
-
-                yield return null;
-            }
-        }
         else if (execute == Command.Origin)
         {
             // valid syntax: "origin, originX, originY, (changeTime, easing)"
-            if (commandLine.Length < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
             Vector2 origin = Vector2.One * 0.5f;
-            if (commandLine.Length >= 3)
+            if (segs >= 3)
             {
                 float.TryParse(commandLine[1], out origin.X);
                 float.TryParse(commandLine[2], out origin.Y);
             }
             float timer = Engine.DeltaTime;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 float.TryParse(commandLine[3], out timer);
             }
@@ -643,7 +761,7 @@ public class SpriteEntity : Actor
             instant = timer.GetAbs() < Engine.DeltaTime;
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 5)
+            if (segs >= 5)
             {
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
@@ -659,16 +777,17 @@ public class SpriteEntity : Actor
                 yield return null;
             }
         }
+
         else if (execute == Command.Rate)
         {
             // valid syntax: "rate,rate,(changeTime,easing)"
-            if (commandLine.Length < 2) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 2) { IsRoutineRunning[execute] = false; yield break; }
 
             float rate = 1f;
             float.TryParse(commandLine[1], out rate);
 
             float timer = Engine.DeltaTime;
-            if (commandLine.Length >= 3)
+            if (segs >= 3)
             {
                 float.TryParse(commandLine[2], out timer);
             }
@@ -676,7 +795,7 @@ public class SpriteEntity : Actor
             instant = timer.GetAbs() < Engine.DeltaTime;
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 ease = EaseUtils.StringToEase(commandLine[3].ToLower());
             }
@@ -686,13 +805,104 @@ public class SpriteEntity : Actor
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
-                sprite.Rate = Calc.LerpSnap(from, rate, ease(progress));
+                sprite.Rate = Calc.LerpSnap(from, rate, ease(progress), 0.01f);
+
+                yield return null;
+            }
+        }
+
+        else if (execute == Command.Light)
+        {
+            // valid syntax: "light, color, alpha, startFade, endFade, (time, easing)"
+            if (segs < 5) { yield break; }
+
+            Color color =  Color.White; 
+            float alpha = 0f, timer = 0f; int startFade = 32, endFade = 64;  Ease.Easer ease = Ease.Linear;
+            color = Calc.HexToColor(commandLine[1]);
+            float.TryParse(commandLine[2], out alpha); float.Clamp(alpha, 0f, 1f);
+            int.TryParse(commandLine[3], out startFade); startFade.MakeAbs();
+            int.TryParse(commandLine[4], out endFade); endFade.MakeAbs();
+
+            if (segs >= 6)
+            {
+                float.TryParse(commandLine[5], out timer); timer.MakeAbs();
+                instant = timer == 0f;
+            }
+            if (segs >= 7)
+            {
+                ease = EaseUtils.StringToEase(commandLine[6].ToLower());
+            }
+
+            if (instant)
+            {
+                light = new VertexLight(color, alpha, startFade, endFade); yield break;
+            }
+
+            float progress = 0f;
+            Color color0 = light.Color; 
+            float alpha0 = light.Alpha; 
+            float startFade0 = light.StartRadius, endFade0 = light.EndRadius;
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                light.Color = Color.Lerp(color0, color, ease(progress));
+                light.Alpha = Calc.LerpSnap(alpha0, alpha, ease(progress), 0.01f);
+                light.StartRadius = Calc.LerpSnap(startFade0, (float)startFade, ease(progress));
+                light.EndRadius = Calc.LerpSnap(endFade0, (float)endFade, ease(progress));
+
+                yield return null;
+            }
+        }
+
+        else if (execute == Command.Bloom)
+        {
+            // valid syntax: "bloom, alpha, radius, (time, easing)"
+            if (segs < 3) { yield break; }
+
+            float alpha = 0f, r = 0f, timer = 0f; Ease.Easer ease = Ease.Linear;
+            float.TryParse(commandLine[1], out alpha); float.Clamp(alpha, 0f, 1f);
+            float.TryParse(commandLine[2], out r); r.MakeAbs();
+
+            if (segs >= 4)
+            {
+                float.TryParse(commandLine[3], out timer); timer.MakeAbs();
+                instant = timer == 0f;
+            }
+            if (segs >= 5)
+            {
+                ease = EaseUtils.StringToEase(commandLine[4].ToLower());
+            }
+
+            if (instant)
+            {
+                bloom = new BloomPoint(alpha, r); yield break;
+            }
+
+            float progress = 0f;
+            float alpha0 = bloom.Alpha, r0 = bloom.Radius;
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                bloom.Alpha = Calc.LerpSnap(alpha0, alpha, ease(progress), 0.01f);
+                bloom.Radius = Calc.LerpSnap(r0, r, ease(progress));
 
                 yield return null;
             }
         }
 
         IsRoutineRunning[execute] = false;
+    }
+
+    private void DebugInfo()
+    {
+        Log.Info(bloom.Position, light.position, light.Position);
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        //DebugInfo();
     }
 
     #region Holdable setups
