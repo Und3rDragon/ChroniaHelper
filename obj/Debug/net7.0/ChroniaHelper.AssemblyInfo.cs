@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChroniaHelper")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f07554f9213816b348701305be2a8894beb4ee3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b8bca88ff749a75bafb2d87ca21ebbc9eb60dffa")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChroniaHelper")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChroniaHelper")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
