@@ -14,7 +14,11 @@ se.placements = {
 	name = "SpriteEntity",
 	data = {
 		depth = 9500,
-		indicatorSprite = "objects/ChroniaHelper/spriteEntity/testB",
+		parallax = 1.0,
+		camPositionX = 160,
+		camPositionY = 90,
+		indicatorSprite = "objects/ChroniaHelper/spriteEntity/indicator",
+		indicatorColor = "ffffff",
 		xmlLabel = "SpriteEntity",
 		commands = "",
 	}
@@ -54,6 +58,8 @@ se.fieldInformation = {
 				["hitbox: width, height, (x, y)"] = "hitbox,16,16,-8,-8",
 				["light: color, alpha, startFade, endFade, (changeTime, easing)"] = "light,ffffff,0,32,64,0,linear",
 				["bloom: alpha, radius, (changeTime, easing)"] = "bloom,0,0,0,linear",
+				["parallax: value"] = "parallax,1",
+				["render_position_inroom: posX, posY"] = "render_position_inroom,160,90",
 				["passby functionName"] = "passby xxx,xxx",
 			},
 			editable = true,
@@ -64,6 +70,9 @@ se.fieldInformation = {
 		editable = true,
 	},
 	indicatorSprite = vivUtilsMig.GetFilePathWithNoTrailingNumbers(false),
+	indicatorColor = {
+		fieldType = "color",
+	},
 }
 
 se.sprite = function(room, entity)

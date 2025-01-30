@@ -1,3 +1,7 @@
+# 28.18
+# Sprite Entity
+`parallax` and `render_position_inroom` functions added
+
 # 28.14
 Everest dependency changes, applying data.String from Everest update
 

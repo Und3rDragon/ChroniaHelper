@@ -42,13 +42,11 @@ public static class MapProcessor
     public static int saveSlotIndex;
     public static Level level;
     public static Session session;
-    public static HashSet<string> flags;
     public static Dictionary<Type, List<Entity>> entities;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MapProcessor.level = level;
         session = level.Session;
-        flags = level.Session.Flags;
         entities = level.Tracker.Entities;
         mapdata = session.MapData;
         areakey = session.MapData.Area;

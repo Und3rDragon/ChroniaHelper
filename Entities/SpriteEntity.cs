@@ -9,6 +9,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using FMOD;
+using YamlDotNet.Core.Tokens;
 
 namespace ChroniaHelper.Entities;
 
@@ -26,7 +27,7 @@ public class SpriteEntity : Actor
         Bloom_Move, Bloom_Moveto, Bloom_Movearound, 
         Light_Move, Light_Moveto, Light_Movearound,
         //done
-        Holdable_Collider, 
+        Holdable_Collider, Parallax, Render_Position_InRoom
         //undone
     }
     private Command execute = Command.None;
@@ -60,7 +61,9 @@ public class SpriteEntity : Actor
         { "bloommovearound", Command.Bloom_Movearound },
         { "lightmove", Command.Light_Move },
         { "lightmoveto", Command.Light_Moveto },
-        { "lightmovearound", Command.Light_Movearound }
+        { "lightmovearound", Command.Light_Movearound },
+        { "parallax", Command.Parallax },
+        { "renderpositioninroom", Command.Render_Position_InRoom }
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
@@ -68,7 +71,7 @@ public class SpriteEntity : Actor
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
-        Command.Hitbox, Command.Holdable_Collider
+        Command.Hitbox, Command.Holdable_Collider, Command.Parallax, Command.Render_Position_InRoom
     };
 
     public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data) { }
@@ -96,6 +99,10 @@ public class SpriteEntity : Actor
         holdable.OnRelease = OnRelease;
         holdable.OnHitSpring = HitSpring;
         holdable.OnHitSeeker = HitSeeker;
+
+        parallax = data.Float("parallax", 1f);
+        camX = data.Float("camPositionX", 160f);
+        camY = data.Float("camPositionY", 90f);
     }
     private string spriteName;
     private Sprite sprite;
@@ -104,6 +111,7 @@ public class SpriteEntity : Actor
     private Holdable holdable;
     private VertexLight light;
     private BloomPoint bloom;
+    private float parallax = 1f, camX = 160f, camY = 90f;
 
     public override void Added(Scene scene)
     {
@@ -275,6 +283,21 @@ public class SpriteEntity : Actor
                 }
 
                 holdable.PickupCollider = new Hitbox(width, height, x, y);
+            }
+            else if (execute == Command.Parallax)
+            {
+                // valid syntax: "parallax, value"
+                if (commandLine.Length < 2) { continue; }
+
+                float.TryParse(commandLine[1], out parallax);
+            }
+            else if (execute == Command.Render_Position_InRoom)
+            {
+                // valid syntax: "render_position_in_room, camX, camY"
+                if (commandLine.Length < 3) { continue; }
+
+                float.TryParse(commandLine[1], out camX);
+                float.TryParse(commandLine[2], out camY);
             }
             else
             {
@@ -895,14 +918,22 @@ public class SpriteEntity : Actor
 
     private void DebugInfo()
     {
-        Log.Info(bloom.Position, light.position, light.Position);
+        
     }
 
+    public override void Render()
+    {
+        base.Render();
+    }
     public override void Update()
     {
         base.Update();
 
-        //DebugInfo();
+        DebugInfo();
+
+        Vector2 camPos = MapProcessor.level.Camera.Position;
+        Vector2 center = camPos + new Vector2(camX, camY);
+        sprite.RenderPosition = center + (Position - center) * parallax;
     }
 
     #region Holdable setups
