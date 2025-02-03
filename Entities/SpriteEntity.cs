@@ -9,6 +9,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using FMOD;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using YamlDotNet.Core.Tokens;
 
 namespace ChroniaHelper.Entities;
@@ -71,7 +72,7 @@ public class SpriteEntity : Actor
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
-        Command.Hitbox, Command.Holdable_Collider, Command.Parallax, Command.Render_Position_InRoom
+        Command.Hitbox, Command.Holdable_Collider
     };
 
     public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data) { }
@@ -283,21 +284,6 @@ public class SpriteEntity : Actor
                 }
 
                 holdable.PickupCollider = new Hitbox(width, height, x, y);
-            }
-            else if (execute == Command.Parallax)
-            {
-                // valid syntax: "parallax, value"
-                if (commandLine.Length < 2) { continue; }
-
-                float.TryParse(commandLine[1], out parallax);
-            }
-            else if (execute == Command.Render_Position_InRoom)
-            {
-                // valid syntax: "render_position_in_room, camX, camY"
-                if (commandLine.Length < 3) { continue; }
-
-                float.TryParse(commandLine[1], out camX);
-                float.TryParse(commandLine[2], out camY);
             }
             else
             {
@@ -908,6 +894,86 @@ public class SpriteEntity : Actor
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
                 bloom.Alpha = Calc.LerpSnap(alpha0, alpha, ease(progress), 0.01f);
                 bloom.Radius = Calc.LerpSnap(r0, r, ease(progress));
+
+                yield return null;
+            }
+        }
+
+        else if (execute == Command.Parallax)
+        {
+            // valid syntax: "parallax, value, (timer, easing)"
+            if (commandLine.Length < 2) { yield break; }
+
+            float set = parallax;
+            float.TryParse(commandLine[1], out set);
+
+            float timer = 0f;
+            if (commandLine.Length >= 3)
+            {
+                float.TryParse(commandLine[2], out timer);
+                timer.MakeAbs();
+                instant = timer == 0f;
+            }
+
+            Ease.Easer ease = Ease.Linear;
+            if (commandLine.Length >= 4)
+            {
+                ease = EaseUtils.StringToEase(commandLine[3]);
+            }
+
+            if (instant)
+            {
+                parallax = set;
+                yield break;
+            }
+
+            float progress = 0f;
+            float from = parallax, to = set;
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                parallax = Calc.LerpSnap(from,to, ease(progress), 0.001f);
+
+                yield return null;
+            }
+        }
+
+        else if (execute == Command.Render_Position_InRoom)
+        {
+            // valid syntax: "render_position_in_room, camX, camY, (timer, easing)"
+            if (commandLine.Length < 3) { yield break; }
+
+            Vector2 camPos = new Vector2(camX, camY);
+            float.TryParse(commandLine[1], out camPos.X);
+            float.TryParse(commandLine[2], out camPos.Y);
+
+            float timer = 0f;
+            Ease.Easer ease = Ease.Linear;
+            if (commandLine.Length >= 4)
+            {
+                float.TryParse(commandLine[3], out timer);
+                timer.MakeAbs();
+                instant = timer == 0f;
+            }
+            if (commandLine.Length >= 5)
+            {
+                ease = EaseUtils.StringToEase(commandLine[4]);
+            }
+
+            if (instant)
+            {
+                camX = camPos.X; camY = camPos.Y; 
+                yield break;
+            }
+
+            float progress = 0f;
+            Vector2 from = new Vector2(camX, camY), to = camPos, pointer = from;
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                pointer = Vector2.Lerp(from, to, ease(progress));
+                camX = pointer.X;
+                camY = pointer.Y;
 
                 yield return null;
             }

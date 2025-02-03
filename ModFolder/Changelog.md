@@ -1,3 +1,7 @@
+# 28.19
+# Sprite Entity
+`parallax` and `render_position_in_room` supports timer and easing
+
 # 28.18
 # Sprite Entity
 `parallax` and `render_position_inroom` functions added
