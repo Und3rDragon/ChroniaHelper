@@ -28,7 +28,8 @@ public class SpriteEntity : Actor
         Bloom_Move, Bloom_Moveto, Bloom_Movearound, 
         Light_Move, Light_Moveto, Light_Movearound,
         //done
-        Holdable_Collider, Parallax, Render_Position_InRoom
+        Holdable_Collider, Parallax, Render_Position_InRoom,
+        Current_Frame,
         //undone
     }
     private Command execute = Command.None;
@@ -64,7 +65,8 @@ public class SpriteEntity : Actor
         { "lightmoveto", Command.Light_Moveto },
         { "lightmovearound", Command.Light_Movearound },
         { "parallax", Command.Parallax },
-        { "renderpositioninroom", Command.Render_Position_InRoom }
+        { "renderpositioninroom", Command.Render_Position_InRoom },
+        { "currentframe", Command.Current_Frame }
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
@@ -72,7 +74,7 @@ public class SpriteEntity : Actor
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
-        Command.Hitbox, Command.Holdable_Collider
+        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame
     };
 
     public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data) { }
@@ -181,6 +183,46 @@ public class SpriteEntity : Actor
                     index = newIndex - 1;
                 }
             }
+
+            else if (execute == Command.Play)
+            {
+                // valid syntax: "play,spriteName, (resetAnimation, random)"
+
+                string playSprite = string.Empty;
+                
+                if (commandLine.Length == 1) { IsRoutineRunning[execute] = false; continue; }
+                if (commandLine.Length >= 2) { playSprite = commandLine[1]; }
+                bool random = false, reset = false;
+                if (commandLine.Length >= 3) { bool.TryParse(commandLine[2], out reset); }
+                if (commandLine.Length >= 4) { bool.TryParse(commandLine[3], out random); }
+
+                sprite.Play(playSprite, reset, random);
+            }
+
+            else if (execute == Command.Flag_Play)
+            {
+                // valid syntax: "flagplay,flag,spriteName,(inverted, reset, random)"
+
+                string playSprite = string.Empty, flag = string.Empty;
+                
+                if (commandLine.Length < 3) { IsRoutineRunning[execute] = false; continue; }
+                if (commandLine.Length >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
+                bool inverted = false, reset = false, random = false;
+                if (commandLine.Length >= 4) { bool.TryParse(commandLine[3], out inverted); }
+                if (commandLine.Length >= 5) { bool.TryParse(commandLine[4], out reset); }
+                if (commandLine.Length >= 6) { bool.TryParse(commandLine[5], out random); }
+
+                if (inverted && MapProcessor.session.GetFlag(flag))
+                {
+                    IsRoutineRunning[execute] = false; continue;
+                }
+                if (!inverted && !MapProcessor.session.GetFlag(flag))
+                {
+                    IsRoutineRunning[execute] = false; continue;
+                }
+
+                sprite.Play(playSprite, reset, random);
+            }
             else if (execute == Command.Ignore)
             {
                 // valid syntax: "ignore, ignoreFlag, inverted, num1,(num2,num3)"
@@ -235,7 +277,7 @@ public class SpriteEntity : Actor
             {
                 // valid syntax: "sound, sfx"
                 if (commandLine.Length < 2) { continue; }
-                
+
                 sfx.Play(commandLine[1]);
             }
             else if (execute == Command.Music)
@@ -258,7 +300,7 @@ public class SpriteEntity : Actor
                 {
                     float.TryParse(commandLine[3], out x);
                 }
-                if(commandLine.Length >= 5)
+                if (commandLine.Length >= 5)
                 {
                     float.TryParse(commandLine[4], out y);
                 }
@@ -284,6 +326,18 @@ public class SpriteEntity : Actor
                 }
 
                 holdable.PickupCollider = new Hitbox(width, height, x, y);
+            }
+            else if (execute == Command.Current_Frame)
+            {
+                // valid syntax: "current_frame, frame index"
+                if (commandLine.Length < 2) { continue; }
+
+                int setFrame = 0;
+                int.TryParse(commandLine[1], out setFrame);
+                int totalFrames = sprite.GetFrames(sprite.CurrentAnimationID).Length;
+                setFrame = setFrame >= totalFrames ? totalFrames - 1 : setFrame;
+
+                sprite.SetAnimationFrame(setFrame);
             }
             else
             {
@@ -320,36 +374,6 @@ public class SpriteEntity : Actor
             if (segs >= 3) { bool.TryParse(commandLine[2], out flagValue); }
 
             MapProcessor.session.SetFlag(flagName, flagValue);
-        }
-
-        else if (execute == Command.Play)
-        {
-            string playSprite = string.Empty;
-            // valid syntax: "play,spriteName"
-            if (segs == 1) { IsRoutineRunning[execute] = false; yield break; }
-            if (segs >= 2) { playSprite = commandLine[1]; }
-
-            sprite.Play(playSprite);
-        }
-
-        else if (execute == Command.Flag_Play)
-        {
-            string playSprite = string.Empty, flag = string.Empty;
-            // valid syntax: "flagplay,flag,spriteName,(inverted)"
-            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
-            if (segs >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
-            bool inverted = false;
-            if (segs >= 4) { bool.TryParse(commandLine[3], out inverted); }
-
-            if (inverted && MapProcessor.session.GetFlag(flag))
-            {
-                IsRoutineRunning[execute] = false; yield break;
-            }
-            if (!inverted && !MapProcessor.session.GetFlag(flag))
-            {
-                IsRoutineRunning[execute] = false; yield break;
-            }
-            sprite.Play(playSprite);
         }
 
         else if (execute == Command.Wait_Flag)

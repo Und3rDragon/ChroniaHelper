@@ -1,3 +1,8 @@
+# 28.20
+# Sprite Entity
+`play` and `flag_play` included "reset animation" and  "random frame" parameters
+`current_frame` function added
+
 # 28.19
 # Sprite Entity
 `parallax` and `render_position_in_room` supports timer and easing
