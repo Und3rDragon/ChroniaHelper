@@ -26,10 +26,10 @@ public class SpriteEntity : Actor
         Move, Alpha, Color, Scale, Rotate, Depth, Repeat, Move_Around, Rate, Origin,
         Ignore, Sound, Music, Hitbox, Bloom, Light,
         Bloom_Move, Bloom_Moveto, Bloom_Movearound, 
-        Light_Move, Light_Moveto, Light_Movearound,
+        Light_Move, Light_Moveto, Light_Movearound, Parallax, Render_Position_InRoom,
+        Current_Frame, Camera_Offset,
         //done
-        Holdable_Collider, Parallax, Render_Position_InRoom,
-        Current_Frame,
+        Holdable_Collider, Solid
         //undone
     }
     private Command execute = Command.None;
@@ -66,7 +66,9 @@ public class SpriteEntity : Actor
         { "lightmovearound", Command.Light_Movearound },
         { "parallax", Command.Parallax },
         { "renderpositioninroom", Command.Render_Position_InRoom },
-        { "currentframe", Command.Current_Frame }
+        { "currentframe", Command.Current_Frame },
+        { "cameraoffset", Command.Camera_Offset },
+        { "solid", Command.Solid }
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
@@ -74,7 +76,7 @@ public class SpriteEntity : Actor
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
-        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame
+        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid
     };
 
     public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data) { }
@@ -106,6 +108,8 @@ public class SpriteEntity : Actor
         parallax = data.Float("parallax", 1f);
         camX = data.Float("camPositionX", 160f);
         camY = data.Float("camPositionY", 90f);
+
+        solid = new Solid(Position, 0f, 0f, true);
     }
     private string spriteName;
     private Sprite sprite;
@@ -115,6 +119,7 @@ public class SpriteEntity : Actor
     private VertexLight light;
     private BloomPoint bloom;
     private float parallax = 1f, camX = 160f, camY = 90f;
+    private Solid solid; private Vector2 solidPos = Vector2.Zero;
 
     public override void Added(Scene scene)
     {
@@ -124,6 +129,8 @@ public class SpriteEntity : Actor
         }
 
         base.Added(scene);
+
+        MapProcessor.level.Add(solid);
         
         // start executing commands when entering the room
         Add(new Coroutine(Execution()));
@@ -169,16 +176,33 @@ public class SpriteEntity : Actor
             indicator = indicator.RemoveAll("passby ");
             execute = GetCommand.GetValueOrDefault(indicator, Command.None);
 
+            int segs = commandLine.Length;
+
             if (execute == Command.Repeat)
             {
-                // valid syntax: "repeat, 0, overrideFlag"
-                if (commandLine.Length < 3) { continue; }
+                // valid syntax: "repeat, 0, (overrideFlag)"
+                if (segs < 2) { continue; }
 
                 int newIndex = int.TryParse(commandLine[1], out newIndex) ? newIndex : 0;
                 newIndex.MakeAbs();
-                string overrideFlag = commandLine[2];
 
-                if (!MapProcessor.session.GetFlag(overrideFlag))
+                bool hasOverride = false;
+                string overrideFlag = string.Empty;
+                if (segs >= 3)
+                {
+                    hasOverride = string.IsNullOrEmpty(commandLine[2]);
+                }
+                if (hasOverride)
+                { overrideFlag = commandLine[2]; }
+
+                if (hasOverride)
+                {
+                    if (!MapProcessor.session.GetFlag(overrideFlag))
+                    {
+                        index = newIndex - 1;
+                    }
+                }
+                else
                 {
                     index = newIndex - 1;
                 }
@@ -190,11 +214,11 @@ public class SpriteEntity : Actor
 
                 string playSprite = string.Empty;
                 
-                if (commandLine.Length == 1) { IsRoutineRunning[execute] = false; continue; }
-                if (commandLine.Length >= 2) { playSprite = commandLine[1]; }
+                if (segs == 1) { IsRoutineRunning[execute] = false; continue; }
+                if (segs >= 2) { playSprite = commandLine[1]; }
                 bool random = false, reset = false;
-                if (commandLine.Length >= 3) { bool.TryParse(commandLine[2], out reset); }
-                if (commandLine.Length >= 4) { bool.TryParse(commandLine[3], out random); }
+                if (segs >= 3) { bool.TryParse(commandLine[2], out reset); }
+                if (segs >= 4) { bool.TryParse(commandLine[3], out random); }
 
                 sprite.Play(playSprite, reset, random);
             }
@@ -205,12 +229,12 @@ public class SpriteEntity : Actor
 
                 string playSprite = string.Empty, flag = string.Empty;
                 
-                if (commandLine.Length < 3) { IsRoutineRunning[execute] = false; continue; }
-                if (commandLine.Length >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
+                if (segs < 3) { IsRoutineRunning[execute] = false; continue; }
+                if (segs >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
                 bool inverted = false, reset = false, random = false;
-                if (commandLine.Length >= 4) { bool.TryParse(commandLine[3], out inverted); }
-                if (commandLine.Length >= 5) { bool.TryParse(commandLine[4], out reset); }
-                if (commandLine.Length >= 6) { bool.TryParse(commandLine[5], out random); }
+                if (segs >= 4) { bool.TryParse(commandLine[3], out inverted); }
+                if (segs >= 5) { bool.TryParse(commandLine[4], out reset); }
+                if (segs >= 6) { bool.TryParse(commandLine[5], out random); }
 
                 if (inverted && MapProcessor.session.GetFlag(flag))
                 {
@@ -223,18 +247,19 @@ public class SpriteEntity : Actor
 
                 sprite.Play(playSprite, reset, random);
             }
+
             else if (execute == Command.Ignore)
             {
                 // valid syntax: "ignore, ignoreFlag, inverted, num1,(num2,num3)"
-                if (commandLine.Length < 4) { continue; }
+                if (segs < 4) { continue; }
 
                 string flag = string.Empty; bool inverted = false;
                 List<int> indexes = new List<int>();
-                if (commandLine.Length >= 4)
+                if (segs >= 4)
                 {
                     flag = commandLine[1];
                     bool.TryParse(commandLine[2], out inverted);
-                    for (int i = 3; i < commandLine.Length; i++)
+                    for (int i = 3; i < segs; i++)
                     {
                         int result;
                         if (int.TryParse(commandLine[i], out result))
@@ -273,64 +298,69 @@ public class SpriteEntity : Actor
 
                 ignoreActivated = true;
             }
+
             else if (execute == Command.Sound)
             {
                 // valid syntax: "sound, sfx"
-                if (commandLine.Length < 2) { continue; }
+                if (segs < 2) { continue; }
 
                 sfx.Play(commandLine[1]);
             }
+
             else if (execute == Command.Music)
             {
                 // valid syntax: "music, eventName"
-                if (commandLine.Length < 2) { continue; }
+                if (segs < 2) { continue; }
 
                 MapProcessor.session.Audio.Music.Event = SFX.EventnameByHandle(commandLine[1]);
             }
+
             else if (execute == Command.Hitbox)
             {
                 // valid syntax: "hitbox, width, height, (x, y)"
-                if (commandLine.Length < 3) { continue; }
+                if (segs < 3) { continue; }
                 float width = 16f, height = 16f, x = -8f, y = -8f;
                 float.TryParse(commandLine[1], out width);
                 float.TryParse(commandLine[2], out height);
                 width.MakeAbs(); height.MakeAbs();
 
-                if (commandLine.Length >= 4)
+                if (segs >= 4)
                 {
                     float.TryParse(commandLine[3], out x);
                 }
-                if (commandLine.Length >= 5)
+                if (segs >= 5)
                 {
                     float.TryParse(commandLine[4], out y);
                 }
 
                 base.Collider = new Hitbox(width, height, x, y);
             }
+
             else if (execute == Command.Holdable_Collider)
             {
                 // valid syntax: "hitbox, width, height, (x, y)"
-                if (commandLine.Length < 3) { continue; }
+                if (segs < 3) { continue; }
                 float width = 16f, height = 16f, x = -8f, y = -8f;
                 float.TryParse(commandLine[1], out width);
                 float.TryParse(commandLine[2], out height);
                 width.MakeAbs(); height.MakeAbs();
 
-                if (commandLine.Length >= 4)
+                if (segs >= 4)
                 {
                     float.TryParse(commandLine[3], out x);
                 }
-                if (commandLine.Length >= 5)
+                if (segs >= 5)
                 {
                     float.TryParse(commandLine[4], out y);
                 }
 
                 holdable.PickupCollider = new Hitbox(width, height, x, y);
             }
+
             else if (execute == Command.Current_Frame)
             {
                 // valid syntax: "current_frame, frame index"
-                if (commandLine.Length < 2) { continue; }
+                if (segs < 2) { continue; }
 
                 int setFrame = 0;
                 int.TryParse(commandLine[1], out setFrame);
@@ -339,6 +369,28 @@ public class SpriteEntity : Actor
 
                 sprite.SetAnimationFrame(setFrame);
             }
+
+            else if (execute == Command.Solid)
+            {
+                // syntax: "solid, x, y, width, height, (safe)"
+                Vector2 size = Vector2.Zero;
+                bool safe = true;
+
+                if (segs < 5) { continue; }
+                float.TryParse(commandLine[1], out solidPos.X);
+                float.TryParse(commandLine[2], out solidPos.Y);
+                float.TryParse(commandLine[3], out size.X);
+                float.TryParse(commandLine[4], out size.Y);
+
+                if (segs >= 6)
+                {
+                    bool.TryParse(commandLine[5], out safe);
+                }
+
+                solid = new Solid(Position + solidPos, size.X, size.Y, safe);
+                MapProcessor.level.Add(solid);
+            }
+
             else
             {
                 if (sideRoutine && !NoSideRoutines.Contains(execute))
@@ -926,13 +978,13 @@ public class SpriteEntity : Actor
         else if (execute == Command.Parallax)
         {
             // valid syntax: "parallax, value, (timer, easing)"
-            if (commandLine.Length < 2) { yield break; }
+            if (segs < 2) { yield break; }
 
             float set = parallax;
             float.TryParse(commandLine[1], out set);
 
             float timer = 0f;
-            if (commandLine.Length >= 3)
+            if (segs >= 3)
             {
                 float.TryParse(commandLine[2], out timer);
                 timer.MakeAbs();
@@ -940,7 +992,7 @@ public class SpriteEntity : Actor
             }
 
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 ease = EaseUtils.StringToEase(commandLine[3]);
             }
@@ -965,7 +1017,7 @@ public class SpriteEntity : Actor
         else if (execute == Command.Render_Position_InRoom)
         {
             // valid syntax: "render_position_in_room, camX, camY, (timer, easing)"
-            if (commandLine.Length < 3) { yield break; }
+            if (segs < 3) { yield break; }
 
             Vector2 camPos = new Vector2(camX, camY);
             float.TryParse(commandLine[1], out camPos.X);
@@ -973,13 +1025,13 @@ public class SpriteEntity : Actor
 
             float timer = 0f;
             Ease.Easer ease = Ease.Linear;
-            if (commandLine.Length >= 4)
+            if (segs >= 4)
             {
                 float.TryParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer == 0f;
             }
-            if (commandLine.Length >= 5)
+            if (segs >= 5)
             {
                 ease = EaseUtils.StringToEase(commandLine[4]);
             }
@@ -998,6 +1050,45 @@ public class SpriteEntity : Actor
                 pointer = Vector2.Lerp(from, to, ease(progress));
                 camX = pointer.X;
                 camY = pointer.Y;
+
+                yield return null;
+            }
+        }
+
+        else if (execute == Command.Camera_Offset)
+        {
+            // syntax: "camera_offset, offsetX, offsetY, (changeTime, ease)"
+            Vector2 offset = MapProcessor.level.CameraOffset;
+            float offsetX = offset.X, offsetY = offset.Y, timer = 0f; Ease.Easer ease = Ease.Linear;
+
+            if (segs < 3) { yield break; }
+            float.TryParse(commandLine[1], out offsetX);
+            float.TryParse(commandLine[2], out offsetY);
+
+            if (segs >= 4)
+            {
+                float.TryParse(commandLine[3], out timer);
+                timer.MakeAbs();
+                instant = timer == 0f;
+            }
+
+            if (segs >= 5)
+            {
+                ease = EaseUtils.StringToEase(commandLine[4]);
+            }
+
+            if (instant)
+            {
+                MapProcessor.level.CameraOffset = new Vector2(offsetX, offsetY);
+                yield break;
+            }
+
+            float progress = 0f;
+            Vector2 from = offset, to = new Vector2(offsetX, offsetY);
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                MapProcessor.level.CameraOffset = Vector2.Lerp(from, to, ease(progress));
 
                 yield return null;
             }
@@ -1024,6 +1115,8 @@ public class SpriteEntity : Actor
         Vector2 camPos = MapProcessor.level.Camera.Position;
         Vector2 center = camPos + new Vector2(camX, camY);
         sprite.RenderPosition = center + (Position - center) * parallax;
+
+        solid.Position = Position + solidPos;
     }
 
     #region Holdable setups

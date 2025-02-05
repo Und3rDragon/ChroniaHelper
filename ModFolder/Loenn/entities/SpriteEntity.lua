@@ -60,6 +60,7 @@ se.fieldInformation = {
 				["bloom: alpha, radius, (changeTime, easing)"] = "bloom,0,0,0,linear",
 				["parallax: value, (changeTime, easing)"] = "parallax,1",
 				["render_position_inroom: posX, posY, (changeTime, easing)"] = "render_position_inroom,160,90",
+				["camera_offset: offsetX, offsetY, (changeTime, easing)"] = "camera_offset,0,0",
 				["passby functionName"] = "passby xxx,xxx",
 			},
 			editable = true,
