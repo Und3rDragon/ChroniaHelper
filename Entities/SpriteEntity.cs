@@ -110,6 +110,8 @@ public class SpriteEntity : Actor
         camY = data.Float("camPositionY", 90f);
 
         solid = new Solid(Position, 0f, 0f, true);
+
+        Add(mover = new StaticMover());
     }
     private string spriteName;
     private Sprite sprite;
@@ -120,6 +122,7 @@ public class SpriteEntity : Actor
     private BloomPoint bloom;
     private float parallax = 1f, camX = 160f, camY = 90f;
     private Solid solid; private Vector2 solidPos = Vector2.Zero;
+    private StaticMover mover;
 
     public override void Added(Scene scene)
     {
@@ -387,6 +390,7 @@ public class SpriteEntity : Actor
                     bool.TryParse(commandLine[5], out safe);
                 }
 
+                MapProcessor.level.Remove(solid);
                 solid = new Solid(Position + solidPos, size.X, size.Y, safe);
                 MapProcessor.level.Add(solid);
             }
