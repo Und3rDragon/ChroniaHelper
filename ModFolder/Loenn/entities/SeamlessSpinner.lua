@@ -50,6 +50,8 @@ seamlessSpinner.depth = function(room,entity) return entity.depth or -8500 end
 seamlessSpinner.fieldInformation = {
     foreDirectory = vivUtils.GetFilePathWithNoTrailingNumbers(false),
     backDirectory = vivUtils.GetFilePathWithNoTrailingNumbers(false),
+    coldCoreModeBGSpritePath = vivUtils.GetFilePathWithNoTrailingNumbers(false),
+    hotCoreModeBGSpritePath = vivUtils.GetFilePathWithNoTrailingNumbers(false),
     coldCoreModeSpritePath = vivUtils.GetFilePathWithNoTrailingNumbers(false),
     hotCoreModeSpritePath = vivUtils.GetFilePathWithNoTrailingNumbers(false),
     coldCoreModeTriggerSpritePath = vivUtils.GetFilePathWithNoTrailingNumbers(false),
@@ -120,7 +122,10 @@ seamlessSpinner.ignoredFields = function(entity)
     local attrs = { "x", "y", "_id", "_name"}
     local non_dyn = {"solidTileCutoff", "dust"}
     local dyn = {"fgAnimDelay", "bgAnimDelay","fgAnimRandomize", "bgAnimRandomize", "fgFlipX", "fgFlipY", "bgFlipX", "bgFlipY"}
-    local core = {"coldCoreModeSpritePath", "hotCoreModeSpritePath", "coldCoreModeTriggerSpritePath", "hotCoreModeTriggerSpritePath"}
+    local core = {"coldCoreModeBGSpritePath", "hotCoreModeBGSpritePath",
+    "coldCoreModeSpritePath", "hotCoreModeSpritePath",
+    "coldCoreModeTriggerSpritePath", "hotCoreModeTriggerSpritePath",
+    }
 
     if entity.dynamic then
         for _, item in ipairs (non_dyn) do

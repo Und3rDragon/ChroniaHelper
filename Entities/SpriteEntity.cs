@@ -131,12 +131,13 @@ public class SpriteEntity : Actor
             IsRoutineRunning.Add(command, false);
         }
 
-        base.Added(scene);
-
         MapProcessor.level.Add(solid);
-        
+
         // start executing commands when entering the room
         Add(new Coroutine(Execution()));
+
+        base.Added(scene);
+
     }
 
     public Dictionary<string, bool> ignoreFlags = new Dictionary<string, bool>();
