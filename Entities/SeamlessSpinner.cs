@@ -195,8 +195,12 @@ public class SeamlessSpinner : Entity
     public CrystalStaticSpinner spinner;
 
     private bool useCoreModeStyle = false;
+    private string coldCoreModeBGSpritePath = "danger/crystal/bg_blue";
+    private string hotCoreModeBGSpritePath = "danger/crystal/bg_red";
+
     private string coldCoreModeSpritePath = "danger/crystal/fg_blue";
     private string hotCoreModeSpritePath = "danger/crystal/fg_red";
+
     private string coldCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/blue/fg_blue_base";
     private string hotCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/red/fg_red_base";
 
@@ -273,6 +277,8 @@ public class SeamlessSpinner : Entity
         setTimer = data.Float("triggerDelay", 0.5f).GetAbs();
 
         useCoreModeStyle = data.Bool("useCoreModeStyle");
+        coldCoreModeBGSpritePath = data.Attr("coldCoreModeBGSpritePath");
+        hotCoreModeBGSpritePath = data.Attr("hotCoreModeBGSpritePath");
         coldCoreModeSpritePath = data.Attr("coldCoreModeSpritePath");
         hotCoreModeSpritePath = data.Attr("hotCoreModeSpritePath");
         coldCoreModeTriggerSpritePath = data.Attr("coldCoreModeTriggerSpritePath");
@@ -547,6 +553,15 @@ public class SeamlessSpinner : Entity
         int randomChoice = Calc.Random.Range(0, totalFrames);
         sprite.SetAnimationFrame(randomChoice);
 
+        // bg
+        foreach (Sprite bgSprite in bgSprites)
+        {
+            path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeBGSpritePath : hotCoreModeBGSpritePath;
+            bgSprite.Reset(GFX.Game, path);
+            bgSprite.AddLoop("idle", "", fgAnim);
+            bgSprite.SetFrame(bgSprite.animations["idle"].Frames[bgSprite.CurrentAnimationFrame]);
+        }
+
         // loadSprite
         // 因为如果play完了, currentAnimation就变成null, 所以这里也要判断一下
         if (loadSprite == null || loadSprite.currentAnimation == null)
@@ -670,7 +685,7 @@ public class SeamlessSpinner : Entity
         Calc.PopRandom();
     }
 
-    private Sprite bgsprite;
+    private List<Sprite> bgSprites = new();
 
     private void AddSprite(Vector2 offset)
     {
@@ -680,7 +695,8 @@ public class SeamlessSpinner : Entity
         }
 
         // Create BG Spinner
-        bgsprite = new Sprite(GFX.Game, bgImagePath);
+        Sprite bgsprite = new Sprite(GFX.Game, bgImagePath);
+        bgSprites.Add(bgsprite);
 
         bgsprite.AddLoop("idle", "", bgAnim);
 

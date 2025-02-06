@@ -36,8 +36,12 @@ seamlessSpinner.placements = {
         rainbow = false,
         
         useCoreModeStyle = false,
+        coldCoreModeBGSpritePath = "danger/crystal/bg_blue",
+        hotCoreModeBGSpritePath = "danger/crystal/bg_red",
+        
         coldCoreModeSpritePath = "danger/crystal/fg_blue",
         hotCoreModeSpritePath = "danger/crystal/fg_red",
+        
         coldCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/blue/fg_blue_base",
         hotCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/red/fg_red_base",
     },
@@ -94,6 +98,7 @@ seamlessSpinner.fieldOrder = {
     -- texts
     "foreDirectory", "backDirectory",
     "depth", "useCoreModeStyle",
+    "coldCoreModeBGSpritePath", "hotCoreModeBGSpritePath",
     "coldCoreModeSpritePath", "hotCoreModeSpritePath",
     "coldCoreModeTriggerSpritePath", "hotCoreModeTriggerSpritePath",
     "hitboxType", 
