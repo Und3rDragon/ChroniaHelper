@@ -21,12 +21,12 @@ public class SeamlessSpinner : Entity
         public override void Update()
         {
             Level level = Scene as Level;
-            if (level.Session.CoreMode == Session.CoreModes.None)
+            if (level.CoreMode == Session.CoreModes.None)
                 return;
 
-            if (preCoreMode != level.Session.CoreMode)
+            if (preCoreMode != level.CoreMode)
                 Parent.TrySwitchCoreModeSprite();
-            preCoreMode = level.Session.CoreMode;
+            preCoreMode = level.CoreMode;
         }
     }
 
