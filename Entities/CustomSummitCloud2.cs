@@ -5,11 +5,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using Microsoft.Xna.Framework.Content;
 
 namespace ChroniaHelper.Entities;
 
-[Tracked(false)]
+[Tracked(true)]
 [CustomEntity("ChroniaHelper/CustomSummitCloud2")]
 
 public class CustomSummitCloud2 : Entity
@@ -25,9 +27,8 @@ public class CustomSummitCloud2 : Entity
         return camCenter + (Position - camCenter) * camParallax;// parallax
 
         // Known paramaters : Position and camCenter
-        
     }
-
+    
     private float freq, r_freq, parallax, screenX, screenY, amp;
     private string path;
     private float randomParallax;
@@ -35,7 +36,7 @@ public class CustomSummitCloud2 : Entity
     public CustomSummitCloud2(EntityData data, Vector2 offset)
         : base(data.Position + offset)
     {
-        base.Tag = Tags.Persistent;
+        base.Tag = Tags.Global;
         base.Depth = data.Int("depth", -10550);
         randomParallax = data.Float("randomParallax", 0.1f).GetAbs();
         parallax = data.Float("parallax", 1f).GetAbs();
@@ -65,6 +66,7 @@ public class CustomSummitCloud2 : Entity
         image.Color = Calc.HexToColor(data.Attr("color", "ffffff"));
 
         Add(image);
+
         bool fPos = freq - r_freq >= 0;
         SineWave sineWave = new SineWave(Calc.Random.Range(fPos? freq - r_freq : 0f, freq + r_freq), 0f);
         sineWave.Randomize();
@@ -75,6 +77,25 @@ public class CustomSummitCloud2 : Entity
         Add(sineWave);
         // new params
         base.Collider = new Hitbox(8f, 8f);
+
+        id = data.ID;
+    }
+    private int id;
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+
+        int count = 0;
+        foreach (var item in MapProcessor.entities[typeof(CustomSummitCloud2)])
+        {
+            CustomSummitCloud2 cloud = item as CustomSummitCloud2;
+            if (cloud.id == id)
+            {
+                count++;
+            }
+        }
+        if(count > 1) { RemoveSelf(); }
     }
 
     public override void Render()

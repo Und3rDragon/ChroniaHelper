@@ -5,11 +5,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
-[Tracked(false)]
+[Tracked(true)]
 [CustomEntity("ChroniaHelper/CustomSummitCloud")]
 
 public class CustomSummitCloud : Entity
@@ -47,7 +48,7 @@ public class CustomSummitCloud : Entity
     public CustomSummitCloud(EntityData data, Vector2 offset)
         : base(data.Position + offset)
     {
-        base.Tag = Tags.Persistent;
+        base.Tag = Tags.Global;
         base.Depth = data.Int("depth", -10550);
         randomizeParallax = data.Bool("randomizeParallax", true);
         parallax = data.Float("parallax");
@@ -141,6 +142,7 @@ public class CustomSummitCloud : Entity
         image.Color = Calc.HexToColor(data.Attr("color", "ffffff"));
 
         Add(image);
+
         SineWave sineWave = new SineWave(Calc.Random.Range(0.05f, 0.15f) * floatiness, 0f);
         sineWave.Randomize();
         sineWave.OnUpdate = delegate (float f)
@@ -151,8 +153,26 @@ public class CustomSummitCloud : Entity
 
         // new params
         base.Collider = new Hitbox(8f, 8f);
-    }
 
+        id = data.ID;
+    }
+    private int id;
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+        
+        int count = 0;
+        foreach (var item in MapProcessor.entities[typeof(CustomSummitCloud)])
+        {
+            CustomSummitCloud cloud = item as CustomSummitCloud;
+            if (cloud.id == id)
+            {
+                count++;
+            }
+        }
+        if (count > 1) { RemoveSelf(); }
+    }
     public override void Render()
     {
         Vector2 position = Position;

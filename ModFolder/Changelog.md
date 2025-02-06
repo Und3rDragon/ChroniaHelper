@@ -1,3 +1,24 @@
+# 28.20
+# Sprite Entity
+`play` and `flag_play` included "reset animation" and  "random frame" parameters
+`current_frame` function added
+
+# 28.19
+# Sprite Entity
+`parallax` and `render_position_in_room` supports timer and easing
+
+# 28.18
+# Sprite Entity
+`parallax` and `render_position_inroom` functions added
+
+# 28.14
+Everest dependency changes, applying data.String from Everest update
+
+# 28.13
+# Small improvements
+SpriteEntity indicator option fix
+Flag trigger indication fix
+
 # 28.9
 # Bugfix
 Loenn input bugfixes
