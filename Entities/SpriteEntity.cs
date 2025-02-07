@@ -403,6 +403,7 @@ public class SpriteEntity : Actor
                 if (sideRoutine && !NoSideRoutines.Contains(execute))
                 {
                     Add(new Coroutine(Commanding(commandLine, execute, true)));
+                    yield return null;
                 }
                 else
                 {
@@ -411,7 +412,7 @@ public class SpriteEntity : Actor
             }
         }
 
-        //yield return null;
+        yield return null;
     }
 
     public IEnumerator Commanding(string[] commandLine, Command execute, bool isSideRoutine)

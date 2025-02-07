@@ -1,4 +1,6 @@
-# 28.25
+# 28.26
+# Sprite Entity
+Fixing the endless deadloop of `passby`
 
 # 28.20
 # Sprite Entity
