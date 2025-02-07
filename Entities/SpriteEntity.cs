@@ -112,6 +112,8 @@ public class SpriteEntity : Actor
         solid = new Solid(Position, 0f, 0f, true);
 
         Add(mover = new StaticMover());
+
+        base.Tag = Tags.TransitionUpdate;
     }
     private string spriteName;
     private Sprite sprite;
