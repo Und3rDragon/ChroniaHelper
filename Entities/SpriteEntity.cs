@@ -27,9 +27,9 @@ public class SpriteEntity : Actor
         Ignore, Sound, Music, Hitbox, Bloom, Light,
         Bloom_Move, Bloom_Moveto, Bloom_Movearound, 
         Light_Move, Light_Moveto, Light_Movearound, Parallax, Render_Position_InRoom,
-        Current_Frame, Camera_Offset,
+        Current_Frame, Camera_Offset, Solid,
         //done
-        Holdable_Collider, Solid
+        Holdable_Collider, 
         //undone
     }
     private Command execute = Command.None;
@@ -68,7 +68,7 @@ public class SpriteEntity : Actor
         { "renderpositioninroom", Command.Render_Position_InRoom },
         { "currentframe", Command.Current_Frame },
         { "cameraoffset", Command.Camera_Offset },
-        { "solid", Command.Solid }
+        { "solid", Command.Solid },
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
@@ -1123,7 +1123,8 @@ public class SpriteEntity : Actor
         Vector2 center = camPos + new Vector2(camX, camY);
         sprite.RenderPosition = center + (Position - center) * parallax;
 
-        solid.Position = Position + solidPos;
+        //solid.Position = Position + solidPos;
+        solid.MoveTo(Position + solidPos);
     }
 
     #region Holdable setups
