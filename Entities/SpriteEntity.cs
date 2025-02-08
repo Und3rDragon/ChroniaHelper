@@ -22,14 +22,15 @@ public class SpriteEntity : Actor
     // several commands controlling how this entity moves or acts
     public enum Command
     {
-        Wait_Flag, Set_Flag, Play, Flag_Play, Wait, None, MoveTo, 
+        None, Wait_Flag, Set_Flag, Play, Flag_Play, Wait, MoveTo, 
         Move, Alpha, Color, Scale, Rotate, Depth, Repeat, Move_Around, Rate, Origin,
-        Ignore, Sound, Music, Hitbox, Bloom, Light,
-        Bloom_Move, Bloom_Moveto, Bloom_Movearound, 
-        Light_Move, Light_Moveto, Light_Movearound, Parallax, Render_Position_InRoom,
+        Ignore, Sound, Music, Hitbox, Bloom, Light, 
+        Bloom_Move, Bloom_MoveTo, Bloom_Move_Around,
+        Light_Move, Light_MoveTo, Light_Move_Around,
+        Parallax, Render_Position_InRoom,
         Current_Frame, Camera_Offset, Solid,
         //done
-        Holdable_Collider, 
+        Holdable_Collider, Jump,
         //undone
     }
     private Command execute = Command.None;
@@ -59,25 +60,20 @@ public class SpriteEntity : Actor
         { "bloom", Command.Bloom },
         { "light", Command.Light },
         { "bloommove", Command.Bloom_Move },
-        { "bloommoveto", Command.Bloom_Moveto },
-        { "bloommovearound", Command.Bloom_Movearound },
+        { "bloommoveto", Command.Bloom_MoveTo },
+        { "bloommovearound", Command.Bloom_Move_Around },
         { "lightmove", Command.Light_Move },
-        { "lightmoveto", Command.Light_Moveto },
-        { "lightmovearound", Command.Light_Movearound },
+        { "lightmoveto", Command.Light_MoveTo },
+        { "lightmovearound", Command.Light_Move_Around },
         { "parallax", Command.Parallax },
         { "renderpositioninroom", Command.Render_Position_InRoom },
         { "currentframe", Command.Current_Frame },
         { "cameraoffset", Command.Camera_Offset },
         { "solid", Command.Solid },
-        { "jump", Command.Move }
+        { "jump", Command.Jump }
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
-
-    public Dictionary<string, bool> TagSpecialCommand = new Dictionary<string, bool>()
-    {
-        { "jump", false }
-    };
 
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
@@ -189,19 +185,6 @@ public class SpriteEntity : Actor
             indicator = indicator.RemoveAll("passby ");
             execute = GetCommand.GetValueOrDefault(indicator, Command.None);
 
-            // special commands
-            if (TagSpecialCommand.Keys.Contains(indicator))
-            {
-                TagSpecialCommand[indicator] = true;
-            }
-            else
-            {
-                foreach (var key in TagSpecialCommand.Keys)
-                {
-                    TagSpecialCommand[key] = false;
-                }
-            }
-
             int segs = commandLine.Length;
 
             if (execute == Command.Repeat)
@@ -240,7 +223,7 @@ public class SpriteEntity : Actor
 
                 string playSprite = string.Empty;
                 
-                if (segs == 1) { IsRoutineRunning[execute] = false; continue; }
+                if (segs == 1) { continue; }
                 if (segs >= 2) { playSprite = commandLine[1]; }
                 bool random = false, reset = false;
                 if (segs >= 3) { bool.TryParse(commandLine[2], out reset); }
@@ -255,7 +238,7 @@ public class SpriteEntity : Actor
 
                 string playSprite = string.Empty, flag = string.Empty;
                 
-                if (segs < 3) { IsRoutineRunning[execute] = false; continue; }
+                if (segs < 3) { continue; }
                 if (segs >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
                 bool inverted = false, reset = false, random = false;
                 if (segs >= 4) { bool.TryParse(commandLine[3], out inverted); }
@@ -264,11 +247,11 @@ public class SpriteEntity : Actor
 
                 if (inverted && MapProcessor.session.GetFlag(flag))
                 {
-                    IsRoutineRunning[execute] = false; continue;
+                    continue;
                 }
                 if (!inverted && !MapProcessor.session.GetFlag(flag))
                 {
-                    IsRoutineRunning[execute] = false; continue;
+                    continue;
                 }
 
                 sprite.Play(playSprite, reset, random);
@@ -424,24 +407,32 @@ public class SpriteEntity : Actor
             {
                 if (sideRoutine && !NoSideRoutines.Contains(execute))
                 {
-                    Add(new Coroutine(Commanding(commandLine, execute, true)));
+                    Add(new Coroutine(ReadySideCommanding(commandLine, execute)));
                     yield return null;
                 }
                 else
                 {
                     yield return new SwapImmediately(Commanding(commandLine, execute, false));
+                    ReadyEndRoutine(execute);
                 }
             }
+
         }
 
         yield return null;
     }
 
+    public IEnumerator ReadySideCommanding(string[] commandLine, Command execute)
+    {
+        yield return new SwapImmediately(Commanding(commandLine, execute, true));
+        ReadyEndRoutine(execute);
+    }
+
     public IEnumerator Commanding(string[] commandLine, Command execute, bool isSideRoutine)
     {
-        if (isSideRoutine && IsRoutineRunning[execute]) { IsRoutineRunning[execute] = false; yield break; }
+        if (isSideRoutine && IsRoutineRunning[execute]) { yield break; }
 
-        IsRoutineRunning[execute] = true;
+        ReadyStartRoutine(execute);
 
         int segs = commandLine.Length;
 
@@ -451,7 +442,7 @@ public class SpriteEntity : Actor
         {
             string flagName = string.Empty; bool flagValue = true;
             // valid syntax: "setflag,flagName,value"
-            if (segs == 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs == 1) { yield break; }
             if (segs >= 2) { flagName = commandLine[1]; }
             if (segs >= 3) { bool.TryParse(commandLine[2], out flagValue); }
 
@@ -462,7 +453,7 @@ public class SpriteEntity : Actor
         {
             // valid syntax: "waitflag,flag", "waitflag, flag, true"
             string flag = string.Empty;
-            if (segs < 2) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 2) { yield break; }
             if (segs >= 2) { flag = commandLine[1]; }
             bool inverted = false;
             if (segs >= 3) { bool.TryParse(commandLine[2], out inverted); }
@@ -480,14 +471,14 @@ public class SpriteEntity : Actor
                 yield return null;
             }
 
-            IsRoutineRunning[execute] = false; yield break;
+            yield break;
         }
 
         else if (execute == Command.Wait)
         {
             float timer = 0.1f;
             // valid syntax: "wait, time"
-            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs <= 1) { yield break; }
             if (segs >= 2)
             {
                 float.TryParse(commandLine[1], out timer);
@@ -500,194 +491,191 @@ public class SpriteEntity : Actor
                 yield return null;
             }
 
-            IsRoutineRunning[execute] = false; yield break;
+            yield break;
         }
 
-        else if (execute == Command.Move || execute == Command.Light_Move || execute == Command.Bloom_Move)
+        else if (execute == Command.Jump)
         {
-            if (TagSpecialCommand["jump"])
+            // valid syntax: "jump, dx, dy, h, isLeft"
+            //float dx = 0f, dy = 0f;
+            //float h = 0f;
+            //bool isLeft = false;
+
+            //if (segs < 5) { yield break; }
+
+            //float.TryParse(commandLine[1], out dx);
+            //float.TryParse(commandLine[2], out dy);
+            //float.TryParse(commandLine[3], out h);
+            //bool.TryParse(commandLine[4], out isLeft);
+
+            //float g = 20f;
+            //float dh1 = isLeft ? dy : h, dh2 = isLeft ? 0f : h - dy,
+            //    t1 = (float)Math.Sqrt(2f * dh1 / g), t2 = (float)Math.Sqrt(2f * dh2 / g);
+            //t1.MakeAbs(); t2.MakeAbs();
+            //if (t1 + t2 == 0f) { yield break; }
+
+            //// create curve
+            //float c = isLeft ? (float)(dx + Math.Sqrt(2f * (h - dy) / g)) : (float)(dx - Math.Sqrt(2f * (h - dy) / g));
+
+            //Vector2 p = Vector2.Zero, start = Position;
+            //while (p.X != dx)
+            //{
+            //    p.X = Calc.Approach(p.X, dx, Engine.DeltaTime / (t1 + t2));
+            //    p.Y = (g / 2f) * (float)Math.Pow(p.X - c, 2f) - h;
+
+            //    Position = start + p;
+
+            //    yield return null;
+            //}
+
+            // valid syntax: "jump, dx, dy, isLeft"
+            float tx = 0f, ty = 0f;
+            bool isLeft = false;
+            if (segs < 4) { yield break; }
+            float.TryParse(commandLine[1], out tx);
+            float.TryParse(commandLine[2], out ty);
+            bool.TryParse(commandLine[3], out isLeft);
+            isLeft = ty > 0f ? false : isLeft;
+
+            // estimate speed
+            float m = 0.05f, ma = 0.01f;
+            float vy = Player.JumpSpeed * m, ay = Player.JumpHBoost * ma, y = 0f;
+            bool fromUp = false, invalid = false;
+            int count = 0;
+            while (true)
             {
-                // valid syntax: "jump, dx, dy, h, isLeft"
-                //float dx = 0f, dy = 0f;
-                //float h = 0f;
-                //bool isLeft = false;
+                y += vy;
+                vy += ay;
 
-                //if (segs < 5) { yield break; }
-
-                //float.TryParse(commandLine[1], out dx);
-                //float.TryParse(commandLine[2], out dy);
-                //float.TryParse(commandLine[3], out h);
-                //bool.TryParse(commandLine[4], out isLeft);
-
-                //float g = 20f;
-                //float dh1 = isLeft ? dy : h, dh2 = isLeft ? 0f : h - dy,
-                //    t1 = (float)Math.Sqrt(2f * dh1 / g), t2 = (float)Math.Sqrt(2f * dh2 / g);
-                //t1.MakeAbs(); t2.MakeAbs();
-                //if (t1 + t2 == 0f) { yield break; }
-
-                //// create curve
-                //float c = isLeft ? (float)(dx + Math.Sqrt(2f * (h - dy) / g)) : (float)(dx - Math.Sqrt(2f * (h - dy) / g));
-
-                //Vector2 p = Vector2.Zero, start = Position;
-                //while (p.X != dx)
-                //{
-                //    p.X = Calc.Approach(p.X, dx, Engine.DeltaTime / (t1 + t2));
-                //    p.Y = (g / 2f) * (float)Math.Pow(p.X - c, 2f) - h;
-
-                //    Position = start + p;
-
-                //    yield return null;
-                //}
-
-                // valid syntax: "jump, dx, dy, isLeft"
-                float tx = 0f, ty = 0f;
-                bool isLeft = false;
-                if (segs < 4) { yield break; }
-                float.TryParse(commandLine[1], out tx);
-                float.TryParse(commandLine[2], out ty);
-                bool.TryParse(commandLine[3], out isLeft);
-                isLeft = ty > 0f ? false : isLeft;
-
-                // estimate speed
-                float m = 0.05f, ma = 0.01f;
-                float vy = Player.JumpSpeed * m, ay = Player.JumpHBoost * ma, y = 0f;
-                bool fromUp = false, invalid = false;
-                int count = 0;
-                while (true)
+                if (y <= ty)
                 {
-                    y += vy;
-                    vy += ay;
+                    if (isLeft)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        fromUp = true;
+                    }
+                }
 
-                    if (y <= ty)
+                if (y >= ty && fromUp) { break; }
+
+                if (vy >= 0f && y >= ty) { invalid = true; break; }
+
+                count++;
+            }
+
+            instant = count == 0;
+
+            if (!invalid)
+            {
+                if (instant)
+                {
+                    Position += new Vector2(tx, ty);
+                    yield break;
+                }
+
+                int frame = 0;
+                Vector2 p = Vector2.Zero, start = Position;
+                vy = Player.JumpSpeed * m;
+                while (frame <= count)
+                {
+                    p.X = Calc.Approach(p.X, tx, tx / count);
+                    if (vy <= 0f)
                     {
                         if (isLeft)
                         {
-                            break;
-                        }
-                        else
-                        {
-                            fromUp = true;
-                        }
-                    }
-
-                    if ( y >= ty && fromUp ) { break; }
-
-                    if ( vy >= 0f && y >= ty) { invalid = true; break; }
-
-                    count++;
-                }
-
-                instant = count == 0;
-
-                if (!invalid)
-                {
-                    if (instant)
-                    {
-                        Position += new Vector2(tx, ty);
-                        yield break;
-                    }
-
-                    int frame = 0;
-                    Vector2 p = Vector2.Zero, start = Position;
-                    vy = Player.JumpSpeed * m;
-                    while (frame <= count)
-                    {
-                        p.X = Calc.Approach(p.X, tx, tx / count);
-                        if (vy <= 0f)
-                        {
-                            if (isLeft)
-                            {
-                                p.Y = Calc.Approach(p.Y, ty, vy);
-                            }
-                            else
-                            {
-                                p.Y += vy;
-                            }
-                        }
-                        else
-                        {
                             p.Y = Calc.Approach(p.Y, ty, vy);
                         }
-
-                        Position = start + p;
-
-                        vy += ay;
-                        frame++;
-                        yield return null;
+                        else
+                        {
+                            p.Y += vy;
+                        }
                     }
-                }
-
-            }
-            else
-            {
-                // valid syntax: "move,3,5", "move,3,5,1", "move,3,5,1,cubein"
-                float dx = 0f, dy = 0f, timer = 1f;
-                if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
-                if (segs >= 3)
-                {
-                    float.TryParse(commandLine[1], out dx);
-                    float.TryParse(commandLine[2], out dy);
-                }
-                if (segs >= 4)
-                {
-                    float.TryParse(commandLine[3], out timer);
-                    timer.MakeAbs();
-                    instant = timer.GetAbs() < Engine.DeltaTime;
-                }
-                Ease.Easer ease = Ease.Linear;
-                if (segs >= 5)
-                {
-                    ease = EaseUtils.StringToEase(commandLine[4].ToLower());
-                }
-
-                Vector2 obj;
-                switch (execute)
-                {
-                    case Command.Move: obj = Position; break;
-                    case Command.Light_Move: obj = light.Position; break;
-                    case Command.Bloom_Move: obj = bloom.Position; break;
-                    default: obj = Position; break;
-                }
-                Vector2 pos1 = obj, pos2 = pos1 + new Vector2(dx, dy);
-                if (instant)
-                {
-                    obj = pos2;
-
-                    switch (execute)
+                    else
                     {
-                        case Command.Move: Position = obj; break;
-                        case Command.Light_Move: light.Position = obj; break;
-                        case Command.Bloom_Move: bloom.Position = obj; break;
-                        default: Position = obj; break;
+                        p.Y = Calc.Approach(p.Y, ty, vy);
                     }
 
-                    yield break;
-                }
-                float percent = 0f;
-                while (percent < 1f)
-                {
-                    percent = Calc.Approach(percent, 1f, Engine.DeltaTime / timer);
-                    obj = Vector2.Lerp(pos1, pos2, ease(percent));
+                    Position = start + p;
 
-                    switch (execute)
-                    {
-                        case Command.Move: Position = obj; break;
-                        case Command.Light_Move: light.Position = obj; break;
-                        case Command.Bloom_Move: bloom.Position = obj; break;
-                        default: obj = Position; break;
-                    }
-
+                    vy += ay;
+                    frame++;
                     yield return null;
                 }
             }
-            
+
         }
 
-        else if (execute == Command.MoveTo || execute == Command.Light_Moveto || execute == Command.Bloom_Moveto)
+        else if (execute == Command.Move || execute == Command.Bloom_Move || execute == Command.Light_Move)
+        {
+            // valid syntax: "move,3,5", "move,3,5,1", "move,3,5,1,cubein"
+            float dx = 0f, dy = 0f, timer = 1f;
+            if (segs < 3) { yield break; }
+            if (segs >= 3)
+            {
+                float.TryParse(commandLine[1], out dx);
+                float.TryParse(commandLine[2], out dy);
+            }
+            if (segs >= 4)
+            {
+                float.TryParse(commandLine[3], out timer);
+                timer.MakeAbs();
+                instant = timer.GetAbs() < Engine.DeltaTime;
+            }
+            Ease.Easer ease = Ease.Linear;
+            if (segs >= 5)
+            {
+                ease = EaseUtils.StringToEase(commandLine[4].ToLower());
+            }
+
+            Vector2 obj;
+            switch (execute)
+            {
+                case Command.Move: obj = Position; break;
+                case Command.Light_Move: obj = light.Position; break;
+                case Command.Bloom_Move: obj = bloom.Position; break;
+                default: obj = Position; break;
+            }
+            Vector2 pos1 = obj, pos2 = pos1 + new Vector2(dx, dy);
+            if (instant)
+            {
+                obj = pos2;
+
+                switch (execute)
+                {
+                    case Command.Move: Position = obj; break;
+                    case Command.Light_Move: light.Position = obj; break;
+                    case Command.Bloom_Move: bloom.Position = obj; break;
+                    default: Position = obj; break;
+                }
+
+                yield break;
+            }
+            float percent = 0f;
+            while (percent < 1f)
+            {
+                percent = Calc.Approach(percent, 1f, Engine.DeltaTime / timer);
+                obj = Vector2.Lerp(pos1, pos2, ease(percent));
+
+                switch (execute)
+                {
+                    case Command.Move: Position = obj; break;
+                    case Command.Light_Move: light.Position = obj; break;
+                    case Command.Bloom_Move: bloom.Position = obj; break;
+                    default: obj = Position; break;
+                }
+
+                yield return null;
+            }
+        }
+
+        else if (execute == Command.MoveTo || execute == Command.Bloom_MoveTo || execute == Command.Light_MoveTo)
         {
             // valid syntax: "moveto,3,5", "moveto,3,5,1", "moveto,3,5,1,cubein"
             float x = 0f, y = 0f, timer = 1f;
-            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 3) { yield break; }
             if (segs >= 3)
             {
                 float.TryParse(commandLine[1], out x);
@@ -709,8 +697,8 @@ public class SpriteEntity : Actor
             switch (execute)
             {
                 case Command.MoveTo: obj = Position; break;
-                case Command.Light_Moveto: obj = light.Position; break;
-                case Command.Bloom_Moveto: obj = bloom.Position; break;
+                case Command.Light_MoveTo: obj = light.Position; break;
+                case Command.Bloom_MoveTo: obj = bloom.Position; break;
                 default: obj = Position; break;
             }
             Vector2 pos1 = obj, pos2 = new Vector2(x, y);
@@ -720,12 +708,12 @@ public class SpriteEntity : Actor
                 switch (execute)
                 {
                     case Command.MoveTo: Position = obj; break;
-                    case Command.Light_Moveto: light.Position = obj; break;
-                    case Command.Bloom_Moveto: bloom.Position = obj; break;
+                    case Command.Light_MoveTo: light.Position = obj; break;
+                    case Command.Bloom_MoveTo: bloom.Position = obj; break;
                     default: Position = obj; break;
                 }
 
-                yield break; 
+                yield break;
             }
             float percent = 0f;
             while (percent < 1f)
@@ -736,8 +724,8 @@ public class SpriteEntity : Actor
                 switch (execute)
                 {
                     case Command.MoveTo: Position = obj; break;
-                    case Command.Light_Moveto: light.Position = obj; break;
-                    case Command.Bloom_Moveto: bloom.Position = obj; break;
+                    case Command.Light_MoveTo: light.Position = obj; break;
+                    case Command.Bloom_MoveTo: bloom.Position = obj; break;
                     default: Position = obj; break;
                 }
 
@@ -745,16 +733,16 @@ public class SpriteEntity : Actor
             }
         }
 
-        else if (execute == Command.Move_Around || execute == Command.Light_Movearound || execute == Command.Bloom_Movearound)
+        else if (execute == Command.Move_Around || execute == Command.Light_Move_Around || execute == Command.Bloom_Move_Around)
         {
             // valid syntax: "movearound, center-dx, center-dy, deltaAngle, spinTime, (easing)"
             float dx = 0f, dy = 0f, angle = 45f, timer = 1f;
-            if (segs < 5) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 5) { yield break; }
             if (segs >= 5)
             {
                 float.TryParse(commandLine[1], out dx);
                 float.TryParse(commandLine[2], out dy);
-                if (dx == 0f && dy == 0f) { IsRoutineRunning[execute] = false; yield break; }
+                if (dx == 0f && dy == 0f) { yield break; }
 
                 float.TryParse(commandLine[3], out angle);
                 float.TryParse(commandLine[4], out timer);
@@ -772,8 +760,8 @@ public class SpriteEntity : Actor
             switch (execute)
             {
                 case Command.Move_Around: obj = Position; break;
-                case Command.Light_Movearound: obj = light.Position; break;
-                case Command.Bloom_Movearound: obj = bloom.Position; break;
+                case Command.Light_Move_Around: obj = light.Position; break;
+                case Command.Bloom_Move_Around: obj = bloom.Position; break;
                 default: obj = Position; break;
             }
             float targetAngle = angle * Calc.DegToRad;
@@ -786,8 +774,8 @@ public class SpriteEntity : Actor
                 switch (execute)
                 {
                     case Command.Move_Around: Position = obj; break;
-                    case Command.Light_Movearound: light.Position = obj; break;
-                    case Command.Bloom_Movearound: bloom.Position = obj; break;
+                    case Command.Light_Move_Around: light.Position = obj; break;
+                    case Command.Bloom_Move_Around: bloom.Position = obj; break;
                     default: Position = obj; break;
                 }
 
@@ -803,8 +791,8 @@ public class SpriteEntity : Actor
                 switch (execute)
                 {
                     case Command.Move_Around: Position = obj; break;
-                    case Command.Light_Movearound: light.Position = obj; break;
-                    case Command.Bloom_Movearound: bloom.Position = obj; break;
+                    case Command.Light_Move_Around: light.Position = obj; break;
+                    case Command.Bloom_Move_Around: bloom.Position = obj; break;
                     default: Position = obj; break;
                 }
 
@@ -816,7 +804,7 @@ public class SpriteEntity : Actor
         {
             // valid syntax: "alpha,0.3", "alpha,0.3,1", "alpha,0.3,1,linear"
             float alpha = 1f;
-            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs <= 1) { yield break; }
 
             if (segs >= 2) { float.TryParse(commandLine[1], out alpha); }
             alpha = float.Clamp(alpha, 0f, 1f);
@@ -834,7 +822,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             Color from = sprite.Color, to = from * alpha;
-            if (instant) { sprite.Color = to; yield break; }
+            if (instant) { sprite.Color = to;
+                yield break;
+            }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
@@ -847,7 +837,7 @@ public class SpriteEntity : Actor
         else if (execute == Command.Color)
         {
             // valid syntax: "color,ffffff", "color,ffffff,0.1", "color,ffffff,0.1,sinein"
-            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs <= 1) { yield break; }
 
             Color color = Color.White;
             if (segs >= 2) { color = Calc.HexToColor(commandLine[1]); }
@@ -865,7 +855,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             Color from = sprite.Color;
-            if (instant) { sprite.Color = color; yield break; }
+            if (instant) { sprite.Color = color;
+                yield break;
+            }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
@@ -878,7 +870,7 @@ public class SpriteEntity : Actor
         else if (execute == Command.Scale)
         {
             // valid syntax: "scale,1,1", "scale,1,1,1", "scale,1,1,1,linear"
-            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 3) { yield break; }
 
             float scaleX = 1f, scaleY = 1f;
             if (segs >= 3)
@@ -900,7 +892,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             Vector2 from = sprite.Scale, to = new Vector2(scaleX, scaleY);
-            if (instant) { sprite.Scale = to; yield break; }
+            if (instant) { sprite.Scale = to;
+                yield break;
+            }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
@@ -914,7 +908,7 @@ public class SpriteEntity : Actor
         {
             // valid syntax: "rotate, angle, (rotateTime, easing, isDelta)"
             float angle = 0f;
-            if (segs < 2) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 2) { yield break; }
 
             if (segs >= 2) { float.TryParse(commandLine[1], out angle); }
 
@@ -934,7 +928,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             float from = sprite.Rotation, to = isDelta ? sprite.Rotation + Calc.DegToRad * angle : Calc.DegToRad * angle;
-            if (instant) { sprite.Rotation = to; yield break; }
+            if (instant) { sprite.Rotation = to;
+                yield break;
+            }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
@@ -948,7 +944,7 @@ public class SpriteEntity : Actor
         {
             // valid syntax: "depth, 9500, (1, linear)"
             int depth = 9500;
-            if (segs <= 1) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs <= 1) { yield break; }
 
             if (segs >= 2) { int.TryParse(commandLine[1], out depth); }
 
@@ -965,7 +961,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             int from = Depth;
-            if (instant) { base.Depth = depth; yield break; }
+            if (instant) { base.Depth = depth;
+                yield break;
+            }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
@@ -978,7 +976,7 @@ public class SpriteEntity : Actor
         else if (execute == Command.Origin)
         {
             // valid syntax: "origin, originX, originY, (changeTime, easing)"
-            if (segs < 3) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 3) { yield break; }
             Vector2 origin = Vector2.One * 0.5f;
             if (segs >= 3)
             {
@@ -1000,7 +998,9 @@ public class SpriteEntity : Actor
             }
 
             Vector2 from = (Vector2)sprite.Justify;
-            if (instant) { sprite.Justify = origin; yield break; }
+            if (instant) { sprite.Justify = origin;
+                yield break;
+            }
             float progress = 0f;
             while (progress < 1f)
             {
@@ -1014,7 +1014,7 @@ public class SpriteEntity : Actor
         else if (execute == Command.Rate)
         {
             // valid syntax: "rate,rate,(changeTime,easing)"
-            if (segs < 2) { IsRoutineRunning[execute] = false; yield break; }
+            if (segs < 2) { yield break; }
 
             float rate = 1f;
             float.TryParse(commandLine[1], out rate);
@@ -1034,7 +1034,9 @@ public class SpriteEntity : Actor
             }
 
             float progress = 0f, from = sprite.Rate;
-            if (instant) { sprite.Rate = rate; yield break; }
+            if (instant) { sprite.Rate = rate;
+                yield break;
+            }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
@@ -1047,7 +1049,9 @@ public class SpriteEntity : Actor
         else if (execute == Command.Light)
         {
             // valid syntax: "light, color, alpha, startFade, endFade, (time, easing)"
-            if (segs < 5) { yield break; }
+            if (segs < 5) { 
+                yield break; 
+            }
 
             Color color =  Color.White; 
             float alpha = 0f, timer = 0f; int startFade = 32, endFade = 64;  Ease.Easer ease = Ease.Linear;
@@ -1068,7 +1072,8 @@ public class SpriteEntity : Actor
 
             if (instant)
             {
-                light = new VertexLight(color, alpha, startFade, endFade); yield break;
+                light = new VertexLight(color, alpha, startFade, endFade);
+                yield break;
             }
 
             float progress = 0f;
@@ -1090,7 +1095,9 @@ public class SpriteEntity : Actor
         else if (execute == Command.Bloom)
         {
             // valid syntax: "bloom, alpha, radius, (time, easing)"
-            if (segs < 3) { yield break; }
+            if (segs < 3) {
+                yield break;
+            }
 
             float alpha = 0f, r = 0f, timer = 0f; Ease.Easer ease = Ease.Linear;
             float.TryParse(commandLine[1], out alpha); float.Clamp(alpha, 0f, 1f);
@@ -1108,7 +1115,8 @@ public class SpriteEntity : Actor
 
             if (instant)
             {
-                bloom = new BloomPoint(alpha, r); yield break;
+                bloom = new BloomPoint(alpha, r);
+                yield break;
             }
 
             float progress = 0f;
@@ -1126,7 +1134,10 @@ public class SpriteEntity : Actor
         else if (execute == Command.Parallax)
         {
             // valid syntax: "parallax, value, (timer, easing)"
-            if (segs < 2) { yield break; }
+            if (segs < 2)
+            {
+                yield break;
+            }
 
             float set = parallax;
             float.TryParse(commandLine[1], out set);
@@ -1165,7 +1176,10 @@ public class SpriteEntity : Actor
         else if (execute == Command.Render_Position_InRoom)
         {
             // valid syntax: "render_position_in_room, camX, camY, (timer, easing)"
-            if (segs < 3) { yield break; }
+            if (segs < 3)
+            {
+                yield break;
+            }
 
             Vector2 camPos = new Vector2(camX, camY);
             float.TryParse(commandLine[1], out camPos.X);
@@ -1186,7 +1200,7 @@ public class SpriteEntity : Actor
 
             if (instant)
             {
-                camX = camPos.X; camY = camPos.Y; 
+                camX = camPos.X; camY = camPos.Y;
                 yield break;
             }
 
@@ -1209,7 +1223,10 @@ public class SpriteEntity : Actor
             Vector2 offset = MapProcessor.level.CameraOffset;
             float offsetX = offset.X, offsetY = offset.Y, timer = 0f; Ease.Easer ease = Ease.Linear;
 
-            if (segs < 3) { yield break; }
+            if (segs < 3)
+            {
+                yield break;
+            }
             float.TryParse(commandLine[1], out offsetX);
             float.TryParse(commandLine[2], out offsetY);
 
@@ -1242,7 +1259,36 @@ public class SpriteEntity : Actor
             }
         }
 
-        IsRoutineRunning[execute] = false;
+    }
+
+    private List<Command> PositionChanging = new List<Command>()
+    {
+        Command.Move, Command.MoveTo, Command.Move_Around, Command.Jump
+    };
+
+    private void ReadyStartRoutine(Command command)
+    {
+        IsRoutineRunning[command] = true;
+
+        if (PositionChanging.Contains(command))
+        {
+            foreach (var state in PositionChanging)
+            {
+                IsRoutineRunning[state] = true;
+            }
+        }
+    }
+    private void ReadyEndRoutine(Command command)
+    {
+        IsRoutineRunning[command] = false;
+
+        if (PositionChanging.Contains(command))
+        {
+            foreach (var state in PositionChanging)
+            {
+                IsRoutineRunning[state] = false;
+            }
+        }
     }
 
     private void DebugInfo()
