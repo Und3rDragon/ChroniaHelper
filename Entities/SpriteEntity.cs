@@ -28,9 +28,10 @@ public class SpriteEntity : Actor
         Bloom_Move, Bloom_MoveTo, Bloom_Move_Around,
         Light_Move, Light_MoveTo, Light_Move_Around,
         Parallax, Render_Position_InRoom,
-        Current_Frame, Camera_Offset, Solid,
+        Current_Frame, Camera_Offset, Solid, Speed,
+        Camera_Position,
         //done
-        Holdable_Collider, Jump, Speed,
+        Holdable_Collider, Jump, 
         //undone
     }
     private Command execute = Command.None;
@@ -71,7 +72,8 @@ public class SpriteEntity : Actor
         { "cameraoffset", Command.Camera_Offset },
         { "solid", Command.Solid },
         { "jump", Command.Jump },
-        { "speed", Command.Speed }
+        { "speed", Command.Speed },
+        { "cameraposition", Command.Camera_Position }
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
@@ -1301,6 +1303,47 @@ public class SpriteEntity : Actor
             }
         }
 
+        else if (execute == Command.Camera_Position)
+        {
+            // syntax: "camera_position, X, Y, (changeTime, ease)"
+            Vector2 offset = MapProcessor.level.Camera.Position;
+            float offsetX = offset.X, offsetY = offset.Y, timer = 0f; Ease.Easer ease = Ease.Linear;
+
+            if (segs < 3)
+            {
+                yield break;
+            }
+            float.TryParse(commandLine[1], out offsetX);
+            float.TryParse(commandLine[2], out offsetY);
+
+            if (segs >= 4)
+            {
+                float.TryParse(commandLine[3], out timer);
+                timer.MakeAbs();
+                instant = timer == 0f;
+            }
+
+            if (segs >= 5)
+            {
+                ease = EaseUtils.StringToEase(commandLine[4]);
+            }
+
+            if (instant)
+            {
+                MapProcessor.level.Camera.Position = new Vector2(offsetX, offsetY);
+                yield break;
+            }
+
+            float progress = 0f;
+            Vector2 from = offset, to = new Vector2(offsetX, offsetY);
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                MapProcessor.level.Camera.Position = Vector2.Lerp(from, to, ease(progress));
+
+                yield return null;
+            }
+        }
 
     }
 
@@ -1354,11 +1397,11 @@ public class SpriteEntity : Actor
         {
             if (i == 0)
             {
-                basicSpeed += accelerations[0];
+                basicSpeed += accelerations[0] * Engine.DeltaTime;
             }
             else
             {
-                accelerations[i - 1] += accelerations[i];
+                accelerations[i - 1] += accelerations[i] * Engine.DeltaTime;
             }
         }
 
