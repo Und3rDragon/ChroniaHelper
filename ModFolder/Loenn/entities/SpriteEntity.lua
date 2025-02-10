@@ -62,6 +62,7 @@ se.fieldInformation = {
 				["render_position_inroom: posX, posY, (changeTime, easing)"] = "render_position_inroom,160,90",
 				["camera_offset: offsetX, offsetY, (changeTime, easing)"] = "camera_offset,0,0",
 				["solid: offsetX, offsetY, width, height, (safe)"] = "solid,0,0,0,0",
+				["speed: speedX, speedY, (accX, accY, accX of accX, accY of accY ... )"] = "speed,0,0",
 				["passby functionName"] = "passby xxx,xxx",
 			},
 			editable = true,

@@ -30,7 +30,7 @@ public class SpriteEntity : Actor
         Parallax, Render_Position_InRoom,
         Current_Frame, Camera_Offset, Solid,
         //done
-        Holdable_Collider, Jump,
+        Holdable_Collider, Jump, Speed,
         //undone
     }
     private Command execute = Command.None;
@@ -70,7 +70,8 @@ public class SpriteEntity : Actor
         { "currentframe", Command.Current_Frame },
         { "cameraoffset", Command.Camera_Offset },
         { "solid", Command.Solid },
-        { "jump", Command.Jump }
+        { "jump", Command.Jump },
+        { "speed", Command.Speed }
     };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
@@ -78,7 +79,7 @@ public class SpriteEntity : Actor
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
-        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid
+        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid, Command.Speed
     };
 
     public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data) { }
@@ -115,7 +116,7 @@ public class SpriteEntity : Actor
         solid.Collidable = false;
 
         Add(mover = new StaticMover());
-
+        
         base.Tag = Tags.TransitionUpdate;
     }
     private string spriteName;
@@ -128,6 +129,9 @@ public class SpriteEntity : Actor
     private float parallax = 1f, camX = 160f, camY = 90f;
     private Solid solid; private Vector2 solidPos = Vector2.Zero;
     private StaticMover mover;
+    // acceleration
+    private Vector2 basicSpeed = Vector2.Zero;
+    private Vector2[] accelerations = new Vector2[1] {Vector2.Zero};
 
     public override void Added(Scene scene)
     {
@@ -401,6 +405,44 @@ public class SpriteEntity : Actor
                 solid = new Solid(Position + solidPos, size.X, size.Y, safe);
                 solid.Collidable = true;
                 MapProcessor.level.Add(solid);
+            }
+
+            else if (execute == Command.Speed)
+            {
+                ReadyStartRoutine(execute);
+
+                // valid syntax: "speed, x0, y0, (ax1, ay1, ax2, ay2, ax3, ay3...)"
+                if (segs < 3) { yield break; }
+                Vector2 set = basicSpeed;
+                float.TryParse(commandLine[1], out set.X);
+                float.TryParse(commandLine[2], out set.Y);
+
+                basicSpeed = set;
+
+                if (segs >= 5 && segs % 2 == 1)
+                {
+                    accelerations = new Vector2[(segs - 3) / 2];
+                    for (int i = 3, n = 0; i < segs; i = i + 2, n++)
+                    {
+                        Vector2 value = Vector2.Zero;
+                        float.TryParse(commandLine[i], out value.X);
+                        float.TryParse(commandLine[i + 1], out value.Y);
+                        accelerations[n] = value;
+                    }
+                }
+
+                bool checkZero = true;
+                for (int i = 1; i < segs; i++)
+                {
+                    float value = 0f;
+                    float.TryParse(commandLine[i], out value);
+                    checkZero.TryNegative(value == 0f);
+                }
+
+                if (checkZero)
+                {
+                    ReadyEndRoutine(execute);
+                }
             }
 
             else
@@ -1259,6 +1301,7 @@ public class SpriteEntity : Actor
             }
         }
 
+
     }
 
     private List<Command> PositionChanging = new List<Command>()
@@ -1305,6 +1348,19 @@ public class SpriteEntity : Actor
         base.Update();
 
         DebugInfo();
+
+        Position += basicSpeed * Engine.DeltaTime;
+        for (int i = 0; i < accelerations.Length; i++)
+        {
+            if (i == 0)
+            {
+                basicSpeed += accelerations[0];
+            }
+            else
+            {
+                accelerations[i - 1] += accelerations[i];
+            }
+        }
 
         Vector2 camPos = MapProcessor.level.Camera.Position;
         Vector2 center = camPos + new Vector2(camX, camY);
