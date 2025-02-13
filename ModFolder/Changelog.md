@@ -1,3 +1,6 @@
+# 28.31
+Small bugfixes
+
 # 28.27
 # Sprite Entity
 Fixing the endless deadloop of `passby`

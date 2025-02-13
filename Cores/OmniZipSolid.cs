@@ -560,8 +560,6 @@ public class OmniZipSolid : ConnectedSolid
                 {
                     yield return null;
 
-                    recProgress = at;
-
                     // after starting, remove the flag
                     // for some reason, if it's executed before start delay, the other zipmovers can't receive the signal
                     if (syncflag)
@@ -582,6 +580,8 @@ public class OmniZipSolid : ConnectedSolid
                     if (this.speedmult <= 0f) { this.speedmult = -speedmult; }
 
                     at = Calc.Approach(at, 1f, Util.OZMTime(timeUnits, this.speedmult, false));
+
+                    recProgress = at;
 
                     // changing easer
                     string ease;
@@ -732,10 +732,10 @@ public class OmniZipSolid : ConnectedSolid
                     {
                         yield return null;
 
-                        recProgress = at;
-
                         at = Calc.Approach(at, 1f, Util.OZMTime(timeUnits, returnSpeed, true));// Return Speeds
                         percent = 1f - EaseUtils.StringToEase(returnEase)(at); // Return Ease
+
+                        recProgress = at;
 
                         Vector2 position = Vector2.Lerp(from, to, EaseUtils.StringToEase(returnEase)(at)); // Return Ease
 
