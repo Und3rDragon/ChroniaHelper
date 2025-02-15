@@ -99,4 +99,7 @@ public class ChroniaHelperSession : EverestModuleSession
 
         public List<MEP> musicParameters;
     };
+
+    // Sprite Entity saved parameters
+    public bool se_DisableControl = false;
 }

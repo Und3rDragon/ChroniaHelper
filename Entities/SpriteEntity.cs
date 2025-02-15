@@ -7,9 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
 using FMOD;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
+using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using YamlDotNet.Core.Tokens;
 
 namespace ChroniaHelper.Entities;
@@ -18,71 +21,86 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/SpriteEntity")]
 public class SpriteEntity : Actor
 {
+    //public Dictionary<string, Command> GetCommand = new Dictionary<string, Command>()
+    //{
+    //    { "setflag", Command.Set_Flag },
+    //    { "moveto", Command.MoveTo },
+    //    { "move", Command.Move },
+    //    { "play", Command.Play },
+    //    { "flagplay", Command.Flag_Play },
+    //    { "wait", Command.Wait },
+    //    { "waitflag", Command.Wait_Flag },
+    //    { "alpha", Command.Alpha },
+    //    { "color", Command.Color },
+    //    { "scale", Command.Scale },
+    //    { "rotate", Command.Rotate },
+    //    { "depth", Command.Depth },
+    //    { "repeat", Command.Repeat },
+    //    { "movearound", Command.Move_Around },
+    //    { "origin", Command.Origin },
+    //    { "rate", Command.Rate },
+    //    { "ignore", Command.Ignore },
+    //    { "sound", Command.Sound },
+    //    { "music", Command.Music },
+    //    { "hitbox", Command.Hitbox },
+    //    { "holdablecollider", Command.Holdable_Collider },
+    //    { "bloom", Command.Bloom },
+    //    { "light", Command.Light },
+    //    { "bloommove", Command.Bloom_Move },
+    //    { "bloommoveto", Command.Bloom_MoveTo },
+    //    { "bloommovearound", Command.Bloom_Move_Around },
+    //    { "lightmove", Command.Light_Move },
+    //    { "lightmoveto", Command.Light_MoveTo },
+    //    { "lightmovearound", Command.Light_Move_Around },
+    //    { "parallax", Command.Parallax },
+    //    { "renderpositioninroom", Command.Render_Position_InRoom },
+    //    { "currentframe", Command.Current_Frame },
+    //    { "cameraoffset", Command.Camera_Offset },
+    //    { "solid", Command.Solid },
+    //    { "jump", Command.Jump },
+    //    { "speed", Command.Speed },
+    //    { "cameraposition", Command.Camera_Position },
+    //    { "disablemovement", Command.Disable_Movement }
+    //};
+
     // assumption:
     // several commands controlling how this entity moves or acts
     public enum Command
     {
-        None, Wait_Flag, Set_Flag, Play, Flag_Play, Wait, MoveTo, 
+        None, Wait_Flag, Set_Flag, Play, Flag_Play, Wait, MoveTo,
         Move, Alpha, Color, Scale, Rotate, Depth, Repeat, Move_Around, Rate, Origin,
-        Ignore, Sound, Music, Hitbox, Bloom, Light, 
+        Ignore, Sound, Music, Hitbox, Bloom, Light,
         Bloom_Move, Bloom_MoveTo, Bloom_Move_Around,
         Light_Move, Light_MoveTo, Light_Move_Around,
         Parallax, Render_Position_InRoom,
         Current_Frame, Camera_Offset, Solid, Speed,
-        Camera_Position,
+        Camera_Position, Camera_Zoom,
+        Disable_Movement, Kill_Player,
         //done
         Holdable_Collider, Jump, 
         //undone
     }
     private Command execute = Command.None;
-    public Dictionary<string, Command> GetCommand = new Dictionary<string, Command>()
-    {
-        { "setflag", Command.Set_Flag },
-        { "moveto", Command.MoveTo },
-        { "move", Command.Move },
-        { "play", Command.Play },
-        { "flagplay", Command.Flag_Play },
-        { "wait", Command.Wait },
-        { "waitflag", Command.Wait_Flag },
-        { "alpha", Command.Alpha },
-        { "color", Command.Color },
-        { "scale", Command.Scale },
-        { "rotate", Command.Rotate },
-        { "depth", Command.Depth },
-        { "repeat", Command.Repeat },
-        { "movearound", Command.Move_Around },
-        { "origin", Command.Origin },
-        { "rate", Command.Rate },
-        { "ignore", Command.Ignore },
-        { "sound", Command.Sound },
-        { "music", Command.Music },
-        { "hitbox", Command.Hitbox },
-        { "holdablecollider", Command.Holdable_Collider },
-        { "bloom", Command.Bloom },
-        { "light", Command.Light },
-        { "bloommove", Command.Bloom_Move },
-        { "bloommoveto", Command.Bloom_MoveTo },
-        { "bloommovearound", Command.Bloom_Move_Around },
-        { "lightmove", Command.Light_Move },
-        { "lightmoveto", Command.Light_MoveTo },
-        { "lightmovearound", Command.Light_Move_Around },
-        { "parallax", Command.Parallax },
-        { "renderpositioninroom", Command.Render_Position_InRoom },
-        { "currentframe", Command.Current_Frame },
-        { "cameraoffset", Command.Camera_Offset },
-        { "solid", Command.Solid },
-        { "jump", Command.Jump },
-        { "speed", Command.Speed },
-        { "cameraposition", Command.Camera_Position }
-    };
 
     public Dictionary<Command, bool> IsRoutineRunning = new Dictionary<Command, bool>();
 
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
-        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid, Command.Speed
+        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid, Command.Speed,
+        Command.Disable_Movement, Command.Kill_Player
     };
+
+    public static void Load()
+    {
+        // break directions
+        On.Celeste.Player.Update += breakTheControls;
+    }
+
+    public static void Unload()
+    {
+        On.Celeste.Player.Update -= breakTheControls;
+    }
 
     public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data) { }
     public SpriteEntity(Vector2 position, EntityData data) : base(position)
@@ -189,7 +207,8 @@ public class SpriteEntity : Actor
             string indicator = commandLine[0].ToLower().Trim().RemoveAll("_");
             bool sideRoutine = indicator.Contains("passby ");
             indicator = indicator.RemoveAll("passby ");
-            execute = GetCommand.GetValueOrDefault(indicator, Command.None);
+            //execute = GetCommand.GetValueOrDefault(indicator, Command.None);
+            execute = Util.MatchEnum<Command>(indicator, Command.None, true, true);
 
             int segs = commandLine.Length;
 
@@ -414,7 +433,7 @@ public class SpriteEntity : Actor
                 ReadyStartRoutine(execute);
 
                 // valid syntax: "speed, x0, y0, (ax1, ay1, ax2, ay2, ax3, ay3...)"
-                if (segs < 3) { yield break; }
+                if (segs < 3) { continue; }
                 Vector2 set = basicSpeed;
                 float.TryParse(commandLine[1], out set.X);
                 float.TryParse(commandLine[2], out set.Y);
@@ -445,6 +464,22 @@ public class SpriteEntity : Actor
                 {
                     ReadyEndRoutine(execute);
                 }
+            }
+
+            else if (execute == Command.Disable_Movement)
+            {
+                // syntax: "disable_movement, bool"
+                if (segs < 2) { continue; }
+
+                bool set = false;
+                bool.TryParse(commandLine[1], out set);
+
+                ChroniaHelperModule.Session.se_DisableControl = set;
+            }
+
+            else if (execute == Command.Kill_Player)
+            {
+                MapProcessor.level.Tracker.GetEntity<Player>().Die(Vector2.Zero);
             }
 
             else
@@ -1305,7 +1340,7 @@ public class SpriteEntity : Actor
 
         else if (execute == Command.Camera_Position)
         {
-            // syntax: "camera_position, X, Y, (changeTime, ease)"
+            // syntax: "camera_position, X, Y, (changeTime, ease, isDelta)"
             Vector2 offset = MapProcessor.level.Camera.Position;
             float offsetX = offset.X, offsetY = offset.Y, timer = 0f; Ease.Easer ease = Ease.Linear;
 
@@ -1328,18 +1363,72 @@ public class SpriteEntity : Actor
                 ease = EaseUtils.StringToEase(commandLine[4]);
             }
 
+            bool isDelta = false;
+            if (segs >= 6)
+            {
+                bool.TryParse(commandLine[5], out isDelta);
+            }
+
             if (instant)
             {
-                MapProcessor.level.Camera.Position = new Vector2(offsetX, offsetY);
+                if (isDelta)
+                {
+                    MapProcessor.level.Camera.Position = offset + new Vector2(offsetX, offsetY);
+                }
+                else
+                {
+                    MapProcessor.level.Camera.Position = new Vector2(offsetX, offsetY);
+                }
                 yield break;
             }
 
             float progress = 0f;
-            Vector2 from = offset, to = new Vector2(offsetX, offsetY);
+            Vector2 from = offset, to = isDelta ? offset + new Vector2(offsetX, offsetY) : new Vector2(offsetX, offsetY);
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
                 MapProcessor.level.Camera.Position = Vector2.Lerp(from, to, ease(progress));
+                
+                yield return null;
+            }
+        }
+
+        else if (execute == Command.Camera_Zoom)
+        {
+            // syntax: "camera_zoom, value, (changeTime, ease)"
+            float orig = MapProcessor.level.Camera.Zoom;
+            float zoom = orig, timer = 0f; Ease.Easer ease = Ease.Linear;
+
+            if (segs < 2)
+            {
+                yield break;
+            }
+            float.TryParse(commandLine[1], out zoom);
+
+            if (segs >= 3)
+            {
+                float.TryParse(commandLine[2], out timer);
+                timer.MakeAbs();
+                instant = timer == 0f;
+            }
+
+            if (segs >= 4)
+            {
+                ease = EaseUtils.StringToEase(commandLine[3]);
+            }
+
+            if (instant)
+            {
+                MapProcessor.level.Camera.Zoom = zoom;
+                yield break;
+            }
+
+            float progress = 0f;
+            float from = orig, to = zoom;
+            while (progress < 1f)
+            {
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                MapProcessor.level.Camera.Zoom = Calc.LerpSnap(from, to, ease(progress), 0.001f);
 
                 yield return null;
             }
@@ -1480,5 +1569,61 @@ public class SpriteEntity : Actor
         //Audio.Play("event:/game/05_mirror_temple/crystaltheo_hit_side", Position);
     }
 
+    #endregion
+
+    // Code from Maddie's Helping Hand
+    #region Disable Control
+    private static void breakTheControls(On.Celeste.Player.orig_Update orig, Player self)
+    {
+        if (!ChroniaHelperModule.Session.se_DisableControl)
+        {
+            // we don't want to disable controls here!
+            orig(self);
+            return;
+        }
+
+        Vector2 oldAim = Input.Aim;
+        int oldMoveX = Input.MoveX.Value;
+        int oldMoveY = Input.MoveY.Value;
+
+        Vector2 newAim = Input.Aim;
+        int newMoveX = Input.MoveX.Value;
+        int newMoveY = Input.MoveY.Value;
+
+        if (ChroniaHelperModule.Session.se_DisableControl)
+        {
+            // Y cannot be negative
+            newAim.Y = Math.Max(0, newAim.Y);
+            newMoveY = Math.Max(0, newMoveY);
+        }
+        if (ChroniaHelperModule.Session.se_DisableControl)
+        {
+            // Y cannot be positive
+            newAim.Y = Math.Min(0, newAim.Y);
+            newMoveY = Math.Min(0, newMoveY);
+        }
+        if (ChroniaHelperModule.Session.se_DisableControl)
+        {
+            // X cannot be negative
+            newAim.X = Math.Max(0, newAim.X);
+            newMoveX = Math.Max(0, newMoveX);
+        }
+        if (ChroniaHelperModule.Session.se_DisableControl)
+        {
+            // X cannot be positive
+            newAim.X = Math.Min(0, newAim.X);
+            newMoveX = Math.Min(0, newMoveX);
+        }
+
+        new DynData<VirtualJoystick>(Input.Aim)["Value"] = newAim;
+        Input.MoveX.Value = newMoveX;
+        Input.MoveY.Value = newMoveY;
+
+        orig(self);
+
+        new DynData<VirtualJoystick>(Input.Aim)["Value"] = oldAim;
+        Input.MoveX.Value = oldMoveX;
+        Input.MoveY.Value = oldMoveY;
+    }
     #endregion
 }

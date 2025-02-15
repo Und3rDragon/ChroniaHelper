@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System;
+using Microsoft.VisualBasic;
+using YamlDotNet.Serialization;
+using AsmResolver.DotNet.Code.Cil;
 
 namespace ChroniaHelper.Utils;
 
@@ -358,5 +361,36 @@ public static class Util
     public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress, Color color)
     {
         RenderProgressRectangle(Position, width, height, progress, 0f, false, color);
+    }
+
+    public static Classify MatchEnum<Classify>(string match, Classify defaultMember, bool ignoreCase, bool ignoreUnderscore) where Classify : struct, Enum
+    {
+        if (string.IsNullOrEmpty(match) || string.IsNullOrWhiteSpace(match)) { return defaultMember; }
+        //if (Enum.GetValues<Classify>().Length == 0) { return null; }
+
+        string arg1 = match.Trim();
+        if (ignoreCase) { arg1 = arg1.ToLower(); }
+        if (ignoreUnderscore) { arg1 = arg1.RemoveAll("_"); }
+
+        foreach (Classify member in Enum.GetValues<Classify>())
+        {
+            string arg2 = member.ToString().Trim();
+            if (ignoreCase) { arg2 = arg2.ToLower(); }
+            if (ignoreUnderscore) { arg2 = arg2.RemoveAll("_"); }
+
+            if (arg1.Equals(arg2)) { return member; }
+        }
+
+        return defaultMember;
+    }
+
+    public static Classify MatchEnum<Classify>(string match, Classify defaultMember) where Classify : struct, Enum
+    {
+        return MatchEnum<Classify>(match, defaultMember, false, false);
+    }
+
+    public static Classify MatchEnum<Classify>(string match, Classify defaultMember, bool ignoreCase) where Classify : struct, Enum
+    {
+        return MatchEnum<Classify>(match, defaultMember, ignoreCase, false);
     }
 }

@@ -74,26 +74,17 @@ public class ChroniaHelperModule : EverestModule
         TeraCrushBlock.OnLoad();
         TeraBounceBlock.OnLoad();
         TeraCrystal.OnLoad();
-
         BubblePushField.Load();
         CustomTimer.Load();
-
         Everest.Events.LevelLoader.OnLoadingThread += LevelLoader_OnLoadingThread;
-
         CustomBooster.Load();
-
         OmniZipWater.Load();
-
         MapProcessor.Load();
-
         EntityChangingInterfaces.Load();
-
         PatientBooster.Load();
-
         BoosterZipper.Load();
-
-
         Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
+        SpriteEntity.Load();
 
         // API Imports
         typeof(FrostHelperImports).ModInterop();
@@ -117,21 +108,16 @@ public class ChroniaHelperModule : EverestModule
         TeraCrushBlock.OnUnload();
         TeraBounceBlock.OnUnload();
         TeraCrystal.OnUnload();
-
         CustomTimer.UnLoad();
         Everest.Events.LevelLoader.OnLoadingThread -= LevelLoader_OnLoadingThread;
-
         CustomBooster.Unload();
         OmniZipWater.Unload();
-
         MapProcessor.Unload();
-
         EntityChangingInterfaces.Unload();
-
         PatientBooster.Unload();
         BoosterZipper.Unload();
-
         Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
+        SpriteEntity.Unload();
     }
 
     private static void LevelLoader_OnLoadingThread(Level level)

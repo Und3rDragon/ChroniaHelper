@@ -1,3 +1,6 @@
+# 28.32
+`camera_zoom`, `disable_movement` and `kill_player` functions added
+
 # 28.31
 Small bugfixes
 
