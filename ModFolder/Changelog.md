@@ -1,3 +1,6 @@
+# 28.33
+allow setting up variables and randomize a variable
+
 # 28.32
 `camera_zoom`, `disable_movement` and `kill_player` functions added
 
