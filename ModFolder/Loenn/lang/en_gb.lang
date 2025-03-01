@@ -676,4 +676,4 @@ entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionX=The rend
 entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionY=The render position of the sprite when parallax is set to zero
 
 # Password Keyboard
-entities.PasswordKeyboard/PasswordKeyboard.placements.name.normal=Password Keyboard
+entities.ChroniaHelper/PasswordKeyboard.placements.name.normal=Password Keyboard

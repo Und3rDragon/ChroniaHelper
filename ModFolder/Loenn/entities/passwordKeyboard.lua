@@ -1,6 +1,6 @@
 local entity = {}
 
-entity.name = "PasswordKeyboard/PasswordKeyboard"
+entity.name = "ChroniaHelper/PasswordKeyboard"
 entity.texture = "PasswordKeyboard/keyboard"
 entity.justification = { 0.5, 1.0 }
 entity.placements = {

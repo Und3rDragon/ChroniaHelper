@@ -2,7 +2,7 @@ using Celeste.Mod.Entities;
 
 namespace ChroniaHelper.Entities.PasswordKeyboard;
 
-[CustomEntity("PasswordKeyboard/PasswordKeyboard")]
+[CustomEntity("ChroniaHelper/PasswordKeyboard")]
 public sealed partial class PasswordKeyboard : Entity
 {
     public enum Mode { Exclusive, Normal, OutputFlag }
