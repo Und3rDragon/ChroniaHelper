@@ -103,4 +103,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // Sprite Entity saved parameters
     public bool se_DisableControl = false;
     public Dictionary<string, object> se_Variables = new Dictionary<string, object>();
+
+    // Password Keyboard
+    public Dictionary<EntityID, int> RemainingUses { get; set; } = new();
+
+    public string Password { get; set; } = string.Empty;
 }

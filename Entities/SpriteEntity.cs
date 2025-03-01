@@ -65,6 +65,7 @@ public class SpriteEntity : Actor
 
     // assumption:
     // several commands controlling how this entity moves or acts
+    
     public enum Command
     {
         None, Wait_Flag, Set_Flag, Play, Flag_Play, Wait, MoveTo,
