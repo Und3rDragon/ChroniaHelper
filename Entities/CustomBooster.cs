@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using System.Reflection;
+using ChroniaHelper.Utils;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Entities;
 
@@ -19,6 +21,8 @@ public class CustomBooster : Booster
     {
         On.Celeste.Booster.PlayerReleased += Booster_PlayerReleased;
         On.Celeste.Booster.BoostRoutine += Booster_BoostRoutine;
+        On.Celeste.Player.BoostBegin += Player_BoostBegin;
+        
 
         // Usable but unecessary
 
@@ -30,6 +34,7 @@ public class CustomBooster : Booster
     {
         On.Celeste.Booster.PlayerReleased -= Booster_PlayerReleased;
         On.Celeste.Booster.BoostRoutine -= Booster_BoostRoutine;
+        On.Celeste.Player.BoostBegin += Player_BoostBegin;
 
         // Usable but unecessary
 
@@ -154,7 +159,11 @@ public class CustomBooster : Booster
         scene.Add(outline);
     }
 
-
+    private static void Player_BoostBegin(On.Celeste.Player.orig_BoostBegin orig, Player self)
+    {
+        ChroniaHelperModule.Session.PlayerStaminaBeforeEnteringBooster = self.Stamina;
+        orig(self);
+    }
     private static void Booster_PlayerReleased(On.Celeste.Booster.orig_PlayerReleased orig, Booster self)
     {
         orig(self);
@@ -201,15 +210,20 @@ public class CustomBooster : Booster
                     player.Dashes = myBooster.setDash;
                 }
             }
+
             if (myBooster.setupStamina)
             {
                 player.Stamina = myBooster.setStamina;
             }
             else
             {
-                if (player.Stamina < myBooster.setStamina)
+                if (ChroniaHelperModule.Session.PlayerStaminaBeforeEnteringBooster < myBooster.setStamina)
                 {
                     player.Stamina = myBooster.setStamina;
+                }
+                else
+                {
+                    player.Stamina = ChroniaHelperModule.Session.PlayerStaminaBeforeEnteringBooster;
                 }
             }
 

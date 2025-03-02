@@ -108,4 +108,7 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<EntityID, int> RemainingUses { get; set; } = new();
 
     public string Password { get; set; } = string.Empty;
+
+    // Custom Booster
+    public float PlayerStaminaBeforeEnteringBooster = 110f;
 }
