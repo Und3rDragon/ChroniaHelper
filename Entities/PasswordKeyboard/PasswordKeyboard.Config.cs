@@ -9,6 +9,7 @@ partial class PasswordKeyboard
         string RightDialog,
         string WrongDialog,
         bool CaseSensitive,
-        int UseTimes
+        int UseTimes,
+        EntityID entityID
         );
 }

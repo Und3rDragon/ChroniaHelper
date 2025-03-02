@@ -140,6 +140,17 @@ partial class PasswordKeyboard
         private void DrawExtraUI()
         {
             DrawOptionText(inputText, new Vector2(960f, 148f), new Vector2(0.5f, 0.0f), Vector2.One * 3f, false);
+
+            if (ChroniaHelperModule.Session.RemainingUses[config.entityID] != -1)
+            {
+                DrawOptionText($"You have {ChroniaHelperModule.Session.RemainingUses[config.entityID]} chances left",
+                    new Vector2(368f, 110f),
+                    new Vector2(0.5f, 0.5f),
+                    Vector2.One,
+                    false
+                    );
+            }
+
             // TODO
         }
 

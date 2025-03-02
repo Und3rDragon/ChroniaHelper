@@ -677,3 +677,7 @@ entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionY=The rend
 
 # Password Keyboard
 entities.ChroniaHelper/PasswordKeyboard.placements.name.normal=Password Keyboard
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.mode=Normal Mode: You need to input the correct password to activate the flag\nExclusive Mode:What you input will be stored in the Helper session so that other entities may react to it\nOutput Flag Mode: Whatever you input will be transformed into a flag, it's suggested to use with "Use Times" limit
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.flagToEnable=When the password is correct, the flag will be activated
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.accessZone=A relative {X, Y, width, height} settings to define where player can access the keyboard
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.accessZoneIndicator=When enabled, a rectangle will appear in Lonn indicating the current zone\nDoes not have effect in game

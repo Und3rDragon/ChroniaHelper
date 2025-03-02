@@ -1,4 +1,5 @@
 using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities.PasswordKeyboard;
 
@@ -23,27 +24,45 @@ public sealed partial class PasswordKeyboard : Entity
                   data.Attr("rightDialog", "rightDialog"),
                   data.Attr("wrongDialog", "wrongDialog"),
                   data.Bool("caseSensitive", false),
-                  data.Int("useTimes", -1)
+                  data.Int("useTimes", -1),
+                  new EntityID(data.Level.Name, data.ID)
                   ),
-              new EntityID(data.Level.Name, data.ID)
+              new EntityID(data.Level.Name, data.ID),
+              data
               )
     {
     }
 
-    public PasswordKeyboard(Vector2 position, Config config, EntityID entityID)
+    public PasswordKeyboard(Vector2 position, Config config, EntityID entityID, EntityData data)
         : base(position)
     {
+        // modified based on Sap's codes
+        string accessZone = data.Attr("accessZone");
+        string[] hitbox = accessZone.Split(',', StringSplitOptions.TrimEntries);
+        int[] hp = { -16, 0, 32, 8 };
+        for(int i = 0; i < Calc.Min(hitbox.Length, 4); i++)
+        {
+            int p = hp[i];
+            int.TryParse(hitbox[i], out p);
+            hp[i] = p;
+        }
+        hp[2].MakeAbs(); hp[3].MakeAbs();
+
         this.config = config;
         this.entityID = entityID;
-        Add(new Image(GFX.Game["PasswordKeyboard/keyboard"]).JustifyOrigin(0.5f, 1.0f));
-        Add(talkComponent = new TalkComponent(new Rectangle(-16, -4, 32, 4), Vector2.UnitY * -16f, OnTalk));
+        Add(new Image(GFX.Game["PasswordKeyboard/keyboard"]).JustifyOrigin(0.5f, 0.5f));
+        Add(talkComponent = new TalkComponent(new Rectangle(hp[0], hp[1], hp[2], hp[3]), Vector2.Zero, OnTalk));
         talkComponent.PlayerMustBeFacing = true;
 
         ui = new(config, OnExit, OnTry);
         var dic = ChroniaHelperModule.Session.RemainingUses;
         if (!dic.ContainsKey(entityID))
             dic[entityID] = config.UseTimes;
+
+        // Additional
+        globalFlag = data.Bool("globalFlag", false);
     }
+    private bool globalFlag = false;
 
     private void OnTalk(Player player)
     {
