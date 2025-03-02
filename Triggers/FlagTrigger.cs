@@ -52,11 +52,11 @@ public class FlagTrigger : Trigger
         {
             foreach (var item in trueFlags)
             {
-                MapProcessor.session.SetFlag(item, false);
+                Utils.FlagUtils.SetFlag(item, set ? false : true, saves);
             }
             foreach (var item in falseFlags)
             {
-                MapProcessor.session.SetFlag(item, true);
+                Utils.FlagUtils.SetFlag(item, set ? true : false, saves);
             }
         }
     }
@@ -64,52 +64,13 @@ public class FlagTrigger : Trigger
     {
         base.OnEnter(player);
 
-        if (set)
+        foreach (var item in trueFlags)
         {
-            foreach (var item in trueFlags)
-            {
-                MapProcessor.session.SetFlag(item, true);
-            }
-            foreach (var item in falseFlags)
-            {
-                MapProcessor.session.SetFlag(item, false);
-            }
+            Utils.FlagUtils.SetFlag(item, set? true: false, saves);
         }
-        else {
-            foreach (var item in trueFlags)
-            {
-                MapProcessor.session.SetFlag(item, false);
-            }
-            foreach (var item in falseFlags)
-            {
-                MapProcessor.session.SetFlag(item, true);
-            }
-        }
-        if (saves)
+        foreach (var item in falseFlags)
         {
-            // Add global flags
-            foreach (var flag in trueFlags)
-            {
-                if (ChroniaHelperModule.SaveData.globalflags.ContainsKey(flag))
-                {
-                    ChroniaHelperModule.SaveData.globalflags[flag] = true;
-                }
-                else
-                {
-                    ChroniaHelperModule.SaveData.globalflags.Add(flag, true);
-                }
-            }
-            foreach (var flag in falseFlags)
-            {
-                if (ChroniaHelperModule.SaveData.globalflags.ContainsKey(flag))
-                {
-                    ChroniaHelperModule.SaveData.globalflags[flag] = false;
-                }
-                else
-                {
-                    ChroniaHelperModule.SaveData.globalflags.Add(flag, false);
-                }
-            }
+            Utils.FlagUtils.SetFlag(item, set ? false : true, saves);
         }
     }
 

@@ -178,4 +178,29 @@ public static class FlagUtils
         return dictionary;
     }
 
+    public static void SetFlag(string flag, bool state, bool global)
+    {
+        if (!global)
+        {
+            MapProcessor.level.Session.SetFlag(flag, state);
+        }
+        else
+        {
+            if (ChroniaHelperModule.SaveData.globalflags.ContainsKey(flag))
+            {
+                ChroniaHelperModule.SaveData.globalflags.Add(flag, state);
+            }
+            else
+            {
+                ChroniaHelperModule.SaveData.globalflags[flag] = state;
+            }
+            MapProcessor.level.Session.SetFlag(flag, state);
+        }
+    }
+
+    public static void SetFlag(string flag, bool state)
+    {
+        Utils.FlagUtils.SetFlag(flag, state, false);
+    }
+
 }
