@@ -111,4 +111,5 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // Custom Booster
     public float PlayerStaminaBeforeEnteringBooster = 110f;
+    public int PlayerDashesBeforeEnteringBooster = 1;
 }

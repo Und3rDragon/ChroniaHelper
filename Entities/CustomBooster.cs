@@ -161,6 +161,7 @@ public class CustomBooster : Booster
 
     private static void Player_BoostBegin(On.Celeste.Player.orig_BoostBegin orig, Player self)
     {
+        ChroniaHelperModule.Session.PlayerDashesBeforeEnteringBooster = self.Dashes;
         ChroniaHelperModule.Session.PlayerStaminaBeforeEnteringBooster = self.Stamina;
         orig(self);
     }
@@ -205,9 +206,13 @@ public class CustomBooster : Booster
             }
             else
             {
-                if (player.Dashes < myBooster.setDash)
+                if (ChroniaHelperModule.Session.PlayerDashesBeforeEnteringBooster < myBooster.setDash)
                 {
                     player.Dashes = myBooster.setDash;
+                }
+                else
+                {
+                    player.Dashes = ChroniaHelperModule.Session.PlayerDashesBeforeEnteringBooster;
                 }
             }
 
