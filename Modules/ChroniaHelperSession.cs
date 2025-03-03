@@ -112,4 +112,8 @@ public class ChroniaHelperSession : EverestModuleSession
     // Custom Booster
     public float PlayerStaminaBeforeEnteringBooster = 110f;
     public int PlayerDashesBeforeEnteringBooster = 1;
+
+    // Platform Line Controller
+    public bool modifySinkingPlatformLine = false, modifyMovingPlatformLine = false;
+    public Color platformLine_edgeColor = Color.White, platformLine_centerColor = Color.White;
 }

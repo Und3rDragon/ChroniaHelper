@@ -85,6 +85,7 @@ public class ChroniaHelperModule : EverestModule
         BoosterZipper.Load();
         Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
         SpriteEntity.Load();
+        PlatformLineController.Load();
 
         // API Imports
         typeof(FrostHelperImports).ModInterop();
@@ -118,6 +119,7 @@ public class ChroniaHelperModule : EverestModule
         BoosterZipper.Unload();
         Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
         SpriteEntity.Unload();
+        PlatformLineController.Unload();
     }
 
     private static void LevelLoader_OnLoadingThread(Level level)

@@ -681,3 +681,6 @@ entities.ChroniaHelper/PasswordKeyboard.attributes.description.mode=Normal Mode:
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.flagToEnable=When the password is correct, the flag will be activated
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.accessZone=A relative {X, Y, width, height} settings to define where player can access the keyboard
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.accessZoneIndicator=When enabled, a rectangle will appear in Lonn indicating the current zone\nDoes not have effect in game
+
+# Platform Line Controller
+entities.ChroniaHelper/PlatformLineController.placements.name.platfromLineController=Platform Line Controller
