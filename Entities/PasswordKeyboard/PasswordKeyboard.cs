@@ -3,7 +3,7 @@ using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities.PasswordKeyboard;
 
-[CustomEntity("ChroniaHelper/PasswordKeyboard")]
+//[CustomEntity("ChroniaHelper/PasswordKeyboard")]
 public sealed partial class PasswordKeyboard : Entity
 {
     public enum Mode { Exclusive, Normal, OutputFlag }

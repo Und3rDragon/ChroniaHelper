@@ -203,4 +203,28 @@ public static class FlagUtils
         Utils.FlagUtils.SetFlag(flag, state, false);
     }
 
+    public enum CheckFlag { CheckState, CheckGlobal, CheckGlobalState }
+    public static bool GetFlag(string flag, CheckFlag mode)
+    {
+        if(mode == CheckFlag.CheckGlobal)
+        {
+            return ChroniaHelperModule.SaveData.globalflags.ContainsKey(flag);
+        }
+        else if(mode == CheckFlag.CheckGlobalState)
+        {
+            bool a = ChroniaHelperModule.SaveData.globalflags.ContainsKey(flag);
+            if (a) { return ChroniaHelperModule.SaveData.globalflags[flag]; }
+            return false;
+        }
+        else
+        {
+            return MapProcessor.session.GetFlag(flag);
+        }
+    }
+
+    public static bool GetFlag(string flag)
+    {
+        return Utils.FlagUtils.GetFlag(flag, CheckFlag.CheckState);
+    }
+
 }
