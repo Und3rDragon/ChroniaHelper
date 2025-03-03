@@ -4,7 +4,10 @@ using ChroniaHelper;
 
 namespace YoctoHelper.Hooks;
 
-[HookRegister(id: HookId.BloomColor, useData: true)]
+// 很奇怪的钩子，没有实体在使用但是在运行，需要后续检查?
+// 暂定取消HookRegister
+
+//[HookRegister(id: HookId.BloomColor, useData: true)]
 public class BloomColorHook
 {
 

@@ -1,3 +1,7 @@
+# 29.0
+# New thing: The Platform Line Controller
+A controller that allows setting up the track color for the platforms
+
 # 28.33
 allow setting up variables and randomize a variable
 

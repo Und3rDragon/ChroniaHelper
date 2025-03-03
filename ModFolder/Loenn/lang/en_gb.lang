@@ -684,3 +684,6 @@ entities.ChroniaHelper/PasswordKeyboard.attributes.description.accessZoneIndicat
 
 # Platform Line Controller
 entities.ChroniaHelper/PlatformLineController.placements.name.platfromLineController=Platform Line Controller
+entities.ChroniaHelper/PlatformLineController.attributes.description.edgeColor=The edge color of the platform line
+entities.ChroniaHelper/PlatformLineController.attributes.description.centerColor=The main platform track color
+entities.ChroniaHelper/PlatformLineController.attributes.description.renderMode=Which type of platform line should this controller react to\nNotice that the settings of individual has higher priority than the settings of overall\nFor example, if you place a "overall" controller and a "moving platform" controller, the "overall" controller is gonna be deleted
