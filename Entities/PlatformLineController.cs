@@ -17,6 +17,7 @@ public class PlatformLineController : Entity
     {
         On.Celeste.MovingPlatformLine.Added += MP_Added_Modify;
         On.Celeste.MovingPlatformLine.Render += MP_Render_Modify;
+        On.Celeste.SinkingPlatformLine.Added += SP_Added_Modify;
         On.Celeste.SinkingPlatformLine.Render += SP_Render_Modify;
     }
 
@@ -24,16 +25,9 @@ public class PlatformLineController : Entity
     {
         On.Celeste.MovingPlatformLine.Added -= MP_Added_Modify;
         On.Celeste.MovingPlatformLine.Render -= MP_Render_Modify;
+        On.Celeste.SinkingPlatformLine.Added -= SP_Added_Modify;
         On.Celeste.SinkingPlatformLine.Render -= SP_Render_Modify;
     }
-
-    // Vanilla constants
-    public Color sinkLineEdgeColor = Calc.HexToColor("2a1923");
-    public Color sinkLineInnerColor = Calc.HexToColor("160b12");
-    public Color specialMoveLineEdgeColor = Calc.HexToColor("a4464a");
-    public Color specialMoveLineInnerColor = Calc.HexToColor("86354e");
-    public Color moveLineEdgeColor = Calc.HexToColor("2a1923");
-    public Color moveLineInnerColor = Calc.HexToColor("160b12");
 
     public PlatformLineController(EntityData data) : this(data, data.Position)
     {
@@ -41,25 +35,42 @@ public class PlatformLineController : Entity
     }
     public PlatformLineController(EntityData data, Vector2 position) : base(position)
     {
-        ChroniaHelperModule.Session.platformLine_edgeColor = Calc.HexToColor(data.Attr("edgeColor", "a4464a"));
-        ChroniaHelperModule.Session.platformLine_centerColor = Calc.HexToColor(data.Attr("centerColor", "86354e"));
+        Color edgeColor = Calc.HexToColor(data.Attr("edgeColor", "a4464a"));
+        Color centerColor = Calc.HexToColor(data.Attr("centerColor", "86354e"));
 
-        switch(data.Int("renderMode", 0))
+        switch(mode = data.Int("renderMode", 0))
         {
             case 1:
                 // moving platform
                 ChroniaHelperModule.Session.modifyMovingPlatformLine = true;
-                ChroniaHelperModule.Session.modifySinkingPlatformLine = false;
+
+                ChroniaHelperModule.Session.platformLine_MP_centerColor = centerColor;
+                ChroniaHelperModule.Session.platformLine_MP_edgeColor = edgeColor;
+
+                ChroniaHelperModule.Session.platformLine_MP_depth = data.Int("depth", 9001);
                 break;
             case 2:
                 // sinking platform
-                ChroniaHelperModule.Session.modifyMovingPlatformLine = false;
                 ChroniaHelperModule.Session.modifySinkingPlatformLine = true;
+
+                ChroniaHelperModule.Session.platformLine_SP_centerColor = centerColor;
+                ChroniaHelperModule.Session.platformLine_SP_edgeColor = edgeColor;
+
+                ChroniaHelperModule.Session.platformLine_SP_depth = data.Int("depth", 9001);
                 break;
             case 3:
                 // all
                 ChroniaHelperModule.Session.modifyMovingPlatformLine = true;
                 ChroniaHelperModule.Session.modifySinkingPlatformLine = true;
+
+                ChroniaHelperModule.Session.platformLine_MP_centerColor = centerColor;
+                ChroniaHelperModule.Session.platformLine_MP_edgeColor = edgeColor;
+
+                ChroniaHelperModule.Session.platformLine_SP_centerColor = centerColor;
+                ChroniaHelperModule.Session.platformLine_SP_edgeColor = edgeColor;
+
+                ChroniaHelperModule.Session.platformLine_SP_depth = data.Int("depth", 9001);
+                ChroniaHelperModule.Session.platformLine_MP_depth = data.Int("depth", 9001);
                 break;
             default:
                 ChroniaHelperModule.Session.modifyMovingPlatformLine = false;
@@ -70,19 +81,44 @@ public class PlatformLineController : Entity
         base.Tag = Tags.TransitionUpdate;
     }
 
-    private int ID;
+    private int ID, mode;
 
     public override void Added(Scene scene)
     {
-        int maxID = 0;
+        // comparator
+        int maxModeID = 3;
+
+        int[] maxID = new int[maxModeID + 1];
+        bool[] modeExist = new bool[maxModeID + 1];
+
+        for(int i = 0; i <= maxModeID; i ++)
+        {
+            maxID[i] = 0;
+            modeExist[i] = false;
+        }
+
         foreach(var item in MapProcessor.level.Entities)
         {
             if(item is PlatformLineController controller)
             {
-                maxID = Math.Max(controller.ID, ID);
+                maxID[controller.mode] = Math.Max(controller.ID, ID);
+                modeExist[controller.mode] = true;
             }
         }
-        if(ID < maxID)
+
+        if(mode == 0)
+        {
+            for(int i = 1; i <= maxModeID; i++)
+            {
+                if (modeExist[i]) { RemoveSelf(); }
+            }
+        }
+        else if(mode == 3)
+        {
+            if (modeExist[1] || modeExist[2]) { RemoveSelf(); }
+        }
+
+        if(ID < maxID[mode])
         {
             RemoveSelf();
         }
@@ -95,6 +131,8 @@ public class PlatformLineController : Entity
 
         if (ChroniaHelperModule.Session.modifyMovingPlatformLine)
         {
+            self.Depth = ChroniaHelperModule.Session.platformLine_MP_depth;
+
             if ((scene as Level).Session.Area.ID == 4)
             {
                 self.lineEdgeColor = Calc.HexToColor("a4464a");
@@ -116,21 +154,30 @@ public class PlatformLineController : Entity
         {
             Vector2 vector = (self.end - self.Position).SafeNormalize();
             Vector2 vector2 = new Vector2(0f - vector.Y, vector.X);
-            Draw.Line(self.Position - vector - vector2, self.end + vector - vector2, ChroniaHelperModule.Session.platformLine_edgeColor);
-            Draw.Line(self.Position - vector, self.end + vector, ChroniaHelperModule.Session.platformLine_edgeColor);
-            Draw.Line(self.Position - vector + vector2, self.end + vector + vector2, ChroniaHelperModule.Session.platformLine_edgeColor);
-            Draw.Line(self.Position, self.end, ChroniaHelperModule.Session.platformLine_centerColor);
+            Draw.Line(self.Position - vector - vector2, self.end + vector - vector2, ChroniaHelperModule.Session.platformLine_MP_edgeColor);
+            Draw.Line(self.Position - vector, self.end + vector, ChroniaHelperModule.Session.platformLine_MP_edgeColor);
+            Draw.Line(self.Position - vector + vector2, self.end + vector + vector2, ChroniaHelperModule.Session.platformLine_MP_edgeColor);
+            Draw.Line(self.Position, self.end, ChroniaHelperModule.Session.platformLine_MP_centerColor);
         }
     }
 
+    public static void SP_Added_Modify(On.Celeste.SinkingPlatformLine.orig_Added orig, SinkingPlatformLine self, Scene scene)
+    {
+        orig(self, scene);
+
+        if (ChroniaHelperModule.Session.modifySinkingPlatformLine)
+        {
+            self.Depth = ChroniaHelperModule.Session.platformLine_SP_depth;
+        }
+    }
     public static void SP_Render_Modify(On.Celeste.SinkingPlatformLine.orig_Render orig, SinkingPlatformLine self)
     {
         orig(self);
 
         if (ChroniaHelperModule.Session.modifySinkingPlatformLine)
         {
-            Draw.Rect(self.X - 1f, self.Y, 3f, self.height, ChroniaHelperModule.Session.platformLine_edgeColor);
-            Draw.Rect(self.X, self.Y + 1f, 1f, self.height, ChroniaHelperModule.Session.platformLine_centerColor);
+            Draw.Rect(self.X - 1f, self.Y, 3f, self.height, ChroniaHelperModule.Session.platformLine_SP_edgeColor);
+            Draw.Rect(self.X, self.Y + 1f, 1f, self.height, ChroniaHelperModule.Session.platformLine_SP_centerColor);
         }
     }
 }

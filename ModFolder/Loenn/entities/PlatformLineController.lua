@@ -15,6 +15,7 @@ platfromLineController.placements = {
             edgeColor = "2a1923",
             centerColor = "160b12",
             renderMode = 0,
+            depth = 9001,
         }
     }
 }
@@ -36,6 +37,7 @@ platfromLineController.fieldInformation =
     centerColor = {
         fieldType = "color",
     },
+    depth = require("mods").requireFromPlugin("helpers.field_options").depths,
 }
 
 function platfromLineController.sprite(room, entity)

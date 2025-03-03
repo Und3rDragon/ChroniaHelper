@@ -114,6 +114,19 @@ public class ChroniaHelperSession : EverestModuleSession
     public int PlayerDashesBeforeEnteringBooster = 1;
 
     // Platform Line Controller
+
+    // Vanilla constants
+    public static Color sinkLineEdgeColor = Calc.HexToColor("2a1923");
+    public static Color sinkLineInnerColor = Calc.HexToColor("160b12");
+    public static Color specialMoveLineEdgeColor = Calc.HexToColor("a4464a");
+    public static Color specialMoveLineInnerColor = Calc.HexToColor("86354e");
+    public static Color moveLineEdgeColor = Calc.HexToColor("2a1923");
+    public static Color moveLineInnerColor = Calc.HexToColor("160b12");
+
     public bool modifySinkingPlatformLine = false, modifyMovingPlatformLine = false;
-    public Color platformLine_edgeColor = Color.White, platformLine_centerColor = Color.White;
+    public Color platformLine_SP_edgeColor = sinkLineEdgeColor, 
+        platformLine_SP_centerColor = sinkLineInnerColor,
+        platformLine_MP_edgeColor = moveLineEdgeColor, 
+        platformLine_MP_centerColor = moveLineInnerColor;
+    public int platformLine_SP_depth = 9001, platformLine_MP_depth = 9001;
 }
