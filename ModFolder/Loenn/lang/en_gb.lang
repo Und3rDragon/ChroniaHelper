@@ -305,7 +305,7 @@ entities.ChroniaHelper/ZipDream.attributes.description.sideFlag=If enabled, the 
 entities.ChroniaHelper/ZipDream.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
 
 # Flag Touch Switch Wall
-entities.ChroniaHelper/FlagTouchSwitch.placements.name.touch_switch=(Obsoleted) Chronia Touch Switch / Chronia Switch Wall
+entities.ChroniaHelper/FlagTouchSwitch.placements.name.touch_switch=~Chronia Touch Switch / Chronia Switch Wall
 entities.ChroniaHelper/FlagTouchSwitch.placements.description.touch_switch=This entity is now mended into and handled by Maddie's Helping Hand
 entities.ChroniaHelper/FlagTouchSwitch.attributes.description.flag=The session flag this touch switch sets. Give the same to multiple touch switches and switch gates to group them.
 entities.ChroniaHelper/FlagTouchSwitch.attributes.description.icon=The name of the icon for the touch switch (relative to objects/MaxHelpingHand/flagTouchSwitch), or "vanilla" for the default one.
@@ -338,10 +338,10 @@ entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.finishColor=
 entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.hideIfFlag=If a session flag is specified here, turning it on will make the touch switch disappear, and will make other touch switches in the room ignore it for the group's completion.
 
 # Flag Switch Gate
-entities.ChroniaHelper/FlagSwitchGate.placements.name.block=(Obsoleted) Chronia Switch Gate (Block)
-entities.ChroniaHelper/FlagSwitchGate.placements.name.mirror=(Obsoleted) Chronia Switch Gate (Mirror)
-entities.ChroniaHelper/FlagSwitchGate.placements.name.temple=(Obsoleted) Chronia Switch Gate (Temple)
-entities.ChroniaHelper/FlagSwitchGate.placements.name.stars=(Obsoleted) Chronia Switch Gate (Stars)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.block=~Chronia Switch Gate (Block)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.mirror=~Chronia Switch Gate (Mirror)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.temple=~Chronia Switch Gate (Temple)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.stars=~Chronia Switch Gate (Stars)
 entities.ChroniaHelper/FlagSwitchGate.placements.description.block=This entity is now mended into and handled by Maddie's Helping Hand
 entities.ChroniaHelper/FlagSwitchGate.placements.description.mirror=This entity is now mended into and handled by Maddie's Helping Hand
 entities.ChroniaHelper/FlagSwitchGate.placements.description.temple=This entity is now mended into and handled by Maddie's Helping Hand
