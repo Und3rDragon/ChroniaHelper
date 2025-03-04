@@ -211,7 +211,7 @@ public static class StringUtils
             sb.Append(b.ToString("X2"));
         }
             
-        return sb.ToString();
+        return sb.ToString().ToLower();
     }
 
     public static string GetHashString(string inputString, string id)
@@ -222,6 +222,6 @@ public static class StringUtils
             sb.Append(b.ToString("X2"));
         }
 
-        return sb.ToString();
+        return sb.ToString().ToLower();
     }
 }
