@@ -219,6 +219,12 @@ public class ColoredCustomCoreMessage : Entity
                 text = "NO MATCHING CODE";
             }
         }
+        if (dialog.StartsWith("keyboardSync_"))
+        {
+            string tag = dialog.Remove(0, "keyboardSync_".Length);
+            bool valid = ChroniaHelperModule.Session.Passwords.ContainsKey(tag);
+            text = valid ? ChroniaHelperModule.Session.Passwords[tag] : "INVALID TAG";
+        }
 
         Vector2 position = ((Level)base.Scene).Camera.Position;
         Vector2 value = position + new Vector2(screenX, screenY);

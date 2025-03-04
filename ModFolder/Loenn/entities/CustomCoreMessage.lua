@@ -33,6 +33,7 @@ ccm.fieldInformation = {
             "ChroniaHelperTimerStatic",
             "ChroniaHelperFrames",
             "ChroniaHelperFramesStatic",
+            ["keyboardSync_(tagID)"] = "keyboardSync_passwordKeyboard",
         },
         editable = true,
     },

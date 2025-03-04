@@ -107,7 +107,7 @@ public class ChroniaHelperSession : EverestModuleSession
     // Password Keyboard
     public Dictionary<EntityID, int> RemainingUses { get; set; } = new();
 
-    public string Password { get; set; } = string.Empty;
+    public Dictionary<string,string> Passwords { get; set; } = new() { {"passwordKeyboard", "null" }};
 
     // Platform Line Controller
 

@@ -19,6 +19,7 @@ public sealed partial class PasswordKeyboard : Entity
               data.Position + offset,
               new Config(
                   (Mode)data.Int("mode"),
+                  data.Attr("tag","passwordKeyboard"),
                   data.Attr("flagToEnable"),
                   data.Attr("password"),
                   data.Attr("rightDialog", "rightDialog"),
@@ -84,7 +85,9 @@ public sealed partial class PasswordKeyboard : Entity
         switch (config.Mode)
         {
             case Mode.Exclusive:
-                ChroniaHelperModule.Session.Password = password;
+                bool exists = ChroniaHelperModule.Session.Passwords.ContainsKey(config.IDTag);
+                if (exists) { ChroniaHelperModule.Session.Passwords[config.IDTag] = password; }
+                else { ChroniaHelperModule.Session.Passwords.Add(config.IDTag, password); }
                 break;
             case Mode.Normal:
                 string passIn = config.CaseSensitive ? password : password.ToLower();

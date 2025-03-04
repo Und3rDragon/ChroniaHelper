@@ -11,7 +11,7 @@ entity.placements = {
     data = {
         --width = 16,
         --height = 16,
-
+        tag = "passwordKeyboard",
         mode = 0,
         flagToEnable = "",
         password = "",
@@ -43,6 +43,9 @@ entity.fieldInformation = {
         elementOptions = {
             fieldType = "integer",
         },
+    },
+    tag = {
+        allowEmpty = false,
     }
 }
 
