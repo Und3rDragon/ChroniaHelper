@@ -208,16 +208,10 @@ public static class StringUtils
         return sb.ToString().ToLower();
     }
 
-    /// <summary>
-    /// This function is unique for Password Keyboard
-    /// </summary>
-    /// <param name="inputString"></param>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public static string GetHashString(string inputString, string id)
+    public static string GetHashString(string inputString, bool caseSensitive)
     {
         StringBuilder sb = new StringBuilder();
-        foreach (byte b in GetHash(id + inputString))
+        foreach (byte b in GetHash(caseSensitive? inputString : inputString.ToLower()))
         {
             sb.Append(b.ToString("X2"));
         }

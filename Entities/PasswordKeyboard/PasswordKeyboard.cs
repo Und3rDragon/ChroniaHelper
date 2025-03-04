@@ -78,7 +78,7 @@ public sealed partial class PasswordKeyboard : Entity
         if (config.ShowHash)
         {
             Log.Info($"Generated Hash for Keyboard [{config.IDTag}]:");
-            Log.Info($"{StringUtils.GetHashString(config.CaseSensitive ? config.Password : config.Password.ToLower(), config.IDTag)}");
+            Log.Info($"{StringUtils.GetHashString(config.IDTag + config.Password, config.CaseSensitive)}");
         }
 
         base.Depth = data.Int("depth", 9000);
@@ -114,7 +114,7 @@ public sealed partial class PasswordKeyboard : Entity
                 string passOut = config.CaseSensitive ? config.Password : config.Password.ToLower();
                 if (config.Encrypted)
                 {
-                    passIn = StringUtils.GetHashString(passIn, config.IDTag);
+                    passIn = StringUtils.GetHashString(config.IDTag + config.Password, config.CaseSensitive);
                     passOut = config.Password;
                 }
                 if(passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
