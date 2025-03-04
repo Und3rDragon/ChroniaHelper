@@ -79,4 +79,4 @@ entity.sprite = function(room, entity)
     return sprites
 end
 
---return entity
+return entity

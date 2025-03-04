@@ -1,5 +1,6 @@
 using System.Linq;
 using Celeste.Mod.Core;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Input;
 
 namespace ChroniaHelper.Entities.PasswordKeyboard;
@@ -126,8 +127,11 @@ partial class PasswordKeyboard
 
         private void Finish()
         {
+            // clicking "enter"
             if (onTry.Invoke(inputText.Trim()))
             {
+                // on exclusive mode and flag mode the screen will exit
+                // but on normal mode, it won't
                 Exit();
             }
         }
@@ -141,9 +145,18 @@ partial class PasswordKeyboard
         {
             DrawOptionText(inputText, new Vector2(960f, 148f), new Vector2(0.5f, 0.0f), Vector2.One * 3f, false);
 
-            if (ChroniaHelperModule.Session.RemainingUses[config.entityID] != -1)
+            if (ChroniaHelperModule.Session.RemainingUses[config.entityID] > 0)
             {
                 DrawOptionText($"You have {ChroniaHelperModule.Session.RemainingUses[config.entityID]} chances left",
+                    new Vector2(368f, 110f),
+                    new Vector2(0.5f, 0.5f),
+                    Vector2.One,
+                    false
+                    );
+            }
+            else
+            {
+                DrawOptionText("Keyboard Lockdown!",
                     new Vector2(368f, 110f),
                     new Vector2(0.5f, 0.5f),
                     Vector2.One,

@@ -3,7 +3,7 @@ using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities.PasswordKeyboard;
 
-//[CustomEntity("ChroniaHelper/PasswordKeyboard")]
+[CustomEntity("ChroniaHelper/PasswordKeyboard")]
 public sealed partial class PasswordKeyboard : Entity
 {
     public enum Mode { Exclusive, Normal, OutputFlag }
@@ -80,29 +80,33 @@ public sealed partial class PasswordKeyboard : Entity
     private bool OnTry(string password)
     {
         var dic = ChroniaHelperModule.Session.RemainingUses;
+        bool feedback = true;
         switch (config.Mode)
         {
-        case Mode.Exclusive:
+            case Mode.Exclusive:
                 ChroniaHelperModule.Session.Password = password;
-            break;
-        case Mode.Normal:
-            if (!password.Equals(
-                config.Password,
-                config.CaseSensitive ?
-                StringComparison.InvariantCulture :
-                StringComparison.InvariantCultureIgnoreCase
-                ))
-                SceneAs<Level>().Session.SetFlag(config.FlagToEnable, true);
-            return false;
-        case Mode.OutputFlag:
-            SceneAs<Level>().Session.SetFlag(password, true);
-            break;
-        default:
-            return false;
+                break;
+            case Mode.Normal:
+                string passIn = config.CaseSensitive ? password : password.ToLower();
+                string passOut = config.CaseSensitive ? config.Password : config.Password.ToLower();
+                if(passIn == passOut && dic[entityID] > 0)
+                {
+                    FlagUtils.SetFlag(config.FlagToEnable, true);
+                }
+                //return false;
+                feedback = false;
+                break;
+            case Mode.OutputFlag:
+                FlagUtils.SetFlag(password, true);
+                break;
+            default:
+                //return false;
+                feedback = false;
+                break;
         }
         if (dic[entityID] > 0)
             dic[entityID] -= 1;
-        return true;
+        return feedback;
     }
 
     private void OnExit()
