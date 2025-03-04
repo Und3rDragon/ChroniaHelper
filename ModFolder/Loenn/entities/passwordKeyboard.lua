@@ -11,17 +11,21 @@ entity.placements = {
     data = {
         --width = 16,
         --height = 16,
+        texture = "ChroniaHelper/PasswordKeyboard/keyboard",
         tag = "passwordKeyboard",
-        mode = 0,
+        mode = 1,
         flagToEnable = "",
         password = "",
         --rightDialog = "rightDialog",
         --wrongDialog = "wrongDialog",
-        caseSensitive = false,
+        caseSensitive = true,
         useTimes = -1,
         accessZone = "-16,0,32,8",
         accessZoneIndicator = false,
+        talkIconPosition = "0,-8",
         --globalFlag = false,
+        passwordEncrypted = false,
+        showEncryptedPasswordInConsole = false,
     }
 }
 
@@ -40,17 +44,28 @@ entity.fieldInformation = {
     },
     accessZone = {
         fieldType = "list",
+        minimumElements = 4,
+        maximumElements = 4,
         elementOptions = {
             fieldType = "integer",
         },
     },
     tag = {
         allowEmpty = false,
-    }
+    },
+    texture = {
+        allowEmpty = false,
+    },
+    talkIconPosition = {
+        fieldType = "list",
+        minimumElements = 2,
+        maximumElements = 2
+    },
 }
 
 entity.sprite = function(room, entity)
-    local defaultTexture = "PasswordKeyboard/keyboard"
+    --local defaultTexture = "ChroniaHelper/PasswordKeyboard/keyboard"
+    local defaultTexture = entity.texture
     local sprites = {}
 
     sprite = drawableSprite.fromTexture(defaultTexture, entity)

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ChroniaHelper.Utils;
 
@@ -186,5 +188,40 @@ public static class StringUtils
         if (s.Length <= 1) { return string.Empty; }
         s = s.Substring(1, s.Length - 1);
         return s;
+    }
+
+    // Hash code algorithm from Aurora Aquir
+    public static byte[] GetHash(string inputString)
+    {
+        HashAlgorithm algorithm = SHA256.Create();
+        return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+    }
+
+    public static byte[] GetHash(string inputString, string id)
+    {
+        HashAlgorithm algorithm = SHA256.Create();
+        return algorithm.ComputeHash(Encoding.UTF8.GetBytes(id + inputString));
+    }
+
+    public static string GetHashString(string inputString)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (byte b in GetHash(inputString))
+        {
+            sb.Append(b.ToString("X2"));
+        }
+            
+        return sb.ToString();
+    }
+
+    public static string GetHashString(string inputString, string id)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (byte b in GetHash(inputString, id))
+        {
+            sb.Append(b.ToString("X2"));
+        }
+
+        return sb.ToString();
     }
 }

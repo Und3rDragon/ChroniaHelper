@@ -11,6 +11,10 @@ partial class PasswordKeyboard
         string WrongDialog,
         bool CaseSensitive,
         int UseTimes,
-        EntityID entityID
+        EntityID entityID,
+        bool Encrypted,
+        bool ShowHash,
+        string Texture,
+        string TalkIconPosition
         );
 }

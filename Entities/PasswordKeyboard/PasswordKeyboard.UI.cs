@@ -154,7 +154,7 @@ partial class PasswordKeyboard
                     false
                     );
             }
-            else
+            else if(ChroniaHelperModule.Session.RemainingUses[config.entityID] == 0)
             {
                 DrawOptionText("Keyboard Lockdown!",
                     new Vector2(368f, 110f),

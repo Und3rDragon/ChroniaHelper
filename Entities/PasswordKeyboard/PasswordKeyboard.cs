@@ -26,7 +26,11 @@ public sealed partial class PasswordKeyboard : Entity
                   data.Attr("wrongDialog", "wrongDialog"),
                   data.Bool("caseSensitive", false),
                   data.Int("useTimes", -1),
-                  new EntityID(data.Level.Name, data.ID)
+                  new EntityID(data.Level.Name, data.ID),
+                  data.Bool("passwordEncrypted", false),
+                  data.Bool("showEncryptedPasswordInConsole", false),
+                  data.Attr("texture", "ChroniaHelper/PasswordKeyboard/keyboard"),
+                  data.Attr("talkIconPosition", "0,-8")
                   ),
               new EntityID(data.Level.Name, data.ID),
               data
@@ -48,11 +52,19 @@ public sealed partial class PasswordKeyboard : Entity
             hp[i] = p;
         }
         hp[2].MakeAbs(); hp[3].MakeAbs();
+        
+        Vector2 iconPos = new Vector2(0f, -8f);
+        string[] iconPosSetting = config.TalkIconPosition.Split(",", StringSplitOptions.TrimEntries);
+        for(int i = 0; i < iconPosSetting.Length; i++)
+        {
+            if(i == 0) { float.TryParse(iconPosSetting[0], out iconPos.X); }
+            if(i == 1) { float.TryParse(iconPosSetting[1], out iconPos.Y); }
+        }
 
         this.config = config;
         this.entityID = entityID;
-        Add(new Image(GFX.Game["PasswordKeyboard/keyboard"]).JustifyOrigin(0.5f, 0.5f));
-        Add(talkComponent = new TalkComponent(new Rectangle(hp[0], hp[1], hp[2], hp[3]), Vector2.Zero, OnTalk));
+        Add(new Image(GFX.Game[config.Texture]).JustifyOrigin(0.5f, 0.5f));
+        Add(talkComponent = new TalkComponent(new Rectangle(hp[0], hp[1], hp[2], hp[3]), iconPos, OnTalk));
         talkComponent.PlayerMustBeFacing = true;
 
         ui = new(config, OnExit, OnTry);
@@ -62,6 +74,12 @@ public sealed partial class PasswordKeyboard : Entity
 
         // Additional
         globalFlag = data.Bool("globalFlag", false);
+
+        if (config.ShowHash)
+        {
+            Log.Info($"Generated Hash for Keyboard [{config.IDTag}]:");
+            Log.Info($"{StringUtils.GetHashString(config.CaseSensitive ? config.Password : config.Password.ToLower(), config.IDTag)}");
+        }
     }
     private bool globalFlag = false;
 
@@ -92,7 +110,12 @@ public sealed partial class PasswordKeyboard : Entity
             case Mode.Normal:
                 string passIn = config.CaseSensitive ? password : password.ToLower();
                 string passOut = config.CaseSensitive ? config.Password : config.Password.ToLower();
-                if(passIn == passOut && dic[entityID] > 0)
+                if (config.Encrypted)
+                {
+                    passIn = StringUtils.GetHashString(passIn, config.IDTag);
+                    passOut = config.Password;
+                }
+                if(passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
                 {
                     FlagUtils.SetFlag(config.FlagToEnable, true);
                 }
