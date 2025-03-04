@@ -223,7 +223,7 @@ public class ColoredCustomCoreMessage : Entity
         {
             string tag = dialog.Remove(0, "keyboardSync_".Length);
             bool valid = ChroniaHelperModule.Session.Passwords.ContainsKey(tag);
-            text = valid ? ChroniaHelperModule.Session.Passwords[tag] : "INVALID TAG";
+            text = valid ? ChroniaHelperModule.Session.Passwords[tag] : string.Empty;
         }
 
         Vector2 position = ((Level)base.Scene).Camera.Position;

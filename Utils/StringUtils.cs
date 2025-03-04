@@ -197,12 +197,6 @@ public static class StringUtils
         return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
     }
 
-    public static byte[] GetHash(string inputString, string id)
-    {
-        HashAlgorithm algorithm = SHA256.Create();
-        return algorithm.ComputeHash(Encoding.UTF8.GetBytes(id + inputString));
-    }
-
     public static string GetHashString(string inputString)
     {
         StringBuilder sb = new StringBuilder();
@@ -214,10 +208,16 @@ public static class StringUtils
         return sb.ToString().ToLower();
     }
 
+    /// <summary>
+    /// This function is unique for Password Keyboard
+    /// </summary>
+    /// <param name="inputString"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static string GetHashString(string inputString, string id)
     {
         StringBuilder sb = new StringBuilder();
-        foreach (byte b in GetHash(inputString, id))
+        foreach (byte b in GetHash(id + inputString))
         {
             sb.Append(b.ToString("X2"));
         }

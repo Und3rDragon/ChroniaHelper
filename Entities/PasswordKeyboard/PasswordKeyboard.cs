@@ -80,6 +80,8 @@ public sealed partial class PasswordKeyboard : Entity
             Log.Info($"Generated Hash for Keyboard [{config.IDTag}]:");
             Log.Info($"{StringUtils.GetHashString(config.CaseSensitive ? config.Password : config.Password.ToLower(), config.IDTag)}");
         }
+
+        base.Depth = data.Int("depth", 9000);
     }
     private bool globalFlag = false;
 

@@ -4,7 +4,7 @@ local drawableRectangle = require("structs.drawable_rectangle")
 local entity = {}
 
 entity.name = "ChroniaHelper/PasswordKeyboard"
-
+entity.depth = function(room,entity) return entity.depth or 9000 end
 --entity.justification = { 0.5, 1.0 }
 entity.placements = {
     name = "normal",
@@ -23,6 +23,7 @@ entity.placements = {
         accessZone = "-16,0,32,8",
         accessZoneIndicator = false,
         talkIconPosition = "0,-8",
+        depth = 9000,
         --globalFlag = false,
         passwordEncrypted = false,
         showEncryptedPasswordInConsole = false,
@@ -61,6 +62,7 @@ entity.fieldInformation = {
         minimumElements = 2,
         maximumElements = 2
     },
+    depth = require("mods").requireFromPlugin("helpers.field_options").depths,
 }
 
 entity.sprite = function(room, entity)

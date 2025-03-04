@@ -4,8 +4,6 @@ local drawableSprite = require("structs.drawable_sprite")
 
 local platfromLineController = {}
 
-platfromLineController.depth = -10000000
-
 platfromLineController.name = "ChroniaHelper/PlatformLineController"
 
 platfromLineController.placements = {
