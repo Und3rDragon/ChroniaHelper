@@ -109,10 +109,6 @@ public class ChroniaHelperSession : EverestModuleSession
 
     public string Password { get; set; } = string.Empty;
 
-    // Custom Booster
-    public float PlayerStaminaBeforeEnteringBooster = 110f;
-    public int PlayerDashesBeforeEnteringBooster = 1;
-
     // Platform Line Controller
 
     // Vanilla constants

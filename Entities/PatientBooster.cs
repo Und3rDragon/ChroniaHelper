@@ -32,6 +32,7 @@ public class PatientBooster : Booster
 		string[] hitboxData = data.Attr("customHitbox").Split(';',StringSplitOptions.TrimEntries);
         //对于每组数据
         ColliderList CL = new ColliderList();
+		CL.Add(new Hitbox(0f, 0f,1000000f,1000000f));
         for (int i = 0; i < hitboxData.Length; i++)
         {
             //首先分割并去空

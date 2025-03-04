@@ -161,9 +161,11 @@ public class CustomBooster : Booster
 
     private static void Player_BoostBegin(On.Celeste.Player.orig_BoostBegin orig, Player self)
     {
-        ChroniaHelperModule.Session.PlayerDashesBeforeEnteringBooster = self.Dashes;
-        ChroniaHelperModule.Session.PlayerStaminaBeforeEnteringBooster = self.Stamina;
-        orig(self);
+        if (!self.CollideCheck<CustomBooster>())
+        {
+            orig(self);
+        }
+        
     }
     private static void Booster_PlayerReleased(On.Celeste.Booster.orig_PlayerReleased orig, Booster self)
     {
@@ -200,36 +202,15 @@ public class CustomBooster : Booster
             myBooster.PlayerReleased();
 
             // Set or Refill Player Dashes or Stamina
-            if (myBooster.setDashes)
+            
+            if (myBooster.setDashes || player.Dashes < myBooster.setDash)
             {
                 player.Dashes = myBooster.setDash;
             }
-            else
-            {
-                if (ChroniaHelperModule.Session.PlayerDashesBeforeEnteringBooster < myBooster.setDash)
-                {
-                    player.Dashes = myBooster.setDash;
-                }
-                else
-                {
-                    player.Dashes = ChroniaHelperModule.Session.PlayerDashesBeforeEnteringBooster;
-                }
-            }
 
-            if (myBooster.setupStamina)
+            if (myBooster.setupStamina || player.Stamina < myBooster.setStamina)
             {
                 player.Stamina = myBooster.setStamina;
-            }
-            else
-            {
-                if (ChroniaHelperModule.Session.PlayerStaminaBeforeEnteringBooster < myBooster.setStamina)
-                {
-                    player.Stamina = myBooster.setStamina;
-                }
-                else
-                {
-                    player.Stamina = ChroniaHelperModule.Session.PlayerStaminaBeforeEnteringBooster;
-                }
             }
 
             player.Speed *= myBooster.outSpeed;
