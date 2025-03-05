@@ -43,7 +43,9 @@ touchSwitch.fieldOrder = {"x", "y",
 "activeColor", "finishColor", 
 "hitSound", "completeSoundFromSwitch", "completeSoundFromScene",
 "switch","idleAnimDelay",
+"spinAnimDelay",
 "activatedAnimRate", "finishedAnimRate",
+"passwordID", "password",
 }
 
 touchSwitch.fieldInformation = {
