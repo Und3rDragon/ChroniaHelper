@@ -199,8 +199,15 @@ public class FlagButton : Entity {
 
         Add(new VertexLight(Color.White, 0.8f, 16, 32));
         Add(touchSfx = new SoundSource());
+
+        // Password Keyboard
+        passwordID = data.Attr("passwordID");
+        password = data.Attr("password");
+        passwordProtected = !string.IsNullOrEmpty(passwordID) && !string.IsNullOrEmpty(password);
     }
     // Save or overwrite the existing values
+    private bool passwordProtected = false; private string passwordID, password;
+
     public void FlagSave(string key)
     {
         if (ChroniaHelperModule.Session.switchFlag.ContainsKey(key))
@@ -324,6 +331,11 @@ public class FlagButton : Entity {
     public bool inside = false;
     public void OnPlayer(Player player)
     {
+        if (passwordProtected)
+        {
+            if (!ChroniaHelperModule.Session.Passwords.ContainsKey(passwordID)) { return; }
+            else if (ChroniaHelperModule.Session.Passwords[passwordID] != password) { return; }
+        }
         if (toggle)
         {
             if (!inside)

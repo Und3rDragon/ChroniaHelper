@@ -1,3 +1,10 @@
+# 30.0
+# New entity: Password Keyboard
+A keyboard that allows player to enter passwords
+Alongside changes:
+	Flag Button now supports password protection
+	Custom Core message built-in synchronized display
+
 # 29.0
 # New thing: The Platform Line Controller
 A controller that allows setting up the track color for the platforms

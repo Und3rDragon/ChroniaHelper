@@ -33,6 +33,8 @@ touchSwitch.placements = {
             spinAnimDelay = 0.1,
             activatedAnimRate = 4.0,
             finishedAnimRate = 0.1,
+            passwordID = "",
+            password = "",
         }
     }
 }
@@ -64,7 +66,7 @@ touchSwitch.fieldInformation = {
     },
     borderTexture = {
         options = {"", "particles/ChroniaHelper/none"}, editable = true,
-    }
+    },
 }
 
 local containerTexture = "objects/touchswitch/container"

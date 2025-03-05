@@ -576,8 +576,10 @@ entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedXMultipl
 
 # Real Flag Switch
 entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitch=Flag Button Wall (2-in-1)
+entities.ChroniaHelper/RealFlagSwitch.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
 # Real Flag Switch Alt
 entities.ChroniaHelper/RealFlagSwitchAlt.placements.name.flagswitch=Flag Button (Button Only)
+entities.ChroniaHelper/RealFlagSwitchAlt.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
 
 # Summit Cloud
 entities.ChroniaHelper/CustomSummitCloud.placements.name.cloud=Custom Summit Cloud
