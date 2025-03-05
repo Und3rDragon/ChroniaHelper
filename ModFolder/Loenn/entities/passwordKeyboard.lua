@@ -16,6 +16,7 @@ entity.placements = {
         mode = 1,
         flagToEnable = "",
         password = "",
+        characterLimit = 12,
         --rightDialog = "rightDialog",
         --wrongDialog = "wrongDialog",
         caseSensitive = true,
@@ -24,7 +25,8 @@ entity.placements = {
         accessZoneIndicator = false,
         talkIconPosition = "0,-8",
         depth = 9000,
-        --globalFlag = false,
+        globalFlag = false,
+        toggleFlag = false,
         passwordEncrypted = false,
         showEncryptedPasswordInConsole = false,
     }
@@ -63,6 +65,10 @@ entity.fieldInformation = {
         maximumElements = 2
     },
     depth = require("mods").requireFromPlugin("helpers.field_options").depths,
+    characterLimit = {
+        minimumValue = 1,
+        fieldType = "integer",
+    }
 }
 
 entity.sprite = function(room, entity)

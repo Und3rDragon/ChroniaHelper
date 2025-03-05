@@ -29,8 +29,11 @@ public sealed partial class PasswordKeyboard : Entity
                   new EntityID(data.Level.Name, data.ID),
                   data.Bool("passwordEncrypted", false),
                   data.Bool("showEncryptedPasswordInConsole", false),
+                  data.Bool("globalFlag", false),
+                  data.Bool("toggleFlag", false),
                   data.Attr("texture", "ChroniaHelper/PasswordKeyboard/keyboard"),
-                  data.Attr("talkIconPosition", "0,-8")
+                  data.Attr("talkIconPosition", "0,-8"),
+                  data.Int("characterLimit", 12)
                   ),
               new EntityID(data.Level.Name, data.ID),
               data
@@ -119,13 +122,27 @@ public sealed partial class PasswordKeyboard : Entity
                 }
                 if(passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
                 {
-                    FlagUtils.SetFlag(config.FlagToEnable, true);
+                    if (config.Toggle)
+                    {
+                        FlagUtils.SetFlag(config.FlagToEnable, !FlagUtils.GetFlag(config.FlagToEnable), config.Global);
+                    }
+                    else
+                    {
+                        FlagUtils.SetFlag(config.FlagToEnable, true, config.Global);
+                    }
                 }
                 //return false;
                 feedback = false;
                 break;
             case Mode.OutputFlag:
-                FlagUtils.SetFlag(password, true);
+                if (config.Toggle)
+                {
+                    FlagUtils.SetFlag(password, !FlagUtils.GetFlag(password), config.Global);
+                }
+                else
+                {
+                    FlagUtils.SetFlag(password, true);
+                }
                 break;
             default:
                 //return false;

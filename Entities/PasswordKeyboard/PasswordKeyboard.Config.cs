@@ -14,7 +14,10 @@ partial class PasswordKeyboard
         EntityID entityID,
         bool Encrypted,
         bool ShowHash,
+        bool Global,
+        bool Toggle,
         string Texture,
-        string TalkIconPosition
+        string TalkIconPosition,
+        int LengthLimit
         );
 }

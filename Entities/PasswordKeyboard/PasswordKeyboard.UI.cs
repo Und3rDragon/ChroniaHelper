@@ -54,7 +54,7 @@ partial class PasswordKeyboard
 
         private string inputText = string.Empty;
 
-        private const int MaxInputLength = 12;
+        private int MaxInputLength = 12;
 
         public UI(Config config, Action onCancel, Func<string, bool> onTry)
         {
@@ -111,6 +111,9 @@ partial class PasswordKeyboard
 
             wiggler = Wiggler.Create(0.25f, 4f);
             Add(wiggler);
+
+            // character limit override
+            MaxInputLength = config.LengthLimit;
         }
 
         private void Backspace()
