@@ -303,7 +303,7 @@ public class SeamlessSpinner : Entity
         {
             //对于每组数据
             ColliderList CL = new ColliderList();
-            CL.Add(new Hitbox(0f, 0f,1000000f,1000000f));
+            bool emptyCollider = true;
             for (int i = 0; i < hitboxData.Length; i++)
             {
                 //首先分割并去空
@@ -355,6 +355,7 @@ public class SeamlessSpinner : Entity
                     }
 
                     CL.Add(new Hitbox(p1, p2, p3, p4));
+                    emptyCollider = false;
                 }
                 else
                 {
@@ -364,10 +365,14 @@ public class SeamlessSpinner : Entity
                     }
 
                     CL.Add(new Circle(p1, p2, p3));
+                    emptyCollider = false;
                 }
             }
 
-            Collider = CL;
+            if (!emptyCollider)
+            {
+                Collider = CL;
+            }
         }
         else
         {

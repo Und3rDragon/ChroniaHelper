@@ -32,7 +32,7 @@ public class PatientBooster : Booster
 		string[] hitboxData = data.Attr("customHitbox").Split(';',StringSplitOptions.TrimEntries);
         //对于每组数据
         ColliderList CL = new ColliderList();
-		CL.Add(new Hitbox(0f, 0f,1000000f,1000000f));
+		bool emptyCollider = true;
         for (int i = 0; i < hitboxData.Length; i++)
         {
             //首先分割并去空
@@ -64,14 +64,19 @@ public class PatientBooster : Booster
                 if (p1 <= 0) { break; }
                 if (p2 <= 0) { break; }
                 CL.Add(new Hitbox(p1, p2, p3, p4));
+				emptyCollider = false;
             }
             else
             {
                 if (p1 <= 0) { break; }
                 CL.Add(new Circle(p1, p2, p3));
+				emptyCollider = false;
             }
         }
-        base.Collider = CL;
+		if (!emptyCollider)
+		{
+            base.Collider = CL;
+        }
         
 		respawnDelay = data.Float("respawnDelay", 1f);
 		refillDashes = Utils.NumberUtils.OptionalInt(data, "refillDashes", null);
@@ -88,12 +93,13 @@ public class PatientBooster : Booster
 	{
 		base.Update();
 		var player = Scene.Tracker.GetEntity<Player>();
-		if (player != null && player.CurrentBooster == this)
+		Log.Info(player.Position); ;
+        if (player != null && player.CurrentBooster == this)
 		{
 			BoostingPlayer = true;
 			player.boostTarget = Center;
 			var targetPos = Center - player.Collider.Center + (Input.Aim.Value * 3f);
-			player.MoveToX(targetPos.X);
+            player.MoveToX(targetPos.X);
 			player.MoveToY(targetPos.Y);
 		}
 		var sprite = Sprite;
