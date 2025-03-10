@@ -93,7 +93,6 @@ public class PatientBooster : Booster
 	{
 		base.Update();
 		var player = Scene.Tracker.GetEntity<Player>();
-		Log.Info(player.Position); ;
         if (player != null && player.CurrentBooster == this)
 		{
 			BoostingPlayer = true;

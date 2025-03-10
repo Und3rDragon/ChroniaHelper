@@ -21,6 +21,7 @@ public class CustomBooster : Booster
     {
         On.Celeste.Booster.PlayerReleased += Booster_PlayerReleased;
         On.Celeste.Booster.BoostRoutine += Booster_BoostRoutine;
+        On.Celeste.Booster.OnPlayer += OnPlayer;
         On.Celeste.Player.BoostBegin += Player_BoostBegin;
         
 
@@ -34,7 +35,8 @@ public class CustomBooster : Booster
     {
         On.Celeste.Booster.PlayerReleased -= Booster_PlayerReleased;
         On.Celeste.Booster.BoostRoutine -= Booster_BoostRoutine;
-        On.Celeste.Player.BoostBegin += Player_BoostBegin;
+        On.Celeste.Booster.OnPlayer -= OnPlayer;
+        On.Celeste.Player.BoostBegin -= Player_BoostBegin;
 
         // Usable but unecessary
 
@@ -159,11 +161,30 @@ public class CustomBooster : Booster
         scene.Add(outline);
     }
 
-    private static void Player_BoostBegin(On.Celeste.Player.orig_BoostBegin orig, Player self)
+    private static void OnPlayer(On.Celeste.Booster.orig_OnPlayer orig, Booster self, Player player)
     {
-        if (!self.CollideCheck<CustomBooster>())
+        if (self is CustomBooster myBooster)
         {
-            orig(self);
+            // Set or Refill Player Dashes or Stamina
+
+            if (myBooster.setDashes || player.Dashes < myBooster.setDash)
+            {
+                player.Dashes = myBooster.setDash;
+            }
+
+            if (myBooster.setupStamina || player.Stamina < myBooster.setStamina)
+            {
+                player.Stamina = myBooster.setStamina;
+            }
+        }
+        orig(self, player);
+    }
+
+    private static void Player_BoostBegin(On.Celeste.Player.orig_BoostBegin orig, Player player)
+    {
+        if (!player.CollideCheck<CustomBooster>())
+        {
+            orig(player);
         }
         
     }
@@ -201,18 +222,6 @@ public class CustomBooster : Booster
 
             myBooster.PlayerReleased();
 
-            // Set or Refill Player Dashes or Stamina
-            
-            if (myBooster.setDashes || player.Dashes < myBooster.setDash)
-            {
-                player.Dashes = myBooster.setDash;
-            }
-
-            if (myBooster.setupStamina || player.Stamina < myBooster.setStamina)
-            {
-                player.Stamina = myBooster.setStamina;
-            }
-
             player.Speed *= myBooster.outSpeed;
 
             if (player.StateMachine.State == 4)
@@ -238,14 +247,6 @@ public class CustomBooster : Booster
 
     // Usable but unecessary hooks
     /* 
-    private static void OnPlayer(On.Celeste.Booster.orig_OnPlayer orig, Booster self,Player player)
-    {
-        if (self is CustomBooster myBooster) {
-            
-        }
-        orig(self, player);
-    }
-
     public static void Booster_Appear(On.Celeste.Booster.orig_Appear orig, Booster self)
     {
         orig(self);
