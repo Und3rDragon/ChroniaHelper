@@ -6,7 +6,7 @@ namespace ChroniaHelper.Entities.PasswordKeyboard;
 [CustomEntity("ChroniaHelper/PasswordKeyboard")]
 public sealed partial class PasswordKeyboard : Entity
 {
-    public enum Mode { Exclusive, Normal, OutputFlag }
+    public enum Mode { Exclusive, Normal, OutputFlag, Systematic }
 
     private readonly Config config;
     private readonly EntityID entityID;
@@ -76,17 +76,44 @@ public sealed partial class PasswordKeyboard : Entity
             dic[entityID] = config.UseTimes;
 
         // Additional
+        // Multi-password support
         globalFlag = data.Bool("globalFlag", false);
 
+        passwords = config.Password.Split(";", StringSplitOptions.TrimEntries);
+        passwordCount = passwords.Length;
+        flagList = config.FlagToEnable.Split(',', StringSplitOptions.TrimEntries);
+        flagCount = flagList.Length;
         if (config.ShowHash)
         {
             Log.Info($"Generated Hash for Keyboard [{config.IDTag}]:");
-            Log.Info($"{StringUtils.GetHashString(config.IDTag + config.Password, config.CaseSensitive)}");
+            if (passwordCount == 1)
+            {
+                Log.Info($"{StringUtils.GetHashString(config.IDTag + config.Password, config.CaseSensitive)}");
+            }
+            else if (passwordCount > 1)
+            {
+                for (int i = 0; i < passwordCount; i++)
+                {
+                    Log.Info($"Password No.{i + 1}:");
+                    Log.Info($"{StringUtils.GetHashString(config.IDTag + passwords[i], config.CaseSensitive)}");
+                }
+            }
         }
+        if (!ChroniaHelperModule.Session.PasswordQueue.ContainsKey(entityID))
+        {
+            ChroniaHelperModule.Session.PasswordQueue.Add(entityID, 0);
+        }
+        else
+        {
+            ChroniaHelperModule.Session.PasswordQueue[entityID] = 0;
+        }
+
 
         base.Depth = data.Int("depth", 9000);
     }
     private bool globalFlag = false;
+    private string[] passwords, flagList; 
+    private int passwordCount = 0, flagCount = 0;
 
     private void OnTalk(Player player)
     {
@@ -104,36 +131,43 @@ public sealed partial class PasswordKeyboard : Entity
     private bool OnTry(string password)
     {
         var dic = ChroniaHelperModule.Session.RemainingUses;
-        bool feedback = true;
+        bool feedback = true; // when feedback is true, the keyboard will exit after input
         switch (config.Mode)
         {
             case Mode.Exclusive:
                 bool exists = ChroniaHelperModule.Session.Passwords.ContainsKey(config.IDTag);
                 if (exists) { ChroniaHelperModule.Session.Passwords[config.IDTag] = password; }
                 else { ChroniaHelperModule.Session.Passwords.Add(config.IDTag, password); }
-                break;
+
+                feedback = true; break;
             case Mode.Normal:
+                int nextPassword = Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], passwordCount);
+
                 string passIn = config.CaseSensitive ? password : password.ToLower();
-                string passOut = config.CaseSensitive ? config.Password : config.Password.ToLower();
+                string passOut = config.CaseSensitive ? passwords[nextPassword] : passwords[nextPassword].ToLower();
                 if (config.Encrypted)
                 {
-                    passIn = StringUtils.GetHashString(config.IDTag + config.Password, config.CaseSensitive);
-                    passOut = config.Password;
+                    passIn = StringUtils.GetHashString(config.IDTag + password, config.CaseSensitive);
+                    passOut = passwords[nextPassword];
                 }
+
+                string currentFlag = flagList[Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], flagCount)];
                 if(passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
                 {
                     if (config.Toggle)
                     {
-                        FlagUtils.SetFlag(config.FlagToEnable, !FlagUtils.GetFlag(config.FlagToEnable), config.Global);
+                        FlagUtils.SetFlag(currentFlag, !FlagUtils.GetFlag(currentFlag), config.Global);
                     }
                     else
                     {
-                        FlagUtils.SetFlag(config.FlagToEnable, true, config.Global);
+                        FlagUtils.SetFlag(currentFlag, true, config.Global);
                     }
+
+                    ChroniaHelperModule.Session.PasswordQueue[entityID]++;
+                    feedback = true; break;
                 }
-                //return false;
-                feedback = false;
-                break;
+                
+                feedback = false; break;
             case Mode.OutputFlag:
                 if (config.Toggle)
                 {
@@ -143,6 +177,34 @@ public sealed partial class PasswordKeyboard : Entity
                 {
                     FlagUtils.SetFlag(password, true);
                 }
+
+                feedback = true; break;
+            case Mode.Systematic:
+                passIn = config.CaseSensitive ? password : password.ToLower();
+                feedback = false;
+                for (int i = 0; i < passwordCount; i++)
+                {
+                    passOut = config.CaseSensitive ? passwords[i] : passwords[i].ToLower();
+                    if (config.Encrypted)
+                    {
+                        passIn = StringUtils.GetHashString(config.IDTag + password, config.CaseSensitive);
+                        passOut = passwords[i];
+                    }
+
+                    if (passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
+                    {
+                        if (config.Toggle)
+                        {
+                            FlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], !FlagUtils.GetFlag(flagList[Math.Min(i, flagCount)]), config.Global);
+                        }
+                        else
+                        {
+                            FlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], true, config.Global);
+                        }
+                        feedback = true; 
+                    }
+                }
+
                 break;
             default:
                 //return false;

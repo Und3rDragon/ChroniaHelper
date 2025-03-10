@@ -38,7 +38,8 @@ entity.fieldInformation = {
         options = {
             ["Exclusive"] = 0,
             ["Normal"] = 1,
-            ["OutputFlag"] = 2
+            ["OutputFlag"] = 2,
+            ["Systematic"] = 3,
         },
         editable = false
     },
@@ -68,7 +69,14 @@ entity.fieldInformation = {
     characterLimit = {
         minimumValue = 1,
         fieldType = "integer",
-    }
+    },
+    password = {
+        fieldType = "list",
+        elementSeparator = ";",
+    },
+    flagToEnable = {
+        fieldType = "list",
+    },
 }
 
 entity.sprite = function(room, entity)
