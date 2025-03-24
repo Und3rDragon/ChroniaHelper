@@ -18,7 +18,6 @@ entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.PlayerIndicator
 entities.ChroniaHelper/AnimatedZipMover.placements.name.start=Animated Zipmover
 
 triggers.ChroniaHelper/AxisCameraOffset.placements.name.AxisCameraOffset=Camera Offset
-triggers.ChroniaHelper/FlagTrigger.placements.name.FlagTrigger=Flag
 triggers.ChroniaHelper/SmoothToOffsetCamera.placements.name.SmoothToOffsetCamera=Smooth Camera Offset
 
 # WIPs
@@ -695,3 +694,12 @@ entities.ChroniaHelper/PlatformLineController.placements.name.platfromLineContro
 entities.ChroniaHelper/PlatformLineController.attributes.description.edgeColor=The edge color of the platform line
 entities.ChroniaHelper/PlatformLineController.attributes.description.centerColor=The main platform track color
 entities.ChroniaHelper/PlatformLineController.attributes.description.renderMode=Which type of platform line should this controller react to\nNotice that the settings of individual has higher priority than the settings of overall\nFor example, if you place a "overall" controller and a "moving platform" controller, the "overall" controller is gonna be deleted
+
+# Flag Trigger
+triggers.ChroniaHelper/FlagTrigger.placements.name.FlagTrigger=Flag Trigger
+triggers.ChroniaHelper/FlagTrigger.attributes.description.temporary=The flags in setup will be reverted to the entering state when player dies \n(supporting cross-room)
+triggers.ChroniaHelper/FlagTrigger.attributes.description.global=The flag changes will be listed into save data and enable once per map load \nEg. Player dies, F5, F6 etc.
+triggers.ChroniaHelper/FlagTrigger.attributes.description.resetOnLeave=The flags will be reverted to the entering state when player leaves the trigger
+triggers.ChroniaHelper/FlagTrigger.attributes.description.ignoreUnchanged=For example, if the flag is enabled in game, and your setup is to enable this flag \nThen this flag will be ignored when trigger process flag states cause it seems shouldn't change
+triggers.ChroniaHelper/FlagTrigger.attributes.description.onStay=The flag setup will be applied constantly when player is inside the trigger
+triggers.ChroniaHelper/FlagTrigger.attributes.description.flag=A list of flags separated by comma, supporting "!" as inverted sign

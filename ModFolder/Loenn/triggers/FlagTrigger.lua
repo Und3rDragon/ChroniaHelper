@@ -11,6 +11,9 @@ return{
 			set = true,
 			temporary = false,
 			global = false,
+			resetOnLeave = false,
+			ignoreUnchanged = true,
+			onStay = false,
 		}
 	},
 	fieldInformation = {
@@ -24,11 +27,20 @@ return{
 		if entity.set == false then
 			base = "inverted\nflag (!" ..entity.flag .. ")"
 		end
+		if entity.ignoreUnchanged then
+			base = "safe " .. base
+		end
+		if entity.resetOnLeave then
+			base = "inzone " .. base
+		end
 		if entity.temporary then
 			base = "temporary " .. base
 		end
 		if entity.global then
 			base = "global " .. base
+		end
+		if entity.onStay then
+			base = base .. "(active on stay)"
 		end
 		return base
 	end

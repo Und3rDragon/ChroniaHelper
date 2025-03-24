@@ -1,4 +1,6 @@
-﻿using System.Xml;
+﻿using System;
+using System.Diagnostics.Tracing;
+using System.Xml;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
@@ -11,25 +13,34 @@ namespace ChroniaHelper.Triggers;
 [CustomEntity("ChroniaHelper/FlagTrigger")]
 public class FlagTrigger : Trigger
 {
-
     public bool set;
+    public string[] flagList;
     public List<string> trueFlags, falseFlags;
-    private Level level;
     public bool temp;
     public bool saves;
+    public bool reset;
+    public bool filtering;
+    public bool onStay;
+
+    private int ID;
 
     public FlagTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        set = data.Bool("set");
-        temp = data.Bool("temporary");
+        ID = data.ID;
+        
+        set = data.Bool("set", true);
+        temp = data.Bool("temporary", false);
         saves = data.Bool("global", false);
+        reset = data.Bool("resetOnLeave", false);
+        filtering = data.Bool("ignoreUnchanged", true);
+        onStay = data.Bool("onStay", false);
 
         // flag processing
         string input = data.Attr("flag", "Flag");
-        string[] flagSet = input.Split(',', StringSplitOptions.TrimEntries);
+        flagList = input.Split(',', StringSplitOptions.TrimEntries);
         trueFlags = new List<string>(); 
         falseFlags = new List<string>();
-        foreach (var item in flagSet)
+        foreach (var item in flagList)
         {
             bool s = item.StartsWith('!');
             if (!s)
@@ -43,44 +54,138 @@ public class FlagTrigger : Trigger
         }
     }
 
-    public override void Added(Scene scene)
+    public void NormalSetup()
     {
-        base.Added(scene);
-        this.level = base.SceneAs<Level>();
-
-        if (this.temp)
+        foreach (var item in trueFlags)
         {
-            foreach (var item in trueFlags)
+            Utils.FlagUtils.SetFlag(item, set, saves);
+        }
+        foreach (var item in falseFlags)
+        {
+            Utils.FlagUtils.SetFlag(item, !set, saves);
+        }
+    }
+
+    private Dictionary<string, ChroniaHelperSession.ChroniaFlag> RecordedStates = new();
+    public void RecordState()
+    {
+        foreach(var item in flagList)
+        {
+            bool state = Utils.FlagUtils.GetFlag(item);
+            bool global = Utils.FlagUtils.GetFlag(item, Utils.FlagUtils.CheckFlag.CheckGlobal);
+            ChroniaHelperSession.ChroniaFlag chroniaflag = new()
             {
-                Utils.FlagUtils.SetFlag(item, set ? false : true, saves);
+                flagID = item,
+                flagState = state,
+                isGlobal = global
+            };
+
+            if (RecordedStates.ContainsKey(item))
+            {
+                RecordedStates[item] = chroniaflag;
             }
-            foreach (var item in falseFlags)
+            else
             {
-                Utils.FlagUtils.SetFlag(item, set ? true : false, saves);
+                RecordedStates.Add(item, chroniaflag);
             }
         }
     }
+
+    public void LoadState()
+    {
+        foreach(var item in RecordedStates.Keys)
+        {
+            bool state = RecordedStates[item].flagState;
+            bool global = RecordedStates[item].isGlobal;
+
+            Utils.FlagUtils.SetFlag(item, state, global);
+        }
+
+        RecordedStates.Clear();
+    }
+
+    public void ReverseSetup(bool filtering)
+    {
+        if (filtering)
+        {
+            foreach (var item in trueFlags)
+            {
+                Utils.FlagUtils.SetFlag(item, !set, saves);
+            }
+            foreach (var item in falseFlags)
+            {
+                Utils.FlagUtils.SetFlag(item, set, saves);
+            }
+        }
+        else
+        {
+            LoadState();
+        }
+        
+    }
+
+    private void ListAsTemporary()
+    {
+        foreach (var item in flagList)
+        {
+            bool state = Utils.FlagUtils.GetFlag(item);
+            bool global = saves;
+
+            ChroniaHelperSession.ChroniaFlag chroniaflag = new()
+            {
+                flagID = item,
+                flagState = state,
+                isGlobal = global,
+            };
+
+            if (ChroniaHelperSession.TemporaryFlags.ContainsKey(item))
+            {
+                ChroniaHelperSession.TemporaryFlags[item] = chroniaflag;
+            }
+            else
+            {
+                ChroniaHelperSession.TemporaryFlags.Add(item, chroniaflag);
+            }
+        }
+    }
+
+    public override void Removed(Scene scene)
+    {
+        base.Removed(scene);
+    }
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+    }
+
     public override void OnEnter(Player player)
     {
         base.OnEnter(player);
 
-        foreach (var item in trueFlags)
+        RecordState();
+
+        if (temp)
         {
-            Utils.FlagUtils.SetFlag(item, set? true: false, saves);
+            ListAsTemporary();
         }
-        foreach (var item in falseFlags)
-        {
-            Utils.FlagUtils.SetFlag(item, set ? false : true, saves);
-        }
+
+        NormalSetup();
     }
 
     public override void OnStay(Player player)
     {
-
+        if (onStay)
+        {
+            NormalSetup();
+        }
     }
 
     public override void OnLeave(Player player)
     {
-        
+        if (reset)
+        {
+            ReverseSetup(filtering);
+        }
     }
 }

@@ -126,4 +126,13 @@ public class ChroniaHelperSession : EverestModuleSession
         platformLine_MP_edgeColor = moveLineEdgeColor, 
         platformLine_MP_centerColor = moveLineInnerColor;
     public int platformLine_SP_depth = 9001, platformLine_MP_depth = 9001;
+
+    // Flag Trigger Temporary setup
+    public struct ChroniaFlag
+    {
+        public string flagID;
+        public bool flagState;
+        public bool isGlobal;
+    }
+    public static Dictionary<string, ChroniaFlag> TemporaryFlags = new();
 }

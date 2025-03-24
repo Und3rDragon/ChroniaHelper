@@ -12,6 +12,7 @@ using ChroniaHelper.Utils;
 using ChroniaHelper.Effects;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static Celeste.ClutterBlock;
+using System.Collections;
 
 namespace ChroniaHelper.Cores;
 
@@ -43,6 +44,8 @@ public static class MapProcessor
     public static Level level;
     public static Session session;
     public static Dictionary<Type, List<Entity>> entities;
+
+    public static bool isRespawning = false;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MapProcessor.level = level;
@@ -77,9 +80,11 @@ public static class MapProcessor
             }
         }
 
+        isRespawning = (intro != Player.IntroTypes.Transition);
         orig.Invoke(level, intro, isFromLoader);
+        isRespawning = false;
     }
-
+    
     private static void OnMapDataLoad(On.Celeste.MapData.orig_Load orig, MapData map)
     {
         mapdata = map;
@@ -96,12 +101,22 @@ public static class MapProcessor
         {
             ChroniaHelperModule.Session.CarouselState[item] = false;
         }
-
     }
 
     private static void LevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
+        // Only once after respawn, not when into the room
         orig(self);
+
+        // Reset Temporary Flags
+        foreach (var item in ChroniaHelperSession.TemporaryFlags.Keys)
+        {
+            string ID = ChroniaHelperSession.TemporaryFlags[item].flagID;
+            bool state = ChroniaHelperSession.TemporaryFlags[item].flagState;
+            bool global = ChroniaHelperSession.TemporaryFlags[item].isGlobal;
+            Utils.FlagUtils.SetFlag(ID, state, global);
+        }
+        ChroniaHelperSession.TemporaryFlags.Clear();
     }
 
     public static void OnLoadSaveData(On.Celeste.SaveData.orig_LoadModSaveData orig, int index)
@@ -163,4 +178,5 @@ public static class MapProcessor
         }
         ChroniaHelperModule.Session.switchFlag.Add(key, overwrite);
     }
+
 }
