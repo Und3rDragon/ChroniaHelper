@@ -108,6 +108,10 @@ public class FlagTrigger : Trigger
     {
         if (filtering)
         {
+            LoadState();
+        }
+        else
+        {
             foreach (var item in trueFlags)
             {
                 Utils.FlagUtils.SetFlag(item, !set, saves);
@@ -116,10 +120,6 @@ public class FlagTrigger : Trigger
             {
                 Utils.FlagUtils.SetFlag(item, set, saves);
             }
-        }
-        else
-        {
-            LoadState();
         }
         
     }

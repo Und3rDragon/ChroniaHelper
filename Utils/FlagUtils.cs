@@ -186,7 +186,7 @@ public static class FlagUtils
         }
         else
         {
-            if (ChroniaHelperModule.SaveData.globalflags.ContainsKey(flag))
+            if (!ChroniaHelperModule.SaveData.globalflags.ContainsKey(flag))
             {
                 ChroniaHelperModule.SaveData.globalflags.Add(flag, state);
             }
