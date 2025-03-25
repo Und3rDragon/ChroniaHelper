@@ -51,9 +51,11 @@ booster.fieldInformation = {
 		options = {
 			"objects/ChroniaHelper/customBoosterPresets/green",
 			"objects/ChroniaHelper/customBoosterPresets/red",
+			"objects/ChroniaHelper/customBoosterPresets/pink",
 			"objects/ChroniaHelper/customBoosterPresets/grey",
 			"Preset_red",
 			"Preset_green",
+			"Preset_pink",
 			"Default_booster",
 		},
 		editable = true,

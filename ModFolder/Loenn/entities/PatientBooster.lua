@@ -9,9 +9,13 @@ local patientBooster = {
                 red = false,
                 sprite = "",
                 respawnDelay = 1.0,
-                refillDashes = "",
-                refillStamina = true,
+                --refillDashes = "",
+                --refillStamina = true,
                 customHitbox = "c,10,0,2",
+                stamina = 110,
+                dashes = 1,
+                staminaMode = 0,
+                dashesMode = 0,
             }
         },
         {
@@ -33,6 +37,28 @@ local patientBooster = {
     selection = function (room, entity)
         return utils.rectangle(entity.x - 11, entity.y - 9, 22, 18)
     end,
+    fieldInformation = {
+        staminaMode = {
+            options = {
+                ["refill"] = 0,
+                ["set"] = 1,
+            },
+            editable = false,
+        },
+        dashesMode = {
+            options = {
+                ["refill"] = 0,
+                ["set"] = 1,
+            },
+            editable = false,
+        },
+        stamina = {
+            fieldType = "integer",
+        },
+        dashes = {
+            fieldType = "integer",
+        },
+    },
 }
 
 return patientBooster

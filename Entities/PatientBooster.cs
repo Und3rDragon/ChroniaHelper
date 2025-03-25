@@ -18,8 +18,6 @@ public class PatientBooster : Booster
 	public static Booster TempCurrentBooster = null;
 
 	private float respawnDelay;
-	private int? refillDashes;
-	private bool refillStamina;
 
 	private Vector2? lastSpritePos;
 
@@ -79,8 +77,25 @@ public class PatientBooster : Booster
         }
         
 		respawnDelay = data.Float("respawnDelay", 1f);
-		refillDashes = Utils.NumberUtils.OptionalInt(data, "refillDashes", null);
-		refillStamina = data.Bool("refillStamina", true);
+
+		// New dashes and stamina setups
+		dashes = data.Int("dashes", 1);
+		stamina = data.Int("stamina", 110);
+		staminaMode = (StaminaRefill)data.Int("staminaMode", 0);
+        dashesMode = (DashRefill)data.Int("dashesMode", 0);
+		// Old data
+        string old_dashes = data.Attr("refillDashes"),
+			old_stamina = data.Attr("refillStamina");
+		if (!string.IsNullOrEmpty(old_dashes))
+		{
+			int d = 1;
+            int.TryParse(old_dashes, out d);
+			dashes = d;
+        }
+		if (!string.IsNullOrEmpty(old_stamina))
+		{
+			if (data.Bool("refillStamina", true)) { staminaMode = 0; }
+		}
 
 		var spriteName = data.Attr("sprite", "");
 		var red = data.Bool("red");
@@ -88,6 +103,11 @@ public class PatientBooster : Booster
 		Remove(sprite);
 		Add(sprite = GFX.SpriteBank.Create(!string.IsNullOrEmpty(spriteName) ? spriteName : (red ? "Preset_red" : "Preset_green")));
 	}
+	private int dashes, stamina;
+	private enum DashRefill { refill, set};
+	private DashRefill dashesMode;
+	private enum StaminaRefill { refill, set};
+	private StaminaRefill staminaMode;
 
 	public override void Update()
 	{
@@ -205,20 +225,31 @@ public class PatientBooster : Booster
 		{
 			if (TempCurrentBooster is PatientBooster booster)
 			{
-				if (booster.refillDashes.HasValue)
+				// Insert Stamina and Dashes logic here
+				if(booster.staminaMode == PatientBooster.StaminaRefill.refill)
 				{
-					player.Dashes = Math.Max(player.Dashes, booster.refillDashes.Value);
+					if(player.Stamina < booster.stamina)
+					{
+						player.Stamina = booster.stamina;
+					}
 				}
-				else
+				else if (booster.staminaMode == PatientBooster.StaminaRefill.set)
 				{
-					player.RefillDash();
+					player.Stamina = booster.stamina;
 				}
 
-				if (booster.refillStamina)
+				if (booster.dashesMode == PatientBooster.DashRefill.refill)
 				{
-					player.RefillStamina();
-				}
-
+					if (player.Dashes < booster.dashes)
+					{
+						player.Dashes = booster.dashes;
+					}
+				} 
+				else if (booster.dashesMode == PatientBooster.DashRefill.set) 
+				{
+					player.Dashes = booster.dashes;
+				} 
+				
 				return true;
 			}
 			return false;
