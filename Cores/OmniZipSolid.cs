@@ -482,7 +482,7 @@ public class OmniZipSolid : ConnectedSolid
 
         if (indicator)
         {
-            Util.RenderProgressRectangle(recPos, recWidth, recHeight, recProgress, indicatorExpansion, false, indicatorColor);
+            Util.RenderProgressRectangle(recPos, recWidth, recHeight, recProgress, indicatorColor, indicatorExpansion, false);
         }
         
     }

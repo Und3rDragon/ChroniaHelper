@@ -1,3 +1,6 @@
+# 30.11
+Custom Booster, fixing the OnPlayer interactions, the booster shouldn't refill player when player is only *touching* it
+
 # 30.0
 # New entity: Password Keyboard
 A keyboard that allows player to enter passwords

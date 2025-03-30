@@ -289,7 +289,7 @@ public static class Util
         return basic = basic ? true : enter;
     }
 
-    public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress, float expansion, bool average, Color color)
+    public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress, Color color, float expansion = 0f, bool average = false)
     {
         expansion = expansion < 0 && expansion.GetAbs() >= Calc.Min(width, height) / 2f ? -Calc.Min(width, height) / 2f : expansion;
         float newWidth = width + 2 * expansion, newHeight = height + 2 * expansion;
@@ -343,27 +343,7 @@ public static class Util
         }
     }
 
-    public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress, float expansion)
-    {
-        RenderProgressRectangle(Position, width, height, progress, expansion, false, Color.Cyan);
-    }
-
-    public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress, bool average)
-    {
-        RenderProgressRectangle(Position, width, height, progress, 0f, average, Color.Cyan);
-    }
-
-    public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress)
-    {
-        RenderProgressRectangle(Position, width, height, progress, 0f, false, Color.Cyan);
-    }
-
-    public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress, Color color)
-    {
-        RenderProgressRectangle(Position, width, height, progress, 0f, false, color);
-    }
-
-    public static Classify MatchEnum<Classify>(string match, Classify defaultMember, bool ignoreCase, bool ignoreUnderscore) where Classify : struct, Enum
+    public static Classify MatchEnum<Classify>(string match, Classify defaultMember, bool ignoreCase = false, bool ignoreUnderscore = false) where Classify : struct, Enum
     {
         if (string.IsNullOrEmpty(match) || string.IsNullOrWhiteSpace(match)) { return defaultMember; }
         //if (Enum.GetValues<Classify>().Length == 0) { return null; }
@@ -382,15 +362,5 @@ public static class Util
         }
 
         return defaultMember;
-    }
-
-    public static Classify MatchEnum<Classify>(string match, Classify defaultMember) where Classify : struct, Enum
-    {
-        return MatchEnum<Classify>(match, defaultMember, false, false);
-    }
-
-    public static Classify MatchEnum<Classify>(string match, Classify defaultMember, bool ignoreCase) where Classify : struct, Enum
-    {
-        return MatchEnum<Classify>(match, defaultMember, ignoreCase, false);
     }
 }

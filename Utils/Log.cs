@@ -53,4 +53,23 @@ public static class Log
         Output(LogLevel.Error, obj.ArrayToString());
     }
 
+    public enum LogMode { Info, Warn, Error }
+    public static void Each(Array objs, LogMode mode = LogMode.Info)
+    {
+        foreach (var obj in objs)
+        {
+            if(mode == LogMode.Info)
+            {
+                Info(obj);
+            }
+            else if(mode == LogMode.Warn)
+            {
+                Warn(obj);
+            }
+            else if(mode == LogMode.Error)
+            {
+                Error(obj);
+            }
+        }
+    }
 }

@@ -9,6 +9,9 @@ using Celeste.Mod.Entities;
 using System.Reflection;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Cores;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+using MonoMod.RuntimeDetour;
 
 namespace ChroniaHelper.Entities;
 
@@ -21,9 +24,11 @@ public class CustomBooster : Booster
     {
         On.Celeste.Booster.PlayerReleased += Booster_PlayerReleased;
         On.Celeste.Booster.BoostRoutine += Booster_BoostRoutine;
-        On.Celeste.Booster.OnPlayer += OnPlayer;
-        On.Celeste.Player.BoostBegin += Player_BoostBegin;
-        
+        IL.Celeste.Player.BoostBegin += Player_BoostBegin;
+
+        On.Celeste.Player.Boost += Player_Boost;
+        On.Celeste.Player.RedBoost += Player_RedBoost;
+        origBoostBeginHook = new ILHook(typeof(Player).GetMethod("orig_BoostBegin", BindingFlags.NonPublic | BindingFlags.Instance), Player_BoostBegin);
 
         // Usable but unecessary
 
@@ -35,8 +40,12 @@ public class CustomBooster : Booster
     {
         On.Celeste.Booster.PlayerReleased -= Booster_PlayerReleased;
         On.Celeste.Booster.BoostRoutine -= Booster_BoostRoutine;
-        On.Celeste.Booster.OnPlayer -= OnPlayer;
-        On.Celeste.Player.BoostBegin -= Player_BoostBegin;
+        IL.Celeste.Player.BoostBegin -= Player_BoostBegin;
+
+        On.Celeste.Player.Boost -= Player_Boost;
+        On.Celeste.Player.RedBoost -= Player_RedBoost;
+        origBoostBeginHook?.Dispose();
+        origBoostBeginHook = null;
 
         // Usable but unecessary
 
@@ -161,33 +170,70 @@ public class CustomBooster : Booster
         scene.Add(outline);
     }
 
-    private static void OnPlayer(On.Celeste.Booster.orig_OnPlayer orig, Booster self, Player player)
+    private static void Player_Boost(On.Celeste.Player.orig_Boost orig, Player self, Booster booster)
     {
-        if (self is CustomBooster myBooster)
-        {
-            // Set or Refill Player Dashes or Stamina
-
-            if (myBooster.setDashes || player.Dashes < myBooster.setDash)
-            {
-                player.Dashes = myBooster.setDash;
-            }
-
-            if (myBooster.setupStamina || player.Stamina < myBooster.setStamina)
-            {
-                player.Stamina = myBooster.setStamina;
-            }
-        }
-        orig(self, player);
+        TempCurrentBooster = booster;
+        orig(self, booster);
+        TempCurrentBooster = null;
     }
 
-    private static void Player_BoostBegin(On.Celeste.Player.orig_BoostBegin orig, Player player)
+    private static void Player_RedBoost(On.Celeste.Player.orig_RedBoost orig, Player self, Booster booster)
     {
-        if (!player.CollideCheck<CustomBooster>())
+        TempCurrentBooster = booster;
+        orig(self, booster);
+        TempCurrentBooster = null;
+    }
+
+    // Code setup from Eevee Helper Patient Booster
+    public static Booster TempCurrentBooster = null;
+    private static ILHook origBoostBeginHook;
+
+    private static void Player_BoostBegin(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("RefillStamina")))
         {
-            orig(player);
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed IL Hook for Booster.BoostBegin (RefillStamina)");
+            return;
         }
+
+        var afterRefillsLabel = cursor.MarkLabel();
+
+        if (!cursor.TryGotoPrev(MoveType.AfterLabel, instr => instr.MatchCallvirt<Player>("RefillDash")))
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed IL Hook for Booster.BoostBegin (RefillDash)");
+            return;
+        }
+
+        var continueLabel = cursor.DefineLabel();
         
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.EmitDelegate<Func<Player, bool>>(player =>
+        {
+            if (TempCurrentBooster is CustomBooster myBooster)
+            {
+                // Insert Stamina and Dashes logic here
+                if (myBooster.setDashes || player.Dashes < myBooster.setDash)
+                {
+                    player.Dashes = myBooster.setDash;
+                }
+
+                if (myBooster.setupStamina || player.Stamina < myBooster.setStamina)
+                {
+                    player.Stamina = myBooster.setStamina;
+                }
+
+                return true;
+            }
+            return false;
+        });
+        cursor.Emit(OpCodes.Brfalse, continueLabel);
+        cursor.Emit(OpCodes.Pop);
+        cursor.Emit(OpCodes.Br, afterRefillsLabel);
+        cursor.MarkLabel(continueLabel);
     }
+
     private static void Booster_PlayerReleased(On.Celeste.Booster.orig_PlayerReleased orig, Booster self)
     {
         orig(self);
