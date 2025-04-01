@@ -459,13 +459,13 @@ public class OmniZipSolid : ConnectedSolid
         return req;
     }
 
-    public void SetFlag(bool set)
+    public void SetSignal(bool set)
     {
         level.Session.SetFlag($"ZipMoverSync:{zmtag}", set);
         if (sideflag) { level.Session.SetFlag(zmtag, set); }
     }
 
-    public bool GetFlag()
+    public bool GetSignal()
     {
         bool ans = false;
         ans = level.Session.GetFlag($"ZipMoverSync:{zmtag}");
@@ -500,11 +500,11 @@ public class OmniZipSolid : ConnectedSolid
                 syncflag = true;
                 if (synced)
                 {
-                    SetFlag(true);
+                    SetSignal(true);
                 }
             }
 
-            if(synced && GetFlag()){ syncflag = true;}
+            if(synced && GetSignal()){ syncflag = true;}
 
             if (!syncflag)
             {
@@ -567,7 +567,7 @@ public class OmniZipSolid : ConnectedSolid
                         syncflag = false;
                         if (synced)
                         {
-                            SetFlag(false);
+                            SetSignal(false);
                         }
                     }
 

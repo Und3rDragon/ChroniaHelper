@@ -325,11 +325,11 @@ public class OmniZipMover : OmniZipSolid
 
         // OnDash
         dcr = DashCollisionResults.NormalCollision;
-        scale = Calc.Approach(scale, Vector2.One, 3f * Engine.DeltaTime);
+        //scale = Calc.Approach(scale, Vector2.One, 3f * Engine.DeltaTime);
 
-        streetlight.Scale = scale;
-        Vector2 zeroCenter = new Vector2(Width, Height) / 2f;
-        streetlight.Position = zeroCenter + (new Vector2(zeroCenter.X - streetlight.Width / 2f, 0) - zeroCenter) * scale;
+        //streetlight.Scale = scale;
+        //Vector2 zeroCenter = new Vector2(Width, Height) / 2f;
+        //streetlight.Position = zeroCenter + (new Vector2(zeroCenter.X - streetlight.Width / 2f, 0) - zeroCenter) * scale;
     }
 
     public override void Render()

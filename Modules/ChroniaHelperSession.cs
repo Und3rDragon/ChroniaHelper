@@ -135,4 +135,8 @@ public class ChroniaHelperSession : EverestModuleSession
         public bool isGlobal;
     }
     public static Dictionary<string, ChroniaFlag> TemporaryFlags = new();
+
+    // Omni Zip Mover 2 records
+    public static Dictionary<EntityID, int> Zipmover_NodeIndex = new();
+    public static Dictionary<EntityID, bool> Zipmover_NextForward = new();
 }

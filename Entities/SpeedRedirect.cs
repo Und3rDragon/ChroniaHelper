@@ -15,10 +15,10 @@ namespace ChroniaHelper.Entities;
 public class SpeedRedirect : Entity
 {
 
-    public SpeedRedirect(Vector2 position) : base(position) { }
+    public SpeedRedirect(EntityData data, Vector2 offset, EntityID entityID) : this(entityID, data, offset) { }
 
-    public SpeedRedirect(EntityData data, Vector2 offset, EntityID id)
-        : this(data.Position + offset)
+    public SpeedRedirect(EntityID id, EntityData data, Vector2 offset)
+        : base(data.Position + offset)
     {
         ID = id;
         size = new Vector2(data.Width, data.Height);
