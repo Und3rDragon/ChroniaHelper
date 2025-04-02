@@ -573,6 +573,10 @@ public class OmniZipMover2 : Solid
                     SaveForward(false);
                 }
             }
+            if(LoadIndex() == 0)
+            {
+                SaveForward(true);
+            }
 
             float delay = LoadForward() ? 
                 delays[Math.Min(delays.Length - 1, LoadIndex())] : 
