@@ -703,3 +703,12 @@ triggers.ChroniaHelper/FlagTrigger.attributes.description.resetOnLeave=The flags
 triggers.ChroniaHelper/FlagTrigger.attributes.description.ignoreUnchanged=For example, if the flag is enabled in game, and your setup is to enable this flag \nThen this flag will be ignored when trigger process flag states cause it seems shouldn't change
 triggers.ChroniaHelper/FlagTrigger.attributes.description.onStay=The flag setup will be applied constantly when player is inside the trigger
 triggers.ChroniaHelper/FlagTrigger.attributes.description.flag=A list of flags separated by comma, supporting "!" as inverted sign
+
+# Flag Serial Trigger
+triggers.ChroniaHelper/FlagSerialTrigger.placements.name.FlagSerialTrigger=Flag Serial Trigger
+triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.serialFlag=The serial flag syntax containing the "target symbol" \nWhen player enters the trigger, if the position mode isn't "No effect" \nThen the trigger will enable the flag replacing the target symbol to numbers \nFor example, if my target symbol is "&" and the serial flag is "flag_&", when I enter the trigger in-game \nFlag "flag_0" will be active, then "flag_0" disable and "flag_1" enable etc.
+triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.interval=The interval between each flag step, only usable when position mode isn't "No effect"
+
+# Flag Array Trigger
+triggers.ChroniaHelper/FlagArrayTrigger.placements.name.FlagArrayTrigger=Flag Array Trigger
+triggers.ChroniaHelper/FlagArrayTrigger.attributes.description.intervals=The interval between changing each flags, only usable when position mode isn't "No effect"

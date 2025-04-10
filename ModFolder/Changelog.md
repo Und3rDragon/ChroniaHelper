@@ -1,3 +1,7 @@
+# 31.0
+# Flag Serial Trigger and Flag Array Trigger
+Kind of like trigger-trigger easy mode and... flag fade trigger?
+
 # 30.12
 # Custom Booster
 Introducing negative value into the parameters
