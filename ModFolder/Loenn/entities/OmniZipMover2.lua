@@ -295,4 +295,4 @@ function OmniZipMover.selection(room, entity)
     return mainRectangle, nodeRectangles
 end
 
-return OmniZipMover
+--return OmniZipMover

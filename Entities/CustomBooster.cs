@@ -214,14 +214,36 @@ public class CustomBooster : Booster
             if (TempCurrentBooster is CustomBooster myBooster)
             {
                 // Insert Stamina and Dashes logic here
-                if (myBooster.setDashes || player.Dashes < myBooster.setDash)
+                if (myBooster.setDashes)
                 {
-                    player.Dashes = myBooster.setDash;
+                    player.Dashes = Math.Max(myBooster.setDash, 0);
+                }
+                else
+                {
+                    if(player.Dashes < myBooster.setDash)
+                    {
+                        player.Dashes = myBooster.setDash;
+                    }
+                    else if(myBooster.setDash < 0)
+                    {
+                        player.Dashes = Math.Max(player.Dashes - myBooster.setDash, 0);
+                    }
                 }
 
-                if (myBooster.setupStamina || player.Stamina < myBooster.setStamina)
+                if (myBooster.setupStamina)
                 {
-                    player.Stamina = myBooster.setStamina;
+                    player.Stamina = Math.Max(myBooster.setStamina, 0);
+                }
+                else
+                {
+                    if(player.Stamina < myBooster.setStamina)
+                    {
+                        player.Stamina = myBooster.setStamina;
+                    }
+                    else if(myBooster.setStamina < 0)
+                    {
+                        player.Stamina = Math.Max(player.Stamina - myBooster.setStamina, 0);
+                    }
                 }
 
                 return true;

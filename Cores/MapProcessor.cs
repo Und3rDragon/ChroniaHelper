@@ -45,6 +45,8 @@ public static class MapProcessor
     public static Session session;
     public static Dictionary<Type, List<Entity>> entities;
 
+    public static Entity globalEntityDummy = new Entity();
+
     public static bool isRespawning = false;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
@@ -53,6 +55,9 @@ public static class MapProcessor
         entities = level.Tracker.Entities;
         mapdata = session.MapData;
         areakey = session.MapData.Area;
+
+        // Dummy Entity setup
+        level.Add(globalEntityDummy);
 
         // Apply global flags
         foreach (var item in ChroniaHelperModule.SaveData.globalflags)

@@ -33,4 +33,4 @@ sr.sprites = function(room, entity)
 	return sprites
 end
 
-return sr
+--return sr

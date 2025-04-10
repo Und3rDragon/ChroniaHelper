@@ -1,3 +1,9 @@
+# 30.12
+# Custom Booster
+Introducing negative value into the parameters
+# Seamless Spinner
+Adjusting Border displays
+
 # 30.11
 Custom Booster, fixing the OnPlayer interactions, the booster shouldn't refill player when player is only *touching* it
 

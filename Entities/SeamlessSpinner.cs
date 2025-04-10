@@ -39,7 +39,7 @@ public class SeamlessSpinner : Entity
             drawing[0] = parent;
             drawing[1] = filler;
             // Border Depth, unknown use, bugfix in CH 1.19.17
-            Depth = 100000;
+            Depth = parent.Depth + 10;
         }
 
         public override void Render()
