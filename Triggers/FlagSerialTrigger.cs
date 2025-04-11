@@ -24,12 +24,14 @@ public class FlagSerialTrigger : FlagManageTrigger
         totalIndexes = data.Int("steps", 10);
         interval = data.Float("interval", 0.1f);
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
+        staircase = string.IsNullOrEmpty(data.Attr("staircase")) ? false : data.Bool("staircase", false);
     }
     private int ID;
     private string serialFlag, targetSymbol;
     private float interval;
     private int startIndex, totalIndexes;
     private PositionModes posMode;
+    private bool staircase;
 
     protected override IEnumerator OnEnterRoutine(Player player)
     {
@@ -40,10 +42,14 @@ public class FlagSerialTrigger : FlagManageTrigger
 
         for (int i = startIndex; i < startIndex + totalIndexes; i++)
         {
-            for (int j = startIndex; j < startIndex + totalIndexes; j++)
+            if (!staircase || i == startIndex)
             {
-                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
+                for (int j = startIndex; j < startIndex + totalIndexes; j++)
+                {
+                    FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
+                }
             }
+
             FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), true);
 
             yield return interval;
@@ -66,6 +72,17 @@ public class FlagSerialTrigger : FlagManageTrigger
         {
             FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
         }
-        FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, Math.Clamp(index, 0, startIndex + totalIndexes - 1).ToString()), true);
+
+        if (staircase)
+        {
+            for(int i = startIndex; i <= index; i++)
+            {
+                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, Math.Clamp(i, 0, startIndex + totalIndexes - 1).ToString()), true);
+            }
+        }
+        else
+        {
+            FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, Math.Clamp(index, 0, startIndex + totalIndexes - 1).ToString()), true);
+        }
     }
 }

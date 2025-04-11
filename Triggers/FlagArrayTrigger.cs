@@ -28,13 +28,14 @@ public class FlagArrayTrigger : FlagManageTrigger
             float.TryParse(t[i], out d);
             intervals[i] = d;
         }
-
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
+        staircase = string.IsNullOrEmpty(data.Attr("staircase")) ? false : data.Bool("staircase", false);
     }
     private int ID;
     private string[] flags;
     private float[] intervals;
     private PositionModes posMode;
+    private bool staircase;
 
     protected override IEnumerator OnEnterRoutine(Player player)
     {
@@ -49,7 +50,10 @@ public class FlagArrayTrigger : FlagManageTrigger
         }
         for(int i = 0; i < flags.Length; i++)
         {
-            FlagUtils.SetFlag(flags[Math.Clamp(i - 1, 0, flags.Length - 1)], false);
+            if (!staircase)
+            {
+                FlagUtils.SetFlag(flags[Math.Clamp(i - 1, 0, flags.Length - 1)], false);
+            }
             FlagUtils.SetFlag(flags[i], true);
 
             yield return intervals[Math.Clamp(i, 0, intervals.Length - 1)];
@@ -71,6 +75,16 @@ public class FlagArrayTrigger : FlagManageTrigger
             FlagUtils.SetFlag(flags[i], false);
         }
 
-        FlagUtils.SetFlag(flags[Math.Clamp(index, 0, flags.Length - 1)], true);
+        if (staircase)
+        {
+            for(int i = 0; i <= index; i++)
+            {
+                FlagUtils.SetFlag(flags[Math.Clamp(i, 0, flags.Length - 1)], true);
+            }
+        }
+        else
+        {
+            FlagUtils.SetFlag(flags[Math.Clamp(index, 0, flags.Length - 1)], true);
+        }
     }
 }

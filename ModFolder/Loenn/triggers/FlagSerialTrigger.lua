@@ -14,6 +14,7 @@ return{
 			interval = 0.1,
 			startIndex = 0,
 			steps = 10,
+			staircase = false,
 		}
 	},
 	fieldInformation = {

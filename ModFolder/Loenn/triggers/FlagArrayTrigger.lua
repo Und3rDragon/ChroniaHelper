@@ -11,6 +11,7 @@ return{
 			flags = "flag",
 			intervals = "0.1",
 			positionMode = "NoEffect",
+			staircase = false,
 		}
 	},
 	fieldInformation = {

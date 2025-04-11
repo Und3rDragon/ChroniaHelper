@@ -708,7 +708,9 @@ triggers.ChroniaHelper/FlagTrigger.attributes.description.flag=A list of flags s
 triggers.ChroniaHelper/FlagSerialTrigger.placements.name.FlagSerialTrigger=Flag Serial Trigger
 triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.serialFlag=The serial flag syntax containing the "target symbol" \nWhen player enters the trigger, if the position mode isn't "No effect" \nThen the trigger will enable the flag replacing the target symbol to numbers \nFor example, if my target symbol is "&" and the serial flag is "flag_&", when I enter the trigger in-game \nFlag "flag_0" will be active, then "flag_0" disable and "flag_1" enable etc.
 triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.interval=The interval between each flag step, only usable when position mode isn't "No effect"
+triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.staircase=Normally the previous flag in the array would be removed before processing the next flag, \nIf enabled, the previous flags will also be kept, and the activated flags will look like a staircase
 
 # Flag Array Trigger
 triggers.ChroniaHelper/FlagArrayTrigger.placements.name.FlagArrayTrigger=Flag Array Trigger
 triggers.ChroniaHelper/FlagArrayTrigger.attributes.description.intervals=The interval between changing each flags, only usable when position mode isn't "No effect"
+triggers.ChroniaHelper/FlagArrayTrigger.attributes.description.staircase=Normally the previous flag in the array would be removed before processing the next flag, \nIf enabled, the previous flags will also be kept, and the activated flags will look like a staircase
