@@ -35,19 +35,23 @@ public class FlagSerialTrigger : FlagManageTrigger
 
     protected override IEnumerator OnEnterRoutine(Player player)
     {
-        if(posMode != PositionModes.NoEffect)
+        // clear all array flags when enter
+        for (int j = startIndex; j < startIndex + totalIndexes; j++)
+        {
+            FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
+        }
+
+        if (posMode != PositionModes.NoEffect)
         {
             yield break;
         }
+        // will not execute if position mode is active
 
         for (int i = startIndex; i < startIndex + totalIndexes; i++)
         {
-            if (!staircase || i == startIndex)
+            if (!staircase)
             {
-                for (int j = startIndex; j < startIndex + totalIndexes; j++)
-                {
-                    FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
-                }
+                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, (Math.Max(i - 1, startIndex)).ToString()), false);
             }
 
             FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), true);
@@ -59,30 +63,36 @@ public class FlagSerialTrigger : FlagManageTrigger
 
     protected override void OnStayExecute(Player player)
     {
-        float lerp = GetPositionLerp(player, posMode);
-
         if(posMode == PositionModes.NoEffect)
         {
             return;
         }
+        // will not execute if position mode is disabled
+
+        float lerp = GetPositionLerp(player, posMode);
 
         int index = startIndex + (int)Math.Floor(lerp * totalIndexes);
+        index = Math.Clamp(index, startIndex, startIndex + totalIndexes - 1);
 
-        for (int j = startIndex; j < startIndex + totalIndexes; j++)
-        {
-            FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
-        }
+        // this has been done when enter
+        //for (int j = startIndex; j < startIndex + totalIndexes; j++)
+        //{
+        //    FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
+        //}
 
         if (staircase)
         {
-            for(int i = startIndex; i <= index; i++)
+            for(int i = startIndex; i < startIndex + totalIndexes; i++)
             {
-                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, Math.Clamp(i, 0, startIndex + totalIndexes - 1).ToString()), true);
+                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), i <= index);
             }
         }
         else
         {
-            FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, Math.Clamp(index, 0, startIndex + totalIndexes - 1).ToString()), true);
+            for (int i = startIndex; i < startIndex + totalIndexes; i++)
+            {
+                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), i == index);
+            }
         }
     }
 }

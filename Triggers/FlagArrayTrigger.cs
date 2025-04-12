@@ -39,15 +39,18 @@ public class FlagArrayTrigger : FlagManageTrigger
 
     protected override IEnumerator OnEnterRoutine(Player player)
     {
-        if(posMode != PositionModes.NoEffect)
-        {
-            yield break;
-        }
-
-        for(int i = 0; i < flags.Length; i++)
+        // clear all array flags when enter
+        for (int i = 0; i < flags.Length; i++)
         {
             FlagUtils.SetFlag(flags[i], false);
         }
+
+        if (posMode != PositionModes.NoEffect)
+        {
+            yield break;
+        }
+        // will not execute if position mode enabled
+        
         for(int i = 0; i < flags.Length; i++)
         {
             if (!staircase)
@@ -62,29 +65,35 @@ public class FlagArrayTrigger : FlagManageTrigger
 
     protected override void OnStayExecute(Player player)
     {
-        float lerp = GetPositionLerp(player, posMode);
-
         if(posMode == PositionModes.NoEffect)
         {
             return;
         }
+        // will not execute if position mode disabled
 
+        float lerp = GetPositionLerp(player, posMode);
         int index = (int)Math.Floor(lerp * flags.Length);
-        for (int i = 0; i < flags.Length; i++)
-        {
-            FlagUtils.SetFlag(flags[i], false);
-        }
+        index = Math.Clamp(index, 0, flags.Length - 1);
+
+        // this has been done when enter
+        //for (int i = 0; i < flags.Length; i++)
+        //{
+        //    FlagUtils.SetFlag(flags[i], false);
+        //}
 
         if (staircase)
         {
-            for(int i = 0; i <= index; i++)
+            for(int i = 0; i < flags.Length; i++)
             {
-                FlagUtils.SetFlag(flags[Math.Clamp(i, 0, flags.Length - 1)], true);
+                FlagUtils.SetFlag(flags[i], i <= index);
             }
         }
         else
         {
-            FlagUtils.SetFlag(flags[Math.Clamp(index, 0, flags.Length - 1)], true);
+            for (int i = 0; i < flags.Length; i++)
+            {
+                FlagUtils.SetFlag(flags[i], i == index);
+            }
         }
     }
 }
