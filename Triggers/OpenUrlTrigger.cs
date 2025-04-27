@@ -47,7 +47,7 @@ public sealed class OpenUrlTrigger : Trigger
         }
         else
         {
-            Logger.LogError("OpenUrlHelper", "Invalid URL! It should match the https://www.whatever.com format.");
+            Logger.LogError("OpenUrlHelper", "Invalid URL! It should match the \"https://www.example.com\" format.");
         }
         if (once)
             RemoveSelf();
