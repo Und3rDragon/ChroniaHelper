@@ -26,7 +26,7 @@ public sealed class OpenUrlTrigger : Trigger
         Uri validURL;
         if (Uri.TryCreate(url, UriKind.Absolute, out Uri validURL))
         {
-            safe = (validURL.Scheme == Uri.UriSchemeHttp || validURL.Scheme = Uri.UriSchemeHttps);
+            safe = (validURL.Scheme == Uri.UriSchemeHttp || validURL.Scheme == Uri.UriSchemeHttps);
         }
         else safe = false;
     }
