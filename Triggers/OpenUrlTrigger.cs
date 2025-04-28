@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics;
 using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using System;
-using System.Uri;
 
 namespace ChroniaHelper.Triggers;
 
@@ -23,7 +20,6 @@ public sealed class OpenUrlTrigger : Trigger
         url = data.Attr("url", "https://www.celestegame.com/");
 
         // Ensure a URL is being opened and not arbitrary code
-        Uri validURL;
         if (Uri.TryCreate(url, UriKind.Absolute, out Uri validURL))
         {
             safe = (validURL.Scheme == Uri.UriSchemeHttp || validURL.Scheme == Uri.UriSchemeHttps);
@@ -47,7 +43,7 @@ public sealed class OpenUrlTrigger : Trigger
         }
         else
         {
-            Logger.LogError("OpenUrlHelper", "Invalid URL! It should match the \"https://www.example.com\" format.");
+            Logger.Error("OpenUrlHelper", "Invalid URL! It should match the \"https://www.example.com\" format.");
         }
         if (once)
             RemoveSelf();
