@@ -15,6 +15,7 @@ public class CustomBillboard : Entity
     private class FG : Entity
     {
         public CustomBillboard Parent;
+
         public FG(CustomBillboard parent)
         {
             Parent = parent;
@@ -24,7 +25,7 @@ public class CustomBillboard : Entity
         public override void Render()
         {
             uint seed = Parent.Seed;
-            DrawNoise(Parent.Collider.Bounds, ref seed, Color.White * 0.1f);
+            Parent.DrawNoise(Parent.Collider.Bounds, ref seed, Color.White * 0.1f, Parent.noiseTx);
             for (int i = (int)Parent.Y; (float)i < Parent.Bottom; i += 2)
             {
                 float num = 0.05f + (1f + (float)Math.Sin((float)i / 16f + base.Scene.TimeActive * 2f)) / 2f * 0.2f;
@@ -35,7 +36,7 @@ public class CustomBillboard : Entity
 
     public const int BGDepth = 9010;
 
-    public static Color BackgroundColor = Color.Lerp(Color.DarkSlateBlue, Color.Black, 0.6f);
+    public Color BackgroundColor;
 
     public uint Seed;
 
@@ -43,7 +44,8 @@ public class CustomBillboard : Entity
 
     private string borderTx;
 
-    private static string noiseTx;
+    private string noiseTx;
+
     public CustomBillboard(EntityData e, Vector2 offset)
     {
         Position = e.Position + offset;
@@ -89,7 +91,7 @@ public class CustomBillboard : Entity
         }
     }
 
-    
+
     private void AutoTile(int x, int y)
     {
         if (Empty(x, y))
@@ -153,7 +155,7 @@ public class CustomBillboard : Entity
         }
     }
 
-    
+
     private void Tile(int x, int y, MTexture tile)
     {
         Image image = new Image(tile);
@@ -161,13 +163,13 @@ public class CustomBillboard : Entity
         Add(image);
     }
 
-    
+
     private bool Empty(int x, int y)
     {
         return !base.Scene.CollideCheck<CustomBillboard>(new Rectangle((int)base.X + x * 8, (int)base.Y + y * 8, 8, 8));
     }
 
-    
+
     public override void Update()
     {
         base.Update();
@@ -177,25 +179,25 @@ public class CustomBillboard : Entity
         }
     }
 
-    
+
     private void RenderBloom()
     {
         Draw.Rect(base.Collider, Color.White * 0.4f);
     }
 
-    
+
     public override void Render()
     {
         base.Render();
         uint seed = Seed;
         Draw.Rect(base.Collider, BackgroundColor);
-        DrawNoise(base.Collider.Bounds, ref seed, Color.White * 0.1f);
+        DrawNoise(base.Collider.Bounds, ref seed, Color.White * 0.1f, noiseTx);
     }
 
-    
-    public static void DrawNoise(Rectangle bounds, ref uint seed, Color color)
+
+    public void DrawNoise(Rectangle bounds, ref uint seed, Color color, string noiseTexturePath)
     {
-        MTexture mTexture = GFX.Game[noiseTx];
+        MTexture mTexture = GFX.Game[noiseTexturePath];
         Vector2 vector = new Vector2(PseudoRandRange(ref seed, 0f, mTexture.Width / 2), PseudoRandRange(ref seed, 0f, mTexture.Height / 2));
         Vector2 vector2 = new Vector2(mTexture.Width, mTexture.Height) / 2f;
         for (float num = 0f; num < (float)bounds.Width; num += vector2.X)
@@ -212,7 +214,7 @@ public class CustomBillboard : Entity
         }
     }
 
-    
+
     private static uint PseudoRand(ref uint seed)
     {
         seed ^= seed << 13;
@@ -220,7 +222,7 @@ public class CustomBillboard : Entity
         return seed;
     }
 
-    
+
     private static float PseudoRandRange(ref uint seed, float min, float max)
     {
         return min + (float)(PseudoRand(ref seed) % 1000) / 1000f * (max - min);
