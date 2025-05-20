@@ -36,6 +36,8 @@ booster.placements={
 		setOrRefillStamina = false,
 		--setOutSpeed = false,
 		XMLOverride = false,
+		burstParticleColorOverride = false,
+		burstParticleColor = "ffffff",
 	}
 }
 
@@ -61,6 +63,9 @@ booster.fieldInformation = {
 		editable = true,
 	},
 	colorOverlay = {
+		fieldType = "color",
+	},
+	burstParticleColor = {
 		fieldType = "color",
 	}
 }

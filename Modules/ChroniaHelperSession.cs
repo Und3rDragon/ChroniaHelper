@@ -4,7 +4,6 @@ using Celeste.Mod.ChroniaHelperIndicatorZone;
 using System.Linq;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using ChroniaHelper.Triggers;
-using YamlDotNet.Serialization;
 using YoctoHelper.Components;
 using YoctoHelper.Hooks;
 using static ChroniaHelper.Entities.CustomBooster;

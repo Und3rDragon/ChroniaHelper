@@ -17,7 +17,6 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/CustomBooster")]
-
 public class CustomBooster : Booster
 {
     public static void Load()
@@ -68,6 +67,8 @@ public class CustomBooster : Booster
     private bool setOutSpeed;
 
     private Color color;
+    private ParticleType customBurstParticleType;
+    private bool burstParticleColorOverride;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -113,17 +114,18 @@ public class CustomBooster : Booster
             {
                 sprite.Add("appear", "appear", appearTime, "loop");
             }
+
             sprite.AddLoop("loop", "loop", loopTime);
             sprite.AddLoop("inside", "inside", insideTime);
             sprite.AddLoop("spin", "spin", spinTime);
             sprite.Add("pop", "pop", popTime);
-            
         }
         else
         {
             string dir = data.Attr("directory", "Default_booster");
             sprite = GFX.SpriteBank.Create(dir);
         }
+
         sprite.Color = color;
         Add(sprite);
         sprite.Play("loop");
@@ -132,10 +134,7 @@ public class CustomBooster : Booster
         Add(new PlayerCollider(OnPlayer));
         Add(light = new VertexLight(Color.White, 1f, 16, 32));
         Add(bloom = new BloomPoint(0.1f, 16f));
-        Add(wiggler = Wiggler.Create(0.5f, 4f, (float f) =>
-        {
-            sprite.Scale = Vector2.One * (1f + f * 0.25f);
-        }));
+        Add(wiggler = Wiggler.Create(0.5f, 4f, (float f) => { sprite.Scale = Vector2.One * (1f + f * 0.25f); }));
         Add(dashRoutine = new Coroutine(removeOnComplete: false));
         Add(dashListener = new DashListener());
         Add(new MirrorReflection());
@@ -146,14 +145,18 @@ public class CustomBooster : Booster
         tr = data.Float("respawnTime", 1f);
         outlineDir = data.Attr("outlineDirectory", "objects/ChroniaHelper/customBooster/outline");
 
+        burstParticleColorOverride = data.Bool("burstParticleColorOverride");
+        if (burstParticleColorOverride)
+        {
+            customBurstParticleType = new ParticleType(P_Burst);
+            customBurstParticleType.Color = data.HexColor("burstParticleColor");
+        }
     }
 
-    
 
     public CustomBooster(EntityData data, Vector2 offset)
         : this(data, data.Position + offset, data.Bool("red"))
     {
-        
     }
 
     public override void Added(Scene scene)
@@ -207,7 +210,7 @@ public class CustomBooster : Booster
         }
 
         var continueLabel = cursor.DefineLabel();
-        
+
         cursor.Emit(OpCodes.Ldarg_0);
         cursor.EmitDelegate<Func<Player, bool>>(player =>
         {
@@ -220,11 +223,11 @@ public class CustomBooster : Booster
                 }
                 else
                 {
-                    if(player.Dashes < myBooster.setDash)
+                    if (player.Dashes < myBooster.setDash)
                     {
                         player.Dashes = myBooster.setDash;
                     }
-                    else if(myBooster.setDash < 0)
+                    else if (myBooster.setDash < 0)
                     {
                         player.Dashes = Math.Max(player.Dashes - myBooster.setDash, 0);
                     }
@@ -236,11 +239,11 @@ public class CustomBooster : Booster
                 }
                 else
                 {
-                    if(player.Stamina < myBooster.setStamina)
+                    if (player.Stamina < myBooster.setStamina)
                     {
                         player.Stamina = myBooster.setStamina;
                     }
-                    else if(myBooster.setStamina < 0)
+                    else if (myBooster.setStamina < 0)
                     {
                         player.Stamina = Math.Max(player.Stamina - myBooster.setStamina, 0);
                     }
@@ -248,6 +251,7 @@ public class CustomBooster : Booster
 
                 return true;
             }
+
             return false;
         });
         cursor.Emit(OpCodes.Brfalse, continueLabel);
@@ -268,8 +272,8 @@ public class CustomBooster : Booster
 
     private static IEnumerator Booster_BoostRoutine(On.Celeste.Booster.orig_BoostRoutine orig, Booster self, Player player, Vector2 dir)
     {
-        if (self is CustomBooster myBooster) {
-
+        if (self is CustomBooster myBooster)
+        {
             float angle = (-dir).Angle();
             // angle calculation, left is 0, right is PI, topright +, bottomright -
             while ((player.StateMachine.State == 2 || player.StateMachine.State == 5) && myBooster.BoostingPlayer)
@@ -282,7 +286,8 @@ public class CustomBooster : Booster
                 myBooster.loopingSfx.Position = myBooster.sprite.Position;
                 if (myBooster.Scene.OnInterval(0.02f))
                 {
-                    (myBooster.Scene as Level).ParticlesBG.Emit(myBooster.particleType, 2, player.Center - dir * 3f + new Vector2(0f, -2f), new Vector2(3f, 3f), angle);
+                    ParticleType particleType = self is CustomBooster booster && booster.burstParticleColorOverride ? booster.customBurstParticleType : myBooster.particleType;
+                    (myBooster.Scene as Level).ParticlesBG.Emit(particleType, 2, player.Center - dir * 3f + new Vector2(0f, -2f), new Vector2(3f, 3f), angle);
                 }
 
                 yield return null;
@@ -303,18 +308,16 @@ public class CustomBooster : Booster
             }
 
             myBooster.Tag = 0;
-
         }
         else
         {
             yield return new SwapImmediately(orig(self, player, dir));
         }
-        
     }
 
 
     // Usable but unecessary hooks
-    /* 
+    /*
     public static void Booster_Appear(On.Celeste.Booster.orig_Appear orig, Booster self)
     {
         orig(self);
@@ -322,7 +325,7 @@ public class CustomBooster : Booster
         {
 
         }
-        
+
     }
 
     private static bool RefillD(On.Celeste.Player.orig_RefillDash orig, Player self)
