@@ -10,7 +10,6 @@ namespace YoctoHelper.Entities;
 [CustomEntity("ChroniaHelper/MoonBoostBlock")]
 public class MoonBoostBlock : BaseSolid
 {
-
     private EaseModes dashAnimEase;
 
     private float dashMomentum;
@@ -76,13 +75,20 @@ public class MoonBoostBlock : BaseSolid
 
     private void Old(EntityData data)
     {
-        this.dashAnimEase = data.Enum<EaseModes>("dashEase"); // EaseModes.QuadIn);
-        this.sinkAnimEase = data.Enum<EaseModes>("sinkingEase"); // EaseModes.SineInOut);
-        this.sinkMomentum = data.Float("sinkingMomentum"); // 1F);
-        this.waveRange = data.Float("waveRange"); // 4F);
-        this.waveFrequency = data.Float("waveFrequency"); // 1F);
-        this.spawnOffset = data.Bool("spawnOffset"); // false);
-        this.upSpringReactionForce = data.Bool("upSpringMomentum"); // false);
+        if (data.Has("dashEase"))
+            dashAnimEase = data.Enum<EaseModes>("dashEase"); // EaseModes.QuadIn);
+        if (data.Has("sinkingEase"))
+            sinkAnimEase = data.Enum<EaseModes>("sinkingEase"); // EaseModes.SineInOut);
+        if (data.Has("sinkingMomentum"))
+            sinkMomentum = data.Float("sinkingMomentum"); // 1F);
+        if (data.Has("waveRange"))
+            waveRange = data.Float("waveRange"); // 4F);
+        if (data.Has("waveFrequency"))
+            waveFrequency = data.Float("waveFrequency"); // 1F);
+        if (data.Has("spawnOffset"))
+            spawnOffset = data.Bool("spawnOffset"); // false);
+        if (data.Has("upSpringMomentum"))
+            upSpringReactionForce = data.Bool("upSpringMomentum"); // false);
     }
 
     public MoonBoostBlock(EntityData data, Vector2 offset, EntityID id) : this(data.Position + offset, data, id)
@@ -102,7 +108,8 @@ public class MoonBoostBlock : BaseSolid
             this.groupBoundsMin = new Point((int)base.X, (int)base.Y);
             this.groupBoundsMax = new Point((int)base.Right, (int)base.Bottom);
             this.AddToGroupAndFindChildren(this);
-            Rectangle rectangle = new Rectangle(this.groupBoundsMin.X / 8, this.groupBoundsMin.Y / 8, (this.groupBoundsMax.X - this.groupBoundsMin.X) / 8 + 1, (this.groupBoundsMax.Y - this.groupBoundsMin.Y) / 8 + 1);
+            Rectangle rectangle = new Rectangle(this.groupBoundsMin.X / 8, this.groupBoundsMin.Y / 8, (this.groupBoundsMax.X - this.groupBoundsMin.X) / 8 + 1,
+                (this.groupBoundsMax.Y - this.groupBoundsMin.Y) / 8 + 1);
             VirtualMap<char> virtualMap = new VirtualMap<char>(rectangle.Width, rectangle.Height, '0');
             foreach (MoonBoostBlock moonBoostBlock in this.group)
             {
@@ -118,6 +125,7 @@ public class MoonBoostBlock : BaseSolid
                     }
                 }
             }
+
             this.tiles = GFX.FGAutotiler.GenerateMap(virtualMap, new Autotiler.Behaviour
             {
                 EdgesExtend = false,
@@ -127,6 +135,7 @@ public class MoonBoostBlock : BaseSolid
             this.tiles.Position = new Vector2(this.groupBoundsMin.X - base.X, this.groupBoundsMin.Y - base.Y);
             base.Add(this.tiles);
         }
+
         this.TryToInitPosition();
     }
 
@@ -136,18 +145,22 @@ public class MoonBoostBlock : BaseSolid
         {
             this.groupBoundsMin.X = (int)from.X;
         }
+
         if (from.Y < this.groupBoundsMin.Y)
         {
             this.groupBoundsMin.Y = (int)from.Y;
         }
+
         if (from.Right > this.groupBoundsMax.X)
         {
             this.groupBoundsMax.X = (int)from.Right;
         }
+
         if (from.Bottom > this.groupBoundsMax.Y)
         {
             this.groupBoundsMax.Y = (int)from.Bottom;
         }
+
         from.hasGroup = true;
         from.OnDashCollide = this.OnDash;
         this.group.Add(from);
@@ -156,6 +169,7 @@ public class MoonBoostBlock : BaseSolid
         {
             from.master = this;
         }
+
         foreach (JumpThru jumpThru in base.Scene.CollideAll<JumpThru>(new Rectangle((int)from.X - 1, (int)from.Y, (int)from.Width + 2, (int)from.Height)))
         {
             if (!this.jumpthrus.Contains(jumpThru))
@@ -163,6 +177,7 @@ public class MoonBoostBlock : BaseSolid
                 this.AddJumpThru(jumpThru);
             }
         }
+
         foreach (JumpThru jumpThru in base.Scene.CollideAll<JumpThru>(new Rectangle((int)from.X, (int)from.Y - 1, (int)from.Width, (int)from.Height + 2)))
         {
             if (!this.jumpthrus.Contains(jumpThru))
@@ -170,9 +185,12 @@ public class MoonBoostBlock : BaseSolid
                 this.AddJumpThru(jumpThru);
             }
         }
+
         foreach (MoonBoostBlock moonBoostBlock in base.Scene.Tracker.GetEntities<MoonBoostBlock>().Cast<MoonBoostBlock>())
         {
-            if (!moonBoostBlock.hasGroup && moonBoostBlock.tileType == base.tileType && (base.Scene.CollideCheck(new Rectangle((int)from.X - 1, (int)from.Y, (int)from.Width + 2, (int)from.Height), moonBoostBlock) || base.Scene.CollideCheck(new Rectangle((int)from.X, (int)from.Y - 1, (int)from.Width, (int)from.Height + 2), moonBoostBlock)))
+            if (!moonBoostBlock.hasGroup && moonBoostBlock.tileType == base.tileType &&
+                (base.Scene.CollideCheck(new Rectangle((int)from.X - 1, (int)from.Y, (int)from.Width + 2, (int)from.Height), moonBoostBlock) ||
+                 base.Scene.CollideCheck(new Rectangle((int)from.X, (int)from.Y - 1, (int)from.Width, (int)from.Height + 2), moonBoostBlock)))
             {
                 this.AddToGroupAndFindChildren(moonBoostBlock);
             }
@@ -186,7 +204,8 @@ public class MoonBoostBlock : BaseSolid
         this.moves.Add(jumpThru, jumpThru.Position);
         foreach (MoonBoostBlock moonBoostBlock in base.Scene.Tracker.GetEntities<MoonBoostBlock>())
         {
-            if (!moonBoostBlock.hasGroup && moonBoostBlock.tileType == base.tileType && base.Scene.CollideCheck(new Rectangle((int)jumpThru.X - 1, (int)jumpThru.Y, (int)jumpThru.Width + 2, (int)jumpThru.Height), moonBoostBlock))
+            if (!moonBoostBlock.hasGroup && moonBoostBlock.tileType == base.tileType &&
+                base.Scene.CollideCheck(new Rectangle((int)jumpThru.X - 1, (int)jumpThru.Y, (int)jumpThru.Width + 2, (int)jumpThru.Height), moonBoostBlock))
             {
                 this.AddToGroupAndFindChildren(moonBoostBlock);
             }
@@ -200,6 +219,7 @@ public class MoonBoostBlock : BaseSolid
             this.dashEaseValue = 1F;
             this.dashDirection = direction;
         }
+
         return DashCollisionResults.NormalOverride;
     }
 
@@ -214,6 +234,7 @@ public class MoonBoostBlock : BaseSolid
                     return;
                 }
             }
+
             this.MoveToTarget();
         }
         else
@@ -225,6 +246,7 @@ public class MoonBoostBlock : BaseSolid
     private void MoveToTarget()
     {
         float waveValue = (float)Math.Sin(this.sineWave) * this.waveRange;
+
         Vector2 momentum = Calc.YoYo(EaseUtils.GetEaser(this.dashAnimEase, this.dashEaseValue)) * this.dashDirection * 8 * this.dashMomentum;
         for (int i = 0; i < 2; i++)
         {
@@ -238,6 +260,7 @@ public class MoonBoostBlock : BaseSolid
                 {
                     flag = true;
                 }
+
                 if ((flag || i != 0) && (!flag || i != 1))
                 {
                     Vector2 value = move.Value;
@@ -262,6 +285,7 @@ public class MoonBoostBlock : BaseSolid
                         this.dashEaseValue = 1F;
                         this.dashDirection = Vector2.UnitY;
                     }
+
                     break;
                 case Spring.Orientations.WallLeft:
                     this.dashEaseValue = 1F;
@@ -289,6 +313,7 @@ public class MoonBoostBlock : BaseSolid
                     break;
                 }
             }
+
             if (!flag)
             {
                 foreach (JumpThru jumpthru in this.jumpthrus)
@@ -300,6 +325,7 @@ public class MoonBoostBlock : BaseSolid
                     }
                 }
             }
+
             if (flag)
             {
                 this.sinkTimer = 0.3F;
@@ -308,11 +334,13 @@ public class MoonBoostBlock : BaseSolid
             {
                 this.sinkTimer -= Engine.RawDeltaTime;
             }
+
             this.yLerp = Calc.Approach(this.yLerp, (this.sinkTimer > 0F) ? 1F : 0F, 1F * Engine.RawDeltaTime);
             this.sineWave += Engine.RawDeltaTime * this.waveFrequency;
             this.dashEaseValue = Calc.Approach(this.dashEaseValue, 0F, Engine.RawDeltaTime * 1.5F);
             this.MoveToTarget();
         }
+
         base.LiftSpeed = Vector2.Zero;
     }
 
@@ -322,6 +350,7 @@ public class MoonBoostBlock : BaseSolid
         {
             return;
         }
+
         base.OnShake(amount);
         this.tiles.Position += amount;
         foreach (JumpThru jumpthru in this.jumpthrus)
@@ -335,5 +364,4 @@ public class MoonBoostBlock : BaseSolid
             }
         }
     }
-
 }

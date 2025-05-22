@@ -252,23 +252,23 @@ local moonBoostBlock = {
         dashEase = defaultFields.ease.info,
         dashMomentum =
         {
-            fieldType = "number",
+            fieldType = "float",
             allowEmpty = false
         },
         sinkingEase = defaultFields.ease.info,
         sinkingMomentum =
         {
-            fieldType = "number",
+            fieldType = "float",
             allowEmpty = false
         },
         waveRange =
         {
-            fieldType = "number",
+            fieldType = "float",
             allowEmpty = false
         },
         waveFrequency =
         {
-            fieldType = "number",
+            fieldType = "float",
             allowEmpty = false
         },
         spawnOffset =
