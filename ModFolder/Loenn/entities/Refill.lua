@@ -358,6 +358,7 @@ local refill = {
                 customAnimation = false,
                 idleAnimInterval = 0.1,
                 flashAnimInterval = 0.05,
+                flagOnCollected = "Chronia_Refill_Flag_On_Collected"
             }
         },
         {
@@ -369,6 +370,7 @@ local refill = {
                 customAnimation = false,
                 idleAnimInterval = 0.1,
                 flashAnimInterval = 0.05,
+                flagOnCollected = "Chronia_Refill_Flag_On_Collected"
             }
         }
     },

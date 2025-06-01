@@ -130,6 +130,8 @@ public class Refill : Entity
 
     private float idleDelay, flashDelay;
 
+    private string flagOnCollected;
+
     static Refill()
     {
         Refill.RefillSpritePath = "objects/refill/";
@@ -224,6 +226,7 @@ public class Refill : Entity
         this.centerPosition = base.Position;
         this.idleDelay = data.Float("idleAnimInterval") <= 0 ? 0.1f : data.Float("idleAnimInterval");
         this.flashDelay = data.Float("flashAnimInterval") <= 0 ? 0.05f : data.Float("flashAnimInterval");
+        flagOnCollected = data.Attr("flagOnCollected", "Chronia_Refill_Flag_On_Collected");
 
         this.Setup();
     }
@@ -461,6 +464,7 @@ public class Refill : Entity
         global::Celeste.Celeste.Freeze(this.freeze);
         base.Add(new Coroutine(this.RefillRoutine(player), true));
         this.respawnTimer = this.respawnTime;
+        SceneAs<Level>().Session.SetFlag(flagOnCollected);
     }
 
     private IEnumerator RefillRoutine(Player player)
