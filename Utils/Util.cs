@@ -363,4 +363,130 @@ public static class Util
 
         return defaultMember;
     }
+
+    /// <summary>
+    /// The function checks your loenn inputs, if the input is empty or if other restraints are true, the function will return the default value, otherwise, it'll try and parse the value you entered
+    /// </summary>
+    /// <param name="loennInput">The parameters you get from Loenn</param>
+    /// <param name="defaultValue">The default value you should set up</param>
+    /// <param name="otherRestraints">Are there any restraints defined by boolean results</param>
+    /// <returns></returns>
+    public static int PrepareData(string loennInput, int defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        int parseValue = defaultValue;
+        int.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static float PrepareData(string loennInput, float defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        float parseValue = defaultValue;
+        float.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static double PrepareData(string loennInput, double defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        double parseValue = defaultValue;
+        double.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static bool PrepareData(string loennInput, bool defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        bool parseValue = defaultValue;
+        bool.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static Color PrepareData(string loennInput, Color defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(loennInput);
+        return parseValue;
+    }
+
+    public static Color PrepareData(string loennInput, string defaultHex, bool otherRestraints = false)
+    {
+        Color defaultValue = Calc.HexToColor(defaultHex);
+
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(loennInput);
+        return parseValue;
+    }
+
+    public static Classify PrepareData<Classify>(string loennInput, Classify defaultValue, bool otherRestraints = false, bool ignoreCases = false, bool ignoreUnderscores = false) where Classify : struct, Enum
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        return MatchEnum<Classify>(loennInput, defaultValue, ignoreCases, ignoreUnderscores);
+    }
 }
