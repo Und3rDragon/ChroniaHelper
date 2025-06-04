@@ -29,8 +29,7 @@ public class FlagArrayTrigger : FlagManageTrigger
             intervals[i] = d;
         }
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
-        //staircase = string.IsNullOrEmpty(data.Attr("staircase")) ? false : data.Bool("staircase", false);
-        staircase = Util.PrepareData(data.Attr("staircase"), false);
+        staircase = data.Fetch("staircase", false);
     }
     private int ID;
     private string[] flags;

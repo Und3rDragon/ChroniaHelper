@@ -24,8 +24,7 @@ public class FlagSerialTrigger : FlagManageTrigger
         totalIndexes = data.Int("steps", 10);
         interval = data.Float("interval", 0.1f);
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
-        //staircase = string.IsNullOrEmpty(data.Attr("staircase")) ? false : data.Bool("staircase", false);
-        staircase = Util.PrepareData(data.Attr("staircase"), false);
+        staircase = data.Fetch("staircase", false);
 
     }
     private int ID;

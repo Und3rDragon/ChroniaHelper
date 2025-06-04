@@ -93,13 +93,17 @@ public class CustomBooster : Booster
         setDashes = data.Bool("setOrRefillDashes", false);
         setupStamina = data.Bool("setOrRefillStamina", false);
         //moveSpeed = Math.Abs(data.Float("moveSpeed", 1f));
-        outSpeed = Math.Abs(data.Float("outSpeedMultiplier", 1f));
         //setOutSpeed = data.Bool("setOutSpeed", false);
+
         // process old data
         if (!string.IsNullOrEmpty(data.Attr("setOutSpeed")))
         {
             bool setOutSpeed = data.Bool("setOutSpeed", false);
             outSpeed = setOutSpeed ? outSpeed : 1f;
+        }
+        else
+        {
+            outSpeed = Math.Abs(data.Float("outSpeedMultiplier", 1f));
         }
 
         color = Calc.HexToColor(data.Attr("colorOverlay", "ffffff"));
