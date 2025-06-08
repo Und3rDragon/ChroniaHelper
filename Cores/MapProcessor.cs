@@ -23,7 +23,7 @@ public static class MapProcessor
         On.Celeste.Level.LoadLevel += OnLevelLoadLevel;
         On.Celeste.MapData.Load += OnMapDataLoad;
         On.Celeste.LevelLoader.LoadingThread += OnLevelReload;
-        On.Celeste.SaveData.LoadModSaveData += OnLoadSaveData;
+        On.Celeste.SaveData.LoadModSaveData += OnLoadModSaveData;
         On.Celeste.Level.Update += OnLevelUpdate;
         On.Celeste.Level.Reload += LevelReload;
     }
@@ -33,7 +33,7 @@ public static class MapProcessor
         On.Celeste.Level.LoadLevel -= OnLevelLoadLevel;
         On.Celeste.MapData.Load -= OnMapDataLoad;
         On.Celeste.LevelLoader.LoadingThread -= OnLevelReload;
-        On.Celeste.SaveData.LoadModSaveData -= OnLoadSaveData;
+        On.Celeste.SaveData.LoadModSaveData -= OnLoadModSaveData;
         On.Celeste.Level.Update -= OnLevelUpdate;
         On.Celeste.Level.Reload -= LevelReload;
     }
@@ -124,7 +124,7 @@ public static class MapProcessor
         ChroniaHelperSession.TemporaryFlags.Clear();
     }
 
-    public static void OnLoadSaveData(On.Celeste.SaveData.orig_LoadModSaveData orig, int index)
+    public static void OnLoadModSaveData(On.Celeste.SaveData.orig_LoadModSaveData orig, int index)
     {
         saveSlotIndex = index;
         orig(index);
@@ -143,6 +143,13 @@ public static class MapProcessor
                     SwitchFlagSave(item, true);
                 }
             }
+        }
+
+        // Flag Timer Trigger
+        foreach (var timer in ChroniaHelperSession.FlagTimer.Keys)
+        {
+            ChroniaHelperSession.FlagTimer[timer] = Calc.Approach(ChroniaHelperSession.FlagTimer[timer], 0f, Engine.DeltaTime);
+            if (ChroniaHelperSession.FlagTimer[timer] == 0f) { FlagUtils.SetFlag(timer, false); }
         }
 
         orig(self);

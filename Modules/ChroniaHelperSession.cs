@@ -138,4 +138,7 @@ public class ChroniaHelperSession : EverestModuleSession
     // Omni Zip Mover 2 records
     public static Dictionary<EntityID, int> Zipmover_NodeIndex = new();
     public static Dictionary<EntityID, bool> Zipmover_NextForward = new();
+
+    // Flag Timer Trigger
+    public static Dictionary<string, float> FlagTimer = new();
 }
