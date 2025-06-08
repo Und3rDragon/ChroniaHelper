@@ -210,20 +210,12 @@ public class FlagButton : Entity {
 
     public void FlagSave(string key)
     {
-        if (ChroniaHelperModule.Session.switchFlag.ContainsKey(key))
-        {
-            ChroniaHelperModule.Session.switchFlag.Remove(key);
-        }
-        ChroniaHelperModule.Session.switchFlag.Add(key, Activated());
+        ChroniaHelperModule.Session.switchFlag.Enter(key, Activated());
     }
 
     public void FlagSave(string key, bool overwrite)
     {
-        if (ChroniaHelperModule.Session.switchFlag.ContainsKey(key))
-        {
-            ChroniaHelperModule.Session.switchFlag.Remove(key);
-        }
-        ChroniaHelperModule.Session.switchFlag.Add(key, overwrite);
+        ChroniaHelperModule.Session.switchFlag.Enter(key, overwrite);
     }
     // Get and override flag states
     public bool FlagLoad(string key)
@@ -242,15 +234,9 @@ public class FlagButton : Entity {
         {
             ChroniaHelperModule.Session.lastRoom.Remove(flagID);
         }
-        if (!ChroniaHelperModule.Session.lastRoom.Contains(flag))
-        {
-            ChroniaHelperModule.Session.lastRoom.Add(flag);
-        }
+        ChroniaHelperModule.Session.lastRoom.Enter(flag);
         if (persistent) { return; }
-        if (!ChroniaHelperModule.Session.lastRoom.Contains(flagID))
-        {
-            ChroniaHelperModule.Session.lastRoom.Add(flagID);
-        }
+        ChroniaHelperModule.Session.lastRoom.Enter(flagID);
     }
 
     public void ListFlagReset()
@@ -451,14 +437,7 @@ public class FlagButton : Entity {
 
         base.Update();
 
-        if (!ChroniaHelperModule.Session.touchSwitchFrame.Keys.Contains(ID))
-        {
-            ChroniaHelperModule.Session.touchSwitchFrame.Add(ID, icon.CurrentAnimationFrame);
-        }
-        else
-        {
-            ChroniaHelperModule.Session.touchSwitchFrame[ID] = icon.CurrentAnimationFrame;
-        }
+        ChroniaHelperModule.Session.touchSwitchFrame.Enter(ID, icon.CurrentAnimationFrame);
     }
 
     public Vector2 EdgePosition()

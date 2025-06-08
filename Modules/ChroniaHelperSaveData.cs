@@ -12,5 +12,5 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
     public Dictionary<string, bool> globalflags { get; set; } = new Dictionary<string, bool>();
 
     // FLag Timer Trigger
-    public Dictionary<string, float> FlagTimerS = new();
+    public static Dictionary<string, float> FlagTimerS = new();
 }

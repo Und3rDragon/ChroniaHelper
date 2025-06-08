@@ -13,6 +13,7 @@ using ChroniaHelper.Effects;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static Celeste.ClutterBlock;
 using System.Collections;
+using On.Monocle;
 
 namespace ChroniaHelper.Cores;
 
@@ -26,6 +27,7 @@ public static class MapProcessor
         On.Celeste.SaveData.LoadModSaveData += OnLoadModSaveData;
         On.Celeste.Level.Update += OnLevelUpdate;
         On.Celeste.Level.Reload += LevelReload;
+        On.Monocle.Scene.Update += GlobalUpdate;
     }
 
     public static void Unload()
@@ -36,6 +38,7 @@ public static class MapProcessor
         On.Celeste.SaveData.LoadModSaveData -= OnLoadModSaveData;
         On.Celeste.Level.Update -= OnLevelUpdate;
         On.Celeste.Level.Reload -= LevelReload;
+        On.Monocle.Scene.Update -= GlobalUpdate;
     }
 
     public static AreaKey areakey;
@@ -43,9 +46,9 @@ public static class MapProcessor
     public static int saveSlotIndex;
     public static Level level;
     public static Session session;
-    public static Dictionary<Type, List<Entity>> entities;
+    public static Dictionary<Type, List<Monocle.Entity>> entities;
 
-    public static Entity globalEntityDummy = new Entity();
+    public static Monocle.Entity globalEntityDummy = new Monocle.Entity();
 
     public static bool isRespawning = false;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
@@ -64,6 +67,15 @@ public static class MapProcessor
         {
             level.Session.SetFlag(item.Key, item.Value);
         }
+
+        // Apply Flag Timer Trigger flags
+        foreach (var flag in ChroniaHelperSaveData.FlagTimerS.Keys)
+        {
+            if (ChroniaHelperSaveData.FlagTimerS[flag] > 0)
+            {
+                FlagUtils.SetFlag(flag, true);
+            }
+        }
         
         // Check all the switches and save the flags
         var levels = level.Session.MapData.Levels;
@@ -77,10 +89,8 @@ public static class MapProcessor
                     // Can get the Entity ID here
                     flagName = item.Values["flag"].ToString().Trim();
                     SwitchFlagSlot($"ChroniaButtonFlag-{flagName}-ButtonID-{item.ID}", false);
-                    if (!ChroniaHelperModule.Session.flagNames.Contains(flagName))
-                    {
-                        ChroniaHelperModule.Session.flagNames.Add(flagName);
-                    }
+                    
+                    ChroniaHelperModule.Session.flagNames.Enter(flagName);
                 }
             }
         }
@@ -148,11 +158,23 @@ public static class MapProcessor
         // Flag Timer Trigger
         foreach (var timer in ChroniaHelperSession.FlagTimer.Keys)
         {
-            ChroniaHelperSession.FlagTimer[timer] = Calc.Approach(ChroniaHelperSession.FlagTimer[timer], 0f, Engine.DeltaTime);
+            ChroniaHelperSession.FlagTimer[timer] = Monocle.Calc.Approach(ChroniaHelperSession.FlagTimer[timer], 0f, Monocle.Engine.DeltaTime);
             if (ChroniaHelperSession.FlagTimer[timer] == 0f) { FlagUtils.SetFlag(timer, false); }
         }
 
         orig(self);
+    }
+
+    public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)
+    {
+        orig(self);
+
+        // Flag Timer Trigger
+        foreach (var timer in ChroniaHelperSaveData.FlagTimerS.Keys)
+        {
+            ChroniaHelperSaveData.FlagTimerS[timer] = Monocle.Calc.Approach(ChroniaHelperSaveData.FlagTimerS[timer], 0f, Monocle.Engine.DeltaTime);
+            if (ChroniaHelperSaveData.FlagTimerS[timer] == 0f) { FlagUtils.SetFlag(timer, false); }
+        }
     }
 
     // Check whether the group of touch switches is completed
@@ -175,20 +197,13 @@ public static class MapProcessor
     // Creating slots for the flags
     public static void SwitchFlagSlot(string key, bool defaultValue)
     {
-        if (!ChroniaHelperModule.Session.switchFlag.ContainsKey(key))
-        {
-            ChroniaHelperModule.Session.switchFlag.Add(key, defaultValue);
-        }
+        ChroniaHelperModule.Session.switchFlag.Enter(key, defaultValue);
     }
 
     // Save or overwrite the existing values
     public static void SwitchFlagSave(string key, bool overwrite)
     {
-        if (ChroniaHelperModule.Session.switchFlag.ContainsKey(key))
-        {
-            ChroniaHelperModule.Session.switchFlag.Remove(key);
-        }
-        ChroniaHelperModule.Session.switchFlag.Add(key, overwrite);
+        ChroniaHelperModule.Session.switchFlag.Enter(key, overwrite);
     }
 
 }

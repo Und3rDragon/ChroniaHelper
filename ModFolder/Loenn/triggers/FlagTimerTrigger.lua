@@ -27,6 +27,7 @@ return{
 			options = {
 				["room"] = 0,
 				["map"] = 1,
+				["saves"] = 2,
 			},
 			editable = false,
 		},

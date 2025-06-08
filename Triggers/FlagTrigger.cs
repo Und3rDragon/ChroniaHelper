@@ -138,14 +138,7 @@ public class FlagTrigger : Trigger
                 isGlobal = global,
             };
 
-            if (ChroniaHelperSession.TemporaryFlags.ContainsKey(item))
-            {
-                ChroniaHelperSession.TemporaryFlags[item] = chroniaflag;
-            }
-            else
-            {
-                ChroniaHelperSession.TemporaryFlags.Add(item, chroniaflag);
-            }
+            ChroniaHelperSession.TemporaryFlags.Enter(item, chroniaflag);
         }
     }
 

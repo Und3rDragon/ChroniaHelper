@@ -31,16 +31,11 @@ public class FlagTimerTrigger : BaseTrigger
             string[] pairs = setups[i].Split(",", StringSplitOptions.TrimEntries);
             if (pairs.Length < 2) continue;
             if (string.IsNullOrEmpty(pairs[0]) || string.IsNullOrEmpty(pairs[1])) continue;
+
             float time = 0f;
             if (!float.TryParse(pairs[1], out time)) continue;
-            if (timedFlagset.ContainsKey(pairs[0]))
-            {
-                timedFlagset[pairs[0]] = time;
-            }
-            else
-            {
-                timedFlagset.Add(pairs[0], time);
-            }
+
+            timedFlagset.Enter(pairs[0], time);
         }
 
         range = (Range)data.Fetch("range", 0);
@@ -48,7 +43,6 @@ public class FlagTimerTrigger : BaseTrigger
     }
     private Dictionary<string, float> timedFlagset = new();
     private Dictionary<string, float> timedFlags = new();
-
 
     protected override void OnEnterExecute(Player player)
     {
@@ -110,6 +104,35 @@ public class FlagTimerTrigger : BaseTrigger
                     if(mode != Mode.minus)
                     {
                         ChroniaHelperSession.FlagTimer.Add(flag, timedFlagset[flag]);
+                    }
+                }
+            }
+        }
+
+        else if (range == Range.saves)
+        {
+            foreach (var flag in timedFlagset.Keys)
+            {
+                if (ChroniaHelperSaveData.FlagTimerS.ContainsKey(flag))
+                {
+                    if (mode == Mode.set)
+                    {
+                        ChroniaHelperSaveData.FlagTimerS[flag] = timedFlagset[flag];
+                    }
+                    else if (mode == Mode.add)
+                    {
+                        ChroniaHelperSaveData.FlagTimerS[flag] += timedFlagset[flag];
+                    }
+                    else if (mode == Mode.minus)
+                    {
+                        ChroniaHelperSaveData.FlagTimerS[flag] -= timedFlagset[flag];
+                    }
+                }
+                else
+                {
+                    if (mode != Mode.minus)
+                    {
+                        ChroniaHelperSaveData.FlagTimerS.Add(flag, timedFlagset[flag]);
                     }
                 }
             }

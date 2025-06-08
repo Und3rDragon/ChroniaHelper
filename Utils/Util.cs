@@ -677,4 +677,30 @@ public static class Util
         return false;
     }
 
+    public enum Input { normal, onlyAdd, onlyModify}
+    public static void Enter<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA key, TypeB value, Input modify = Input.normal)
+    {
+        if (dictionary.ContainsKey(key))
+        {
+            if(modify != Input.onlyAdd)
+            {
+                dictionary[key] = value;
+            }
+        }
+        else
+        {
+            if(modify != Input.onlyModify)
+            {
+                dictionary.Add(key, value);
+            }
+        }
+    }
+
+    public static void Enter<Type>(this List<Type> list, Type item)
+    {
+        if (!list.Contains(item))
+        {
+            list.Add(item);
+        }
+    }
 }

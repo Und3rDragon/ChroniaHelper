@@ -99,15 +99,7 @@ public sealed partial class PasswordKeyboard : Entity
                 }
             }
         }
-        if (!ChroniaHelperModule.Session.PasswordQueue.ContainsKey(entityID))
-        {
-            ChroniaHelperModule.Session.PasswordQueue.Add(entityID, 0);
-        }
-        else
-        {
-            ChroniaHelperModule.Session.PasswordQueue[entityID] = 0;
-        }
-
+        ChroniaHelperModule.Session.PasswordQueue.Enter(entityID, 0);
 
         base.Depth = data.Int("depth", 9000);
     }
@@ -135,9 +127,7 @@ public sealed partial class PasswordKeyboard : Entity
         switch (config.Mode)
         {
             case Mode.Exclusive:
-                bool exists = ChroniaHelperModule.Session.Passwords.ContainsKey(config.IDTag);
-                if (exists) { ChroniaHelperModule.Session.Passwords[config.IDTag] = password; }
-                else { ChroniaHelperModule.Session.Passwords.Add(config.IDTag, password); }
+                ChroniaHelperModule.Session.Passwords.Enter(config.IDTag, password);
 
                 feedback = true; break;
             case Mode.Normal:

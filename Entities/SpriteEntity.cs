@@ -1547,14 +1547,7 @@ public class SpriteEntity : Actor
     #region variables
     private void SafeAddVariables(string name, object value)
     {
-        if (ChroniaHelperModule.Session.se_Variables.Keys.Contains(name))
-        {
-            ChroniaHelperModule.Session.se_Variables[name] = value;
-        }
-        else
-        {
-            ChroniaHelperModule.Session.se_Variables.Add(name, value);
-        }
+        ChroniaHelperModule.Session.se_Variables.Enter(name, value);
     }
 
     private void ConditionalParseInt(string input, int defaultValue, out int export)
