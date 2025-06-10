@@ -1,0 +1,14 @@
+UnderDragon_ChroniaHelper_wiki=便携Wiki
+UnderDragon_ChroniaHelper=ChroniaHelper辅助地图
+
+wiki_all=Wiki 合集
+wiki_everest=Everest Wiki
+(Official Wiki)
+wiki_bilibili=B站 Wiki
+wiki_miao=喵服 Wiki
+wiki_ink=Celeste.Ink Wiki
+wiki_fandom=Celeste Fandom Wiki
+
+wiki_prismatic=Prismatic Helper
+wiki_maddie=Maddie的常用工具网站
+wiki_adam=Adam's Add-Ons
