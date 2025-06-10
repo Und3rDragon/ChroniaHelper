@@ -8,6 +8,14 @@ wiki_bilibili=Bilibili Wiki
 wiki_miao=MiaoServer Wiki
 wiki_ink=Celeste.Ink Wiki
 wiki_fandom=Celeste Fandom Wiki
+wiki_iamdadbod=Ahorn Mapping
+(YouTube, by iamdadbod)
+wiki_mapalong=Map a-loenn
+(YouTube, by AverageImposter)
+wiki_psyZ=Mapping Tutorial
+(Bilibili, by Psychokinetic_Z)
+wiki_UnderDragon=Mapping Introduction
+(Bilibili, by UnderDragon)
 
 wiki_prismatic=Prismatic Helper
 wiki_maddie=Maddie's Random Stuffs
