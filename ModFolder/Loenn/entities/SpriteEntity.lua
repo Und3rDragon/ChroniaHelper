@@ -110,6 +110,7 @@ se.fieldInformation = {
 					"disable_movement,active?",
 					"kill_player",
 					"passby functionName",
+					"change_tag,(normal or hud)"
 				}
 			},
 			editable = true,
