@@ -726,6 +726,10 @@ public class AnimatedSpikes : Entity
     public override void Render()
     {
         base.Render();
+
+        Vector2 pos = Position;
+        Position += shakeOffset;
+
         Vector2 vector = new Vector2(Math.Abs(this.outwards.Y), Math.Abs(this.outwards.X));
         Vector2 justify = Vector2.Zero;
         switch (this.direction)
@@ -761,6 +765,8 @@ public class AnimatedSpikes : Entity
         {
             this.RenderTextureSpikes();
         }
+
+        Position = pos;
     }
 
     private void RenderTextureSpikes()
