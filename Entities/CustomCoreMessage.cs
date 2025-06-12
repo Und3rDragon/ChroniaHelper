@@ -84,7 +84,10 @@ public class ColoredCustomCoreMessage : Entity
         defaultFadedValue = data.Float("DefaultFadedValue", 0f);
         alphaMult = Calc.Clamp(data.Float("AlphaMultiplier", 1f), 0f, 1f);
 
+        // align
+        align = (AlignUtils.Aligns)data.Fetch("align", 5);
     }
+    AlignUtils.Aligns align;
 
     public void TextProcess()
     {
@@ -235,11 +238,11 @@ public class ColoredCustomCoreMessage : Entity
         }
         if (outline)
         {
-            ActiveFont.DrawOutline(text, position2, new Vector2(0.5f, 0.5f), scale, color * alpha, 2f, outlineColor * alpha);
+            ActiveFont.DrawOutline(text, position2, AlignUtils.AlignToJustify[align], scale, color * alpha, 2f, outlineColor * alpha);
         }
         else
         {
-            ActiveFont.Draw(text, position2, new Vector2(0.5f, 0.5f), scale, color * alpha);
+            ActiveFont.Draw(text, position2, AlignUtils.AlignToJustify[align], scale, color * alpha);
         }
     }
 
