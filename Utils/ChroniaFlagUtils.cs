@@ -27,6 +27,12 @@ public static class ChroniaFlagUtils
         name.SetFlag(active, false, true);
     }
 
+    /// <summary>
+    /// Get the state of the required flag
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="checkRecordState"></param>
+    /// <returns>The state of the flag in-game, or in the records</returns>
     public static bool GetFlag(this string name, bool checkRecordState = false)
     {
         return checkRecordState? 
@@ -34,48 +40,51 @@ public static class ChroniaFlagUtils
                 MapProcessor.session.GetFlag(name)
             ) : MapProcessor.session.GetFlag(name);
     }
-
-    public static bool IsGlobal(this string name)
-    {
-        return Check(name) ? ChroniaHelperSaveData.ChroniaFlags[name].Global : false;
-    }
-
-    public static void SetGlobal(this string name, bool set)
-    {
-        if (Check(name))
-        {
-            ChroniaHelperSaveData.ChroniaFlags[name].Global = set;
-        }
-    }
-
-    public static bool IsTemporary(this string name)
-    {
-        return Check(name) ? ChroniaHelperSaveData.ChroniaFlags[name].Temporary : false;
-    }
-
-    public static void SetTemporary(this string name, bool set)
+    
+    /// <summary>
+    /// Search through the savedata ChroniaFlags, and pull the item out
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns>By default, you'll get the item stored in ChroniaFlags. If the item doesn't exist, you'll get an empty ChroniaFlag (name, false, false, false)</returns>
+    public static ChroniaFlag PullFlag(this string name)
     {
         if (Check(name))
         {
-            ChroniaHelperSaveData.ChroniaFlags[name].Temporary = set;
+            return ChroniaHelperSaveData.ChroniaFlags[name];
+        }
+        else
+        {
+            return new(name, false, false, false);
         }
     }
 
-    public static void ForceRefresh(this string name, bool set)
+    /// <summary>
+    /// The function is only for processing data, for flag managements please use SetFlag()
+    /// </summary>
+    /// <param name="flag"></param>
+    /// <param name="slotName"></param>
+    public static void PushFlag(this ChroniaFlag flag)
     {
-        if (Check(name))
-        {
-            ChroniaHelperSaveData.ChroniaFlags[name].Force = set;
-        }
+        ChroniaHelperSaveData.ChroniaFlags.Enter(flag.Name, flag);
+        MapProcessor.session.SetFlag(flag.Name, flag.Active);
+        Refresh();
     }
 
     public static bool Check(this string name, bool fix = false)
     {
-        GeneralCheck(fix);
-
         if (!ChroniaHelperSaveData.ChroniaFlags.ContainsKey(name)) { return false; }
 
-        if (ChroniaHelperSaveData.ChroniaFlags[name].Name != name) { return false; }
+        if (ChroniaHelperSaveData.ChroniaFlags[name].Name != name)
+        {
+            if (fix)
+            {
+                ChroniaHelperSaveData.ChroniaFlags[name].Name = name;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         return true;
     }

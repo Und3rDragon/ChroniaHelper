@@ -71,7 +71,7 @@ public class FlagTrigger : Trigger
     {
         foreach (var item in flagList)
         {
-            RecordedStates.Enter(item, new(item, item.GetFlag(), item.IsGlobal()));
+            RecordedStates.Enter(item, new(item, item.GetFlag(), item.PullFlag().Global));
         }
     }
 
