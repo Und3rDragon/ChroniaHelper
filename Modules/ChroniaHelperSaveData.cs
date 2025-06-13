@@ -9,8 +9,9 @@ namespace ChroniaHelper.Modules;
 
 public class ChroniaHelperSaveData : EverestModuleSaveData
 {
-    public Dictionary<string, bool> globalflags { get; set; } = new Dictionary<string, bool>();
-
-    // FLag Timer Trigger
+    // Flag Timer Trigger
     public static Dictionary<string, float> FlagTimerS = new();
+
+    // wip: new flag system?
+    public static Dictionary<string, ChroniaFlag> ChroniaFlags = new();
 }

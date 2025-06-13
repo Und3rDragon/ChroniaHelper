@@ -48,7 +48,7 @@ public class FlagTimerTrigger : BaseTrigger
     {
         foreach(var flag in timedFlagset.Keys)
         {
-            FlagUtils.SetFlag(flag, true);
+            ChroniaFlagUtils.SetFlag(flag, true);
         }
 
         if(range == Range.room)
@@ -145,7 +145,7 @@ public class FlagTimerTrigger : BaseTrigger
         {
             foreach (var flag in timedFlagset.Keys)
             {
-                FlagUtils.SetFlag(flag, false);
+                ChroniaFlagUtils.SetFlag(flag, false);
             }
         }
     }
@@ -159,7 +159,7 @@ public class FlagTimerTrigger : BaseTrigger
             timedFlags[flag] = Calc.Approach(timedFlags[flag], 0f, Engine.DeltaTime);
             if(range == Range.room && timedFlags[flag] == 0f)
             {
-                FlagUtils.SetFlag(flag, false);
+                ChroniaFlagUtils.SetFlag(flag, false);
             }
         }
     }

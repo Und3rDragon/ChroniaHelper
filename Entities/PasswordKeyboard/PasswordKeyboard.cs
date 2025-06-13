@@ -146,11 +146,11 @@ public sealed partial class PasswordKeyboard : Entity
                 {
                     if (config.Toggle)
                     {
-                        FlagUtils.SetFlag(currentFlag, !FlagUtils.GetFlag(currentFlag), config.Global);
+                        ChroniaFlagUtils.SetFlag(currentFlag, !ChroniaFlagUtils.GetFlag(currentFlag), config.Global);
                     }
                     else
                     {
-                        FlagUtils.SetFlag(currentFlag, true, config.Global);
+                        ChroniaFlagUtils.SetFlag(currentFlag, true, config.Global);
                     }
 
                     ChroniaHelperModule.Session.PasswordQueue[entityID]++;
@@ -161,11 +161,11 @@ public sealed partial class PasswordKeyboard : Entity
             case Mode.OutputFlag:
                 if (config.Toggle)
                 {
-                    FlagUtils.SetFlag(password, !FlagUtils.GetFlag(password), config.Global);
+                    ChroniaFlagUtils.SetFlag(password, !ChroniaFlagUtils.GetFlag(password), config.Global);
                 }
                 else
                 {
-                    FlagUtils.SetFlag(password, true);
+                    ChroniaFlagUtils.SetFlag(password, true);
                 }
 
                 feedback = true; break;
@@ -185,11 +185,11 @@ public sealed partial class PasswordKeyboard : Entity
                     {
                         if (config.Toggle)
                         {
-                            FlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], !FlagUtils.GetFlag(flagList[Math.Min(i, flagCount)]), config.Global);
+                            ChroniaFlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], !ChroniaFlagUtils.GetFlag(flagList[Math.Min(i, flagCount)]), config.Global);
                         }
                         else
                         {
-                            FlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], true, config.Global);
+                            ChroniaFlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], true, config.Global);
                         }
                         feedback = true; 
                     }

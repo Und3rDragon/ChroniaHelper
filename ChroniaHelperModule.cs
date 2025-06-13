@@ -82,13 +82,15 @@ public class ChroniaHelperModule : EverestModule
         Everest.Events.LevelLoader.OnLoadingThread += LevelLoader_OnLoadingThread;
         CustomBooster.Load();
         OmniZipWater.Load();
-        MapProcessor.Load();
         EntityChangingInterfaces.Load();
         PatientBooster.Load();
         BoosterZipper.Load();
         Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
         SpriteEntity.Load();
         PlatformLineController.Load();
+
+        MapProcessor.Load();
+        ChroniaFlag.Onload();
 
         // API Imports
         typeof(FrostHelperImports).ModInterop();
@@ -116,13 +118,15 @@ public class ChroniaHelperModule : EverestModule
         Everest.Events.LevelLoader.OnLoadingThread -= LevelLoader_OnLoadingThread;
         CustomBooster.Unload();
         OmniZipWater.Unload();
-        MapProcessor.Unload();
         EntityChangingInterfaces.Unload();
         PatientBooster.Unload();
         BoosterZipper.Unload();
         Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
         SpriteEntity.Unload();
         PlatformLineController.Unload();
+
+        MapProcessor.Unload();
+        ChroniaFlag.Unload();
     }
 
     private static void LevelLoader_OnLoadingThread(Level level)

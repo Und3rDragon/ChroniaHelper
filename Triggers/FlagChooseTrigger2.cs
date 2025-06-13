@@ -72,8 +72,8 @@ public class FlagChooseTrigger2 : BaseTrigger
             bool flag = true;
             foreach(string name in conditions)
             {
-                flag.TryNegative(name.Contains("!") ? !FlagUtils.GetFlag(name.RemoveAll("!"))
-                    : FlagUtils.GetFlag(name));
+                flag.TryNegative(name.Contains("!") ? !ChroniaFlagUtils.GetFlag(name.RemoveAll("!"))
+                    : ChroniaFlagUtils.GetFlag(name));
             }
 
             if (flag)
@@ -81,7 +81,7 @@ public class FlagChooseTrigger2 : BaseTrigger
                 foreach(string target in results)
                 {
                     bool reverse = target.Contains("!"), global = target.Contains("*");
-                    FlagUtils.SetFlag(target.RemoveAll("!").RemoveAll("*"), !reverse, global);
+                    ChroniaFlagUtils.SetFlag(target.RemoveAll("!").RemoveAll("*"), !reverse, global);
                 }
             }
         }

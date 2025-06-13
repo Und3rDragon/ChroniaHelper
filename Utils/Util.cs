@@ -696,6 +696,34 @@ public static class Util
         }
     }
 
+    public static void SafeRemove<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA key)
+    {
+        if(dictionary.ContainsKey(key))
+        {
+            dictionary.Remove(key);
+        }
+    }
+
+    public static void Replace<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey, TypeB newValue)
+    {
+        dictionary.SafeRemove(oldKey);
+        dictionary.Enter(newKey, newValue);
+    }
+
+    public static bool ReplaceKey<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey)
+    {
+        if (!dictionary.ContainsKey(oldKey))
+        {
+            return false;
+        }
+
+        TypeB oldValue = dictionary[oldKey];
+        dictionary.SafeRemove(oldKey);
+        dictionary.Enter(newKey, oldValue);
+
+        return true;
+    }
+
     public static void Enter<Type>(this List<Type> list, Type item)
     {
         if (!list.Contains(item))

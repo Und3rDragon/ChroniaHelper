@@ -62,18 +62,12 @@ public static class MapProcessor
         // Dummy Entity setup
         level.Add(globalEntityDummy);
 
-        // Apply global flags
-        foreach (var item in ChroniaHelperModule.SaveData.globalflags)
-        {
-            level.Session.SetFlag(item.Key, item.Value);
-        }
-
         // Apply Flag Timer Trigger flags
         foreach (var flag in ChroniaHelperSaveData.FlagTimerS.Keys)
         {
             if (ChroniaHelperSaveData.FlagTimerS[flag] > 0)
             {
-                FlagUtils.SetFlag(flag, true);
+                ChroniaFlagUtils.SetFlag(flag, true);
             }
         }
         
@@ -122,16 +116,6 @@ public static class MapProcessor
     {
         // Only once after respawn, not when into the room
         orig(self);
-
-        // Reset Temporary Flags
-        foreach (var item in ChroniaHelperSession.TemporaryFlags.Keys)
-        {
-            string ID = ChroniaHelperSession.TemporaryFlags[item].flagID;
-            bool state = ChroniaHelperSession.TemporaryFlags[item].flagState;
-            bool global = ChroniaHelperSession.TemporaryFlags[item].isGlobal;
-            Utils.FlagUtils.SetFlag(ID, state, global);
-        }
-        ChroniaHelperSession.TemporaryFlags.Clear();
     }
 
     public static void OnLoadModSaveData(On.Celeste.SaveData.orig_LoadModSaveData orig, int index)
@@ -159,7 +143,7 @@ public static class MapProcessor
         foreach (var timer in ChroniaHelperSession.FlagTimer.Keys)
         {
             ChroniaHelperSession.FlagTimer[timer] = Monocle.Calc.Approach(ChroniaHelperSession.FlagTimer[timer], 0f, Monocle.Engine.DeltaTime);
-            if (ChroniaHelperSession.FlagTimer[timer] == 0f) { FlagUtils.SetFlag(timer, false); }
+            if (ChroniaHelperSession.FlagTimer[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
         }
 
         orig(self);
@@ -173,7 +157,7 @@ public static class MapProcessor
         foreach (var timer in ChroniaHelperSaveData.FlagTimerS.Keys)
         {
             ChroniaHelperSaveData.FlagTimerS[timer] = Monocle.Calc.Approach(ChroniaHelperSaveData.FlagTimerS[timer], 0f, Monocle.Engine.DeltaTime);
-            if (ChroniaHelperSaveData.FlagTimerS[timer] == 0f) { FlagUtils.SetFlag(timer, false); }
+            if (ChroniaHelperSaveData.FlagTimerS[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
         }
     }
 
