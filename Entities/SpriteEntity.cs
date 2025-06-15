@@ -78,7 +78,7 @@ public class SpriteEntity : Actor
         Camera_Position, Camera_Zoom,
         Disable_Movement, Kill_Player,
         //done
-        Holdable_Collider, Jump, Variable, Random,
+        Holdable_Collider, Jump, Variable, Random, Change_Tag
         //undone
     }
     private Command execute = Command.None;
@@ -89,7 +89,8 @@ public class SpriteEntity : Actor
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
         Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid, Command.Speed,
-        Command.Disable_Movement, Command.Kill_Player, Command.Variable, Command.Random
+        Command.Disable_Movement, Command.Kill_Player, Command.Variable, Command.Random,
+        Command.Change_Tag
     };
 
     public static void Load()
@@ -138,7 +139,7 @@ public class SpriteEntity : Actor
 
         Add(mover = new StaticMover());
         
-        base.Tag = Tags.TransitionUpdate;
+        base.Tag = normalTag;
     }
     private string spriteName;
     private Sprite sprite;
@@ -150,6 +151,7 @@ public class SpriteEntity : Actor
     private float parallax = 1f, camX = 160f, camY = 90f;
     private Solid solid; private Vector2 solidPos = Vector2.Zero;
     private StaticMover mover;
+    private BitTag normalTag = Tags.TransitionUpdate; 
     // acceleration
     private Vector2 basicSpeed = Vector2.Zero;
     private Vector2[] accelerations = new Vector2[1] {Vector2.Zero};
@@ -558,6 +560,27 @@ public class SpriteEntity : Actor
                     SafeAddVariables(name, value);
                 }
 
+            }
+
+            else if(execute == Command.Change_Tag)
+            {
+                // syntax: change_tag, tagName or index
+                Dictionary<string, BitTag> reference = new()
+                {
+                    {"normal", Tags.TransitionUpdate },
+                    {"transitionupdate", Tags.TransitionUpdate },
+                    {"hud", Tags.HUD }
+                };
+
+                if(segs < 2)
+                {
+                    continue;
+                }
+
+                if (reference.ContainsKey(commandLine[1]))
+                {
+                    Tag = reference[commandLine[1].ToLower().RemoveAll("_")];
+                }
             }
 
             else
@@ -1547,14 +1570,7 @@ public class SpriteEntity : Actor
     #region variables
     private void SafeAddVariables(string name, object value)
     {
-        if (ChroniaHelperModule.Session.se_Variables.Keys.Contains(name))
-        {
-            ChroniaHelperModule.Session.se_Variables[name] = value;
-        }
-        else
-        {
-            ChroniaHelperModule.Session.se_Variables.Add(name, value);
-        }
+        ChroniaHelperModule.Session.se_Variables.Enter(name, value);
     }
 
     private void ConditionalParseInt(string input, int defaultValue, out int export)
@@ -1639,9 +1655,10 @@ public class SpriteEntity : Actor
             }
         }
 
-        Vector2 camPos = MapProcessor.level.Camera.Position;
-        Vector2 center = camPos + new Vector2(camX, camY);
-        sprite.RenderPosition = center + (Position - center) * parallax;
+        Vector2 camPos = MapProcessor.level.Camera.Position + MapProcessor.level.CameraOffset;
+        Vector2 center = camPos.Floor() + new Vector2(camX, camY); // by default should be (160, 90) in pixel or (960, 540) in HD
+        Vector2 calculated = center + (Position - center) * parallax;
+        sprite.RenderPosition = calculated.Floor();
 
         //solid.Position = Position + solidPos;
         solid.MoveTo(Position + solidPos);

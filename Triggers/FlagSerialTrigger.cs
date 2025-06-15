@@ -24,7 +24,8 @@ public class FlagSerialTrigger : FlagManageTrigger
         totalIndexes = data.Int("steps", 10);
         interval = data.Float("interval", 0.1f);
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
-        staircase = string.IsNullOrEmpty(data.Attr("staircase")) ? false : data.Bool("staircase", false);
+        staircase = data.Fetch("staircase", false);
+
     }
     private int ID;
     private string serialFlag, targetSymbol;
@@ -38,7 +39,7 @@ public class FlagSerialTrigger : FlagManageTrigger
         // clear all array flags when enter
         for (int j = startIndex; j < startIndex + totalIndexes; j++)
         {
-            FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
+            ChroniaFlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
         }
 
         if (posMode != PositionModes.NoEffect)
@@ -51,10 +52,10 @@ public class FlagSerialTrigger : FlagManageTrigger
         {
             if (!staircase)
             {
-                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, (Math.Max(i - 1, startIndex)).ToString()), false);
+                ChroniaFlagUtils.SetFlag(serialFlag.Replace(targetSymbol, (Math.Max(i - 1, startIndex)).ToString()), false);
             }
 
-            FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), true);
+            ChroniaFlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), true);
 
             yield return interval;
         }
@@ -77,21 +78,21 @@ public class FlagSerialTrigger : FlagManageTrigger
         // this has been done when enter
         //for (int j = startIndex; j < startIndex + totalIndexes; j++)
         //{
-        //    FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
+        //    ChroniaFlagUtils.SetFlag(serialFlag.Replace(targetSymbol, j.ToString()), false);
         //}
 
         if (staircase)
         {
             for(int i = startIndex; i < startIndex + totalIndexes; i++)
             {
-                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), i <= index);
+                ChroniaFlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), i <= index);
             }
         }
         else
         {
             for (int i = startIndex; i < startIndex + totalIndexes; i++)
             {
-                FlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), i == index);
+                ChroniaFlagUtils.SetFlag(serialFlag.Replace(targetSymbol, i.ToString()), i == index);
             }
         }
     }

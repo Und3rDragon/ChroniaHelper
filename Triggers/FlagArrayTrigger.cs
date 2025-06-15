@@ -29,7 +29,7 @@ public class FlagArrayTrigger : FlagManageTrigger
             intervals[i] = d;
         }
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
-        staircase = string.IsNullOrEmpty(data.Attr("staircase")) ? false : data.Bool("staircase", false);
+        staircase = data.Fetch("staircase", false);
     }
     private int ID;
     private string[] flags;
@@ -42,7 +42,7 @@ public class FlagArrayTrigger : FlagManageTrigger
         // clear all array flags when enter
         for (int i = 0; i < flags.Length; i++)
         {
-            FlagUtils.SetFlag(flags[i], false);
+            ChroniaFlagUtils.SetFlag(flags[i], false);
         }
 
         if (posMode != PositionModes.NoEffect)
@@ -55,9 +55,9 @@ public class FlagArrayTrigger : FlagManageTrigger
         {
             if (!staircase)
             {
-                FlagUtils.SetFlag(flags[Math.Clamp(i - 1, 0, flags.Length - 1)], false);
+                ChroniaFlagUtils.SetFlag(flags[Math.Clamp(i - 1, 0, flags.Length - 1)], false);
             }
-            FlagUtils.SetFlag(flags[i], true);
+            ChroniaFlagUtils.SetFlag(flags[i], true);
 
             yield return intervals[Math.Clamp(i, 0, intervals.Length - 1)];
         }
@@ -78,21 +78,21 @@ public class FlagArrayTrigger : FlagManageTrigger
         // this has been done when enter
         //for (int i = 0; i < flags.Length; i++)
         //{
-        //    FlagUtils.SetFlag(flags[i], false);
+        //    ChroniaFlagUtils.SetFlag(flags[i], false);
         //}
 
         if (staircase)
         {
             for(int i = 0; i < flags.Length; i++)
             {
-                FlagUtils.SetFlag(flags[i], i <= index);
+                ChroniaFlagUtils.SetFlag(flags[i], i <= index);
             }
         }
         else
         {
             for (int i = 0; i < flags.Length; i++)
             {
-                FlagUtils.SetFlag(flags[i], i == index);
+                ChroniaFlagUtils.SetFlag(flags[i], i == index);
             }
         }
     }

@@ -564,6 +564,10 @@ public class AdvancedSpikes : Entity
     public override void Render()
     {
         base.Render();
+
+        Vector2 pos = Position;
+        Position += shakeOffset;
+
         Vector2 vector = new Vector2(Math.Abs(this.outwards.Y), Math.Abs(this.outwards.X));
         Vector2 justify = Vector2.Zero;
         switch (this.direction)
@@ -587,6 +591,8 @@ public class AdvancedSpikes : Entity
             Vector2 position = base.Position + vector * (4 + i * this.singleSize) + this.outwards * (this.spriteOrigin + this.spikes[i].lerp * 4F);
             mTexture.DrawJustified(position, justify, this.spikes[i].color * this.spriteAlpha, this.spriteScale, this.spriteRotation);
         }
+
+        Position = pos;
     }
 
     private bool PlayerCheck(int spikeIndex)

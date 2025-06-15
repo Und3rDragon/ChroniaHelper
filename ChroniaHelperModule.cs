@@ -13,6 +13,9 @@ using Celeste.Mod;
 using ChroniaHelper.Effects;
 using ChroniaHelper.Imports;
 using MonoMod.ModInterop;
+using FMOD.Studio;
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ChroniaHelper;
 
@@ -79,13 +82,15 @@ public class ChroniaHelperModule : EverestModule
         Everest.Events.LevelLoader.OnLoadingThread += LevelLoader_OnLoadingThread;
         CustomBooster.Load();
         OmniZipWater.Load();
-        MapProcessor.Load();
         EntityChangingInterfaces.Load();
         PatientBooster.Load();
         BoosterZipper.Load();
         Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
         SpriteEntity.Load();
         PlatformLineController.Load();
+
+        MapProcessor.Load();
+        ChroniaFlag.Onload();
 
         // API Imports
         typeof(FrostHelperImports).ModInterop();
@@ -113,13 +118,15 @@ public class ChroniaHelperModule : EverestModule
         Everest.Events.LevelLoader.OnLoadingThread -= LevelLoader_OnLoadingThread;
         CustomBooster.Unload();
         OmniZipWater.Unload();
-        MapProcessor.Unload();
         EntityChangingInterfaces.Unload();
         PatientBooster.Unload();
         BoosterZipper.Unload();
         Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
         SpriteEntity.Unload();
         PlatformLineController.Unload();
+
+        MapProcessor.Unload();
+        ChroniaFlag.Unload();
     }
 
     private static void LevelLoader_OnLoadingThread(Level level)
@@ -159,5 +166,153 @@ public class ChroniaHelperModule : EverestModule
 
         //spriteBank = new SpriteBank(GFX.Game, "Graphics/ChroniaHelper/Sprites.xml");
 
+    }
+
+    // Create Custom ChroniaHelper Menu
+    protected override void CreateModMenuSectionHeader(TextMenu menu, bool inGame, EventInstance snapshot)
+    {
+        base.CreateModMenuSectionHeader(menu, inGame, snapshot);
+
+        TextMenu.Item wiki_mapalong = new TextMenu.Button(Extensions.DialogClean("wiki_mapalong"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://www.youtube.com/watch?v=gzHQOnYHaO0") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_iamdadbod = new TextMenu.Button(Extensions.DialogClean("wiki_iamdadbod"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://www.youtube.com/watch?v=TqoQdNZ_CRA&list=PLBP5_qAilzbjr7DGxatTQbPfftY3LiVA4") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_fandom = new TextMenu.Button(Extensions.DialogClean("wiki_fandom"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://celestegame.fandom.com/wiki/Celeste") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_ink = new TextMenu.Button(Extensions.DialogClean("wiki_ink"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://celeste.ink/wiki/Main_Page") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_everest = new TextMenu.Button(Extensions.DialogClean("wiki_everest"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://saplonily.top/celeste_wiki/general/wiki/") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_bilibili = new TextMenu.Button(Extensions.DialogClean("wiki_bilibili"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://wiki.biligame.com/celeste/%E9%A6%96%E9%A1%B5") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_all = new TextMenu.Button(Extensions.DialogClean("wiki_all"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://saplonily.top/celeste_wiki/general/wiki/") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_UnderDragon = new TextMenu.Button(Extensions.DialogClean("wiki_UnderDragon"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://www.bilibili.com/video/BV1Eu4y1L78Y/?spm_id_from=333.337.search-card.all.click") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_psyZ = new TextMenu.Button(Extensions.DialogClean("wiki_psyZ"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://www.bilibili.com/video/BV1tR4y1X7wu/?spm_id_from=333.337.search-card.all.click") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_miao = new TextMenu.Button(Extensions.DialogClean("wiki_miao"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://celestenyaserver.github.io/CelesteMiaoServer.Wiki/#/zh-cn/Celeste/README") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_maddie = new TextMenu.Button(Extensions.DialogClean("wiki_maddie"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://maddie480.ovh/") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_prismatic = new TextMenu.Button(Extensions.DialogClean("wiki_prismatic"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://github.com/l-Luna/PrismaticHelper/blob/master/DOCUMENTATION.md") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        },
+
+        wiki_adam = new TextMenu.Button(Extensions.DialogClean("wiki_adam"))
+        {
+            OnPressed = delegate ()
+            {
+                ProcessStartInfo info = new("https://gist.github.com/AdamKorinek/7e27d288701db5a0df095f756f0f8e9a") { UseShellExecute = true };
+                Process.Start(info);
+            }
+        };
+
+        TextMenu.Item[] menuOrder = new[]
+        {
+            wiki_all,
+            wiki_everest,
+            wiki_fandom,
+            wiki_ink,
+            wiki_bilibili,
+            wiki_miao,
+            wiki_iamdadbod,
+            wiki_mapalong,
+            wiki_psyZ,
+            wiki_UnderDragon,
+            wiki_maddie,
+            wiki_adam,
+            wiki_prismatic,
+        };
+
+        TextMenuExt.SubMenu submenu = new(Extensions.DialogClean("ChroniaHelper_wikiSet"), false);
+
+        foreach(var item in menuOrder)
+        {
+            submenu.Add(item);
+        }
+        menu.Add(submenu);
     }
 }

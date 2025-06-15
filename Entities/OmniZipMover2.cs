@@ -442,37 +442,17 @@ public class OmniZipMover2 : Solid
     }
     private void SaveIndex(int index)
     {
-        if (!ChroniaHelperSession.Zipmover_NodeIndex.ContainsKey(id))
-        {
-            ChroniaHelperSession.Zipmover_NodeIndex.Add(id, index);
-        }
-        else
-        {
-            ChroniaHelperSession.Zipmover_NodeIndex[id] = index;
-        }
+        ChroniaHelperSession.Zipmover_NodeIndex.Enter(id, index);
     }
     private void SaveForward(bool dir)
     {
-        if (!ChroniaHelperSession.Zipmover_NextForward.ContainsKey(id))
-        {
-            ChroniaHelperSession.Zipmover_NextForward.Add(id, dir);
-        }
-        else
-        {
-            ChroniaHelperSession.Zipmover_NextForward[id] = dir;
-        }
+        ChroniaHelperSession.Zipmover_NextForward.Enter(id, dir);
     }
 
     private void Initiate()
     {
-        if (!ChroniaHelperSession.Zipmover_NextForward.ContainsKey(id))
-        {
-            ChroniaHelperSession.Zipmover_NextForward.Add(id, true);
-        }
-        if (!ChroniaHelperSession.Zipmover_NodeIndex.ContainsKey(id))
-        {
-            ChroniaHelperSession.Zipmover_NodeIndex.Add(id, 0);
-        }
+        ChroniaHelperSession.Zipmover_NextForward.Enter(id, true);
+        ChroniaHelperSession.Zipmover_NodeIndex.Enter(id, 0);
         if (!remember)
         {
             ChroniaHelperSession.Zipmover_NodeIndex[id] = 0;

@@ -343,7 +343,7 @@ public static class Util
         }
     }
 
-    public static Classify MatchEnum<Classify>(string match, Classify defaultMember, bool ignoreCase = false, bool ignoreUnderscore = false) where Classify : struct, Enum
+    public static Classify MatchEnum<Classify>(this string match, Classify defaultMember, bool ignoreCase = false, bool ignoreUnderscore = false) where Classify : struct, Enum
     {
         if (string.IsNullOrEmpty(match) || string.IsNullOrWhiteSpace(match)) { return defaultMember; }
         //if (Enum.GetValues<Classify>().Length == 0) { return null; }
@@ -362,5 +362,373 @@ public static class Util
         }
 
         return defaultMember;
+    }
+
+    /// <summary>
+    /// The function checks your loenn inputs, if the input is empty or if other restraints are true, the function will return the default value, otherwise, it'll try and parse the value you entered
+    /// </summary>
+    /// <param name="loennInput">The parameters you get from Loenn</param>
+    /// <param name="defaultValue">The default value you should set up</param>
+    /// <param name="otherRestraints">Are there any restraints defined by boolean results</param>
+    /// <returns></returns>
+    public static int Fetch(this string loennInput, int defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        int parseValue = defaultValue;
+        int.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static int Fetch(this EntityData data, string tag, int defaultValue, bool otherRestraints = false)
+    {
+        return otherRestraints? defaultValue : data.Int(tag, defaultValue);
+    }
+
+    public static float Fetch(this string loennInput, float defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        float parseValue = defaultValue;
+        float.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static float Fetch(this EntityData data, string tag, float defaultValue, bool otherRestraints = false)
+    {
+        return otherRestraints? defaultValue : data.Float(tag, defaultValue);
+    }
+
+    public static double Fetch(this string loennInput, double defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        double parseValue = defaultValue;
+        double.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static double Fetch(this EntityData data, string attrTag, double defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        double parseValue = defaultValue;
+        double.TryParse(data.Attr(attrTag), out parseValue);
+        return parseValue;
+    }
+
+    public static bool Fetch(this string loennInput, bool defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        bool parseValue = defaultValue;
+        bool.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static bool Fetch(this EntityData data, string tag, bool defaultValue, bool otherRestraints = false)
+    {
+        return otherRestraints ? defaultValue : data.Bool(tag, defaultValue);
+    }
+
+    public static Color Fetch(this string loennInput, Color defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(loennInput);
+        return parseValue;
+    }
+
+    public static Color Fetch(this EntityData data, string attrTag, Color defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(data.Attr(attrTag));
+        return parseValue;
+    }
+
+    public static Color Fetch(this string loennInput, string defaultHex, bool otherRestraints = false)
+    {
+        Color defaultValue = Calc.HexToColor(defaultHex);
+
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(loennInput);
+        return parseValue;
+    }
+
+    public static Color Fetch(this EntityData data, string attrTag, string defaultHex, bool otherRestraints = false)
+    {
+        Color defaultValue = Calc.HexToColor(defaultHex);
+
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+        
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(data.Attr(attrTag));
+        return parseValue;
+    }
+
+    public static Classify Fetch<Classify>(this string loennInput, Classify defaultValue, bool otherRestraints = false, bool ignoreCases = false, bool ignoreUnderscores = false) where Classify : struct, Enum
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+        
+        return MatchEnum<Classify>(loennInput, defaultValue, ignoreCases, ignoreUnderscores);
+    }
+
+    public static Classify Fetch<Classify>(this EntityData data, string attrTag, Classify defaultValue, bool otherRestraints = false, bool ignoreCases = false, bool ignoreUnderscores = false) where Classify : struct, Enum
+    {
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        return MatchEnum<Classify>(data.Attr(attrTag), defaultValue, ignoreCases, ignoreUnderscores);
+    }
+
+    /// <summary>
+    /// If there were changes to the loenn option names, filter the changes and try get an existing value.
+    /// If all data.Attr(tags) are empty, it returns string.Empty
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="tags"></param>
+    /// <param name="useLastTagAsPossible"></param>
+    /// <returns></returns>
+    public static string Filter(this EntityData data, string[] tags, bool useLastTagAsPossible = true)
+    {
+        if (tags == null || tags.Length == 0) { return string.Empty; }
+
+        int min = tags.Length + 1, max = -1;
+        for(int i = 0; i< tags.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(tags[i]))
+            {
+                min = Math.Min(min, i);
+                max = Math.Max(max, i);
+            }
+        }
+        if (min == tags.Length || max == -1) { return string.Empty; }
+        return useLastTagAsPossible ? data.Attr(tags[max]) : data.Attr(tags[min]);
+    }
+
+    /// <summary>
+    /// Check if the input can be found within a given list
+    /// </summary>
+    /// <typeparam name="Type"></typeparam>
+    /// <param name="input"></param>
+    /// <param name="list"></param>
+    /// <returns></returns>
+    public static bool IsIn<Type>(this string input, List<Type> list)
+    {
+        if (string.IsNullOrEmpty(input.ToString())) { return false; }
+
+        foreach (var item in list)
+        {
+            if (item.ToString() == input) { return true; }
+        }
+
+        return false;
+    }
+
+    public static bool IsIn<Type>(this List<Type> list, string input)
+    {
+        if (string.IsNullOrEmpty(input.ToString())) { return false; }
+
+        foreach (var item in list)
+        {
+            if (item.ToString() == input) { return true; }
+        }
+
+        return false;
+    }
+
+    public enum CheckMode { CheckKey, CheckValue, Full }
+
+    public static bool IsIn<TypeA,TypeB>(this string input, Dictionary<TypeA, TypeB> dictionary, CheckMode checkmode)
+    {
+        if (string.IsNullOrEmpty(input)) { return false; }
+
+        if(checkmode == CheckMode.CheckKey || checkmode == CheckMode.Full)
+        {
+            foreach (var item in dictionary.Keys)
+            {
+                if (item.ToString() == input) { return true; }
+            }
+        }
+
+        if (checkmode == CheckMode.CheckValue || checkmode == CheckMode.Full)
+        {
+            foreach (var item in dictionary.Values)
+            {
+                if (item.ToString() == input) { return true; }
+            }
+        }
+
+        return false;
+    }
+
+    public static bool IsIn<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, string input, CheckMode checkmode)
+    {
+        if (string.IsNullOrEmpty(input)) { return false; }
+
+        if (checkmode == CheckMode.CheckKey || checkmode == CheckMode.Full)
+        {
+            foreach (var item in dictionary.Keys)
+            {
+                if (item.ToString() == input) { return true; }
+            }
+        }
+
+        if (checkmode == CheckMode.CheckValue || checkmode == CheckMode.Full)
+        {
+            foreach (var item in dictionary.Values)
+            {
+                if (item.ToString() == input) { return true; }
+            }
+        }
+
+        return false;
+    }
+
+    public enum Input { normal, onlyAdd, onlyModify}
+    public static void Enter<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA key, TypeB value, Input modify = Input.normal)
+    {
+        if (dictionary.ContainsKey(key))
+        {
+            if(modify != Input.onlyAdd)
+            {
+                dictionary[key] = value;
+            }
+        }
+        else
+        {
+            if(modify != Input.onlyModify)
+            {
+                dictionary.Add(key, value);
+            }
+        }
+    }
+
+    public static void SafeRemove<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA key)
+    {
+        if(dictionary.ContainsKey(key))
+        {
+            dictionary.Remove(key);
+        }
+    }
+
+    public static void Replace<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey, TypeB newValue)
+    {
+        dictionary.SafeRemove(oldKey);
+        dictionary.Enter(newKey, newValue);
+    }
+
+    public static bool ReplaceKey<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey)
+    {
+        if (!dictionary.ContainsKey(oldKey))
+        {
+            return false;
+        }
+
+        TypeB oldValue = dictionary[oldKey];
+        dictionary.SafeRemove(oldKey);
+        dictionary.Enter(newKey, oldValue);
+
+        return true;
+    }
+
+    public static void Enter<Type>(this List<Type> list, Type item)
+    {
+        if (!list.Contains(item))
+        {
+            list.Add(item);
+        }
     }
 }

@@ -99,15 +99,7 @@ public sealed partial class PasswordKeyboard : Entity
                 }
             }
         }
-        if (!ChroniaHelperModule.Session.PasswordQueue.ContainsKey(entityID))
-        {
-            ChroniaHelperModule.Session.PasswordQueue.Add(entityID, 0);
-        }
-        else
-        {
-            ChroniaHelperModule.Session.PasswordQueue[entityID] = 0;
-        }
-
+        ChroniaHelperModule.Session.PasswordQueue.Enter(entityID, 0);
 
         base.Depth = data.Int("depth", 9000);
     }
@@ -135,9 +127,7 @@ public sealed partial class PasswordKeyboard : Entity
         switch (config.Mode)
         {
             case Mode.Exclusive:
-                bool exists = ChroniaHelperModule.Session.Passwords.ContainsKey(config.IDTag);
-                if (exists) { ChroniaHelperModule.Session.Passwords[config.IDTag] = password; }
-                else { ChroniaHelperModule.Session.Passwords.Add(config.IDTag, password); }
+                ChroniaHelperModule.Session.Passwords.Enter(config.IDTag, password);
 
                 feedback = true; break;
             case Mode.Normal:
@@ -156,11 +146,11 @@ public sealed partial class PasswordKeyboard : Entity
                 {
                     if (config.Toggle)
                     {
-                        FlagUtils.SetFlag(currentFlag, !FlagUtils.GetFlag(currentFlag), config.Global);
+                        ChroniaFlagUtils.SetFlag(currentFlag, !ChroniaFlagUtils.GetFlag(currentFlag), config.Global);
                     }
                     else
                     {
-                        FlagUtils.SetFlag(currentFlag, true, config.Global);
+                        ChroniaFlagUtils.SetFlag(currentFlag, true, config.Global);
                     }
 
                     ChroniaHelperModule.Session.PasswordQueue[entityID]++;
@@ -171,11 +161,11 @@ public sealed partial class PasswordKeyboard : Entity
             case Mode.OutputFlag:
                 if (config.Toggle)
                 {
-                    FlagUtils.SetFlag(password, !FlagUtils.GetFlag(password), config.Global);
+                    ChroniaFlagUtils.SetFlag(password, !ChroniaFlagUtils.GetFlag(password), config.Global);
                 }
                 else
                 {
-                    FlagUtils.SetFlag(password, true);
+                    ChroniaFlagUtils.SetFlag(password, true);
                 }
 
                 feedback = true; break;
@@ -195,11 +185,11 @@ public sealed partial class PasswordKeyboard : Entity
                     {
                         if (config.Toggle)
                         {
-                            FlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], !FlagUtils.GetFlag(flagList[Math.Min(i, flagCount)]), config.Global);
+                            ChroniaFlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], !ChroniaFlagUtils.GetFlag(flagList[Math.Min(i, flagCount)]), config.Global);
                         }
                         else
                         {
-                            FlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], true, config.Global);
+                            ChroniaFlagUtils.SetFlag(flagList[Math.Min(i, flagCount)], true, config.Global);
                         }
                         feedback = true; 
                     }

@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Triggers;
+using ChroniaHelper.Utils;
 using YamlDotNet.Serialization;
 
 namespace ChroniaHelper.Modules;
 
 public class ChroniaHelperSaveData : EverestModuleSaveData
 {
-    public Dictionary<string, bool> globalflags { get; set; } = new Dictionary<string, bool>();
+    // Flag Timer Trigger
+    public static Dictionary<string, float> FlagTimerS = new();
+
+    // wip: new flag system?
+    public static Dictionary<string, ChroniaFlag> ChroniaFlags = new();
 }
