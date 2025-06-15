@@ -12,6 +12,7 @@ using ChroniaHelper.Cores;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 
 namespace ChroniaHelper.Entities;
 
@@ -19,6 +20,7 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/CustomBooster")]
 public class CustomBooster : Booster
 {
+    private static ILHook dashCoroutineHook;
     public static void Load()
     {
         On.Celeste.Booster.PlayerReleased += Booster_PlayerReleased;
@@ -28,11 +30,34 @@ public class CustomBooster : Booster
         On.Celeste.Player.Boost += Player_Boost;
         On.Celeste.Player.RedBoost += Player_RedBoost;
         origBoostBeginHook = new ILHook(typeof(Player).GetMethod("orig_BoostBegin", BindingFlags.NonPublic | BindingFlags.Instance), Player_BoostBegin);
-
+        
+        var methodInfo = typeof(Player).GetMethod("BoostCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget();
+         dashCoroutineHook = new ILHook(methodInfo, ILHookDashCoroutine);
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash += RefillD;
         // On.Celeste.Player.RefillStamina += RefillS;
+    }
+
+    private static void ILHookDashCoroutine(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        if (cursor.TryGotoNext(
+                ins => ins.MatchLdcR4(0.25f)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitPop();
+            cursor.EmitDelegate<Func<float>>(() =>
+            {
+                Scene scene = Engine.Scene;
+                Player player = scene.Tracker.GetEntity<Player>();
+                if (player != null && player.CurrentBooster is CustomBooster booster)
+                    return booster.holdTime;
+                return 0.25f;
+            });
+        }
     }
 
     public static void Unload()
@@ -45,7 +70,7 @@ public class CustomBooster : Booster
         On.Celeste.Player.RedBoost -= Player_RedBoost;
         origBoostBeginHook?.Dispose();
         origBoostBeginHook = null;
-
+        dashCoroutineHook.Dispose();
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash -= RefillD;
@@ -69,6 +94,7 @@ public class CustomBooster : Booster
     private Color color;
     private ParticleType customBurstParticleType;
     private bool burstParticleColorOverride;
+    private float holdTime = 0.25f;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -151,6 +177,8 @@ public class CustomBooster : Booster
             customBurstParticleType = new ParticleType(P_Burst);
             customBurstParticleType.Color = data.HexColor("burstParticleColor");
         }
+
+        holdTime = data.Float("holdTime");
     }
 
 
