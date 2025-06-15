@@ -32,7 +32,8 @@ public class CustomBooster : Booster
         origBoostBeginHook = new ILHook(typeof(Player).GetMethod("orig_BoostBegin", BindingFlags.NonPublic | BindingFlags.Instance), Player_BoostBegin);
         
         var methodInfo = typeof(Player).GetMethod("BoostCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget();
-         dashCoroutineHook = new ILHook(methodInfo, ILHookDashCoroutine);
+        dashCoroutineHook = new ILHook(methodInfo, ILHookDashCoroutine);
+
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash += RefillD;
@@ -70,7 +71,9 @@ public class CustomBooster : Booster
         On.Celeste.Player.RedBoost -= Player_RedBoost;
         origBoostBeginHook?.Dispose();
         origBoostBeginHook = null;
+
         dashCoroutineHook.Dispose();
+
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash -= RefillD;

@@ -562,6 +562,7 @@ entities.ChroniaHelper/CustomBooster.attributes.description.directory=The folder
 entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillDashes=If enabled, this booster will set up the player dashes instead of refilling it
 entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillStamina=If enabled, this booster will set up the player stamina instead of refilling it
 entities.ChroniaHelper/CustomBooster.attributes.description.XMLOverride=If enabled, the "directory" will work as the XML object tag\nAnd all the animation parameters in the options will be ignored
+entities.ChroniaHelper/CustomBooster.attributes.description.holdTime=The time that player stays inside before it activates and start moving
 
 # Custom Glider
 entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Glider

@@ -26,6 +26,7 @@ booster.placements={
 		respawnTime = 1.0,
 		dashes = 1,
 		stamina = 110,
+		holdTime = 0.25,
 		--moveSpeedMultiplier = 1,
 		outSpeedMultiplier = 1,
 		hitboxRadius = 10,
@@ -38,7 +39,6 @@ booster.placements={
 		XMLOverride = false,
 		burstParticleColorOverride = false,
 		burstParticleColor = "ffffff",
-		holdTime = 0.25,
 	}
 }
 
