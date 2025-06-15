@@ -13,7 +13,7 @@ using ChroniaHelper.Effects;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static Celeste.ClutterBlock;
 using System.Collections;
-using On.Monocle;
+using Celeste.Mod.Entities;
 
 namespace ChroniaHelper.Cores;
 
@@ -46,16 +46,22 @@ public static class MapProcessor
     public static int saveSlotIndex;
     public static Level level;
     public static Session session;
-    public static Dictionary<Type, List<Monocle.Entity>> entities;
+    public static Dictionary<Type, List<Entity>> entities;
 
-    public static Monocle.Entity globalEntityDummy = new Monocle.Entity();
+    public static Entity globalEntityDummy = new Monocle.Entity();
 
     public static bool isRespawning = false;
+    public static Player player = null;
+    public static bool playerAlive = false;
+    public static Vector2 camOffset = Vector2.Zero;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MapProcessor.level = level;
         session = level.Session;
         entities = level.Tracker.Entities;
+        player = level.Tracker.GetEntity<Player>();
+        playerAlive = player != null;
+        camOffset = level.CameraOffset;
         mapdata = session.MapData;
         areakey = session.MapData.Area;
 
@@ -147,6 +153,9 @@ public static class MapProcessor
         }
 
         orig(self);
+
+        player = level.Tracker.GetEntity<Player>();
+        playerAlive = player != null;
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)

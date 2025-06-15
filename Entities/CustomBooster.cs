@@ -350,7 +350,6 @@ public class CustomBooster : Booster
         }
     }
 
-
     // Usable but unecessary hooks
     /*
     public static void Booster_Appear(On.Celeste.Booster.orig_Appear orig, Booster self)
