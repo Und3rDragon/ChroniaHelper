@@ -71,7 +71,8 @@ public class FlagTrigger : Trigger
     {
         foreach (var item in flagList)
         {
-            RecordedStates.Enter(item, new(item, item.GetFlag(), item.PullFlag().Global));
+            string s = item.StartsWith('!') ? item.TrimStart('!') : item;
+            RecordedStates.Enter(s, new(s, s.GetFlag(), s.PullFlag().Global));
         }
     }
 
@@ -127,7 +128,8 @@ public class FlagTrigger : Trigger
         {
             foreach (var item in flagList)
             {
-                ChroniaHelperSaveData.ChroniaFlags[item].Temporary = true;
+                string s = item.StartsWith('!') ? item.TrimStart('!') : item;
+                ChroniaHelperSaveData.ChroniaFlags[s].Temporary = true;
             }
             foreach (var item in RecordedStates.Values)
             {
