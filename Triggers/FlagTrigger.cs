@@ -67,32 +67,30 @@ public class FlagTrigger : Trigger
     }
 
     private Dictionary<string, ChroniaFlag> RecordedStates = new();
+    private List<string> Unchanged = new();
     public void RecordState()
     {
-        foreach (var item in flagList)
+        foreach (var item in trueFlags)
         {
-            string s = item.StartsWith('!') ? item.TrimStart('!') : item;
-            RecordedStates.Enter(s, new(s, s.GetFlag(), s.PullFlag().Global));
+            RecordedStates.Enter(item, new(item, item.GetFlag(), item.PullFlag().Global));
+            if(item.GetFlag() == set)
+            {
+                Unchanged.Enter(item);
+            }
+        }
+        foreach (var item in falseFlags)
+        {
+            RecordedStates.Enter(item, new(item, item.GetFlag(), item.PullFlag().Global));
+            if(item.GetFlag() == !set)
+            {
+                Unchanged.Enter(item);
+            }
         }
     }
 
-    public void LoadState()
+    public void LoadState(bool filtering)
     {
-        foreach (var item in RecordedStates.Values)
-        {
-            item.Name.SetFlag(item.Active, item.Global);
-        }
-
-        RecordedStates.Clear();
-    }
-
-    public void ReverseSetup(bool filtering)
-    {
-        if (filtering)
-        {
-            LoadState();
-        }
-        else
+        if (!filtering)
         {
             foreach (var item in trueFlags)
             {
@@ -103,7 +101,18 @@ public class FlagTrigger : Trigger
                 item.SetFlag(set, saves);
             }
         }
+        else
+        {
+            foreach (var item in RecordedStates.Values)
+            {
+                if (filtering && !Unchanged.Contains(item.Name))
+                {
+                    item.Name.SetFlag(item.Active, item.Global);
+                }
+            }
+        }
 
+        RecordedStates.Clear();
     }
 
     public override void Removed(Scene scene)
@@ -126,10 +135,19 @@ public class FlagTrigger : Trigger
 
         if (temp)
         {
-            foreach (var item in flagList)
+            foreach (var item in trueFlags)
             {
-                string s = item.StartsWith('!') ? item.TrimStart('!') : item;
-                ChroniaHelperSaveData.ChroniaFlags[s].Temporary = true;
+                if (ChroniaFlagUtils.Check(item))
+                {
+                    ChroniaHelperSaveData.ChroniaFlags[item].Temporary = true;
+                }
+            }
+            foreach(var item in falseFlags)
+            {
+                if (ChroniaFlagUtils.Check(item))
+                {
+                    ChroniaHelperSaveData.ChroniaFlags[item].Temporary = true;
+                }
             }
             foreach (var item in RecordedStates.Values)
             {
@@ -150,7 +168,7 @@ public class FlagTrigger : Trigger
     {
         if (reset)
         {
-            ReverseSetup(filtering);
+            LoadState(filtering);
         }
     }
 }

@@ -87,9 +87,9 @@ public class ChroniaFlag
 
 
     public string Name { get; set; }
-    public bool Active { get; set; }
-    public bool Global { get; set; }
-    public bool Temporary { get; set; }
+    public bool Active { get; set; } = false;
+    public bool Global { get; set; } = false;
+    public bool Temporary { get; set; } = false;
     public bool Force { get; set; } = false;
 
     public ChroniaFlag(string name, bool active = true, bool global = false, bool temporary = false)
