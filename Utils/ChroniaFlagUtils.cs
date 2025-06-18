@@ -28,6 +28,11 @@ public static class ChroniaFlagUtils
         name.SetFlag(active, false, true);
     }
 
+    public static void SetTimedFlag(this string name, bool basicState, float timer, bool global = false, bool temporary = false)
+    {
+        new ChroniaFlag(name) { Active = basicState, Global = global, Timed = timer, Temporary = temporary }.PushFlag();
+    }
+
     /// <summary>
     /// Get the state of the required flag
     /// </summary>
