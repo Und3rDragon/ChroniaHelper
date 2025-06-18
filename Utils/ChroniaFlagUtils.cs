@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
@@ -35,10 +36,20 @@ public static class ChroniaFlagUtils
     /// <returns>The state of the flag in-game, or in the records</returns>
     public static bool GetFlag(this string name, bool checkRecordState = false)
     {
-        return checkRecordState? 
-            (Check(name) ? ChroniaHelperSaveData.ChroniaFlags[name].Active : 
-                MapProcessor.session.GetFlag(name)
-            ) : MapProcessor.session.GetFlag(name);
+        if (checkRecordState)
+        {
+            return name.Check() ?
+                ChroniaHelperSaveData.ChroniaFlags[name].Active : false;
+        }
+        else
+        {
+            return MapProcessor.session.GetFlag(name);
+        }
+    }
+
+    public static bool Check(this string name)
+    {
+        return ChroniaHelperSaveData.ChroniaFlags.ContainsKey(name);
     }
     
     /// <summary>
@@ -48,7 +59,7 @@ public static class ChroniaFlagUtils
     /// <returns>By default, you'll get the item stored in ChroniaFlags. If the item doesn't exist, you'll get an empty ChroniaFlag (name, false, false, false)</returns>
     public static ChroniaFlag PullFlag(this string name)
     {
-        if (Check(name))
+        if (name.Check())
         {
             return ChroniaHelperSaveData.ChroniaFlags[name];
         }
@@ -70,45 +81,8 @@ public static class ChroniaFlagUtils
         Refresh();
     }
 
-    public static bool Check(this string name, bool fix = false)
-    {
-        if (!ChroniaHelperSaveData.ChroniaFlags.ContainsKey(name)) { return false; }
-
-        if (ChroniaHelperSaveData.ChroniaFlags[name].Name != name)
-        {
-            if (fix)
-            {
-                ChroniaHelperSaveData.ChroniaFlags[name].Name = name;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static bool GeneralCheck(bool autoFix = false)
-    {
-        foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
-        {
-            if (item.Key != item.Value.Name)
-            {
-                if (autoFix)
-                {
-                    ChroniaHelperSaveData.ChroniaFlags[item.Key].Name = item.Key;
-                }
-                else { return false; }
-            }
-        }
-
-        return true;
-    }
-
     public static void Refresh()
     {
-        GeneralCheck(true);
         foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
         {
             if(!item.Value.Active && !item.Value.Global)

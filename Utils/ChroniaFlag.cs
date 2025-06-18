@@ -30,21 +30,21 @@ public class ChroniaFlag
     public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
         // Remove temporary flags
-        foreach (var item in ChroniaHelperSaveData.ChroniaFlags.Values)
+        foreach (var item in ChroniaHelperSaveData.ChroniaFlags)
         {
-            if (item.Temporary)
+            if (item.Value.Temporary)
             {
-                MapProcessor.session.SetFlag(item.Name, false);
-                ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Name);
+                MapProcessor.session.SetFlag(item.Key, false);
+                ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
 
         // Apply global flags
-        foreach (var item in ChroniaHelperSaveData.ChroniaFlags.Values)
+        foreach (var item in ChroniaHelperSaveData.ChroniaFlags)
         {
-            if (item.Global)
+            if (item.Value.Global)
             {
-                MapProcessor.session.SetFlag(item.Name, item.Active);
+                MapProcessor.session.SetFlag(item.Key, item.Value.Active);
             }
         }
 
@@ -54,11 +54,11 @@ public class ChroniaFlag
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
         // Apply global flags
-        foreach(var item in ChroniaHelperSaveData.ChroniaFlags.Values)
+        foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
         {
-            if (item.Global && !item.Temporary)
+            if (item.Value.Global && !item.Value.Temporary)
             {
-                MapProcessor.session.SetFlag(item.Name, item.Active);
+                MapProcessor.session.SetFlag(item.Key, item.Value.Active);
             }
         }
 
@@ -71,7 +71,7 @@ public class ChroniaFlag
         {
             if (item.Value.Force)
             {
-                MapProcessor.session.SetFlag(item.Value.Name, item.Value.Active);
+                MapProcessor.session.SetFlag(item.Key, item.Value.Active);
             }
             //Log.Info("[key]", item.Key, "[name]", item.Value.Name, "[active]", item.Value.Active, "[global]", item.Value.Global,
             //    "[temporary]", item.Value.Temporary, "[force]", item.Value.Force);
