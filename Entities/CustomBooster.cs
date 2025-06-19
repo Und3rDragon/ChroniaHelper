@@ -185,7 +185,7 @@ public class CustomBooster : Booster
             customBurstParticleType.Color = data.HexColor("burstParticleColor");
         }
 
-        holdTime = data.Float("holdTime");
+        holdTime = data.Float("holdTime", 0.25f);
     }
 
 
