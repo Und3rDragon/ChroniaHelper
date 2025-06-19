@@ -95,6 +95,9 @@ public class ChroniaFlag
     {
         foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
         {
+            // Security Check
+            item.Value.ChroniaFlagDataCheck();
+
             // Global stuffs only
             if (item.Value.Global)
             {
@@ -124,6 +127,13 @@ public class ChroniaFlag
     public float Timed { get; set; } = -1f;
     public enum ExpectedResetState { False, True, ReversedActive }
     public ExpectedResetState DefaultResetState { get; set; } = (ExpectedResetState)0;
+    public List<string> Tags { get; set; } = new();
+    public Dictionary<string, string> CustomData { get; set; } = new();
+    /// <summary>
+    /// For "Serial" label, there must be a "serialHolder" data in CustomData
+    /// </summary>
+    public enum Labels { Serial }
+    public List<Labels> PresetTags { get; set; } = new();
 
     public ChroniaFlag (string name)
     {
@@ -158,6 +168,14 @@ public class ChroniaFlag
                 return !Active;
             default:
                 return false;
+        }
+    }
+
+    public void ChroniaFlagDataCheck()
+    {
+        if(PresetTags.Contains(Labels.Serial) && !CustomData.ContainsKey("serialHolder", false))
+        {
+            PresetTags.SafeRemove(Labels.Serial);
         }
     }
 }

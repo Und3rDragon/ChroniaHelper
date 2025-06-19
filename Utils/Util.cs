@@ -704,6 +704,14 @@ public static class Util
         }
     }
 
+    public static void SafeRemove<TypeA>(this List<TypeA> list, TypeA key)
+    {
+        if (list.Contains(key))
+        {
+            list.Remove(key);
+        }
+    }
+
     public static void Replace<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey, TypeB newValue)
     {
         dictionary.SafeRemove(oldKey);
@@ -729,6 +737,25 @@ public static class Util
         if (!list.Contains(item))
         {
             list.Add(item);
+        }
+    }
+
+    public static bool ContainsKey<TypeA>(this Dictionary<string, TypeA> dic, string key, bool caseSensitive = true)
+    {
+        if (caseSensitive)
+        {
+            return dic.ContainsKey(key);
+        }
+        else
+        {
+            foreach(var item in dic.Keys)
+            {
+                if(key.ToLower() == item.ToLower())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
