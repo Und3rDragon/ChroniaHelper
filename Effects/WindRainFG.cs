@@ -8,6 +8,7 @@ using Monocle;
 using Microsoft.Xna.Framework;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using Celeste.Mod.Backdrops;
 
 /*
     Migrated from VivHelper Repository
@@ -16,6 +17,7 @@ using ChroniaHelper.Utils;
  */
 
 namespace ChroniaHelper.Effects {
+    [CustomBackdrop("ChroniaHelper/WindRainFG")]
     public class WindRainFG : Backdrop {
         private struct Particle {
             public Vector2 Position;
@@ -28,8 +30,8 @@ namespace ChroniaHelper.Effects {
 
             public Color Color;
 
-            public void Init() {
-                Position = new Vector2(-32f + Calc.Random.NextFloat(384f), -32f + Calc.Random.NextFloat(244f));
+            public void Init(float extX, float extY) {
+                Position = new Vector2(-32f + Calc.Random.NextFloat(384f + extX), -32f + Calc.Random.NextFloat(244f + extY));
                 Rotation = MathF.PI / 2f + Calc.Random.Range(-0.05f, 0.05f);
                 Speed = Calc.Random.Range(200f, 600f);
                 Scale = new Vector2(4f + (Speed - 200f) / 400f * 12f, 1f);
@@ -51,8 +53,19 @@ namespace ChroniaHelper.Effects {
         public float windStrength;
 
         public Vector2 scroll;
+
+        public float extX, extY;
 #pragma warning disable CS0612
-        public WindRainFG(Vector2 scroll, string colors, float windStrength, int amount, float alpha) {
+
+        public WindRainFG(BinaryPacker.Element child)
+            : this(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), 
+                  child.Attr("Colors", "ffffff"), child.AttrFloat("windStrength"), child.AttrInt("Amount", 240), 
+                  child.AttrFloat("alpha", 1f), child.AttrFloat("extendedBorderX" , 0f), child.AttrFloat("extendedBorderY", 0f)
+                  ) { }
+        public WindRainFG(Vector2 scroll, string colors, float windStrength, int amount, float alpha,
+            float extX, float extY
+            ) 
+        {
             this.Scroll = scroll;
             this.windStrength = windStrength;
             particles = new Particle[amount];
@@ -79,11 +92,14 @@ namespace ChroniaHelper.Effects {
             }
 
             for (int i = 0; i < particles.Length; i++) {
-                particles[i].Init();
+                particles[i].Init(extX, extY);
             }
             level = null;
 
             this.Alpha = alpha;
+
+            this.extX = extX;
+            this.extY = extY;
         }
 
 #pragma warning restore CS0612
@@ -92,7 +108,7 @@ namespace ChroniaHelper.Effects {
             bool flag = (scene as Level).Raining = IsVisible(scene as Level);
             visibleFade = Calc.Approach(visibleFade, flag ? 1 : 0, Engine.DeltaTime * (flag ? 10f : 0.25f));
             if (FadeX != null) {
-                linearFade = FadeX.Value((scene as Level).Camera.X + 160f);
+                linearFade = FadeX.Value((scene as Level).Camera.X + 160f + extX / 2f);
             }
             for (int i = 0; i < particles.Length; i++) {
 
@@ -105,36 +121,42 @@ namespace ChroniaHelper.Effects {
             if (!(Alpha <= 0f) && !(visibleFade <= 0f) && !(linearFade <= 0f)) {
                 float colFade = Alpha * linearFade * visibleFade;
                 Camera camera = (scene as Level).Camera;
+
+                // Render Particles
+                Log.Info(extX, extY);
                 for (int i = 0; i < particles.Length; i++) {
                     float t = (float) Math.Pow((particles[i].Speed - 400) / 400, 1.1);
                     var u = Calc.Angle(Calc.AngleToVector(particles[i].Rotation, (t + 1) * 400) + (scene as Level).Wind * windStrength);
                     //Color color = Colors[(int)(i * NumberUtils.Mod(i * (i + 2) * Math.Abs(i - 7.5f), Math.Abs((2 * i - 1) * i - 3)) * (i + 4.5f)) % Colors.Length];
                     Color color = Colors[i % Colors.Length];
-                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, 320f), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, 180f));
+                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, 180f + extY));
                     Draw.Pixel.DrawCentered(position,
                                             color * colFade,
                                             particles[i].Scale,
                                             u);
-                    var v = particles[i].Scale.Rotate(u);
-                    if (position.Y + v.Y > 180) {
-                        if (position.X + v.X > 320) {
-                            Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y - 180),
-                                                    color * colFade,
-                                                    particles[i].Scale,
-                                                    u);
-                        } else {
-                            Draw.Pixel.DrawCentered(new Vector2(position.X, position.Y - 180),
-                                                    color * colFade,
-                                                    particles[i].Scale,
-                                                    u);
-                        }
-                    }
-                    else if(position.X + v.X > 320) {
-                        Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y),
-                                                color * colFade,
-                                                particles[i].Scale,
-                                                u);
-                    }
+
+                    // Useless Codes?
+
+                    //var v = particles[i].Scale.Rotate(u);
+                    //if (position.Y + v.Y > 180 ) {
+                    //    if (position.X + v.X > 320 ) {
+                    //        Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y - 180 ),
+                    //                                color * colFade,
+                    //                                particles[i].Scale,
+                    //                                u);
+                    //    } else {
+                    //        Draw.Pixel.DrawCentered(new Vector2(position.X, position.Y - 180 ),
+                    //                                color * colFade,
+                    //                                particles[i].Scale,
+                    //                                u);
+                    //    }
+                    //}
+                    //else if(position.X + v.X > 320 ) {
+                    //    Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y),
+                    //                            color * colFade,
+                    //                            particles[i].Scale,
+                    //                            u);
+                    //}
 
                 }
             }

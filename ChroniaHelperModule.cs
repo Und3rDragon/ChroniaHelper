@@ -85,7 +85,6 @@ public class ChroniaHelperModule : EverestModule
         EntityChangingInterfaces.Load();
         PatientBooster.Load();
         BoosterZipper.Load();
-        Everest.Events.Level.OnLoadBackdrop += Level_OnLoadBackdrop;
         SpriteEntity.Load();
         PlatformLineController.Load();
 
@@ -121,7 +120,6 @@ public class ChroniaHelperModule : EverestModule
         EntityChangingInterfaces.Unload();
         PatientBooster.Unload();
         BoosterZipper.Unload();
-        Everest.Events.Level.OnLoadBackdrop -= Level_OnLoadBackdrop;
         SpriteEntity.Unload();
         PlatformLineController.Unload();
 
@@ -132,25 +130,6 @@ public class ChroniaHelperModule : EverestModule
     private static void LevelLoader_OnLoadingThread(Level level)
     {
         level.Add(new PlayerIndicatorZone.IconRenderer());
-    }
-
-    private Backdrop Level_OnLoadBackdrop(MapData map, BinaryPacker.Element child, BinaryPacker.Element above)
-    {
-        if (child.Name.Equals("ChroniaHelper/WindRainFG", StringComparison.OrdinalIgnoreCase))
-        {
-            if (child.HasAttr("colors") && !string.IsNullOrWhiteSpace(child.Attr("colors")))
-                return new WindRainFG(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), child.Attr("colors"), child.AttrFloat("windStrength"), child.AttrInt("Amount", 240), child.AttrFloat("alpha", 1f));
-            else
-                return new WindRainFG(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), child.Attr("Colors"), child.AttrFloat("windStrength"), child.AttrInt("Amount", 240), child.AttrFloat("alpha", 1f));
-        }
-        else if (child.Name.Equals("ChroniaHelper/CustomRain", StringComparison.OrdinalIgnoreCase))
-        {
-            if (child.HasAttr("colors") && !string.IsNullOrWhiteSpace(child.Attr("colors")))
-                return new CustomRain(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), child.AttrFloat("angle", 270f), child.AttrFloat("angleDiff", 3f), child.AttrFloat("speedMult", 1f), child.AttrInt("Amount", 240), child.Attr("colors", "161933"), child.AttrFloat("alpha"));
-            else
-                return new CustomRain(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), child.AttrFloat("angle", 270f), child.AttrFloat("angleDiff", 3f), child.AttrFloat("speedMult", 1f), child.AttrInt("Amount", 240), child.Attr("Colors", "161933"), child.AttrFloat("alpha"));
-        }
-        return null;
     }
 
     public override void PrepareMapDataProcessors(MapDataFixup context)
