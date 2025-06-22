@@ -123,7 +123,6 @@ namespace ChroniaHelper.Effects {
                 Camera camera = (scene as Level).Camera;
 
                 // Render Particles
-                Log.Info(extX, extY);
                 for (int i = 0; i < particles.Length; i++) {
                     float t = (float) Math.Pow((particles[i].Speed - 400) / 400, 1.1);
                     var u = Calc.Angle(Calc.AngleToVector(particles[i].Rotation, (t + 1) * 400) + (scene as Level).Wind * windStrength);
