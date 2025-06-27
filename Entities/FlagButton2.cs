@@ -14,16 +14,16 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/RealFlagSwitch", "ChroniaHelper/RealFlagSwitchAlt")]
-public class FlagButton : Entity {
+[CustomEntity("ChroniaHelper/RealFlagSwitch2")]
+public class FlagButton2 : Entity {
     
     // Default parameters
     public static ParticleType P_Fire;
     public static ParticleType P_FireWhite;
     public Switch Switch;
     public SoundSource touchSfx;
-    public MTexture border = GFX.Game["objects/touchswitch/container"];
-    public Sprite icon = new Sprite(GFX.Game, "objects/touchswitch/icon");
+    public Sprite border = new Sprite(GFX.Game, "objects/ChroniaHelper/flagTouchSwitchNew/container");
+    public Sprite icon = new Sprite(GFX.Game, "objects/ChroniaHelper/flagTouchSwitchNew/idle");
     public Color inactiveColor = Calc.HexToColor("5fcde4");
     public Color activeColor = Color.White;
     public Color finishColor = Calc.HexToColor("f141df");
@@ -36,9 +36,6 @@ public class FlagButton : Entity {
     public Level level;
 
     // Constants
-
-    private List<string> vanillanames = new List<string>
-        { "vanilla", "tall", "triangle", "circle", "diamond", "double", "heart", "square", "wide", "winged", "cross", "drop", "hourglass", "split", "star", "triple" };
     private ParticleType particle;
 
     // States
@@ -58,13 +55,11 @@ public class FlagButton : Entity {
 
     // Inputs from Lonn
 
-    private string flag, hitSound, switchSound, completeSound, hideFlag;
-    private string borderTexture, iconPath;
-    private bool vanilla;
-    private bool persistent, smoke, inverted, toggle, interactable;
+    private string flag, hitSound, completeSound, hideFlag;
+    private string borderPath, iconPath;
+    private bool persistent, smoke, toggle, interactable;
     private enum switchKind { touch, wall }
     private switchKind classify;
-    private float idleInterval, spinInterval, onRate, finishRate;
 
     private int ew, eh;
     private float iw, ih;
@@ -74,13 +69,13 @@ public class FlagButton : Entity {
     private string flagID;
     
 
-    public FlagButton(EntityData data, Vector2 offset)
+    public FlagButton2(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
     {
 
     }
 
-    public FlagButton(Vector2 position, EntityData data)
+    public FlagButton2(Vector2 position, EntityData data)
         : base(position)
     {
         
@@ -92,7 +87,6 @@ public class FlagButton : Entity {
         flag = data.Attr("flag");
         flagID = $"ChroniaButtonFlag-{flag}-ButtonID-{ID}";
         hitSound = data.Attr("hitSound");
-        switchSound = data.Attr("completeSoundFromSwitch");
         completeSound = data.Attr("completeSoundFromScene");
         hideFlag = data.Attr("hideIfFlag");
 
@@ -108,20 +102,14 @@ public class FlagButton : Entity {
 
         persistent = data.Bool("persistent");
         smoke = data.Bool("smoke");
-        inverted = data.Bool("inverted");
         toggle = data.Bool("allowDisable");
         interactable = data.Bool("playerCanActivate");
-
-        idleInterval = Math.Abs(data.Float("idleAnimDelay", 0.1f));
-        spinInterval = Math.Abs(data.Float("spinAnimDelay", 0.1f));
-        onRate = Math.Abs(data.Float("activatedAnimRate", 4f));
-        finishRate = Math.Abs(data.Float("finishedAnimRate", 0.1f));
 
         ew = data.Width;
         eh = data.Height;
         pos = data.Position;
 
-        borderTexture = data.Attr("borderTexture");
+        borderPath = data.Attr("borderTexture");
         iconPath = data.Attr("icon");
 
         inactiveColor = Calc.HexToColor(data.Attr("inactiveColor", "5FCDE4"));
@@ -152,10 +140,11 @@ public class FlagButton : Entity {
 
         // Sprite
         // Border texture
-        if (!string.IsNullOrEmpty(borderTexture))
-        {
-            border = GFX.Game[borderTexture];
-        }
+        border = new Sprite(GFX.Game, borderPath);
+        border.AddLoop("idle", "", data.Float("borderAnimation", 0.1f));
+        Add(border);
+        border.Play("idle");
+        border.JustifyOrigin(0.5f, 0.5f);
 
         particle = new ParticleType(TouchSwitch.P_Fire)
         {
@@ -163,29 +152,17 @@ public class FlagButton : Entity {
         };
 
         // Setup the icon
-        if (vanillanames.Contains(iconPath))
-        {
-            vanilla = true;
-        }
-        else { vanilla = false; }
-
-        if (vanilla) { icon = new Sprite(GFX.Game, iconPath == "vanilla" ? "objects/touchswitch/icon" : $"objects/ChroniaHelper/flagTouchSwitch/{iconPath}/icon"); }
-        else { icon = new Sprite(GFX.Game, iconPath); }
+        icon = new Sprite(GFX.Game, iconPath);
+        icon.AddLoop("idle", "/idle", data.Float("iconIdleAnimation", 0.1f));
+        icon.AddLoop("spin", "/spin", data.Float("iconSpinAnimation", 0.02f));
+        icon.Add("finishing", "/finishing", data.Float("iconFinishingAnimation", 0.1f), "finished");
+        icon.AddLoop("finished", "/finished", data.Float("iconFinishedAnimation", 0.1f));
 
         Add(icon);
-        if (vanilla)
-        {
-            icon.Add("idle", "", 0f, default(int));
-            icon.Add("spin", "", 0.1f, new Chooser<string>("spin", 1f), 0, 1, 2, 3, 4, 5);
-        }
-        else
-        {
-            icon.AddLoop("idle", "", idleInterval);
-            icon.AddLoop("spin", "", spinInterval);
-        }
 
-        icon.Play("spin");
+        icon.Play("idle");
         icon.Color = inactiveColor;
+        border.Color = icon.Color;
         ih = icon.Height;
         iw = icon.Width;
         icon.SetOrigin(-ew / 2 + icon.Width / 2, -eh / 2 + icon.Height / 2);
@@ -272,7 +249,7 @@ public class FlagButton : Entity {
                 float num = Calc.Random.NextFloat((float)Math.PI * 2f);
                 level.Particles.Emit(particle, Position + new Vector2(ew / 2, eh / 2) + Calc.AngleToVector(num, 6f), num);
             }
-            icon.Rate = onRate;
+            icon.Play("spin");
         }
     }
 
@@ -289,8 +266,7 @@ public class FlagButton : Entity {
 
             // animation
             wiggler.Stop();
-            icon.Play("spin");
-            icon.Rate = 1f;
+            icon.Play("idle");
         }
     }
 
@@ -378,6 +354,9 @@ public class FlagButton : Entity {
         if (!persistent)
         {
             FlagSave(flagID, false);
+            
+            icon.Play("idle");
+            finished = false;
         }
 
         // If not completed, we should reset the flag too
@@ -398,9 +377,23 @@ public class FlagButton : Entity {
 
     }
 
-
+    private bool finished = false;
     public override void Update()
     {
+        if (!ChroniaFlagUtils.GetFlag(flagID) && !IsCompleted())
+        {
+            icon.Color = inactiveColor;
+            border.Color = icon.Color;
+            icon.Play("idle");
+            Activated(false);
+        }
+        else if (ChroniaFlagUtils.GetFlag(flagID) && !IsCompleted())
+        {
+            icon.Color = activeColor;
+            border.Color = icon.Color;
+            icon.Play("spin");
+        }
+
         if (CollideCheck<Player>())
         {
             inside = true;
@@ -411,19 +404,21 @@ public class FlagButton : Entity {
         ease = Calc.Approach(ease, (IsCompleted() || Activated()) ? 1f : 0f, Engine.DeltaTime * 2f);
         icon.Color = Color.Lerp(inactiveColor, IsCompleted() ? finishColor : activeColor, ease);
         icon.Color *= 0.5f + ((float)Math.Sin(timer) + 1f) / 2f * (1f - ease) * 0.5f + 0.5f * ease;
+        border.Color = icon.Color;
         bloom.Alpha = ease;
         if (IsCompleted())
         {
-            if (icon.Rate > finishRate)
+            if (icon.CurrentAnimationID != "finishing" && icon.CurrentAnimationID != "finished")
             {
-                icon.Rate -= 2f * Engine.DeltaTime;
-                if (icon.Rate <= finishRate)
-                {
-                    icon.Rate = finishRate;
-                    wiggler.Start();
-                    icon.Play("idle");
-                    level.Displacement.AddBurst(Position + new Vector2(ew /2, eh / 2), 0.6f, 4f, 28f, 0.2f);
-                }
+                icon.Play("finishing");
+                finished = false;
+            }
+            else if (icon.CurrentAnimationID == "finished" && !finished)
+            {
+                wiggler.Start();
+                icon.Play("finished");
+                level.Displacement.AddBurst(Position + new Vector2(ew / 2, eh / 2), 0.6f, 4f, 28f, 0.2f);
+                finished = true;
             }
             else if (base.Scene.OnInterval(0.03f))
             {
@@ -463,8 +458,8 @@ public class FlagButton : Entity {
 
         if (this.classify == switchKind.touch)
         {
-            border.DrawCentered(Position + new Vector2(ew / 2, eh / 2) + new Vector2(0f, -1f), Color.Black);
-            border.DrawCentered(Position + new Vector2(ew / 2, eh / 2), icon.Color, pulse);
+            //border.DrawCentered(Position + new Vector2(ew / 2, eh / 2) + new Vector2(0f, -1f), Color.Black);
+            //border.DrawCentered(Position + new Vector2(ew / 2, eh / 2), icon.Color, pulse);
         }
         else
         {

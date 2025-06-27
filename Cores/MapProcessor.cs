@@ -84,7 +84,7 @@ public static class MapProcessor
         {
             foreach (var item in lv.Entities)
             {
-                if (item.Name == "ChroniaHelper/RealFlagSwitch" || item.Name == "ChroniaHelper/RealFlagSwitchAlt")
+                if (item.Name == "ChroniaHelper/RealFlagSwitch" || item.Name == "ChroniaHelper/RealFlagSwitchAlt" || item.Name == "ChroniaHelper/RealFlagSwitch2")
                 {
                     // Can get the Entity ID here
                     flagName = item.Values["flag"].ToString().Trim();

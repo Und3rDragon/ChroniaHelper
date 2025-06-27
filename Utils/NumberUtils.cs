@@ -128,6 +128,23 @@ public static class NumberUtils
         return ((x % m) + m) % m;
     }
 
+    public static float MathMod(float x, float m)
+    {
+        if (m == 0) return x;
+
+        float b = x / m;
+        return b - float.Floor(b);
+    }
+
+    public static int MathMod(int x, int m)
+    {
+        if (m == 0) return x;
+
+        int b = x / m;
+        bool f = m * b < x;
+        return f ? x - m * b : x - m * (b - 1);
+    }
+
     public static int CheckTime(this string input)
     {
         string format = input.ToLower().Trim();

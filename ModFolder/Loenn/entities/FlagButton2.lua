@@ -1,9 +1,10 @@
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
+local vivUtils = require("mods").requireFromPlugin("libraries.vivUtilsMig")
 
 local touchSwitch = {}
 
-touchSwitch.name = "ChroniaHelper/RealFlagSwitch"
+touchSwitch.name = "ChroniaHelper/RealFlagSwitch2"
 touchSwitch.depth = 2000
 touchSwitch.placements = {
     {
@@ -11,26 +12,24 @@ touchSwitch.placements = {
         data = {
             x = 0,
             y = 0,
+            switch = "touchSwitch",
             flag = "flag",
-            icon = "vanilla",
-            borderTexture = "",
+            icon = "objects/ChroniaHelper/flagTouchSwitchNew",
+            iconIdleAnimation = 0.1,
+            iconSpinAnimation = 0.02,
+            iconFinishingAnimation = 0.1,
+            iconFinishedAnimation = 0.1,
+            borderTexture = "objects/ChroniaHelper/flagTouchSwitchNew/container",
+            borderAnimation = 0.1,
             persistent = false,
             inactiveColor = "5FCDE4",
             activeColor = "FFFFFF",
             finishColor = "F141DF",
             smoke = true,
-            --inverted = false,
             allowDisable = false,
             playerCanActivate = true,
             hitSound = "event:/game/general/touchswitch_any",
-            --completeSoundFromSwitch = "event:/game/general/touchswitch_last_cutoff",
             completeSoundFromScene = "event:/game/general/touchswitch_last_oneshot",
-            --hideIfFlag = "",
-            switch = "touchSwitch",
-            idleAnimDelay = 0.1,
-            spinAnimDelay = 0.1,
-            activatedAnimRate = 4.0,
-            finishedAnimRate = 0.1,
             passwordID = "",
             password = "",
         }
@@ -42,26 +41,19 @@ touchSwitch.placements = {
             y = 0,
             width = 16,
             height = 16,
+            switch = "touchSwitchWall",
             flag = "flag",
-            icon = "vanilla",
-            borderTexture = "",
+            icon = "objects/ChroniaHelper/flagTouchSwitchNew",
+            borderTexture = "objects/ChroniaHelper/flagTouchSwitchNew/container",
             persistent = false,
             inactiveColor = "5FCDE4",
             activeColor = "FFFFFF",
             finishColor = "F141DF",
             smoke = true,
-            --inverted = false,
             allowDisable = false,
             playerCanActivate = true,
             hitSound = "event:/game/general/touchswitch_any",
-            --completeSoundFromSwitch = "event:/game/general/touchswitch_last_cutoff",
             completeSoundFromScene = "event:/game/general/touchswitch_last_oneshot",
-            --hideIfFlag = "",
-            switch = "touchSwitchWall",
-            idleAnimDelay = 0.1,
-            spinAnimDelay = 0.1,
-            activatedAnimRate = 4.0,
-            finishedAnimRate = 0.1,
             passwordID = "",
             password = "",
         }
@@ -114,20 +106,9 @@ function isVanilla(table, value)
 end
 
 function touchSwitch.sprite(room, entity)
-    local borderTexture = entity.borderTexture ~= "" and entity.borderTexture or containerTexture
-    local containerSprite = drawableSprite.fromTexture(borderTexture, entity)--:setPosition(entity.x + entity.width/2, entity.y+ entity.height/2)
+    local containerSprite = vivUtils.getImageWithNumbers(entity.borderTexture, 0, entity)
     
-    local iconResource -- = "objects/touchswitch/icon00"
-
-    if entity.icon == "vanilla" then
-        iconResource = "objects/touchswitch/icon00"
-    elseif isVanilla(iconOptions, entity.icon) then
-        iconResource = "objects/ChroniaHelper/flagTouchSwitch/" .. entity.icon .."/icon00"
-    else
-        iconResource = entity.icon .. "00"
-    end
-
-    local iconSprite = drawableSprite.fromTexture(iconResource, entity)--:setPosition(entity.x + entity.width/2, entity.y+ entity.height/2)
+    local iconSprite = vivUtils.getImageWithNumbers(entity.icon .. "/idle", 0, entity)
 
     if entity.switch == "touchSwitch" then
         return {containerSprite, iconSprite}
@@ -136,7 +117,7 @@ function touchSwitch.sprite(room, entity)
         iconSprite:setPosition(entity.x + entity.width/2, entity.y+ entity.height/2)
         return {
             require('structs.drawable_rectangle').fromRectangle('bordered',entity.x,entity.y, entity.width, entity.height, {0.0, 0.0, 0.0, 0.3}, {1.0,1.0,1.0,0.5}),
-            drawableSprite.fromTexture(iconResource, entity):setPosition(entity.x + entity.width/2, entity.y+ entity.height/2)}
+            iconSprite:setPosition(entity.x + entity.width/2, entity.y+ entity.height/2)}
     end
     
 end
