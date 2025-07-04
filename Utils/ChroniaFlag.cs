@@ -156,6 +156,16 @@ public class ChroniaFlag
         ChroniaFlagUtils.Refresh();
     }
 
+    public bool IsNormalFlag()
+    {
+        return Tags.Count == 0 && PresetTags.Count == 0 && CustomData.Count == 0;
+    }
+
+    public bool Using()
+    {
+        return Active || Global || Temporary || Force || Timed >= 0f;
+    }
+
     public bool DefineResetState()
     {
         switch (DefaultResetState)

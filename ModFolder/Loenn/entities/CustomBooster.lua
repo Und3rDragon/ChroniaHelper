@@ -27,7 +27,6 @@ booster.placements={
 		dashes = 1,
 		stamina = 110,
 		holdTime = 0.25,
-		--moveSpeedMultiplier = 1,
 		outSpeedMultiplier = 1,
 		hitboxRadius = 10,
 		hitboxX = 0,
@@ -35,10 +34,10 @@ booster.placements={
 		red = false,
 		setOrRefillDashes = false,
 		setOrRefillStamina = false,
-		--setOutSpeed = false,
 		XMLOverride = false,
 		burstParticleColorOverride = false,
 		burstParticleColor = "ffffff",
+		disableFastBubble = false,
 	}
 }
 

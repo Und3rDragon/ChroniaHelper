@@ -11,10 +11,81 @@ namespace ChroniaHelper.Utils;
 
 public static class ChroniaFlagUtils
 {
-    public static void SetFlag(this string name, bool active = true, bool global = false, bool temporary = false)
+    public static bool Check(this string name)
     {
-        ChroniaHelperSaveData.ChroniaFlags.Enter(name, new (name, active, global, temporary));
+        return ChroniaHelperSaveData.ChroniaFlags.ContainsKey(name);
+    }
+
+    /// <summary>
+    /// Search through the savedata ChroniaFlags, and pull the item out
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns>By default, you'll get the item stored in ChroniaFlags. If the item doesn't exist, you'll get an empty ChroniaFlag (name, false, false, false)</returns>
+    public static ChroniaFlag PullFlag(this string name)
+    {
+        if (name.Check())
+        {
+            return ChroniaHelperSaveData.ChroniaFlags[name];
+        }
+        else
+        {
+            return new(name);
+        }
+    }
+
+    /// <summary>
+    /// The function is only for processing data, for flag managements please use SetFlag()
+    /// </summary>
+    /// <param name="flag"></param>
+    /// <param name="slotName"></param>
+    public static void PushFlag(this ChroniaFlag flag)
+    {
+        ChroniaHelperSaveData.ChroniaFlags.Enter(flag.Name, flag);
+        MapProcessor.session.SetFlag(flag.Name, flag.Active);
+        Refresh();
+    }
+
+    public static void Refresh()
+    {
+        foreach (var item in ChroniaHelperSaveData.ChroniaFlags)
+        {
+            if (!item.Value.Using() && item.Value.IsNormalFlag())
+            {
+                ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Key);
+            }
+        }
+    }
+
+    public static void SetFlag(this string name, bool active)
+    {
+        ChroniaFlag flag = name.PullFlag();
+        flag.Active = active;
+        flag.PushFlag();
         MapProcessor.session.SetFlag(name, active);
+
+        Refresh();
+    }
+
+    public static void SetFlag(this string name, bool active, bool global)
+    {
+        ChroniaFlag flag = name.PullFlag();
+        flag.Active = active;
+        flag.Global = global;
+        flag.PushFlag();
+        MapProcessor.session.SetFlag(name, active);
+
+        Refresh();
+    }
+
+    public static void SetFlag(this string name, bool active, bool global, bool temporary)
+    {
+        ChroniaFlag flag = name.PullFlag();
+        flag.Active = active;
+        flag.Global = global;
+        flag.Temporary = temporary;
+        flag.PushFlag();
+        MapProcessor.session.SetFlag(name, active);
+
         Refresh();
     }
 
@@ -49,51 +120,6 @@ public static class ChroniaFlagUtils
         else
         {
             return MapProcessor.session.GetFlag(name);
-        }
-    }
-
-    public static bool Check(this string name)
-    {
-        return ChroniaHelperSaveData.ChroniaFlags.ContainsKey(name);
-    }
-    
-    /// <summary>
-    /// Search through the savedata ChroniaFlags, and pull the item out
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns>By default, you'll get the item stored in ChroniaFlags. If the item doesn't exist, you'll get an empty ChroniaFlag (name, false, false, false)</returns>
-    public static ChroniaFlag PullFlag(this string name)
-    {
-        if (name.Check())
-        {
-            return ChroniaHelperSaveData.ChroniaFlags[name];
-        }
-        else
-        {
-            return new(name, false, false, false);
-        }
-    }
-
-    /// <summary>
-    /// The function is only for processing data, for flag managements please use SetFlag()
-    /// </summary>
-    /// <param name="flag"></param>
-    /// <param name="slotName"></param>
-    public static void PushFlag(this ChroniaFlag flag)
-    {
-        ChroniaHelperSaveData.ChroniaFlags.Enter(flag.Name, flag);
-        MapProcessor.session.SetFlag(flag.Name, flag.Active);
-        Refresh();
-    }
-
-    public static void Refresh()
-    {
-        foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
-        {
-            if(!item.Value.Active && !item.Value.Global)
-            {
-                ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Key);
-            }
         }
     }
 }
