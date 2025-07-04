@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="CelesteMod.props" />
+
+    <PropertyGroup>
+        <RootNamespace>$(AssemblyName)</RootNamespace>
+        <LangVersion>preview</LangVersion>
+        <Version>1.0.0</Version>
+        <TargetFramework>net8.0</TargetFramework>
+
+        <CelesteRootPath>D:/Game/Steam/steamapps/common/Celeste</CelesteRootPath>
+
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+        <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+        <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    </PropertyGroup>
+
+    <!--Implement dependencies here in an ItemGroup-->
+
+
+    <Import Project="CelesteMod.targets" />
+</Project>

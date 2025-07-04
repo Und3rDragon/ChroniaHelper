@@ -21,6 +21,7 @@ namespace ChroniaHelper.Entities;
 public class CustomBooster : Booster
 {
     private static ILHook dashCoroutineHook;
+
     public static void Load()
     {
         On.Celeste.Booster.PlayerReleased += Booster_PlayerReleased;
@@ -30,9 +31,11 @@ public class CustomBooster : Booster
         On.Celeste.Player.Boost += Player_Boost;
         On.Celeste.Player.RedBoost += Player_RedBoost;
         origBoostBeginHook = new ILHook(typeof(Player).GetMethod("orig_BoostBegin", BindingFlags.NonPublic | BindingFlags.Instance), Player_BoostBegin);
-        
+
         var methodInfo = typeof(Player).GetMethod("BoostCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget();
         dashCoroutineHook = new ILHook(methodInfo, ILHookDashCoroutine);
+
+        IL.Celeste.Player.BoostUpdate += PlayerOnBoostUpdate;
 
         // Usable but unecessary
 
@@ -44,8 +47,7 @@ public class CustomBooster : Booster
     {
         ILCursor cursor = new ILCursor(il);
 
-        if (cursor.TryGotoNext(
-                ins => ins.MatchLdcR4(0.25f)
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(0.25f)
             ))
         {
             cursor.Index += 1;
@@ -58,6 +60,35 @@ public class CustomBooster : Booster
                     return booster.holdTime;
                 return 0.25f;
             });
+        }
+    }
+
+    private static void PlayerOnBoostUpdate(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        MethodInfo moveToYMethod = typeof(Actor).GetMethod("MoveToY", BindingFlags.Instance | BindingFlags.Public);
+        if (cursor.TryGotoNext(ins => ins.MatchCall(moveToYMethod)
+            ))
+        {
+            cursor.Index += 1;
+            ILLabel label = cursor.DefineLabel();
+
+            cursor.EmitDelegate(() =>
+            {
+                Player player = Engine.Scene.Tracker.GetEntity<Player>();
+                if (player != null && player.CurrentBooster is CustomBooster customBooster)
+                {
+                    return customBooster.DisableFastBubble ? 1 : 0;
+                }
+
+                return 0;
+            });
+            cursor.EmitBrfalse(label);
+            cursor.EmitLdcI4(Player.StBoost);
+            cursor.EmitRet();
+
+            cursor.MarkLabel(label);
         }
     }
 
@@ -74,6 +105,7 @@ public class CustomBooster : Booster
 
         dashCoroutineHook.Dispose();
 
+        IL.Celeste.Player.BoostUpdate -= PlayerOnBoostUpdate;
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash -= RefillD;
@@ -98,6 +130,7 @@ public class CustomBooster : Booster
     private ParticleType customBurstParticleType;
     private bool burstParticleColorOverride;
     private float holdTime = 0.25f;
+    public bool DisableFastBubble;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -186,6 +219,7 @@ public class CustomBooster : Booster
         }
 
         holdTime = data.Float("holdTime", 0.25f);
+        DisableFastBubble = data.Bool("disableFastBubble", false);
     }
 
 

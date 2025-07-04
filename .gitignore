@@ -1,11 +1,9 @@
-ChroniaHelper.sln
-ChroniaHelper.csproj
 CelesteMod.targets
 CelesteMod.props
 Common.props
 ChroniaHelper.csproj.user
 Folder.DotSettings.user
-ModFolder/Code/**
+ModFolder/Code/
 .idea/
 .vs/
 obj/
