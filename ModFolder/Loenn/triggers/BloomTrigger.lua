@@ -11,6 +11,7 @@ return {
             bloomBase = 0,
             bloomStrength = 1,
             bloomColor = "ffffff",
+            timedFade = -1,
             levelDeath = "-1",
             totalDeath = "-1",
             enterMode = "Any",

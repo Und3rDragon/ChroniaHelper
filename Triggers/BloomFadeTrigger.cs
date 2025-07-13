@@ -25,6 +25,10 @@ public class BloomFadeTrigger : BaseTrigger
 
     private BloomTrigger.OldBloom oldBloom;
 
+    private float timer, t;
+
+    private bool timedFade;
+
     public BloomFadeTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         this.bloomBaseFrom = data.Float("bloomBaseFrom", 0F);
@@ -34,10 +38,16 @@ public class BloomFadeTrigger : BaseTrigger
         this.bloomColorFrom = data.HexColor("bloomColorFrom", Color.White);
         this.bloomColorTo = data.HexColor("bloomColorTo", Color.White);
         this.positionMode = data.Enum<PositionModes>("positionMode", PositionModes.NoEffect);
+        this.timer = data.Float("timedFade", -1f);
+        timedFade = timer > 0;
     }
 
     protected override void OnEnterExecute(Player player)
     {
+        if(timedFade)
+        {
+            t = timer;
+        }
         if (base.leaveReset)
         {
             this.oldBloom.bloomBase = base.level.Bloom.Base;
@@ -49,12 +59,15 @@ public class BloomFadeTrigger : BaseTrigger
 
     protected override void OnStayExecute(Player player)
     {
-        float lerp = base.GetPositionLerp(player, this.positionMode);
-        float bloomBase = Calc.ClampedMap(lerp, 0f, 1f, this.bloomBaseFrom, this.bloomBaseTo);
-        base.level.Bloom.Base = bloomBase;
-        base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
-        base.level.Bloom.Strength = Calc.ClampedMap(lerp, 0f, 1f, this.bloomStrengthFrom, this.bloomStrengthTo);
-        this.SetBloomColor(Color.Lerp(this.bloomColorFrom, this.bloomColorTo, lerp));
+        if (!timedFade)
+        {
+            float lerp = base.GetPositionLerp(player, this.positionMode);
+            float bloomBase = Calc.ClampedMap(lerp, 0f, 1f, this.bloomBaseFrom, this.bloomBaseTo);
+            base.level.Bloom.Base = bloomBase;
+            base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
+            base.level.Bloom.Strength = Calc.ClampedMap(lerp, 0f, 1f, this.bloomStrengthFrom, this.bloomStrengthTo);
+            this.SetBloomColor(Color.Lerp(this.bloomColorFrom, this.bloomColorTo, lerp));
+        }
     }
 
     protected override void LeaveReset(Player player)
@@ -65,6 +78,24 @@ public class BloomFadeTrigger : BaseTrigger
         this.SetBloomColor(this.oldBloom.bloomColor);
     }
 
+    public override void Update()
+    {
+        base.Update();
+
+        if (timedFade)
+        {
+            t = Calc.Approach(t, -1f, Engine.DeltaTime);
+            if(t >= 0f)
+            {
+                float progress = Calc.Clamp((timer - t) / timer, 0f, 1f);
+                float bloomBase = Calc.ClampedMap(progress, 0f, 1f, this.bloomBaseFrom, this.bloomBaseTo);
+                base.level.Bloom.Base = bloomBase;
+                base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
+                base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, this.bloomStrengthFrom, this.bloomStrengthTo);
+                this.SetBloomColor(Color.Lerp(this.bloomColorFrom, this.bloomColorTo, progress));
+            }
+        }
+    }
     private Color GetBloomColor()
     {
         return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<Color>(HookId.BloomColor);

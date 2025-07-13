@@ -61,6 +61,7 @@ namespace ChroniaHelper.Effects {
             : this(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), 
                   child.Attr("Colors", "ffffff"), child.AttrFloat("windStrength"), child.AttrInt("Amount", 240), 
                   child.AttrFloat("alpha", 1f), child.AttrFloat("extendedBorderX" , 0f), child.AttrFloat("extendedBorderY", 0f)
+                  
                   ) { }
         public WindRainFG(Vector2 scroll, string colors, float windStrength, int amount, float alpha,
             float extX, float extY

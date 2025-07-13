@@ -19,7 +19,7 @@ using Celeste.Mod.Backdrops;
 namespace ChroniaHelper.Effects {
     [CustomBackdrop("ChroniaHelper/CustomRain")]
     public class CustomRain : Backdrop {
-
+        
         public struct Particle {
             public Vector2 Position;
 
