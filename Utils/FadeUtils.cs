@@ -41,6 +41,6 @@ public static class FadeUtils
 
         float p = source.ClampProgress(clampA, clampB);
 
-        return va + (int)((vb - va) * p);
+        return va + ((vb - va) * p);
     }
 }
