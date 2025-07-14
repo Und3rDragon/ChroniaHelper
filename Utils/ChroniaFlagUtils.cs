@@ -11,9 +11,43 @@ namespace ChroniaHelper.Utils;
 
 public static class ChroniaFlagUtils
 {
-    public static bool Check(this string name)
+    public static bool Check(this string flag)
     {
-        return ChroniaHelperSaveData.ChroniaFlags.ContainsKey(name);
+        return ChroniaHelperSaveData.ChroniaFlags.ContainsKey(flag);
+    }
+
+    public static bool CheckTag(this string flag, string tag)
+    {
+        if (!flag.Check())
+        {
+            return false;
+        }
+
+        return ChroniaHelperSaveData.ChroniaFlags[flag].Tags.Contains(tag);
+    }
+
+    public static bool CheckCustomData(this string flag, string dataName)
+    {
+        if (!flag.Check()) { return false; }
+
+        return ChroniaHelperSaveData.ChroniaFlags[flag].CustomData.ContainsKey(dataName);
+    }
+
+    public static string GetCustomData(this string flag, string dataName)
+    {
+        if (!flag.CheckCustomData(dataName))
+        {
+            return string.Empty;
+        }
+
+        return ChroniaHelperSaveData.ChroniaFlags[flag].CustomData[dataName];
+    }
+
+    public static bool CheckPresetTag(this string flag, ChroniaFlag.Labels label)
+    {
+        if (!flag.Check()) { return false; }
+
+        return ChroniaHelperSaveData.ChroniaFlags[flag].PresetTags.Contains(label);
     }
 
     /// <summary>
@@ -101,7 +135,15 @@ public static class ChroniaFlagUtils
 
     public static void SetTimedFlag(this string name, bool basicState, float timer, bool global = false, bool temporary = false)
     {
-        new ChroniaFlag(name) { Active = basicState, Global = global, Timed = timer, Temporary = temporary }.PushFlag();
+        ChroniaFlag flag = name.PullFlag();
+        flag.Active = basicState;
+        flag.Global = global;
+        flag.Temporary = temporary;
+        flag.Timed = timer;
+        flag.PushFlag();
+        MapProcessor.session.SetFlag(name, basicState);
+
+        Refresh();
     }
 
     /// <summary>
