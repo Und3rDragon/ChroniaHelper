@@ -113,20 +113,10 @@ namespace ChroniaHelper.Effects {
                 Camera camera = (scene as Level).Camera;
                 for (int i = 0; i < particles.Length; i++) {
                     Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y, 180f + extY));
-                    Draw.Pixel.DrawCentered(position, particles[i].color * alpha * linearFade * visibleFade, particles[i].Scale, particles[i].Rotation);
-
-                    // Useless Codes?
-
-                    //var v = particles[i].Scale.Rotate(particles[i].Rotation);
-                    //if (position.Y + v.Y > 180 ) {
-                    //    if (position.X + v.X > 320) {
-                    //        Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y - 180 ), particles[i].color * alpha * linearFade * visibleFade, particles[i].Scale, particles[i].Rotation);
-                    //    } else {
-                    //        Draw.Pixel.DrawCentered(new Vector2(position.X, position.Y - 180 ), particles[i].color * alpha * linearFade * visibleFade, particles[i].Scale, particles[i].Rotation);
-                    //    }
-                    //} else if (position.X + v.X > 320) {
-                    //    Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y), particles[i].color * alpha * linearFade * visibleFade, particles[i].Scale, particles[i].Rotation);
-                    //}
+                    Draw.Pixel.DrawCentered(position, 
+                        particles[i].color * alpha * linearFade * visibleFade, 
+                        particles[i].Scale, 
+                        particles[i].Rotation);
 
                 }
             }

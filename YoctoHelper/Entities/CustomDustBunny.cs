@@ -24,6 +24,8 @@ public class CustomDustBunny : Entity
 
     private float offset;
 
+    public string baseTexture, overlayTexture, centerTexture;
+
     public CustomDustBunny(Vector2 position, EntityData data) : base(position)
     {
         this.tintColor = data.HexColor("tintColor", new Color(102, 102, 102));
@@ -32,6 +34,10 @@ public class CustomDustBunny : Entity
         this.hasEyes = data.Bool("hasEyes", true);
         this.attached = data.Bool("attached", false);
         base.Collider = new ColliderList(new Circle(6F), new Hitbox(16F, 4F, -8F, -3F));
+
+        baseTexture = data.Attr("baseTexture", "ChroniaHelper/CustomDustBunny/base");
+        overlayTexture = data.Attr("overlayTexture", "ChroniaHelper/CustomDustBunny/overlay");
+        centerTexture = data.Attr("centerTexture", "ChroniaHelper/CustomDustBunny/center");
         base.Add(this.sprite = new DustBunnyGraphic(this));
         base.Add(new PlayerCollider(this.OnPlayer));
         base.Add(new HoldableCollider(this.OnHoldable));

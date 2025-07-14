@@ -127,36 +127,13 @@ namespace ChroniaHelper.Effects {
                 for (int i = 0; i < particles.Length; i++) {
                     float t = (float) Math.Pow((particles[i].Speed - 400) / 400, 1.1);
                     var u = Calc.Angle(Calc.AngleToVector(particles[i].Rotation, (t + 1) * 400) + (scene as Level).Wind * windStrength);
-                    //Color color = Colors[(int)(i * NumberUtils.Mod(i * (i + 2) * Math.Abs(i - 7.5f), Math.Abs((2 * i - 1) * i - 3)) * (i + 4.5f)) % Colors.Length];
+                    
                     Color color = Colors[i % Colors.Length];
                     Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, 180f + extY));
                     Draw.Pixel.DrawCentered(position,
                                             color * colFade,
                                             particles[i].Scale,
                                             u);
-
-                    // Useless Codes?
-
-                    //var v = particles[i].Scale.Rotate(u);
-                    //if (position.Y + v.Y > 180 ) {
-                    //    if (position.X + v.X > 320 ) {
-                    //        Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y - 180 ),
-                    //                                color * colFade,
-                    //                                particles[i].Scale,
-                    //                                u);
-                    //    } else {
-                    //        Draw.Pixel.DrawCentered(new Vector2(position.X, position.Y - 180 ),
-                    //                                color * colFade,
-                    //                                particles[i].Scale,
-                    //                                u);
-                    //    }
-                    //}
-                    //else if(position.X + v.X > 320 ) {
-                    //    Draw.Pixel.DrawCentered(new Vector2(position.X - 320, position.Y),
-                    //                            color * colFade,
-                    //                            particles[i].Scale,
-                    //                            u);
-                    //}
 
                 }
             }

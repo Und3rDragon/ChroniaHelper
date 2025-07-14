@@ -71,10 +71,14 @@ public class DustBunnyGraphic : Component
         }
     }
 
+    private string centerTexture, overlayTexture, baseTexture;
     public DustBunnyGraphic(CustomDustBunny customDustBunny) : base(active: true, visible: true)
     {
         this.dustBunny = customDustBunny;
-        this.center = Calc.Random.Choose(GFX.Game.GetAtlasSubtextures("danger/dustcreature/center"));
+        centerTexture = customDustBunny.centerTexture;
+        overlayTexture = customDustBunny.overlayTexture;
+        baseTexture = customDustBunny.baseTexture;
+        this.center = Calc.Random.Choose(GFX.Game.GetAtlasSubtextures(centerTexture));
         this.rotationTimer = Calc.Random.NextFloat();
         this.scale = Vector2.One;
         this.nodes = new List<DustBunnyNode>();
@@ -266,8 +270,8 @@ public class DustBunnyGraphic : Component
         }
         base.Entity.Collidable = true;
         DustBunnyNode node = new DustBunnyNode();
-        node.@base = Calc.Random.Choose(GFX.Game.GetAtlasSubtextures("danger/dustcreature/base"));
-        node.overlay = Calc.Random.Choose(GFX.Game.GetAtlasSubtextures("danger/dustcreature/overlay"));
+        node.@base = Calc.Random.Choose(GFX.Game.GetAtlasSubtextures(baseTexture));
+        node.overlay = Calc.Random.Choose(GFX.Game.GetAtlasSubtextures(overlayTexture));
         node.rotation = Calc.Random.NextFloat((float)Math.PI * 2F);
         node.angle = angle * vector;
         node.enabled = enabled;
@@ -280,7 +284,7 @@ public class DustBunnyGraphic : Component
         {
             return;
         }
-        this.center.DrawCentered(this.renderPosition, Color.Black, this.scale, this.rotationTimer);
+        this.center.DrawCentered(this.renderPosition, this.dustBunny.tintColor, this.scale, this.rotationTimer);
         foreach (DustBunnyNode node in this.nodes)
         {
             if (node.enabled)

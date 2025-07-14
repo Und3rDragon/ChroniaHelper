@@ -7,9 +7,12 @@ local entity = {
         name = "CustomDustBunny",
         data =
         {
-            tintColor = "666666",
+            tintColor = "000000",
             eyesColor = "ff0000",
             borderColor = "ff0000",
+            centerTexture = "ChroniaHelper/CustomDustBunny/center",
+            baseTexture = "ChroniaHelper/CustomDustBunny/base",
+            overlayTexture = "ChroniaHelper/CustomDustBunny/overlay",
             hasEyes = true,
             attached = false
         }
