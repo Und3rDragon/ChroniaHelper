@@ -37,6 +37,8 @@ booster.placements={
 		XMLOverride = false,
 		burstParticleColorOverride = false,
 		burstParticleColor = "ffffff",
+		appearParticleColorOverride = false,
+		appearParticleColor = "ffffff",
 		disableFastBubble = false,
 	}
 }

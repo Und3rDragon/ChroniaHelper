@@ -37,6 +37,8 @@ public class CustomBooster : Booster
 
         IL.Celeste.Player.BoostUpdate += PlayerOnBoostUpdate;
 
+        On.Celeste.Booster.AppearParticles += Booster_AppearParticles;
+
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash += RefillD;
@@ -106,6 +108,8 @@ public class CustomBooster : Booster
         dashCoroutineHook.Dispose();
 
         IL.Celeste.Player.BoostUpdate -= PlayerOnBoostUpdate;
+
+        On.Celeste.Booster.AppearParticles -= Booster_AppearParticles;
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash -= RefillD;
@@ -127,8 +131,8 @@ public class CustomBooster : Booster
     private bool setOutSpeed;
 
     private Color color;
-    private ParticleType customBurstParticleType;
-    private bool burstParticleColorOverride;
+    private ParticleType customBurstParticleType, customAppearParticleType;
+    private bool burstParticleColorOverride, appearParticleColorOverride;
     private float holdTime = 0.25f;
     public bool DisableFastBubble;
 
@@ -216,6 +220,13 @@ public class CustomBooster : Booster
         {
             customBurstParticleType = new ParticleType(P_Burst);
             customBurstParticleType.Color = data.HexColor("burstParticleColor");
+        }
+
+        appearParticleColorOverride = data.Bool("appearParticleColorOverride");
+        if (appearParticleColorOverride)
+        {
+            customAppearParticleType = new ParticleType(P_Appear);
+            customAppearParticleType.Color = data.HexColor("appearParticleColor");
         }
 
         holdTime = data.Float("holdTime", 0.25f);
@@ -381,6 +392,22 @@ public class CustomBooster : Booster
         else
         {
             yield return new SwapImmediately(orig(self, player, dir));
+        }
+    }
+
+    public static void Booster_AppearParticles(On.Celeste.Booster.orig_AppearParticles orig, Booster self)
+    {
+        if(self is CustomBooster booster)
+        {
+            ParticleSystem particlesBG = MapProcessor.level.ParticlesBG;
+            for (int i = 0; i < 360; i += 30)
+            {
+                particlesBG.Emit(booster.appearParticleColorOverride ? booster.customAppearParticleType : P_Appear, 1, booster.Center, Vector2.One * 2f, (float)i * (MathF.PI / 180f));
+            }
+        }
+        else
+        {
+            orig(self);
         }
     }
 
