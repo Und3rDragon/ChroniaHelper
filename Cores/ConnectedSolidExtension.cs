@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace ChroniaHelper.Cores;
 
-[CustomEntity("CommunalHelper/SolidExtension")]
-[Tracked(false)]
 public class SolidExtension : Solid
 {
     public bool HasGroup { get; private set; }

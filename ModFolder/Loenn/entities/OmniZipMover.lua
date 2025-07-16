@@ -237,7 +237,7 @@ local zipMoverRoleColor = {102 / 255, 57 / 255, 49 / 255}
 
 local function getSearchPredicate()
     return function(target)
-        return target._name == "ChroniaHelper/SolidExtension"
+        return target._name == "CommunalHelper/SolidExtension"
     end
 end
 
