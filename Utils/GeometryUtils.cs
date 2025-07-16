@@ -30,19 +30,19 @@ public static class GeometryUtils
         }
     }
 
-    public static void EnterRectangleGroup(string groupName, Vector2 topLeft, Vector2 bottomRight)
+    public static void EnterRectangleGroup(string groupName, Vector2 point1, Vector2 point2)
     {
         bool c = ChroniaHelperSession.Geometry_Rectangles.ContainsKey(groupName);
         if (c)
         {
             ChroniaHelperSession.Geometry_Rectangles[groupName].Enter(
-                new KeyValuePair<Vector2, Vector2>(topLeft, bottomRight)
+                new KeyValuePair<Vector2, Vector2>(point1, point2)
                 );
         }
         else
         {
             List<KeyValuePair<Vector2, Vector2>> k = new();
-            KeyValuePair<Vector2, Vector2> v = new KeyValuePair<Vector2, Vector2>(topLeft, bottomRight);
+            KeyValuePair<Vector2, Vector2> v = new KeyValuePair<Vector2, Vector2>(point1, point2);
             k.Enter(v);
             ChroniaHelperSession.Geometry_Rectangles.Enter(groupName, k);
         }

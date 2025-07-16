@@ -10,7 +10,7 @@ using ChroniaHelper.Utils;
 namespace ChroniaHelper.Triggers;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/FlagChooseTrigger2")]
+[CustomEntity("ChroniaHelper/FlagChooseTrigger2", "ChroniaHelper/FlagDictionaryTrigger")]
 public class FlagChooseTrigger2 : BaseTrigger
 {
     private EntityID eID;

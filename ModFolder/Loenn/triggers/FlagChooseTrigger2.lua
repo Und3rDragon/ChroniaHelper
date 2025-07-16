@@ -1,10 +1,10 @@
 ﻿local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
 
 return {
-    name = "ChroniaHelper/FlagChooseTrigger2",
+    name = "ChroniaHelper/FlagDictionaryTrigger",
     placements =
     {
-        name = "FlagChooseTrigger2",
+        name = "FlagDictionaryTrigger",
         data =
         {
             flagDictionary = "flag1,!flag2>>flag3;flag4,!flag5>>flag6,!*flag7",
@@ -24,7 +24,7 @@ return {
         },
     },
     triggerText = function(room, entity)
-		local base = "flag choose 2"
+		local base = "Flag Dictionary"
 		return base
 	end,
 }
