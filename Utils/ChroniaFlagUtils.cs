@@ -22,7 +22,7 @@ public static class ChroniaFlagUtils
         {
             return false;
         }
-
+        
         return ChroniaHelperSaveData.ChroniaFlags[flag].Tags.Contains(tag);
     }
 

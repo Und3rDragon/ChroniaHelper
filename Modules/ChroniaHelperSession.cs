@@ -132,4 +132,8 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // Flag Timer Trigger
     public static Dictionary<string, float> FlagTimer = new();
+
+    // GeometryUtils
+    public static Dictionary<string, List<KeyValuePair<Vector2, Vector2>>> Geometry_Rectangles = new();
+    public static Dictionary<string, List<Vector2>> Geometry_Points = new();
 }
