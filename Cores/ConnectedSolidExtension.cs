@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ChroniaHelper.Cores;
 
-[CustomEntity("CommunalHelper/SolidExtension")]
+[CustomEntity("ChroniaHelper/SolidExtension")]
 [Tracked(false)]
 public class SolidExtension : Solid
 {
