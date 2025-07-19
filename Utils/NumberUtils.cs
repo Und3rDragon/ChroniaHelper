@@ -237,5 +237,26 @@ public static class NumberUtils
         return null;
     }
 
+    public static float Closest(float baseline, params float[] values)
+    {
+        float r = baseline, a = 0f;
+        for(int i = 0; i< values.Length; i++)
+        {
+            if (i == 0)
+            {
+                r = values[i];
+                a = (values[i] - baseline).GetAbs();
+            }
+            else
+            {
+                if ((values[i] - baseline).GetAbs() < a)
+                {
+                    r = values[i];
+                }
+            }
+        }
+
+        return r;
+    }
 
 }
