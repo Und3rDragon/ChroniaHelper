@@ -47,7 +47,7 @@ public class WaterSurface : Backdrop
               new Vector2(0f, child.AttrFloat("yNear")),
              child.AttrInt("particleCount", 50), child.Attr("particleColors", "161933"),
              child.AttrFloat("alphaFar", 0.5f), child.AttrFloat("alphaNear", 1f),
-             child.AttrFloat("particleScaleFar", 6f), child.AttrFloat("particleScaleNear", 2f),
+             child.AttrFloat("particleScaleFar", 2f), child.AttrFloat("particleScaleNear", 6f),
              child.AttrFloat("waterSpeedFar", 100f), child.AttrFloat("waterSpeedNear", 120f),
              child.AttrFloat("extendedBorderX", 0f), child.AttrFloat("extendedBorderY", 0f),
              child.AttrBool("hasFarLine", false), child.AttrBool("hasCloseLine", true),

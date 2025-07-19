@@ -4,7 +4,7 @@ return {
         yFar=90, yNear=120, surfaceColor = "ffffff", surfaceAlpha = 0.1, 
         scrollXFar=1.0, scrollYFar=1.0, scrollXNear=1.2, scrollYNear=1.2, particleColors="ffffff", particleCount = 50, 
         alphaFar = 0.5, alphaNear = 1.0,
-        waterSpeedFar=10, waterSpeedNear=20, particleScaleFar=6, particleScaleNear=2,
+        waterSpeedFar=10, waterSpeedNear=20, particleScaleFar=2.0, particleScaleNear=6.0,
         extendedBorderX = 0, extendedBorderY = 0,
         farLineColor = "ffffff", farLineAlpha = 1,
         nearLineColor = "ffffff", nearLineAlpha = 1,
