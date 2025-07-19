@@ -211,7 +211,7 @@ public class SpriteEntity : Actor
             bool sideRoutine = indicator.Contains("passby ");
             indicator = indicator.RemoveAll("passby ");
             //execute = GetCommand.GetValueOrDefault(indicator, Command.None);
-            execute = Util.MatchEnum<Command>(indicator, Command.None, true, true);
+            execute = EnumUtils.MatchEnum<Command>(indicator, Command.None, true, true);
 
             int segs = commandLine.Length;
 

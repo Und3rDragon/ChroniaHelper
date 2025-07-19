@@ -2,7 +2,6 @@
 
 public class BoolMode
 {
-
     public enum BoolValue
     {
         None,
@@ -19,4 +18,17 @@ public class BoolMode
         value = (boolValue == BoolMode.BoolValue.True);
     }
 
+}
+
+public static class BoolUtils
+{
+    public static bool TryNegative(ref this bool basic, bool enter)
+    {
+        return basic = basic ? enter : false;
+    }
+
+    public static bool TryPositive(ref this bool basic, bool enter)
+    {
+        return basic = basic ? true : enter;
+    }
 }

@@ -229,66 +229,6 @@ public static class Util
         return Engine.DeltaTime / param;
     }
 
-    public static int MakeAbs(ref this int orig)
-    {
-        return orig = Math.Abs(orig);
-    }
-
-    public static long MakeAbs(ref this long orig)
-    {
-        return orig = Math.Abs(orig);
-    }
-
-    public static double MakeAbs(ref this double orig)
-    {
-        return orig = Math.Abs(orig);
-    }
-
-    public static float MakeAbs(ref this float orig)
-    {
-        return orig = Math.Abs(orig);
-    }
-
-    public static decimal MakeAbs(ref this decimal orig)
-    {
-        return orig = Math.Abs(orig);
-    }
-
-    public static int GetAbs(this int orig)
-    {
-        return Math.Abs(orig);
-    }
-
-    public static long GetAbs(this long orig)
-    {
-        return Math.Abs(orig);
-    }
-
-    public static double GetAbs(this double orig)
-    {
-        return Math.Abs(orig);
-    }
-
-    public static float GetAbs(this float orig)
-    {
-        return Math.Abs(orig);
-    }
-
-    public static decimal GetAbs(this decimal orig)
-    {
-        return Math.Abs(orig);
-    }
-
-    public static bool TryNegative(ref this bool basic, bool enter)
-    {
-        return basic = basic ? enter : false;
-    }
-
-    public static bool TryPositive(ref this bool basic, bool enter)
-    {
-        return basic = basic ? true : enter;
-    }
-
     public static void RenderProgressRectangle(Vector2 Position, float width, float height, float progress, Color color, float expansion = 0f, bool average = false)
     {
         expansion = expansion < 0 && expansion.GetAbs() >= Calc.Min(width, height) / 2f ? -Calc.Min(width, height) / 2f : expansion;
@@ -341,27 +281,6 @@ public static class Util
                 Draw.Line(p3, p3 + d4 * Calc.Min(progress - 0.75f, 0.25f) / 0.25f, color);
             }
         }
-    }
-
-    public static Classify MatchEnum<Classify>(this string match, Classify defaultMember, bool ignoreCase = false, bool ignoreUnderscore = false) where Classify : struct, Enum
-    {
-        if (string.IsNullOrEmpty(match) || string.IsNullOrWhiteSpace(match)) { return defaultMember; }
-        //if (Enum.GetValues<Classify>().Length == 0) { return null; }
-
-        string arg1 = match.Trim();
-        if (ignoreCase) { arg1 = arg1.ToLower(); }
-        if (ignoreUnderscore) { arg1 = arg1.RemoveAll("_"); }
-
-        foreach (Classify member in Enum.GetValues<Classify>())
-        {
-            string arg2 = member.ToString().Trim();
-            if (ignoreCase) { arg2 = arg2.ToLower(); }
-            if (ignoreUnderscore) { arg2 = arg2.RemoveAll("_"); }
-
-            if (arg1.Equals(arg2)) { return member; }
-        }
-
-        return defaultMember;
     }
 
     /// <summary>
@@ -555,7 +474,7 @@ public static class Util
             return defaultValue;
         }
         
-        return MatchEnum<Classify>(loennInput, defaultValue, ignoreCases, ignoreUnderscores);
+        return EnumUtils.MatchEnum<Classify>(loennInput, defaultValue, ignoreCases, ignoreUnderscores);
     }
 
     public static Classify Fetch<Classify>(this EntityData data, string attrTag, Classify defaultValue, bool otherRestraints = false, bool ignoreCases = false, bool ignoreUnderscores = false) where Classify : struct, Enum
@@ -570,7 +489,7 @@ public static class Util
             return defaultValue;
         }
 
-        return MatchEnum<Classify>(data.Attr(attrTag), defaultValue, ignoreCases, ignoreUnderscores);
+        return EnumUtils.MatchEnum<Classify>(data.Attr(attrTag), defaultValue, ignoreCases, ignoreUnderscores);
     }
 
     /// <summary>

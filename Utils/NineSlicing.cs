@@ -370,3 +370,39 @@ public class NineSlicing
         }
     }
 }
+
+public static class SlicingUtils
+{
+    /// <summary>
+    /// Generate a list of images by slicing the original image column by column
+    /// unitX and unitY are the size of each slice
+    /// sizeX and sizeY are the count of slices for the original asset
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <param name="unitX"></param>
+    /// <param name="unitY"></param>
+    /// <param name="sizeX"></param>
+    /// <param name="sizeY"></param>
+    /// <returns></returns>
+    public static List<Image> BuildSprite(this MTexture source, float width, float height, int unitX, int unitY, int sizeX, int sizeY)
+    {
+        List<Image> list = new List<Image>();
+        int num = source.Width / unitX;
+        int num2 = source.Height / unitY;
+        for (int i = 0; (float)i < width; i += sizeX)
+        {
+            for (int j = 0; (float)j < height; j += sizeY)
+            {
+                int num3 = ((i != 0) ? ((!((float)i >= width - unitX)) ? Calc.Random.Next(1, num - 1) : (num - 1)) : 0);
+                int num4 = ((j != 0) ? ((!((float)j >= height - unitY)) ? Calc.Random.Next(1, num2 - 1) : (num2 - 1)) : 0);
+                Image image = new Image(source.GetSubtexture(num3 * unitX, num4 * unitY, unitX, unitY));
+                image.Position = new Vector2(i, j);
+                list.Add(image);
+            }
+        }
+
+        return list;
+    }
+}

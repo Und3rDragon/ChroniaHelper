@@ -11,9 +11,10 @@ public class AlignUtils
     public enum Aligns { None, TopLeft, TopCenter, TopRight, MiddleLeft, Center, MiddleRight, BottomLeft, BottomCenter, BottomRight }
     public static Dictionary<Aligns, Vector2> AlignToJustify = new()
     {
-        {(Aligns)1, new Vector2(0f, 0f) },
-        {(Aligns)2, new Vector2(0.5f, 0f) },
-        {(Aligns)3, new Vector2(1f, 0f) },
+        { (Aligns)0, new Vector2(0.5f, 0.5f) },
+        { (Aligns)1, new Vector2(0f, 0f) },
+        { (Aligns)2, new Vector2(0.5f, 0f) },
+        { (Aligns)3, new Vector2(1f, 0f) },
         { (Aligns)4, new Vector2(0f, 0.5f) },
         { (Aligns)5, new Vector2(0.5f, 0.5f) },
         { (Aligns)6, new Vector2(1f, 0.5f) },

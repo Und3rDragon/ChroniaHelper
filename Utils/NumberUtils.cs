@@ -237,6 +237,56 @@ public static class NumberUtils
         return null;
     }
 
+    public static int MakeAbs(ref this int orig)
+    {
+        return orig = Math.Abs(orig);
+    }
+
+    public static long MakeAbs(ref this long orig)
+    {
+        return orig = Math.Abs(orig);
+    }
+
+    public static double MakeAbs(ref this double orig)
+    {
+        return orig = Math.Abs(orig);
+    }
+
+    public static float MakeAbs(ref this float orig)
+    {
+        return orig = Math.Abs(orig);
+    }
+
+    public static decimal MakeAbs(ref this decimal orig)
+    {
+        return orig = Math.Abs(orig);
+    }
+
+    public static int GetAbs(this int orig)
+    {
+        return Math.Abs(orig);
+    }
+
+    public static long GetAbs(this long orig)
+    {
+        return Math.Abs(orig);
+    }
+
+    public static double GetAbs(this double orig)
+    {
+        return Math.Abs(orig);
+    }
+
+    public static float GetAbs(this float orig)
+    {
+        return Math.Abs(orig);
+    }
+
+    public static decimal GetAbs(this decimal orig)
+    {
+        return Math.Abs(orig);
+    }
+
     public static float Closest(float baseline, params float[] values)
     {
         float r = baseline, a = 0f;
