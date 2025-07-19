@@ -45,12 +45,15 @@ public class WaterSurface : Backdrop
               new Vector2(child.AttrFloat("scrollXNear"), child.AttrFloat("scrollYNear")),
               new Vector2(0f, child.AttrFloat("yFar")),
               new Vector2(0f, child.AttrFloat("yNear")),
-             child.AttrInt("particleCount", 50), child.Attr("particleColors", "161933"), 
+             child.AttrInt("particleCount", 50), child.Attr("particleColors", "161933"),
              child.AttrFloat("alphaFar", 0.5f), child.AttrFloat("alphaNear", 1f),
              child.AttrFloat("particleScaleFar", 6f), child.AttrFloat("particleScaleNear", 2f),
              child.AttrFloat("waterSpeedFar", 100f), child.AttrFloat("waterSpeedNear", 120f),
              child.AttrFloat("extendedBorderX", 0f), child.AttrFloat("extendedBorderY", 0f),
-             child.AttrBool("hasFarLine", false), child.AttrBool("hasCloseLine", true)
+             child.AttrBool("hasFarLine", false), child.AttrBool("hasCloseLine", true),
+             child.Attr("surfaceColor", "ffffff"), child.Attr("farLineColor", "ffffff"),
+             child.Attr("nearLineColor", "ffffff"), child.AttrFloat("surfaceAlpha", 0.1f),
+             child.AttrFloat("farLineAlpha", 1f), child.AttrFloat("nearLineAlpha", 1f)
              )
     { }
 
@@ -58,11 +61,16 @@ public class WaterSurface : Backdrop
     private float waterSpeed1, waterSpeed2, alpha1, alpha2, ps1, ps2;
 
     private bool farLine, closeLine;
+
+    private Color surfaceColor, farLineColor, nearLineColor;
+    private float surfaceAlpha, farLineAlpha, nearLineAlpha;
     public WaterSurface(Vector2 scroll1, Vector2 scroll2, Vector2 pos1, Vector2 pos2, 
         int count, string colors, float alpha1, float alpha2,
         float particleScale1, float particleScale2,
         float waterspeed1, float waterspeed2, float extX, float extY,
-        bool farLine, bool closeLine
+        bool farLine, bool closeLine,
+        string surfaceColor, string farLineColor, string nearLineColor,
+        float surfaceAlpha, float farLineAlpha, float nearLineAlpha
         )
     {
         //this.Scroll = Vector2.Zero;
@@ -76,6 +84,12 @@ public class WaterSurface : Backdrop
         this.closeLine = closeLine;
         this.alpha1 = alpha1; this.alpha2 = alpha2;
         ps1 = particleScale1; ps2 = particleScale2;
+        this.surfaceAlpha = surfaceAlpha;
+        this.farLineAlpha = farLineAlpha;
+        this.nearLineAlpha = nearLineAlpha;
+        this.surfaceColor = Calc.HexToColor(surfaceColor);
+        this.farLineColor = Calc.HexToColor(farLineColor);
+        this.nearLineColor = Calc.HexToColor(nearLineColor);
 
         // Setting up particles
         this.count = count;
@@ -139,14 +153,14 @@ public class WaterSurface : Backdrop
     {
         Draw.Rect(0f, NumberUtils.Closest(0f, renderY1, renderY2),
                 320f + extX, (renderY1 - renderY2).GetAbs(),
-                Color.White * 0.1f);
+                surfaceColor * surfaceAlpha);
         if (farLine)
         {
-            Draw.Line(0f, renderY1, 320f + extX, renderY1, Color.White);
+            Draw.Line(0f, renderY1, 320f + extX, renderY1, farLineColor * farLineAlpha);
         }
         if (closeLine)
         {
-            Draw.Line(0f, renderY2, 320f + extX, renderY2, Color.White);
+            Draw.Line(0f, renderY2, 320f + extX, renderY2, nearLineColor * nearLineAlpha);
         }
         Camera camera = (scene as Level).Camera;
         for (int i = 0; i < particles.Length; i++)
