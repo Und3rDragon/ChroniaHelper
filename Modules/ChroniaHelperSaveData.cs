@@ -12,6 +12,6 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
     // Flag Timer Trigger
     public static Dictionary<string, float> FlagTimerS = new();
 
-    // wip: new flag system?
+    // New flag system
     public static Dictionary<string, ChroniaFlag> ChroniaFlags = new();
 }

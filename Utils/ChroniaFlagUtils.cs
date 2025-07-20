@@ -46,7 +46,7 @@ public static class ChroniaFlagUtils
     public static bool CheckPresetTag(this string flag, ChroniaFlag.Labels label)
     {
         if (!flag.Check()) { return false; }
-
+        
         return ChroniaHelperSaveData.ChroniaFlags[flag].PresetTags.Contains(label);
     }
 

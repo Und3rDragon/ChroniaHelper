@@ -131,7 +131,7 @@ public sealed partial class PasswordKeyboard : Entity
 
                 feedback = true; break;
             case Mode.Normal:
-                int nextPassword = Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], passwordCount);
+                int nextPassword = Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], passwordCount - 1);
 
                 string passIn = config.CaseSensitive ? password : password.ToLower();
                 string passOut = config.CaseSensitive ? passwords[nextPassword] : passwords[nextPassword].ToLower();
@@ -141,7 +141,7 @@ public sealed partial class PasswordKeyboard : Entity
                     passOut = passwords[nextPassword];
                 }
 
-                string currentFlag = flagList[Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], flagCount)];
+                string currentFlag = flagList[Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], flagCount - 1)];
                 if(passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
                 {
                     if (config.Toggle)
