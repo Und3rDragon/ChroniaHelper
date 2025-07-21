@@ -23,6 +23,7 @@ return {
             leaveDelay = 0,
             leaveIfFlag = "",
             leaveSound = "",
+            timed = -1,
             onlyOnce = false,
             leaveReset = false
         }
