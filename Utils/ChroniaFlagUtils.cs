@@ -123,6 +123,28 @@ public static class ChroniaFlagUtils
         Refresh();
     }
 
+    public static void SetFlag(this string[] list, bool active)
+    {
+        foreach(var item in list)
+        {
+            item.SetFlag(active);
+        }
+    }
+    public static void SetFlag(this string[] list, bool active, bool global)
+    {
+        foreach (var item in list)
+        {
+            item.SetFlag(active, global);
+        }
+    }
+    public static void SetFlag(this string[] list, bool active, bool global, bool temporary)
+    {
+        foreach (var item in list)
+        {
+            item.SetFlag(active, global, temporary);
+        }
+    }
+
     public static void SetGlobalFlag(this string name, bool active, bool temporary = false)
     {
         name.SetFlag(active, true, temporary);
