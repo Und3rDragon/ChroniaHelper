@@ -100,7 +100,7 @@ se.fieldInformation = {
 					"ignore,#ignoreFlag,flagInverted?,num1,(num2...)",
 					"sound,#soundFX name(event:/...)",
 					"music,#trackName(event:/...)",
-					"hitbox,width,height,(x),(y)",
+					"hitbox,width,height,(x),(y),(add?)",
 					"light,color,alpha,startFade,endFade,(changeTime),(easer)",
 					"bloom,alpha,radius,(changeTime),(easer)",
 					"parallax,value,(changeTime),(easer)",
@@ -113,7 +113,8 @@ se.fieldInformation = {
 					"disable_movement,active?",
 					"kill_player",
 					"passby functionName",
-					"change_tag,(normal or hud)"
+					"change_tag,(normal or hud)",
+					"kill_on_collide,enable?",
 				}
 			},
 			editable = true,
@@ -140,14 +141,6 @@ end
 
 se.nodeSprite = function(room, entity, node, nodeIndex, viewport)
 	local sprites = {}
-
-	if nodeIndex == 1 then
-		local line = drawableLine.fromPoints(entity.x, entity.y, node.x, node.y, {1, 1, 1}, 0.2)
-	elseif nodeIndex > 1 then
-		local line = drawableLine.fromPoints(entity.nodes[nodeIndex - 1].x, entity.nodes[nodeIndex - 1].y, node.x, node.y, {1, 1, 1}, 0.2)
-	end
-	
-	table.insert(sprites, line)
 
 	local center = drawableRectangle.fromRectangle("bordered", node.x - 4, node.y - 4, 8, 8, {1, 1, 1, 0}, {1.0, 1.0, 1.0, 0.5})
 	table.insert(sprites, center)

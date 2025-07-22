@@ -78,7 +78,7 @@ public class SpriteEntity : Actor
         Camera_Position, Camera_Zoom,
         Disable_Movement, Kill_Player, Change_Tag,
         //done
-        Holdable_Collider, Jump, Variable, Random, MoveTo_Node,
+        Holdable_Collider, Jump, Variable, Random, MoveTo_Node, Kill_On_Collide,
         //undone
     }
     private Command execute = Command.None;
@@ -90,7 +90,7 @@ public class SpriteEntity : Actor
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
         Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid, Command.Speed,
         Command.Disable_Movement, Command.Kill_Player, Command.Variable, Command.Random,
-        Command.Change_Tag
+        Command.Change_Tag, Command.Kill_On_Collide,
     };
 
     public static void Load()
@@ -167,6 +167,8 @@ public class SpriteEntity : Actor
     private Vector2 basicSpeed = Vector2.Zero;
     private Vector2[] accelerations = new Vector2[1] {Vector2.Zero};
     private Vector2[] nodes; private int nodeCount;
+    private bool killOnCollide = false;
+    private ColliderList colliderList = new();
 
     public override void Added(Scene scene)
     {
@@ -366,7 +368,7 @@ public class SpriteEntity : Actor
 
             else if (execute == Command.Hitbox)
             {
-                // valid syntax: "hitbox, width, height, (x, y)"
+                // valid syntax: "hitbox, width, height, (x, y, add?)"
                 if (segs < 3) { continue; }
                 float width = 16f, height = 16f, x = -8f, y = -8f;
                 ConditionalParseFloat(commandLine[1], out width);
@@ -382,7 +384,24 @@ public class SpriteEntity : Actor
                     ConditionalParseFloat(commandLine[4], out y);
                 }
 
-                base.Collider = new Hitbox(width, height, x, y);
+                bool isAdd = false;
+                if(segs >= 6)
+                {
+                    bool.TryParse(commandLine[5], out isAdd);
+                }
+
+                if (isAdd)
+                {
+                    colliderList.Add(new Hitbox(width, height, x, y));
+                    base.Collider = colliderList;
+                }
+                else
+                {
+                    colliderList = new();
+                    colliderList.Add(new Hitbox(width, height, x, y));
+                    base.Collider = colliderList;
+                }
+                
             }
 
             else if (execute == Command.Holdable_Collider)
@@ -593,6 +612,14 @@ public class SpriteEntity : Actor
                 {
                     Tag = reference[commandLine[1].ToLower().RemoveAll("_")];
                 }
+            }
+
+            else if (execute == Command.Kill_On_Collide)
+            {
+                // syntax: kill_on_collide, enabled?
+                if(segs < 2) { killOnCollide = false; }
+
+                bool.TryParse(commandLine[1], out killOnCollide);
             }
 
             else
@@ -1575,12 +1602,12 @@ public class SpriteEntity : Actor
                 yield break;
             }
 
-            float time = 0f;
+            float progress = 0f;
             Vector2 from = Position, to = nodes[n];
-            while(time <= timer)
+            while (progress < 1f)
             {
-                time += Engine.DeltaTime;
-                Position = time.LerpValue(0f, timer, from, to);
+                progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
+                Position = Vector2.Lerp(from, to, ease(progress));
 
                 yield return null;
             }
@@ -1713,6 +1740,14 @@ public class SpriteEntity : Actor
 
         //solid.Position = Position + solidPos;
         solid.MoveTo(Position + solidPos);
+
+        if (killOnCollide)
+        {
+            if (CollideCheck<Player>())
+            {
+                MapProcessor.level.Tracker.GetEntity<Player>().Die(Vector2.Zero);
+            }
+        }
     }
 
     #region Holdable setups
