@@ -52,4 +52,18 @@ public static class FadeUtils
 
         return r;
     }
+
+    public static Vector2 LerpValue(this float source, float clampA, float clampB, Vector2 valueA, Vector2 valueB)
+    {
+        Vector3 a = new(clampA, valueA.X, valueA.Y), b = new(clampB, valueB.X, valueB.Y);
+        Vector3 d = b - a;
+
+        if (clampA == clampB) { return valueB; }
+
+        float p = source.ClampProgress(clampA, clampB);
+
+        var r = a + d * p;
+
+        return new Vector2(r.Y, r.Z);
+    }
 }

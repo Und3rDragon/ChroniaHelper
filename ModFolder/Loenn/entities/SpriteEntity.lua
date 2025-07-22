@@ -1,6 +1,7 @@
 local utils = require('utils')
 local vivUtilsMig = require('mods').requireFromPlugin('libraries.vivUtilsMig')
 local drawableSprite = require("structs.drawable_sprite")
+local drawableRectangle = require("structs.drawable_rectangle")
 local drawableLine = require("structs.drawable_line")
 local drawing = require("utils.drawing")
 local depthOptions = require("mods").requireFromPlugin("consts.depthOptions")
@@ -8,7 +9,8 @@ local depthOptions = require("mods").requireFromPlugin("consts.depthOptions")
 local se = {}
 
 se.depth = function(room,entity) return entity.depth or 9500 end
-
+se.nodeLimits = {0, 999}
+se.nodeVisibility = "always"
 se.name = "ChroniaHelper/SpriteEntity"
 se.placements = {
 	name = "SpriteEntity",
@@ -81,6 +83,7 @@ se.fieldInformation = {
 					"light_move,deltaX,deltaY,(moveTime),(easer)",
 					"bloom_move,deltaX,deltaY,(moveTime),(easer)",
 					"move_to,X,Y,(moveTime),(easer)",
+					"moveto_node,nodeIndex,(moveTime),(easer)",
 					"light_moveto,X,Y,(moveTime),(easer)",
 					"bloom_moveto,X,Y,(moveTime),(easer)",
 					"move_around,center dX,center dY,deltaAngle,spinTime,(easer)",
@@ -127,8 +130,29 @@ se.fieldInformation = {
 }
 
 se.sprite = function(room, entity)
-	return vivUtilsMig.getImageWithNumbers(entity.indicatorSprite, 0, entity)
+	local sprites = {}
+
+	local baseSprite = vivUtilsMig.getImageWithNumbers(entity.indicatorSprite, 0, entity)
+	table.insert(sprites, baseSprite)
+	
+	return sprites
 end
 
+se.nodeSprite = function(room, entity, node, nodeIndex, viewport)
+	local sprites = {}
+
+	if nodeIndex == 1 then
+		local line = drawableLine.fromPoints(entity.x, entity.y, node.x, node.y, {1, 1, 1}, 0.2)
+	elseif nodeIndex > 1 then
+		local line = drawableLine.fromPoints(entity.nodes[nodeIndex - 1].x, entity.nodes[nodeIndex - 1].y, node.x, node.y, {1, 1, 1}, 0.2)
+	end
+	
+	table.insert(sprites, line)
+
+	local center = drawableRectangle.fromRectangle("bordered", node.x - 4, node.y - 4, 8, 8, {1, 1, 1, 0}, {1.0, 1.0, 1.0, 0.5})
+	table.insert(sprites, center)
+
+	return sprites
+end
 
 return se

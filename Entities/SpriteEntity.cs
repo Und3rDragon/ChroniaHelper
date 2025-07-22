@@ -76,9 +76,9 @@ public class SpriteEntity : Actor
         Parallax, Render_Position_InRoom,
         Current_Frame, Camera_Offset, Solid, Speed,
         Camera_Position, Camera_Zoom,
-        Disable_Movement, Kill_Player,
+        Disable_Movement, Kill_Player, Change_Tag,
         //done
-        Holdable_Collider, Jump, Variable, Random, Change_Tag
+        Holdable_Collider, Jump, Variable, Random, MoveTo_Node,
         //undone
     }
     private Command execute = Command.None;
@@ -104,9 +104,20 @@ public class SpriteEntity : Actor
         On.Celeste.Player.Update -= breakTheControls;
     }
 
-    public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data) { }
+    public SpriteEntity(EntityData data, Vector2 offset) : this(data.Position + offset, data)
+    {
+        this.nodes = data.NodesWithPosition(offset);
+        nodeCount = nodes.Length;
+    }
     public SpriteEntity(Vector2 position, EntityData data) : base(position)
     {
+        //this.nodes = nodes;
+        //nodeCount = nodes.Length;
+        //foreach(var node in nodes)
+        //{
+        //    Log.Info(node);
+        //}
+
         spriteName = data.Attr("xmlLabel", "SpriteEntity");
         sprite = GFX.SpriteBank.Create(spriteName);
         Add(sprite);
@@ -155,6 +166,7 @@ public class SpriteEntity : Actor
     // acceleration
     private Vector2 basicSpeed = Vector2.Zero;
     private Vector2[] accelerations = new Vector2[1] {Vector2.Zero};
+    private Vector2[] nodes; private int nodeCount;
 
     public override void Added(Scene scene)
     {
@@ -1535,11 +1547,50 @@ public class SpriteEntity : Actor
             }
         }
 
+        else if (execute == Command.MoveTo_Node)
+        {
+            // syntax: moveto_node,0,(3,sinein)
+            if (segs < 2) { yield break; }
+            int n = 0;
+            ConditionalParseInt(commandLine[1], 0, out n);
+            n = int.Clamp(n, 0, nodeCount - 1);
+            
+            float timer = 0f;
+            if(segs >= 3)
+            {
+                ConditionalParseFloat(commandLine[2], 0f, out timer);
+                timer.MakeAbs();
+                instant = timer == 0f;
+            }
+
+            Ease.Easer ease = Ease.Linear;
+            if(segs >= 4)
+            {
+                ease = EaseUtils.StringToEase(commandLine[3]);
+            }
+
+            if (instant)
+            {
+                Position = nodes[n];
+                yield break;
+            }
+
+            float time = 0f;
+            Vector2 from = Position, to = nodes[n];
+            while(time <= timer)
+            {
+                time += Engine.DeltaTime;
+                Position = time.LerpValue(0f, timer, from, to);
+
+                yield return null;
+            }
+        }
+
     }
 
     private List<Command> PositionChanging = new List<Command>()
     {
-        Command.Move, Command.MoveTo, Command.Move_Around, Command.Jump
+        Command.Move, Command.MoveTo, Command.Move_Around, Command.Jump, Command.MoveTo_Node
     };
 
     private void ReadyStartRoutine(Command command)
