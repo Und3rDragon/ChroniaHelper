@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ChroniaHelper.Utils;
 
@@ -218,4 +219,56 @@ public static class StringUtils
 
         return sb.ToString().ToLower();
     }
+
+    public static string GetWildcardPart(this string input, string wildcardMatch, string wildcardSymbol, string compensateSplitSymbol = "|")
+    {
+        string[] divided = wildcardMatch.Split(wildcardSymbol);
+
+        string s = input;
+        for(int i = 0; i < divided.Length; i++)
+        {
+            if (!s.Contains(divided[i])) { return ""; }
+
+            s = s.Replace(divided[i], compensateSplitSymbol);
+        }
+        string[] wildcards = s.Split(compensateSplitSymbol);
+
+        string wildcardPart = "";
+        for(int i = 0; i < wildcards.Length; i++)
+        {
+            if (wildcards[i] == wildcards[0]) { wildcardPart = wildcards[0]; }
+            else { wildcardPart = ""; }
+        }
+
+        return wildcardPart;
+    }
+
+    public static string GetWildcardPart(this string input, string wildcardMatch, string wildcardSymbol, out bool success, string compensateSplitSymbol = "|")
+    {
+        success = true;
+        string[] divided = wildcardMatch.Split(wildcardSymbol, StringSplitOptions.RemoveEmptyEntries);
+        
+        string s = input;
+        for (int i = 0; i < divided.Length; i++)
+        {
+            if (!s.Contains(divided[i])) { success = false; return ""; }
+
+            s = s.Replace(divided[i], compensateSplitSymbol);
+        }
+        string[] wildcards = s.Split(compensateSplitSymbol, StringSplitOptions.RemoveEmptyEntries);
+
+        string wildcardPart = "";
+        for (int i = 0; i < wildcards.Length; i++)
+        {
+            if (wildcards[i] == wildcards[0]) { wildcardPart = wildcards[0]; }
+            else { wildcardPart = ""; success = false; }
+        }
+
+        if (string.IsNullOrEmpty(wildcardPart))
+        {
+            success = false;
+        }
+        return wildcardPart;
+    }
+
 }

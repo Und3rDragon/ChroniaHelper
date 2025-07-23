@@ -79,34 +79,19 @@ public class FlagChooseTrigger2 : BaseTrigger
 
                 bool reverse = name.Contains("!"), wild = name.Contains("#");
                 string basicName = name.RemoveAll("!").RemoveAll("*");
-                //flag.TryNegative(name.Contains("!") ? !ChroniaFlagUtils.GetFlag(name.RemoveAll("!"))
-                //    : ChroniaFlagUtils.GetFlag(name));
 
                 if (wild)
                 {
                     bool hasWildMatch = false;
                     foreach (var item in 0.LevelFlags())
                     {
-                        string[] s1 = basicName.Split("#", StringSplitOptions.TrimEntries);
-                        string s2 = item;
-                        bool match = true;
-                        for (int i = 0; i < s1.Length; i++)
-                        {
-                            if (!s2.Contains(s1[i])) { match = false; break; }
-
-                            s2 = s2.Remove(0, s2.IndexOf(s1[i]) + s1[i].Length);
-                        }
-                        if (match)
+                        bool hasMatch;
+                        string wildName = item.GetWildcardPart(basicName, "#", out hasMatch);
+                        
+                        if (hasMatch)
                         {
                             hasWildMatch = true;
-
-                            s2 = item;
-                            for(int i = 0; i < s1.Length; i++)
-                            {
-                                s2 = s2.Remove(s2.IndexOf(s1[i]), s1[i].Length);
-                            }
-                            
-                            wildName_x.Enter(s2);
+                            wildName_x.Enter(wildName);
                         }
                     }
 
@@ -135,15 +120,6 @@ public class FlagChooseTrigger2 : BaseTrigger
                     flag.TryNegative(reverse? !basicName.GetFlag() : basicName.GetFlag());
                 }
             }
-
-            //foreach(var item in wildNames.Keys)
-            //{
-            //    foreach (var item1 in wildNames[item])
-            //    {
-            //        Log.Info(item, item1);
-            //    }
-            //}
-            //Log.Warn("------------------------");
 
             if (flag)
             {
