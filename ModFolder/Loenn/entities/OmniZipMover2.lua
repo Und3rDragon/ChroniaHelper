@@ -9,14 +9,6 @@ local drawableText = require("structs.drawable_text")
 
 local OmniZipMover = {}
 
-local themes = {
-    "Normal",
-    "Moon",
-    "Cliffside",
-}
-
-OmniZipMover.associatedMods = { "CommunalHelper", "ChroniaHelper" }
-
 OmniZipMover.name = "ChroniaHelper/OmniZipMover2"
 OmniZipMover.depth = 4999
 OmniZipMover.minimumSize = {16, 16}
@@ -24,7 +16,10 @@ OmniZipMover.nodeLimits = {1, -1}
 OmniZipMover.nodeVisibility = "never"
 OmniZipMover.fieldInformation = {
     theme = {
-        options = themes,
+        options = {
+            ["Normal"] = "objects/zipmover/",
+            ["Moon"] = "objects/zipmover/moon/",
+        },
         editable = true,
     },
     backgroundColor = {
@@ -77,32 +72,29 @@ OmniZipMover.fieldInformation = {
 
 OmniZipMover.fieldOrder = omniSetups.fieldOrder
 
-OmniZipMover.placements = {}
-for i, theme in ipairs(themes) do
-    OmniZipMover.placements[i] = {
-        name = string.lower(theme),
-        placementType = "rectangle",
-        data = {
-            width = 16,
-            height = 16,
-            theme = "Normal",
-            moveTimes = "0.5",
-            returnTimes = "1",
-            eases = "sinein",
-            returnEases = "sinein",
-            delays = "0.2",
-            returnDelays = "0.2",
-            ropeColor = "663931",
-            ropeLightColor = "9b6157",
-            backgroundColor = "000000",
-            mode = 1,
-            startDelay = 0.1,
-            shake = true,
-            waitForPlayer = false,
-            rememberPosition = false,
-        }
+OmniZipMover.placements = {
+    name = "OmniZipMover2",
+    placementType = "rectangle",
+    data = {
+        width = 16,
+        height = 16,
+        sprite = "objects/zipmover/",
+        moveTimes = "0.5",
+        returnTimes = "1",
+        eases = "sinein",
+        returnEases = "sinein",
+        delays = "0.2",
+        returnDelays = "0.2",
+        ropeColor = "663931",
+        ropeLightColor = "9b6157",
+        backgroundColor = "000000",
+        mode = 1,
+        startDelay = 0.1,
+        shake = true,
+        waitForPlayer = false,
+        rememberPosition = false,
     }
-end
+}
 
 OmniZipMover.ignoredFields = function(entity)
     return ignoredAttrs(entity)
@@ -181,25 +173,13 @@ local function getTileSprite(entity, x, y, block, inner, rectangles)
 end
 
 local function getOmniZipMoverThemeData(entity)
-    local theme = string.lower(entity.theme or "normal")
-    local cliffside = theme == "cliffside"
-    local folder = cliffside and "ChroniaHelper/omniZipMover" or "zipmover"
-    local themePath = (theme == "normal") and "" or (theme .. "/")
-
-    if not table.contains(themes, entity.theme) then
-        return {
-            block = customSkin .. "/block",
-            light = customSkin .. "/light01",
-            cog = customSkin .. "/cog",
-            inner = customSkin .. "/innerCorners"
-        }
-    end
+    local path = entity.sprite
 
     return {
-        block = "objects/" .. folder .. "/" .. themePath .. "block",
-        light = "objects/" .. folder .. "/" .. themePath .. "light01",
-        cog = "objects/" .. folder .. "/" .. themePath .. "cog",
-        inner = "objects/" .. ((cliffside and "" or "ChroniaHelper/") .. folder) .. "/" .. themePath .. "innerCorners"
+        block = entity.sprite .. "block",
+        light = entity.sprite .. "light01",
+        cog = entity.sprite .. "cog",
+        inner = entity.sprite .. "innerCorners"
     }
 end
 
@@ -246,8 +226,8 @@ function OmniZipMover.sprite(room, entity)
             end
         end
 
-        local text = drawableText.fromText(getStringAtIndex(entity.nodeSpeeds, nodeIndex), node.x, node.y)
-        local texta = drawableText.fromText(getStringAtIndex(entity.delays, nodeIndex), node.x, node.y, entity.width * 2, entity.height * 2)
+        --local text = drawableText.fromText(getStringAtIndex(entity.nodeSpeeds, nodeIndex), node.x, node.y)
+        --local texta = drawableText.fromText(getStringAtIndex(entity.delays, nodeIndex), node.x, node.y, entity.width * 2, entity.height * 2)
         if entity.displayParameters then
             table.insert(sprites, text)
             table.insert(sprites, texta)
@@ -295,4 +275,4 @@ function OmniZipMover.selection(room, entity)
     return mainRectangle, nodeRectangles
 end
 
---return OmniZipMover
+return OmniZipMover

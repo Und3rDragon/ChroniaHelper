@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Effects;
 using ChroniaHelper.Modules;
@@ -12,6 +13,8 @@ using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
+[Tracked(true)]
+[CustomEntity("ChroniaHelper/OmniZipMover2")]
 public class OmniZipMover2 : Solid
 {
     // Omni Zip Mover 2 is a test subject that re-code the original OmniZipMover since the original one is turning too complicated to maintain
@@ -238,6 +241,10 @@ public class OmniZipMover2 : Solid
         id = entityID;
         nodes = data.NodesWithPosition(position);
 
+        Position = nodes[0];
+        base.Collider = new Hitbox(Width, Height);
+        MasterWidth = Width; MasterHeight = Height;
+
         // paramaters loading
         ropeColor = Calc.HexToColor(data.Attr("ropeColor", "663931"));
         ropeLightColor = Calc.HexToColor(data.Attr("ropeLightColor", "9b6157"));
@@ -289,46 +296,17 @@ public class OmniZipMover2 : Solid
         returnEases = data.Attr("returnEases").Split(",", StringSplitOptions.TrimEntries);
 
         // setting up sprites
-        theme = data.Attr("theme", "Normal");
+        theme = data.Attr("theme", "objects/zipmover/");
+        moon = theme == "objects/zipmover/moon/";
         string sPath, sId, sKey, sCorners;
-        switch(theme)
-        {
-            case "Normal":
-                sPath = "objects/zipmover/light";
-                sId = "objects/zipmover/block";
-                sKey = "objects/zipmover/innercog";
-                sCorners = "objects/ChroniaHelper/zipmover/innerCorners";
-                cog = GFX.Game["objects/zipmover/cog"];
-                drawBorder = true;
-                break;
 
-            case "Moon":
-                sPath = "objects/zipmover/moon/light";
-                sId = "objects/zipmover/moon/block";
-                sKey = "objects/zipmover/moon/innercog";
-                sCorners = "objects/ChroniaHelper/zipmover/moon/innerCorners";
-                cog = GFX.Game["objects/zipmover/moon/cog"];
-                drawBorder = false;
-                break;
+        sPath = theme + "light";
+        sId = theme + "block";
+        sKey = theme + "innercog";
+        sCorners = theme + "innerCorners";
+        cog = GFX.Game[theme + "cog"];
+        drawBorder = true;
 
-            case "Cliffside":
-                sPath = "objects/ChroniaHelper/omniZipMover/cliffside/light";
-                sId = "objects/ChroniaHelper/omniZipMover/cliffside/block";
-                sKey = "objects/ChroniaHelper/omniZipMover/cliffside/innercog";
-                sCorners = "objects/ChroniaHelper/omniZipMover/cliffside/innerCorners";
-                cog = GFX.Game["objects/ChroniaHelper/omniZipMover/cliffside/cog"];
-                drawBorder = true;
-                bgColor = Calc.HexToColor("171018");
-                break;
-            default:
-                sPath = theme + "/light";
-                sId = theme + "/block";
-                sKey = theme + "/innercog";
-                sCorners = theme + "/innerCorners";
-                cog = GFX.Game[theme + "/cog"];
-                drawBorder = true;
-                break;
-        }
         // cogs and streetlight
         innerCogs = GFX.Game.GetAtlasSubtextures(sKey);
         streetlight = new Sprite(GFX.Game, sPath)
@@ -380,7 +358,7 @@ public class OmniZipMover2 : Solid
     private Sprite streetlight;
     private BloomPoint bloom;
     private SoundSource sfx;
-    private string theme;
+    private string theme; private bool moon;
 
     public override void Awake(Scene scene)
     {
@@ -394,6 +372,7 @@ public class OmniZipMover2 : Solid
     {
         base.Added(scene);
         scene.Add(pathRenderer = new(this, nodes, ropeColor, ropeLightColor));
+        pathRenderer.Position += new Vector2(Width / 2, Height / 2);
     }
 
     public override void Removed(Scene scene)
@@ -408,7 +387,7 @@ public class OmniZipMover2 : Solid
         base.Update();
 
         bloom.Visible = streetlight.CurrentAnimationFrame != 0;
-        bloom.Y = (theme == "Normal") ? streetlight.CurrentAnimationFrame * 3 : (theme == "Cliffside") ? 5 : 9;
+        bloom.Y = !moon ? streetlight.CurrentAnimationFrame * 3 : 9;
     }
 
     public override void Render()
