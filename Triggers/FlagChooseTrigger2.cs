@@ -83,7 +83,7 @@ public class FlagChooseTrigger2 : BaseTrigger
                 if (wild)
                 {
                     bool hasWildMatch = false;
-                    foreach (var item in 0.Flags())
+                    foreach (var item in MaP.session.Flags)
                     {
                         bool hasMatch;
                         string wildName = item.GetWildcardPart(basicName, "#", out hasMatch);
