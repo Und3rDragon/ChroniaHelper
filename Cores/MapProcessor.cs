@@ -198,5 +198,4 @@ public static class MapProcessor
     {
         ChroniaHelperModule.Session.switchFlag.Enter(key, overwrite);
     }
-
 }

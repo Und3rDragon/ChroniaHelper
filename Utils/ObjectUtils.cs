@@ -44,6 +44,23 @@ public static class ObjectUtils
         return "[" + string.Join(", ", array.Cast<object>()) + "]";
     }
 
+    public static List<string> ArrayToStringList(this Array array)
+    {
+        List<string> list = new List<string>();
+
+        if (array == null || array.Length == 0)
+        {
+            return list;
+        }
+
+        foreach (var item in array)
+        {
+            list.Add(item.ToString());
+        }
+
+        return list;
+    }
+
     public static string ListToString<T>(this IList<T> list)
     {
         if (list == null)
@@ -51,6 +68,22 @@ public static class ObjectUtils
             return "null";
         }
         return "[" + string.Join(", ", list) + "]";
+    }
+
+    public static List<string> ListToStringList<T>(this IList<T> list)
+    {
+        List<string> s = new List<string>();
+        if(list == null || list.Count == 0)
+        {
+            return s;
+        }
+
+        foreach(var item in list)
+        {
+            s.Add(item.ToString());
+        }
+
+        return s;
     }
 
     public static string SetToString<T>(this ISet<T> set)
@@ -62,6 +95,22 @@ public static class ObjectUtils
         return "[" + string.Join(", ", set) + "]";
     }
 
+    public static List<string> SetToStringList<T>(this ISet<T> set)
+    {
+        List<string> s = new();
+        if (set == null || set.Count == 0)
+        {
+            return s;
+        }
+
+        foreach(var item in set)
+        {
+            s.Add(item.ToString());
+        }
+
+        return s;
+    }
+
     public static string DictionaryToString(this IDictionary dictionary)
     {
         if (dictionary == null)
@@ -69,6 +118,22 @@ public static class ObjectUtils
             return "null";
         }
         return "{" + string.Join(", ", dictionary.Cast<DictionaryEntry>().Select(entry => $"{entry.Key}={entry.Value}")) + "}";
+    }
+
+    public static List<string> DictionaryToStringList<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary)
+    {
+        List<string> s = new();
+        if (dictionary == null || dictionary.Keys.Count == 0)
+        {
+            return s;
+        }
+
+        foreach (var item in dictionary)
+        {
+            s.Add($"{item.Key.ToString()}={item.Value.ToString()}");
+        }
+
+        return s;
     }
 
     public static List<T> DeepCopyList<T>(this List<T> originalList)

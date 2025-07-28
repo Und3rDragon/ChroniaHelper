@@ -10,34 +10,19 @@ namespace ChroniaHelper.Utils;
 
 public static class Shortcuts
 {
-    public static Dictionary<string, ChroniaFlag> ChroniaFlags(this object obj)
+    public static Dictionary<string, ChroniaFlag> ChroniaFlags(this object obj) { return ChroniaHelperSaveData.ChroniaFlags; }
+    public static Dictionary<string, float> Floats(this object obj){ return ChroniaHelperSaveData.Floats; }
+    public static Level Level(this object obj) { return MapProcessor.level; }
+    public static Session Session(this object obj) { return MapProcessor.session; }
+    public static HashSet<string> Flags(this object obj) { return MapProcessor.session.Flags; }
+
+    public class Save : ChroniaHelperSaveData
     {
-        return ChroniaHelperSaveData.ChroniaFlags;
+        
     }
 
-    public static ChroniaHelperSaveData SaveData(this object obj)
+    public class Ses : ChroniaHelperSession
     {
-        return (ChroniaHelperSaveData)ChroniaHelperModule.Instance._SaveData;
-    }
 
-    public static ChroniaHelperSession Session(this object obj)
-    {
-        return (ChroniaHelperSession)ChroniaHelperModule.Instance._Session;
     }
-
-    public static Level Level(this object obj)
-    {
-        return MapProcessor.level;
-    }
-
-    public static Session LevelSession(this object obj)
-    {
-        return MapProcessor.session;
-    }
-
-    public static HashSet<string> LevelFlags(this object obj)
-    {
-        return 0.LevelSession().Flags;
-    }
-
 }

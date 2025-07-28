@@ -244,7 +244,7 @@ public class OmniZipMover2 : Solid
         Position = nodes[0];
         base.Collider = new Hitbox(Width, Height);
         MasterWidth = Width; MasterHeight = Height;
-
+        
         // paramaters loading
         ropeColor = Calc.HexToColor(data.Attr("ropeColor", "663931"));
         ropeLightColor = Calc.HexToColor(data.Attr("ropeLightColor", "9b6157"));
