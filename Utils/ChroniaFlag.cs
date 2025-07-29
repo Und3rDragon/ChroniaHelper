@@ -188,4 +188,39 @@ public class ChroniaFlag
             PresetTags.SafeRemove(Labels.Serial);
         }
     }
+
+    public void SaveData()
+    {
+        CFlag.Active.Enter(Name, Active);
+        CFlag.Global.Enter(Name, Global);
+        CFlag.Temporary.Enter(Name, Temporary);
+        CFlag.Force.Enter(Name, Force);
+        CFlag.Timed.Enter(Name, Timed);
+        CFlag.DefaultResetState.Enter(Name, (int)DefaultResetState);
+        CFlag.Tags.Enter(Name, Tags);
+        CFlag.CustomData.Enter(Name, CustomData);
+        List<int> d = new();
+        foreach (var tag in PresetTags)
+        {
+            d.Enter((int)tag);
+        }
+        CFlag.PresetTags.Enter(Name, d);
+    }
+
+    public void LoadData()
+    {
+        Active = CFlag.Active[Name];
+        Global = CFlag.Global[Name];
+        Temporary = CFlag.Temporary[Name];
+        Force = CFlag.Force[Name];
+        Timed = CFlag.Timed[Name];
+        DefaultResetState = (ExpectedResetState)CFlag.DefaultResetState[Name];
+        Tags = CFlag.Tags[Name];
+        CustomData = CFlag.CustomData[Name];
+        PresetTags = new();
+        foreach(var tag in CFlag.PresetTags[Name])
+        {
+            PresetTags.Enter((Labels)tag);
+        }
+    }
 }

@@ -17,4 +17,17 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
 
     public static Dictionary<string, float> Floats = new();
 
+    // New flag system saving
+    public struct ChroniaFlagData
+    {
+        public static Dictionary<string, bool> Active = new();
+        public static Dictionary<string, bool> Global = new();
+        public static Dictionary<string, bool> Temporary = new();
+        public static Dictionary<string, bool> Force = new();
+        public static Dictionary<string, float> Timed = new();
+        public static Dictionary<string, int> DefaultResetState = new();
+        public static Dictionary<string, List<string>> Tags = new();
+        public static Dictionary<string, Dictionary<string, string>> CustomData = new();
+        public static Dictionary<string, List<int>> PresetTags = new();
+    }
 }
