@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Formats.Tar;
 using Celeste.Mod.Entities;
-using ChroniaHelper.Utils;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
+using ChroniaHelper.Utils;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Entities;
 
@@ -32,12 +35,13 @@ public class ColoredCustomCoreMessage : Entity
     //AlwaysHidden = 0, AlwaysShown = 1, Fade = 2 
     private PauseRenderTypes pausetype;
 
-    private string dialog;
-    private int line;
+    private string dialog, se_line;
+    private int line, fLine;
+    private object se;
 
     private Level level;
 
-    private bool wholeDialog;
+    private bool wholeDialog, useSE;
 
     public string timerStatic, framesStatic;
 
@@ -49,7 +53,18 @@ public class ColoredCustomCoreMessage : Entity
         base.Tag = data.Bool("ShowInTransition", false) ? Tags.HUD | Tags.PauseUpdate | Tags.TransitionUpdate : Tags.HUD | Tags.PauseUpdate;
 
         this.dialog = data.Attr("dialog", "app_ending");
-        this.line = data.Int("line");
+        int.TryParse(data.Attr("line", "0"), out line);
+        fLine = line;
+
+        useSE = data.Bool("detectSessionExpression", false);
+
+        // line process
+        // FrostHelper SessionExpression support
+        if (useSE && Md.FrostHelperLoaded)
+        {
+            se_line = data.Attr("line");
+            FI.TryCreateSessionExpression(se_line, out se);
+        }
 
         this.wholeDialog = data.Bool("wholeDialog", false);
 
@@ -190,6 +205,16 @@ public class ColoredCustomCoreMessage : Entity
 
     public override void Render()
     {
+        if (useSE && Md.FrostHelperLoaded)
+        {
+            fLine = FI.GetIntSessionExpressionValue(se, MaP.session);
+            if (fLine != line)
+            {
+                line = fLine;
+                TextProcess();
+            }
+        }
+
         if (dialog == "ChroniaHelperTimerStatic")
         {
             text = timerStatic;

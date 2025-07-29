@@ -9,10 +9,17 @@ local ccm = {name = "ChroniaHelper/CustomCoreMessage"}
 ccm.texture = "@Internal@/core_message"
 ccm.depth = -10000000
 
+ccm.associatedMods = function(entity)
+    if entity.detectSessionExpression then
+        return {"ChroniaHelper", "FrostHelper"}
+    end
+
+    return {"ChroniaHelper"}
+end
 ccm.placements = {
     name = "CustomCoreMessage",
     data = {
-        line = 0,
+        line = "0",
         dialog = "app_ending",
         OutlineColor="000000",
         align = 5,
@@ -29,6 +36,7 @@ ccm.placements = {
         parallax = 1.2,
         screenPosX = 160,
         screenPosY = 90,
+        detectSessionExpression = false,
     }, 
     nodeLimits = {0,2}
 }
@@ -94,7 +102,6 @@ ccm.fieldInformation = {
         },
         editable = false,
     },
-    line = { fieldType = "integer", minimumValue = 0 },
     PauseType = {fieldType = "string", options = {"Hidden","Shown","Fade"}, editable = false},
     AlphaMultiplier = {
         maximumValue = 1, minimumValue = 0,

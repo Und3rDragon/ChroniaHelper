@@ -522,6 +522,7 @@ triggers.ChroniaHelper/FastFallColliderTrigger.placements.name.FastFallColliderT
 entities.ChroniaHelper/CustomCoreMessage.placements.name.CustomCoreMessage=Custom Core Message
 entities.ChroniaHelper/CustomCoreMessage.attributes.description.dialog=ChroniaHelper CustomCoreMessage supports frame-based timer display\nYou can check the option menu for timer display\nThe Dialog names followed by "Static" will only change per room load\nUse flag "ChroniaHelperTimer.pause" to pause the timer\nUse flag "ChroniaHelperTimer.reset" to reset the timer\nTo display the text you type in ChroniaHelper/PasswordKeyboard, use the built-in Dialog ID "keyboardSync_(tagID)"\nThe "tagID" refers to the "tag" option in the Password Keyboard
 entities.ChroniaHelper/CustomCoreMessage.attributes.description.wholeDialog=This option will ignore the "line" option and show all Dialogs instead of one line
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.detectSessionExpression=Session Expression is a feature imported from Frost Helper \nWhen enabled, this entity will require FrostHelper as a dependency \nAnd start detecting if the option contains certain syntax that would trigger Frost Helper Session Expression mechanisms
 
 # Custom Timer by AppleSheep
 entities.ChroniaHelper/TimerRecordStuff.placements.name.timeRecordStuff=Custom Timer Recorder

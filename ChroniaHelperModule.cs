@@ -56,6 +56,8 @@ public class ChroniaHelperModule : EverestModule
         Instance = this;
     }
 
+    public static bool FrostHelperLoaded;
+
     public override void Load()
     {
         Log.Info("Welcome to use ChroniaHelper!");
@@ -94,6 +96,14 @@ public class ChroniaHelperModule : EverestModule
         // API Imports
         typeof(FrostHelperImports).ModInterop();
         typeof(CameraDynamicsImports).ModInterop();
+
+        // FrostHelper load judgement
+        EverestModuleMetadata frostHelperMetadata = new()
+        {
+            Name = "FrostHelper",
+            Version = new Version(1, 70, 2)
+        };
+        FrostHelperLoaded = Everest.Loader.DependencyLoaded(frostHelperMetadata);
     }
 
     public override void Unload()
