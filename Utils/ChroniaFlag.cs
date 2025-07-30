@@ -30,17 +30,17 @@ public class ChroniaFlag
     public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
         // Remove temporary flags
-        foreach (var item in ChroniaHelperSaveData.ChroniaFlags)
+        foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Temporary)
             {
                 MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
-                ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Key);
+                Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
 
         // Apply global flags
-        foreach (var item in ChroniaHelperSaveData.ChroniaFlags)
+        foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Global)
             {
@@ -54,7 +54,7 @@ public class ChroniaFlag
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
         // Apply global flags
-        foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
+        foreach(var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Global && !item.Value.Temporary)
             {
@@ -67,7 +67,7 @@ public class ChroniaFlag
 
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
-        foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
+        foreach(var item in Md.SaveData.ChroniaFlags)
         {
             // Non-global stuffs only
             if (!item.Value.Global)
@@ -79,7 +79,7 @@ public class ChroniaFlag
                 else if (item.Value.Timed == 0f)
                 {
                     MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
-                    ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Key);
+                    Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                 }
             }
 
@@ -93,29 +93,33 @@ public class ChroniaFlag
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
     {
-        foreach(var item in ChroniaHelperSaveData.ChroniaFlags)
-        {
-            // Security Check
-            item.Value.ChroniaFlagDataCheck();
-
-            // Global stuffs only
-            if (item.Value.Global)
-            {
-                if (item.Value.Timed > 0f)
-                {
-                    item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
-                }
-                else if (item.Value.Timed == 0f)
-                {
-                    MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
-                    ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Key);
-                }
-            }
-
-            // Global Force Flags have no effect yet
-            
-        }
         orig(self);
+
+        if (Md.SaveData.IsNotNull())
+        {
+            foreach (var item in Md.SaveData.ChroniaFlags)
+            {
+                // Security Check
+                item.Value.ChroniaFlagDataCheck();
+
+                // Global stuffs only
+                if (item.Value.Global)
+                {
+                    if (item.Value.Timed > 0f)
+                    {
+                        item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
+                    }
+                    else if (item.Value.Timed == 0f)
+                    {
+                        MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
+                        Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
+                    }
+                }
+
+                // Global Force Flags have no effect yet
+
+            }
+        }
     }
 
 
@@ -151,7 +155,7 @@ public class ChroniaFlag
 
     public void SetFlag()
     {
-        ChroniaHelperSaveData.ChroniaFlags.Enter(Name, this);
+        Md.SaveData.ChroniaFlags.Enter(Name, this);
         MapProcessor.session.SetFlag(Name, Active);
         ChroniaFlagUtils.Refresh();
     }
@@ -186,41 +190,6 @@ public class ChroniaFlag
         if(PresetTags.Contains(Labels.Serial) && !CustomData.ContainsKey("serialHolder", false))
         {
             PresetTags.SafeRemove(Labels.Serial);
-        }
-    }
-
-    public void SaveData()
-    {
-        CFlag.Active.Enter(Name, Active);
-        CFlag.Global.Enter(Name, Global);
-        CFlag.Temporary.Enter(Name, Temporary);
-        CFlag.Force.Enter(Name, Force);
-        CFlag.Timed.Enter(Name, Timed);
-        CFlag.DefaultResetState.Enter(Name, (int)DefaultResetState);
-        CFlag.Tags.Enter(Name, Tags);
-        CFlag.CustomData.Enter(Name, CustomData);
-        List<int> d = new();
-        foreach (var tag in PresetTags)
-        {
-            d.Enter((int)tag);
-        }
-        CFlag.PresetTags.Enter(Name, d);
-    }
-
-    public void LoadData()
-    {
-        Active = CFlag.Active[Name];
-        Global = CFlag.Global[Name];
-        Temporary = CFlag.Temporary[Name];
-        Force = CFlag.Force[Name];
-        Timed = CFlag.Timed[Name];
-        DefaultResetState = (ExpectedResetState)CFlag.DefaultResetState[Name];
-        Tags = CFlag.Tags[Name];
-        CustomData = CFlag.CustomData[Name];
-        PresetTags = new();
-        foreach(var tag in CFlag.PresetTags[Name])
-        {
-            PresetTags.Enter((Labels)tag);
         }
     }
 }

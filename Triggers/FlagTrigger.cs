@@ -139,14 +139,14 @@ public class FlagTrigger : Trigger
             {
                 if (item.Check())
                 {
-                    ChroniaHelperSaveData.ChroniaFlags[item].Temporary = true;
+                    Md.SaveData.ChroniaFlags[item].Temporary = true;
                 }
             }
             foreach(var item in falseFlags)
             {
                 if (item.Check())
                 {
-                    ChroniaHelperSaveData.ChroniaFlags[item].Temporary = true;
+                    Md.SaveData.ChroniaFlags[item].Temporary = true;
                 }
             }
             foreach (var item in RecordedStates.Values)

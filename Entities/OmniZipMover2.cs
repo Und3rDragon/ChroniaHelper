@@ -403,39 +403,39 @@ public class OmniZipMover2 : Solid
 
     private int LoadIndex()
     {
-        if (!ChroniaHelperSession.Zipmover_NodeIndex.ContainsKey(id))
+        if (!Md.Session.Zipmover_NodeIndex.ContainsKey(id))
         {
             return 0;
         }
 
-        return ChroniaHelperSession.Zipmover_NodeIndex[id];
+        return Md.Session.Zipmover_NodeIndex[id];
     }
     private bool LoadForward()
     {
-        if (!ChroniaHelperSession.Zipmover_NextForward.ContainsKey(id))
+        if (!Md.Session.Zipmover_NextForward.ContainsKey(id))
         {
             return true;
         }
 
-        return ChroniaHelperSession.Zipmover_NextForward[id];
+        return Md.Session.Zipmover_NextForward[id];
     }
     private void SaveIndex(int index)
     {
-        ChroniaHelperSession.Zipmover_NodeIndex.Enter(id, index);
+        Md.Session.Zipmover_NodeIndex.Enter(id, index);
     }
     private void SaveForward(bool dir)
     {
-        ChroniaHelperSession.Zipmover_NextForward.Enter(id, dir);
+        Md.Session.Zipmover_NextForward.Enter(id, dir);
     }
 
     private void Initiate()
     {
-        ChroniaHelperSession.Zipmover_NextForward.Enter(id, true);
-        ChroniaHelperSession.Zipmover_NodeIndex.Enter(id, 0);
+        Md.Session.Zipmover_NextForward.Enter(id, true);
+        Md.Session.Zipmover_NodeIndex.Enter(id, 0);
         if (!remember)
         {
-            ChroniaHelperSession.Zipmover_NodeIndex[id] = 0;
-            ChroniaHelperSession.Zipmover_NextForward[id] = true;
+            Md.Session.Zipmover_NodeIndex[id] = 0;
+            Md.Session.Zipmover_NextForward[id] = true;
         }
 
         triggered = false;

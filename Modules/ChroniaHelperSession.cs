@@ -25,8 +25,8 @@ public class ChroniaHelperSession : EverestModuleSession
     public TeraType StartTera = TeraType.Any;
 
     //timer
-    public static int timerD = 0, timerC = 0, timerB = 0, timerA = 0, timerFrames = 0;
-    public static string timer;
+    public int timerD = 0, timerC = 0, timerB = 0, timerA = 0, timerFrames = 0;
+    public string timer;
 
     //AppleSheep Timer
     public Dictionary<string, long> TimeRecords { get; set; } = new Dictionary<string, long>();
@@ -127,13 +127,13 @@ public class ChroniaHelperSession : EverestModuleSession
     public int platformLine_SP_depth = 9001, platformLine_MP_depth = 9001;
 
     // Omni Zip Mover 2 records
-    public static Dictionary<EntityID, int> Zipmover_NodeIndex = new();
-    public static Dictionary<EntityID, bool> Zipmover_NextForward = new();
+    public Dictionary<EntityID, int> Zipmover_NodeIndex = new();
+    public Dictionary<EntityID, bool> Zipmover_NextForward = new();
 
     // Flag Timer Trigger
-    public static Dictionary<string, float> FlagTimer = new();
+    public Dictionary<string, float> FlagTimer = new();
 
     // GeometryUtils
-    public static Dictionary<string, List<KeyValuePair<Vector2, Vector2>>> Geometry_Rectangles = new();
-    public static Dictionary<string, List<Vector2>> Geometry_Points = new();
+    public Dictionary<string, List<KeyValuePair<Vector2, Vector2>>> Geometry_Rectangles = new();
+    public Dictionary<string, List<Vector2>> Geometry_Points = new();
 }

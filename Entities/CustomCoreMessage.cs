@@ -142,8 +142,8 @@ public class ColoredCustomCoreMessage : Entity
     {
         base.Added(scene);
         this.level = base.SceneAs<Level>();
-        timerStatic = ChroniaHelperSession.timer;
-        framesStatic = ChroniaHelperSession.timerFrames.ToString();
+        timerStatic = Md.Session.timer;
+        framesStatic = Md.Session.timerFrames.ToString();
     }
 
     public override void Update()
@@ -221,11 +221,11 @@ public class ColoredCustomCoreMessage : Entity
         }
         if (dialog == "ChroniaHelperTimer")
         {
-            text = ChroniaHelperSession.timer;
+            text = Md.Session.timer;
         }
         if (dialog == "ChroniaHelperFrames")
         {
-            text = ChroniaHelperSession.timerFrames.ToString();
+            text = Md.Session.timerFrames.ToString();
         }
         if (dialog == "ChroniaHelperFramesStatic")
         {
@@ -275,34 +275,34 @@ public class ColoredCustomCoreMessage : Entity
     {
         if (!level.Session.GetFlag("ChroniaHelperTimer.pause"))
         {
-            ChroniaHelperSession.timerA++;
-            ChroniaHelperSession.timerFrames++;
+            Md.Session.timerA++;
+            Md.Session.timerFrames++;
         }
 
-        if (ChroniaHelperSession.timerA >= 1 / Engine.DeltaTime)
+        if (Md.Session.timerA >= 1 / Engine.DeltaTime)
         {
-            ChroniaHelperSession.timerA = 0;
-            ChroniaHelperSession.timerB++;
+            Md.Session.timerA = 0;
+            Md.Session.timerB++;
         }
-        if (ChroniaHelperSession.timerB >= 60)
+        if (Md.Session.timerB >= 60)
         {
-            ChroniaHelperSession.timerB = 0;
-            ChroniaHelperSession.timerC++;
+            Md.Session.timerB = 0;
+            Md.Session.timerC++;
         }
-        if (ChroniaHelperSession.timerC >= 60)
+        if (Md.Session.timerC >= 60)
         {
-            ChroniaHelperSession.timerC = 0;
-            ChroniaHelperSession.timerD++;
+            Md.Session.timerC = 0;
+            Md.Session.timerD++;
         }
-        ChroniaHelperSession.timer = $"{ChroniaHelperSession.timerD}:{ChroniaHelperSession.timerC}:{ChroniaHelperSession.timerB}:{ChroniaHelperSession.timerA}";
+        Md.Session.timer = $"{Md.Session.timerD}:{Md.Session.timerC}:{Md.Session.timerB}:{Md.Session.timerA}";
     }
 
     private void TimerReset()
     {
-        ChroniaHelperSession.timerA = 0;
-        ChroniaHelperSession.timerB = 0;
-        ChroniaHelperSession.timerC = 0;
-        ChroniaHelperSession.timerD = 0;
-        ChroniaHelperSession.timerFrames = 0;
+        Md.Session.timerA = 0;
+        Md.Session.timerB = 0;
+        Md.Session.timerC = 0;
+        Md.Session.timerD = 0;
+        Md.Session.timerFrames = 0;
     }
 }

@@ -12,10 +12,10 @@ public static class GeometryUtils
 {
     public static void EnterRectangleGroup(string groupName, Rectangle rectangle)
     {
-        bool c = ChroniaHelperSession.Geometry_Rectangles.ContainsKey(groupName);
+        bool c = Md.Session.Geometry_Rectangles.ContainsKey(groupName);
         if (c)
         {
-            ChroniaHelperSession.Geometry_Rectangles[groupName].Enter(
+            Md.Session.Geometry_Rectangles[groupName].Enter(
                 new KeyValuePair<Vector2, Vector2>(
                         new Vector2(rectangle.Left, rectangle.Top), new Vector2(rectangle.Right, rectangle.Bottom)
                     )
@@ -26,16 +26,16 @@ public static class GeometryUtils
             List<KeyValuePair<Vector2, Vector2>> k = new();
             KeyValuePair<Vector2, Vector2> v = new KeyValuePair<Vector2, Vector2>(new Vector2(rectangle.Left, rectangle.Top), new Vector2(rectangle.Right, rectangle.Bottom));
             k.Enter(v);
-            ChroniaHelperSession.Geometry_Rectangles.Enter(groupName, k);
+            Md.Session.Geometry_Rectangles.Enter(groupName, k);
         }
     }
 
     public static void EnterRectangleGroup(string groupName, Vector2 point1, Vector2 point2)
     {
-        bool c = ChroniaHelperSession.Geometry_Rectangles.ContainsKey(groupName);
+        bool c = Md.Session.Geometry_Rectangles.ContainsKey(groupName);
         if (c)
         {
-            ChroniaHelperSession.Geometry_Rectangles[groupName].Enter(
+            Md.Session.Geometry_Rectangles[groupName].Enter(
                 new KeyValuePair<Vector2, Vector2>(point1, point2)
                 );
         }
@@ -44,17 +44,17 @@ public static class GeometryUtils
             List<KeyValuePair<Vector2, Vector2>> k = new();
             KeyValuePair<Vector2, Vector2> v = new KeyValuePair<Vector2, Vector2>(point1, point2);
             k.Enter(v);
-            ChroniaHelperSession.Geometry_Rectangles.Enter(groupName, k);
+            Md.Session.Geometry_Rectangles.Enter(groupName, k);
         }
     }
 
     public static List<KeyValuePair<Vector2, Vector2>> GetRectangleGroup(string index)
     {
-        bool c = ChroniaHelperSession.Geometry_Rectangles.ContainsKey(index);
+        bool c = Md.Session.Geometry_Rectangles.ContainsKey(index);
 
         if (c)
         {
-            return ChroniaHelperSession.Geometry_Rectangles[index];
+            return Md.Session.Geometry_Rectangles[index];
         }
         else
         {
@@ -82,11 +82,11 @@ public static class GeometryUtils
 
     public static List<Vector2> GetPointsGroup(this string index)
     {
-        bool c = ChroniaHelperSession.Geometry_Points.ContainsKey(index);
+        bool c = Md.Session.Geometry_Points.ContainsKey(index);
 
         if (c)
         {
-            return ChroniaHelperSession.Geometry_Points[index];
+            return Md.Session.Geometry_Points[index];
         }
         else
         {

@@ -13,7 +13,7 @@ public static class ChroniaFlagUtils
 {
     public static bool Check(this string flag)
     {
-        return ChroniaHelperSaveData.ChroniaFlags.ContainsKey(flag);
+        return Md.SaveData.ChroniaFlags.ContainsKey(flag);
     }
 
     public static bool CheckTag(this string flag, string tag)
@@ -23,14 +23,14 @@ public static class ChroniaFlagUtils
             return false;
         }
         
-        return ChroniaHelperSaveData.ChroniaFlags[flag].Tags.Contains(tag);
+        return Md.SaveData.ChroniaFlags[flag].Tags.Contains(tag);
     }
 
     public static bool CheckCustomData(this string flag, string dataName)
     {
         if (!flag.Check()) { return false; }
 
-        return ChroniaHelperSaveData.ChroniaFlags[flag].CustomData.ContainsKey(dataName);
+        return Md.SaveData.ChroniaFlags[flag].CustomData.ContainsKey(dataName);
     }
 
     public static string GetCustomData(this string flag, string dataName)
@@ -40,14 +40,14 @@ public static class ChroniaFlagUtils
             return string.Empty;
         }
 
-        return ChroniaHelperSaveData.ChroniaFlags[flag].CustomData[dataName];
+        return Md.SaveData.ChroniaFlags[flag].CustomData[dataName];
     }
 
     public static bool CheckPresetTag(this string flag, ChroniaFlag.Labels label)
     {
         if (!flag.Check()) { return false; }
         
-        return ChroniaHelperSaveData.ChroniaFlags[flag].PresetTags.Contains(label);
+        return Md.SaveData.ChroniaFlags[flag].PresetTags.Contains(label);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public static class ChroniaFlagUtils
     {
         if (name.Check())
         {
-            return ChroniaHelperSaveData.ChroniaFlags[name];
+            return Md.SaveData.ChroniaFlags[name];
         }
         else
         {
@@ -74,18 +74,18 @@ public static class ChroniaFlagUtils
     /// <param name="slotName"></param>
     public static void PushFlag(this ChroniaFlag flag)
     {
-        ChroniaHelperSaveData.ChroniaFlags.Enter(flag.Name, flag);
+        Md.SaveData.ChroniaFlags.Enter(flag.Name, flag);
         MapProcessor.session.SetFlag(flag.Name, flag.Active);
         Refresh();
     }
 
     public static void Refresh()
     {
-        foreach (var item in ChroniaHelperSaveData.ChroniaFlags)
+        foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (!item.Value.Using() && item.Value.IsNormalFlag())
             {
-                ChroniaHelperSaveData.ChroniaFlags.SafeRemove(item.Key);
+                Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
     }
@@ -179,7 +179,7 @@ public static class ChroniaFlagUtils
         if (checkRecordState)
         {
             return name.Check() ?
-                ChroniaHelperSaveData.ChroniaFlags[name].Active : false;
+                Md.SaveData.ChroniaFlags[name].Active : false;
         }
         else
         {

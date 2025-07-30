@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static Celeste.ClutterBlock;
 using System.Collections;
 using Celeste.Mod.Entities;
+using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
 
@@ -69,9 +70,9 @@ public static class MapProcessor
         level.Add(globalEntityDummy);
 
         // Apply Flag Timer Trigger flags
-        foreach (var flag in ChroniaHelperSaveData.FlagTimerS.Keys)
+        foreach (var flag in Md.SaveData.FlagTimerS.Keys)
         {
-            if (ChroniaHelperSaveData.FlagTimerS[flag] > 0)
+            if (Md.SaveData.FlagTimerS[flag] > 0)
             {
                 ChroniaFlagUtils.SetFlag(flag, true);
             }
@@ -146,10 +147,10 @@ public static class MapProcessor
         }
 
         // Flag Timer Trigger
-        foreach (var timer in ChroniaHelperSession.FlagTimer.Keys)
+        foreach (var timer in Md.Session.FlagTimer.Keys)
         {
-            ChroniaHelperSession.FlagTimer[timer] = Monocle.Calc.Approach(ChroniaHelperSession.FlagTimer[timer], 0f, Monocle.Engine.DeltaTime);
-            if (ChroniaHelperSession.FlagTimer[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
+            Md.Session.FlagTimer[timer] = Monocle.Calc.Approach(Md.Session.FlagTimer[timer], 0f, Monocle.Engine.DeltaTime);
+            if (Md.Session.FlagTimer[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
         }
 
         orig(self);
@@ -162,11 +163,14 @@ public static class MapProcessor
     {
         orig(self);
 
-        // Flag Timer Trigger
-        foreach (var timer in ChroniaHelperSaveData.FlagTimerS.Keys)
+        if (Md.SaveData.IsNotNull())
         {
-            ChroniaHelperSaveData.FlagTimerS[timer] = Monocle.Calc.Approach(ChroniaHelperSaveData.FlagTimerS[timer], 0f, Monocle.Engine.DeltaTime);
-            if (ChroniaHelperSaveData.FlagTimerS[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
+            // Flag Timer Trigger
+            foreach (var timer in Md.SaveData.FlagTimerS.Keys)
+            {
+                Md.SaveData.FlagTimerS[timer] = Monocle.Calc.Approach(Md.SaveData.FlagTimerS[timer], 0f, Monocle.Engine.DeltaTime);
+                if (Md.SaveData.FlagTimerS[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
+            }
         }
     }
 

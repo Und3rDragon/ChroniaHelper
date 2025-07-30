@@ -84,26 +84,26 @@ public class FlagTimerTrigger : BaseTrigger
         {
             foreach (var flag in timedFlagset.Keys)
             {
-                if (ChroniaHelperSession.FlagTimer.ContainsKey(flag))
+                if (Md.Session.FlagTimer.ContainsKey(flag))
                 {
                     if(mode == Mode.set)
                     {
-                        ChroniaHelperSession.FlagTimer[flag] = timedFlagset[flag];
+                        Md.Session.FlagTimer[flag] = timedFlagset[flag];
                     }
                     else if (mode == Mode.add)
                     {
-                        ChroniaHelperSession.FlagTimer[flag] += timedFlagset[flag];
+                        Md.Session.FlagTimer[flag] += timedFlagset[flag];
                     }
                     else if (mode == Mode.minus)
                     {
-                        ChroniaHelperSession.FlagTimer[flag] -= timedFlagset[flag];
+                        Md.Session.FlagTimer[flag] -= timedFlagset[flag];
                     }
                 }
                 else
                 {
                     if(mode != Mode.minus)
                     {
-                        ChroniaHelperSession.FlagTimer.Add(flag, timedFlagset[flag]);
+                        Md.Session.FlagTimer.Add(flag, timedFlagset[flag]);
                     }
                 }
             }
@@ -113,26 +113,26 @@ public class FlagTimerTrigger : BaseTrigger
         {
             foreach (var flag in timedFlagset.Keys)
             {
-                if (ChroniaHelperSaveData.FlagTimerS.ContainsKey(flag))
+                if (Md.SaveData.FlagTimerS.ContainsKey(flag))
                 {
                     if (mode == Mode.set)
                     {
-                        ChroniaHelperSaveData.FlagTimerS[flag] = timedFlagset[flag];
+                        Md.SaveData.FlagTimerS[flag] = timedFlagset[flag];
                     }
                     else if (mode == Mode.add)
                     {
-                        ChroniaHelperSaveData.FlagTimerS[flag] += timedFlagset[flag];
+                        Md.SaveData.FlagTimerS[flag] += timedFlagset[flag];
                     }
                     else if (mode == Mode.minus)
                     {
-                        ChroniaHelperSaveData.FlagTimerS[flag] -= timedFlagset[flag];
+                        Md.SaveData.FlagTimerS[flag] -= timedFlagset[flag];
                     }
                 }
                 else
                 {
                     if (mode != Mode.minus)
                     {
-                        ChroniaHelperSaveData.FlagTimerS.Add(flag, timedFlagset[flag]);
+                        Md.SaveData.FlagTimerS.Add(flag, timedFlagset[flag]);
                     }
                 }
             }
