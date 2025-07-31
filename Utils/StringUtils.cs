@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Utils;
 
@@ -270,5 +271,4 @@ public static class StringUtils
         }
         return wildcardPart;
     }
-
 }

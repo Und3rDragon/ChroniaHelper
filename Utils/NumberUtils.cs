@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Utils;
 
@@ -307,6 +308,23 @@ public static class NumberUtils
         }
 
         return r;
+    }
+
+    public static int Clamp(this int value, int value1, int value2)
+    {
+        int min = value1 <= value2 ? value1 : value2, max = value2 >= value1 ? value2 : value1;
+        return int.Clamp(value, min, max);
+    }
+
+    public static float Clamp(this float value, float value1, float value2)
+    {
+        float min = value1 <= value2 ? value1 : value2, max = value2 >= value1 ? value2 : value1;
+        return float.Clamp(value, min, max);
+    }
+
+    public static Vector2 Clamp(this Vector2 value, Vector2 value1, Vector2 value2)
+    {
+        return new(value.X.Clamp(value1.X, value2.X), value.Y.Clamp(value1.Y, value2.Y));
     }
 
 }

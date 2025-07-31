@@ -43,7 +43,7 @@ public static class ChroniaFlagUtils
         return Md.SaveData.ChroniaFlags[flag].CustomData[dataName];
     }
 
-    public static bool CheckPresetTag(this string flag, ChroniaFlag.Labels label)
+    public static bool CheckPresetTag(this string flag, Labels label)
     {
         if (!flag.Check()) { return false; }
         

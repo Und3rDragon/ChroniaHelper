@@ -123,4 +123,239 @@ public static class MapDataUtils
         return entityDataList[(index < 0 || index >= entityDataList.Count) ? (entityDataList.Count - 1) : index];
     }
 
+
+    /// <summary>
+    /// The function checks your loenn inputs, if the input is empty or if other restraints are true, the function will return the default value, otherwise, it'll try and parse the value you entered
+    /// </summary>
+    /// <param name="loennInput">The parameters you get from Loenn</param>
+    /// <param name="defaultValue">The default value you should set up</param>
+    /// <param name="otherRestraints">Are there any restraints defined by boolean results</param>
+    /// <returns></returns>
+    public static int Fetch(this string loennInput, int defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        int parseValue = defaultValue;
+        int.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static int Fetch(this EntityData data, string tag, int defaultValue, bool otherRestraints = false)
+    {
+        return otherRestraints ? defaultValue : data.Int(tag, defaultValue);
+    }
+
+    public static float Fetch(this string loennInput, float defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        float parseValue = defaultValue;
+        float.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static float Fetch(this EntityData data, string tag, float defaultValue, bool otherRestraints = false)
+    {
+        return otherRestraints ? defaultValue : data.Float(tag, defaultValue);
+    }
+
+    public static double Fetch(this string loennInput, double defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        double parseValue = defaultValue;
+        double.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static double Fetch(this EntityData data, string attrTag, double defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        double parseValue = defaultValue;
+        double.TryParse(data.Attr(attrTag), out parseValue);
+        return parseValue;
+    }
+
+    public static bool Fetch(this string loennInput, bool defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        bool parseValue = defaultValue;
+        bool.TryParse(loennInput, out parseValue);
+        return parseValue;
+    }
+
+    public static bool Fetch(this EntityData data, string tag, bool defaultValue, bool otherRestraints = false)
+    {
+        return otherRestraints ? defaultValue : data.Bool(tag, defaultValue);
+    }
+
+    public static Color Fetch(this string loennInput, Color defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(loennInput);
+        return parseValue;
+    }
+
+    public static Color Fetch(this EntityData data, string attrTag, Color defaultValue, bool otherRestraints = false)
+    {
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(data.Attr(attrTag));
+        return parseValue;
+    }
+
+    public static Color Fetch(this string loennInput, string defaultHex, bool otherRestraints = false)
+    {
+        Color defaultValue = Calc.HexToColor(defaultHex);
+
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(loennInput);
+        return parseValue;
+    }
+
+    public static Color Fetch(this EntityData data, string attrTag, string defaultHex, bool otherRestraints = false)
+    {
+        Color defaultValue = Calc.HexToColor(defaultHex);
+
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        Color parseValue = defaultValue;
+        parseValue = Calc.HexToColor(data.Attr(attrTag));
+        return parseValue;
+    }
+
+    public static Classify Fetch<Classify>(this string loennInput, Classify defaultValue, bool otherRestraints = false, bool ignoreCases = false, bool ignoreUnderscores = false) where Classify : struct, Enum
+    {
+        if (string.IsNullOrEmpty(loennInput))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        return EnumUtils.MatchEnum<Classify>(loennInput, defaultValue, ignoreCases, ignoreUnderscores);
+    }
+
+    public static Classify Fetch<Classify>(this EntityData data, string attrTag, Classify defaultValue, bool otherRestraints = false, bool ignoreCases = false, bool ignoreUnderscores = false) where Classify : struct, Enum
+    {
+        if (string.IsNullOrEmpty(attrTag))
+        {
+            return defaultValue;
+        }
+
+        if (otherRestraints)
+        {
+            return defaultValue;
+        }
+
+        return EnumUtils.MatchEnum<Classify>(data.Attr(attrTag), defaultValue, ignoreCases, ignoreUnderscores);
+    }
+
+    /// <summary>
+    /// If there were changes to the loenn option names, filter the changes and try get an existing value.
+    /// If all data.Attr(tags) are empty, it returns string.Empty
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="tags"></param>
+    /// <param name="useLastTagAsPossible"></param>
+    /// <returns></returns>
+    public static string Filter(this EntityData data, string[] tags, bool useLastTagAsPossible = true)
+    {
+        if (tags == null || tags.Length == 0) { return string.Empty; }
+
+        int min = tags.Length + 1, max = -1;
+        for (int i = 0; i < tags.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(tags[i]))
+            {
+                min = Math.Min(min, i);
+                max = Math.Max(max, i);
+            }
+        }
+        if (min == tags.Length || max == -1) { return string.Empty; }
+        return useLastTagAsPossible ? data.Attr(tags[max]) : data.Attr(tags[min]);
+    }
+
 }

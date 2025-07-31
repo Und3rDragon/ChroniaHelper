@@ -5,9 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Utils;
+
+public enum ExpectedResetState
+{
+    False,
+    True,
+    ReversedActive
+}
+
+/// <summary>
+/// For "Serial" label, there must be a "serialHolder" data in CustomData
+/// </summary>
+public enum Labels { Serial }
 
 public class ChroniaFlag
 {
@@ -122,27 +136,29 @@ public class ChroniaFlag
         }
     }
 
-
     public string Name { get; set; }
     public bool Active { get; set; } = false;
     public bool Global { get; set; } = false;
     public bool Temporary { get; set; } = false;
     public bool Force { get; set; } = false;
     public float Timed { get; set; } = -1f;
-    public enum ExpectedResetState { False, True, ReversedActive }
+    
     public ExpectedResetState DefaultResetState { get; set; } = (ExpectedResetState)0;
     public List<string> Tags { get; set; } = new();
     public Dictionary<string, string> CustomData { get; set; } = new();
-    /// <summary>
-    /// For "Serial" label, there must be a "serialHolder" data in CustomData
-    /// </summary>
-    public enum Labels { Serial }
+    
     public List<Labels> PresetTags { get; set; } = new();
 
-    public ChroniaFlag (string name)
+    public ChroniaFlag()
+    {
+        Name = ""; 
+    }
+
+    public ChroniaFlag(string name)
     {
         Name = name;
     }
+
     public ChroniaFlag(string name, bool active = true, bool global = false, bool temporary = false,
         float timed = -1f)
     {
@@ -193,3 +209,4 @@ public class ChroniaFlag
         }
     }
 }
+
