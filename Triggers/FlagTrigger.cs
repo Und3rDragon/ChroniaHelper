@@ -103,11 +103,11 @@ public class FlagTrigger : Trigger
         }
         else
         {
-            foreach (var item in RecordedStates.Values)
+            foreach (var item in RecordedStates)
             {
-                if (filtering && !Unchanged.Contains(item.Name))
+                if (filtering && !Unchanged.Contains(item.Key))
                 {
-                    item.Name.SetFlag(item.Active, item.Global);
+                    item.Key.SetFlag(item.Value.Active, item.Value.Global);
                 }
             }
         }

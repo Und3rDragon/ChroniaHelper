@@ -43,6 +43,8 @@ public class ChroniaFlag
 
     public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
+        orig(self);
+
         // Remove temporary flags
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
@@ -61,8 +63,6 @@ public class ChroniaFlag
                 MapProcessor.session.SetFlag(item.Key, item.Value.Active);
             }
         }
-
-        orig(self);
     }
 
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
@@ -80,7 +80,9 @@ public class ChroniaFlag
 
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
-        foreach(var item in Md.SaveData.ChroniaFlags)
+        orig(self);
+
+        foreach (var item in Md.SaveData.ChroniaFlags)
         {
             // Non-global stuffs only
             if (!item.Value.Global)
@@ -101,7 +103,6 @@ public class ChroniaFlag
                 MapProcessor.session.SetFlag(item.Key, item.Value.Active);
             }
         }
-        orig(self);
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
@@ -135,7 +136,7 @@ public class ChroniaFlag
         }
     }
 
-    public string Name { get; set; }
+    private string Name { get; set; }
     public bool Active { get; set; } = false;
     public bool Global { get; set; } = false;
     public bool Temporary { get; set; } = false;
@@ -150,7 +151,7 @@ public class ChroniaFlag
 
     public ChroniaFlag()
     {
-        Name = ""; 
+        
     }
 
     public ChroniaFlag(string name)

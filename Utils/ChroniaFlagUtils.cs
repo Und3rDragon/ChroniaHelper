@@ -72,10 +72,10 @@ public static class ChroniaFlagUtils
     /// </summary>
     /// <param name="flag"></param>
     /// <param name="slotName"></param>
-    public static void PushFlag(this ChroniaFlag flag)
+    public static void PushFlag(this ChroniaFlag flag, string name)
     {
-        Md.SaveData.ChroniaFlags.Enter(flag.Name, flag);
-        MapProcessor.session.SetFlag(flag.Name, flag.Active);
+        Md.SaveData.ChroniaFlags.Enter(name, flag);
+        MapProcessor.session.SetFlag(name, flag.Active);
         Refresh();
     }
 
@@ -94,7 +94,7 @@ public static class ChroniaFlagUtils
     {
         ChroniaFlag flag = name.PullFlag();
         flag.Active = active;
-        flag.PushFlag();
+        flag.PushFlag(name);
         MapProcessor.session.SetFlag(name, active);
 
         Refresh();
@@ -105,7 +105,7 @@ public static class ChroniaFlagUtils
         ChroniaFlag flag = name.PullFlag();
         flag.Active = active;
         flag.Global = global;
-        flag.PushFlag();
+        flag.PushFlag(name);
         MapProcessor.session.SetFlag(name, active);
 
         Refresh();
@@ -117,7 +117,7 @@ public static class ChroniaFlagUtils
         flag.Active = active;
         flag.Global = global;
         flag.Temporary = temporary;
-        flag.PushFlag();
+        flag.PushFlag(name);
         MapProcessor.session.SetFlag(name, active);
 
         Refresh();
@@ -162,7 +162,7 @@ public static class ChroniaFlagUtils
         flag.Global = global;
         flag.Temporary = temporary;
         flag.Timed = timer;
-        flag.PushFlag();
+        flag.PushFlag(name);
         MapProcessor.session.SetFlag(name, basicState);
 
         Refresh();
