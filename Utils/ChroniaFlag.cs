@@ -67,6 +67,7 @@ public class ChroniaFlag
 
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
+        orig(self, intro, fromLoader);
         // Apply global flags
         foreach(var item in Md.SaveData.ChroniaFlags)
         {
@@ -75,8 +76,6 @@ public class ChroniaFlag
                 MapProcessor.session.SetFlag(item.Key, item.Value.Active);
             }
         }
-
-        orig(self, intro, fromLoader);
     }
 
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
