@@ -57,14 +57,12 @@ public static class ChroniaFlagUtils
     /// <returns>By default, you'll get the item stored in ChroniaFlags. If the item doesn't exist, you'll get an empty ChroniaFlag (name, false, false, false)</returns>
     public static ChroniaFlag PullFlag(this string name)
     {
-        if (name.Check())
+        if (!name.Check())
         {
-            return Md.SaveData.ChroniaFlags[name];
+            Md.SaveData.ChroniaFlags.Enter(name, new());
         }
-        else
-        {
-            return new();
-        }
+
+        return Md.SaveData.ChroniaFlags[name];
     }
 
     /// <summary>
@@ -92,33 +90,27 @@ public static class ChroniaFlagUtils
 
     public static void SetFlag(this string name, bool active)
     {
-        ChroniaFlag flag = name.PullFlag();
-        flag.Active = active;
-        flag.PushFlag(name);
-        MapProcessor.session.SetFlag(name, active);
+        name.PullFlag().Active = active;
+        MaP.session.SetFlag(name, active);
 
         Refresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global)
     {
-        ChroniaFlag flag = name.PullFlag();
-        flag.Active = active;
-        flag.Global = global;
-        flag.PushFlag(name);
-        MapProcessor.session.SetFlag(name, active);
+        name.PullFlag().Active = active;
+        name.PullFlag().Global = global;
+        MaP.session.SetFlag(name, active);
 
         Refresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global, bool temporary)
     {
-        ChroniaFlag flag = name.PullFlag();
-        flag.Active = active;
-        flag.Global = global;
-        flag.Temporary = temporary;
-        flag.PushFlag(name);
-        MapProcessor.session.SetFlag(name, active);
+        name.PullFlag().Active = active;
+        name.PullFlag().Global = global;
+        name.PullFlag().Temporary = temporary;
+        MaP.session.SetFlag(name, active);
 
         Refresh();
     }
@@ -157,13 +149,11 @@ public static class ChroniaFlagUtils
 
     public static void SetTimedFlag(this string name, bool basicState, float timer, bool global = false, bool temporary = false)
     {
-        ChroniaFlag flag = name.PullFlag();
-        flag.Active = basicState;
-        flag.Global = global;
-        flag.Temporary = temporary;
-        flag.Timed = timer;
-        flag.PushFlag(name);
-        MapProcessor.session.SetFlag(name, basicState);
+        name.PullFlag().Active = basicState;
+        name.PullFlag().Global = global;
+        name.PullFlag().Temporary = temporary;
+        name.PullFlag().Timed = timer;
+        MaP.session.SetFlag(name, basicState);
 
         Refresh();
     }
