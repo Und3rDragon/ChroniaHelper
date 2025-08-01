@@ -68,6 +68,7 @@ public class ChroniaFlag
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
         orig(self, intro, fromLoader);
+
         // Apply global flags
         foreach(var item in Md.SaveData.ChroniaFlags)
         {
@@ -136,7 +137,6 @@ public class ChroniaFlag
         }
     }
 
-    private string Name { get; set; }
     public bool Active { get; set; } = false;
     public bool Global { get; set; } = false;
     public bool Temporary { get; set; } = false;
@@ -154,26 +154,13 @@ public class ChroniaFlag
         
     }
 
-    public ChroniaFlag(string name)
-    {
-        Name = name;
-    }
-
-    public ChroniaFlag(string name, bool active = true, bool global = false, bool temporary = false,
+    public ChroniaFlag(bool active = true, bool global = false, bool temporary = false,
         float timed = -1f)
     {
-        Name = name;
         Active = active;
         Global = global;
         Temporary = temporary;
         Timed = timed;
-    }
-
-    public void SetFlag()
-    {
-        Md.SaveData.ChroniaFlags.Enter(Name, this);
-        MapProcessor.session.SetFlag(Name, Active);
-        ChroniaFlagUtils.Refresh();
     }
 
     public bool IsNormalFlag()

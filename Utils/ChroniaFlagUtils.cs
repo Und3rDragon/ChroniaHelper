@@ -63,7 +63,7 @@ public static class ChroniaFlagUtils
         }
         else
         {
-            return new(name);
+            return new();
         }
     }
 

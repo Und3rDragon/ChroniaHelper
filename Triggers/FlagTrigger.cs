@@ -72,7 +72,7 @@ public class FlagTrigger : Trigger
     {
         foreach (var item in trueFlags)
         {
-            RecordedStates.Enter(item, new(item, item.GetFlag(), item.PullFlag().Global));
+            RecordedStates.Enter(item, new(item.GetFlag(), item.PullFlag().Global));
             if(item.GetFlag() == set)
             {
                 Unchanged.Enter(item);
@@ -80,7 +80,7 @@ public class FlagTrigger : Trigger
         }
         foreach (var item in falseFlags)
         {
-            RecordedStates.Enter(item, new(item, item.GetFlag(), item.PullFlag().Global));
+            RecordedStates.Enter(item, new(item.GetFlag(), item.PullFlag().Global));
             if(item.GetFlag() == !set)
             {
                 Unchanged.Enter(item);
