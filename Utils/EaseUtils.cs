@@ -177,4 +177,69 @@ public static class EaseUtils
         }
     }
 
+    public static EaseMode StringToEaseMode(string str)
+    {
+        switch (str.ToLower())
+        {
+            case "linear":
+                return EaseMode.Linear;
+            case "sinein":
+                return EaseMode.SineIn;
+            case "sineout":
+                return EaseMode.SineOut;
+            case "sineinout":
+                return EaseMode.SineInOut;
+            case "quadin":
+                return EaseMode.QuadIn;
+            case "quadout":
+                return EaseMode.QuadOut;
+            case "quadinout":
+                return EaseMode.QuadInOut;
+            case "cubein":
+                return EaseMode.CubeIn;
+            case "cubeout":
+                return EaseMode.CubeOut;
+            case "cubeinout":
+                return EaseMode.CubeInOut;
+            case "quintin":
+                return EaseMode.QuintIn;
+            case "quintout":
+                return EaseMode.QuintOut;
+            case "quintinout":
+                return EaseMode.QuintInOut;
+            case "expoin":
+                return EaseMode.ExpoIn;
+            case "expoout":
+                return EaseMode.ExpoOut;
+            case "expoinout":
+                return EaseMode.ExpoInOut;
+            case "backin":
+                return EaseMode.BackIn;
+            case "backout":
+                return EaseMode.BackOut;
+            case "backinout":
+                return EaseMode.BackInOut;
+            case "bigbackin":
+                return EaseMode.BigBackIn;
+            case "bigbackout":
+                return EaseMode.BigBackOut;
+            case "bigbackinout":
+                return EaseMode.BigBackInOut;
+            case "elasticin":
+                return EaseMode.ElasticIn;
+            case "elasticout":
+                return EaseMode.ElasticOut;
+            case "elasticinout":
+                return EaseMode.ElasticInOut;
+            case "bouncein":
+                return EaseMode.BounceIn;
+            case "bounceout":
+                return EaseMode.BounceOut;
+            case "bounceinout":
+                return EaseMode.BounceInOut;
+            default:
+                return EaseMode.Linear;
+        }
+    }
+
 }

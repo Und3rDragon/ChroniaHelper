@@ -1,0 +1,1 @@
+NeonHelper entities checking

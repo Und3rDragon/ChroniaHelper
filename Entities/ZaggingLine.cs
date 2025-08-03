@@ -63,10 +63,10 @@ public class ZaggingLine : Entity
         }
 
         string[] _easers = data.Attr("ease", "sinein").Split(",", StringSplitOptions.TrimEntries);
-        easers = new Ease.Easer[_easers.Length];
+        easers = new EaseMode[_easers.Length];
         for(int i = 0; i < _easers.Length; i++)
         {
-            easers[i] = EaseUtils.StringToEase(_easers[i]);
+            easers[i] = EaseUtils.StringToEaseMode(_easers[i]);
         }
 
         Depth = data.Int("depth", 9500);
@@ -77,7 +77,7 @@ public class ZaggingLine : Entity
     private Color bgLineColor;
     private Color[] fgLineColors, nodeColors;
     private float[] intervals, durations;
-    private Ease.Easer[] easers;
+    private EaseMode[] easers;
 
     private float[] timer;
 
@@ -118,8 +118,8 @@ public class ZaggingLine : Entity
             {
                 float loopLength = intervals.SafeGet(j) + durations.SafeGet(j);
 
-                Vector2 p1 = FadeUtils.LerpValue(timer.SafeGet(j), 0f, durations.SafeGet(j), from, to),
-                    p2 = FadeUtils.LerpValue(timer.SafeGet(j), intervals.SafeGet(j), loopLength, from, to);
+                Vector2 p1 = FadeUtils.LerpValue(timer.SafeGet(j), 0f, durations.SafeGet(j), from, to, easers.SafeGet(j)),
+                    p2 = FadeUtils.LerpValue(timer.SafeGet(j), intervals.SafeGet(j), loopLength, from, to, easers.SafeGet(j));
 
                 Draw.Line(p1, p2, fgLineColors.SafeGet(j));
             }
