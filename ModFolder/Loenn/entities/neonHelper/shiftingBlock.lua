@@ -15,10 +15,24 @@ shiftingBlock.placements = {
         width = 8,
         height = 8,
         shakeTime = 0.4,
+        easing = "QuadInOut",
+        noConnector = false,
     }
 }
 
 shiftingBlock.sprite = fakeTilesHelper.getEntitySpriteFunction("tiletype", "blendin")
-shiftingBlock.fieldInformation = fakeTilesHelper.getFieldInformation("tiletype")
+shiftingBlock.fieldInformation = {
+    tiletype =
+        {
+            options = function()
+                return fakeTilesHelper.getTilesOptions()
+            end,
+            editable = false
+        },
+    easing = {
+        options = require("mods").requireFromPlugin("libraries.chroniaHelper").easers,
+        editable = false,
+    }
+}
 
 return shiftingBlock

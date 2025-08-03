@@ -9,6 +9,10 @@ pufferBomb.depth = 0
 pufferBomb.texture = "objects/puffer/idle00"
 pufferBomb.placements = {        
     name = "Puffer Bomb",
+    data = {
+        sprite = "pufferBomb",
+        rangeIndicator = "bombRange",
+    }
 }
 
 return pufferBomb

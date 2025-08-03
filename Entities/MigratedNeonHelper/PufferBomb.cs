@@ -121,7 +121,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			DirectionRange = (float)Math.PI / 3f
 		};
 
-		public PufferBomb(Vector2 position, bool oneUse, bool moreFreezeFrames, bool alwaysBoost, bool longRange, bool ignoreSolids)
+		public PufferBomb(Vector2 position, bool oneUse, bool moreFreezeFrames, bool alwaysBoost, bool longRange, bool ignoreSolids, EntityData data)
 				: base(position)
 		{
 			this.oneUse = true;
@@ -130,9 +130,9 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			this.longRange = longRange;
 			this.ignoreSolids = ignoreSolids;
             Collider = new Hitbox(12f, 10f, -6f, -5f);
-			Add(explosionRange = GFX.SpriteBank.Create("bombRange"));
+			Add(explosionRange = GFX.SpriteBank.Create(data.Attr("rangeIndicator", "bombRange")));
 			Add(new PlayerCollider(OnPlayer, new Hitbox(14f, 12f, -7f, -7f)));
-			Add(sprite = GFX.SpriteBank.Create("pufferBomb"));
+			Add(sprite = GFX.SpriteBank.Create(data.Attr("sprite", "pufferBomb")));
 			sprite.Play("idle");
 			anchorPosition = Position;
 			state = States.Idle;
@@ -153,8 +153,10 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		}
 
 		public PufferBomb(EntityData data, Vector2 offset)
-			: this(data.Position + offset, data.Bool("oneUse"), data.Bool("moreFreezeFrames"), data.Bool("alwaysBoost", true), data.Bool("longRange"), data.Bool("ignoreSolids"))
+			: this(data.Position + offset, data.Bool("oneUse"), data.Bool("moreFreezeFrames"), 
+				  data.Bool("alwaysBoost", true), data.Bool("longRange"), data.Bool("ignoreSolids"), data)
 		{
+
 		}
 
 		private static MethodInfo springBounceAnimate = typeof(Spring).GetMethod("BounceAnimate", BindingFlags.Instance | BindingFlags.NonPublic);

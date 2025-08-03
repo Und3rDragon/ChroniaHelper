@@ -15,7 +15,8 @@ using Celeste;
 
 namespace ChroniaHelper.Entities.MigratedNeonHelper
 {
-    [CustomEntity("ChroniaHelper/SpringCeiling")]
+    [CustomEntity("ChroniaHelper/PufferBombSpringUp", "ChroniaHelper/PufferBombSpringDown", 
+        "ChroniaHelper/PufferBombSpringLeft", "ChroniaHelper/PufferBombSpringRight")]
     public class PufferBombSpring : Spring
     {
         public enum CustomOrientations
@@ -42,7 +43,10 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 
         private static Dictionary<string, CustomOrientations> EntityDataNameToOrientation = new Dictionary<string, CustomOrientations>()
         {
-            ["NeonHelper/SpringCeiling"] = CustomOrientations.Ceiling,
+            ["ChroniaHelper/PufferBombSpringDown"] = CustomOrientations.Ceiling,
+            ["ChroniaHelper/PufferBombSpringUp"] = CustomOrientations.Floor,
+            ["ChroniaHelper/PufferBombSpringRight"] = CustomOrientations.WallLeft,
+            ["ChroniaHelper/PufferBombSpringLeft"] = CustomOrientations.WallRight,
         };
 
         private static Dictionary<CustomOrientations, Orientations> CustomToRegularOrientation = new Dictionary<CustomOrientations, Orientations>()

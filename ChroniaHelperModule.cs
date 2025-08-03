@@ -16,6 +16,7 @@ using MonoMod.ModInterop;
 using FMOD.Studio;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
+using ChroniaHelper.Entities.MigratedNeonHelper;
 
 namespace ChroniaHelper;
 
@@ -93,6 +94,9 @@ public class ChroniaHelperModule : EverestModule
         MapProcessor.Load();
         ChroniaFlag.Onload();
 
+        // migrated from NeonHelper
+        PufferBomb.Load();
+
         // API Imports
         typeof(FrostHelperImports).ModInterop();
         typeof(CameraDynamicsImports).ModInterop();
@@ -135,6 +139,10 @@ public class ChroniaHelperModule : EverestModule
 
         MapProcessor.Unload();
         ChroniaFlag.Unload();
+
+        // migrated from NeonHelper
+        PufferBomb.Unload();
+
     }
 
     private static void LevelLoader_OnLoadingThread(Level level)

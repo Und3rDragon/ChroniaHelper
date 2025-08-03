@@ -10,6 +10,7 @@ using IL.MonoMod;
 using Microsoft.Xna.Framework;
 using Monocle;
 using FMOD.Studio;
+using ChroniaHelper.Utils;
 
 // The source code of this entity is migrated from NeonHelper, which is integrated in City of Broken Dreams
 // The original author is ricky06, code modified by UnderDragon
@@ -54,7 +55,9 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		private SoundSource moveSfx;
 		private float mult;
 
-		public ShiftingBlock(Vector2 position, char tiletype, float shakeTime, float width, float height, bool linear, bool isElevator, bool noConnector, bool easeInOnly)
+		private Ease.Easer easing;
+
+		public ShiftingBlock(Vector2 position, char tiletype, float shakeTime, float width, float height, bool noConnector, string easing)
 			: base(position, width, height, safe: false)
 		{
 			Depth = -12999;
@@ -62,10 +65,8 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			this.width = width;
 			this.height = height;
 			this.shakeTime = shakeTime;
-			this.linear = linear;
-			this.isElevator = isElevator;
 			this.noConnector = noConnector;
-			this.easeInOnly = easeInOnly;
+			this.easing = EaseUtils.StringToEase(easing);
 
 			tileType = tiletype;
 			SurfaceSoundIndex = SurfaceIndex.TileToIndex[tileType];
@@ -83,7 +84,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		}
 
 		public ShiftingBlock(EntityData data, Vector2 offset, EntityID id)
-			: this(data.Position + offset, data.Char("tiletype", '3'), data.Float("shakeTime", 0.4f), data.Width, data.Height, data.Bool("linear"), data.Bool("isElevator"), data.Bool("noConnector"), data.Bool("easeInOnly"))
+			: this(data.Position + offset, data.Char("tiletype", '3'), data.Float("shakeTime", 0.4f), data.Width, data.Height, data.Bool("noConnector"), data.Attr("easing", "quadinout"))
 		{
 		}
 
@@ -122,19 +123,8 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			//moveSfx = Audio.Play("event:/game/05_mirror_temple/swapblock_return"); 
 			while (true)
 			{
-				Vector2 newPos = Vector2.Lerp(begin, begin + offset, Ease.QuadInOut(at));
-				if (linear)
-				{
-					newPos = Vector2.Lerp(begin, begin + offset, Ease.Linear(at));
-				}
-				if(isElevator)
-                {
-					newPos = Vector2.Lerp(begin, begin + offset, Ease.SineOut(at));
-				}
-				if(easeInOnly)
-                {
-					newPos = Vector2.Lerp(begin, begin + offset, Ease.QuadIn(at));
-				}
+				Vector2 newPos = Vector2.Lerp(begin, begin + offset, easing(at));
+
 				MoveToX(newPos.X);
 				MoveToY(newPos.Y);
 

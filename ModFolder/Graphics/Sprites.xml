@@ -119,5 +119,23 @@
 		<Loop id="testB" path="testB" delay ="0.1"/>
 		<Loop id="testC" path="testC" delay ="0.1"/>
 	</spriteEntity>
-		
+	
+	<!--The following is from Neon Helper-->
+	<shiftingSwitch path="objects/ChroniaHelper/shiftingSwitch/" start="idle">
+		<Center/>
+		<Loop id="idle" path="idle" delay="0.02"/>
+		<Anim id="burst" path="burst" delay="0.04"/>
+		<Anim id="flash" path="flash" delay="0.06" goto="idle"/>
+	</shiftingSwitch>
+	<bombRange path="objects/ChroniaHelper/pufferBomb/" start="on">
+		<Center/>
+		<Anim id="on" path="range" frames="0"/>
+		<Anim id="off" path="range" frames="1"/>
+	</bombRange>
+	<pufferBomb path="objects/ChroniaHelper/pufferBomb/" start="idle">
+		<Center/>
+		<Loop id="idle" path="idle" delay="0.1"/>
+		<Anim id="explode" path="explode" delay="0.05"/>
+	</pufferBomb>
+	
 </Sprites>

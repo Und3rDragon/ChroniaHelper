@@ -109,13 +109,13 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		private Color connectorColor = Calc.HexToColor("aefaff");
 		private Color effectsColor = Calc.HexToColor("aefaff");
 
-		public ShiftingSwitch(Vector2 position, bool left, bool right, bool top, bool down, float speed, float distance, List<Vector2> nodes, bool oneConnector, bool silent)
+		public ShiftingSwitch(Vector2 position, bool left, bool right, bool top, bool down, float speed, float distance, List<Vector2> nodes, bool oneConnector, bool silent, EntityData data)
 			: base(position, 24f, 24f, safe: true)
 		{
 			Depth = -13000;
 			SurfaceSoundIndex = 11;
-			Add(sprite = GFX.SpriteBank.Create("shiftingSwitch"));
-			connector = GFX.Game["objects/NeonCity/shiftingSwitch/connector"];
+			Add(sprite = GFX.SpriteBank.Create(data.Attr("sprite", "shiftingSwitch")));
+			connector = GFX.Game[data.Attr("connectorSprite", "objects/ChroniaHelper/shiftingSwitch/connector")];
 			sprite.Position = new Vector2(Width, Height) / 2f;
 			OnDashCollide = Dashed;
 
@@ -147,7 +147,8 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		}
 
 		public ShiftingSwitch(EntityData e, Vector2 levelOffset)
-			: this(e.Position + levelOffset, e.Bool("left"), e.Bool("right"), e.Bool("top"), e.Bool("down"), e.Float("speed"), e.Float("distance"), new List<Vector2>(e.NodesOffset(levelOffset)), e.Bool("oneConnector"), e.Bool("silent"))
+			: this(e.Position + levelOffset, e.Bool("left"), e.Bool("right"), e.Bool("top"), e.Bool("down"), e.Float("speed"), e.Float("distance"), new List<Vector2>(e.NodesOffset(levelOffset)), e.Bool("oneConnector"), e.Bool("silent"),
+				  e)
 		{
 
 		}
