@@ -12,9 +12,9 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/ZaggingLine")]
 public class ZaggingLine : Entity
 {
-    public ZaggingLine(EntityData data, Vector2 offset) : base(data.Position + offset)
+    public ZaggingLine(EntityData data, Vector2 position) : base(data.Position)
     {
-        nodes = data.NodesWithPosition(offset);
+        nodes = data.NodesWithPosition(Vector2.Zero);
 
         // bg line
         hasBgLine = data.Bool("showBgLine", false);
@@ -25,6 +25,7 @@ public class ZaggingLine : Entity
         nodeSprite = new(GFX.Game, "ChroniaHelper/ZaggingLine/node");
         nodeSprite.AddLoop("idle","", 0.1f);
         Add(nodeSprite);
+        nodeSprite.JustifyOrigin(0.5f, 0.5f);
         nodeSprite.Play("idle");
 
         string[] _nodeColor = data.Attr("nodeColors", "ffffffff").Split(",",StringSplitOptions.TrimEntries);

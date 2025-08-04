@@ -68,4 +68,4 @@ zl.nodeSprite = function(room, entity, node, nodeIndex, viewport)
 	return sprites
 end
 
-return zl
+--return zl

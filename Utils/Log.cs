@@ -53,7 +53,17 @@ public static class Log
         Output(LogLevel.Error, obj.ArrayToString());
     }
 
-    public static void Print(this object obj, int colorIndex = 11, LogLevel level = LogLevel.Info)
+    public static void Print(this object obj)
+    {
+        string text = obj == null ? "null" : obj.ToString();
+        int color = 11;
+
+        Console.ForegroundColor = (ConsoleColor)color;
+        Logger.Log(LogLevel.Info, Tag, text);
+        Console.ResetColor();
+    }
+
+    public static void Print(this object obj, int colorIndex, LogLevel level = LogLevel.Info)
     {
         string text = obj == null ? "null" : obj.ToString();
         int color = int.Clamp(colorIndex, 0, 15);
@@ -63,7 +73,17 @@ public static class Log
         Console.ResetColor();
     }
 
-    public static void Print(this object[] obj, int colorIndex = 11, LogLevel level = LogLevel.Info)
+    public static void Print(this object[] obj)
+    {
+        string text = obj.ArrayToString();
+        int color = 11;
+
+        Console.ForegroundColor = (ConsoleColor)color;
+        Logger.Log(LogLevel.Info, Tag, text);
+        Console.ResetColor();
+    }
+
+    public static void Print(this object[] obj, int colorIndex, LogLevel level = LogLevel.Info)
     {
         string text = obj.ArrayToString();
         int color = int.Clamp(colorIndex, 0, 15);
@@ -73,7 +93,7 @@ public static class Log
         Console.ResetColor();
     }
 
-    public static void Print(this object obj, ConsoleColor color = ConsoleColor.Cyan, LogLevel level = LogLevel.Info)
+    public static void Print(this object obj, ConsoleColor color, LogLevel level = LogLevel.Info)
     {
         string text = obj == null ? "null" : obj.ToString();
 
@@ -82,7 +102,7 @@ public static class Log
         Console.ResetColor();
     }
 
-    public static void Print(this object[] obj, ConsoleColor color = ConsoleColor.Cyan, LogLevel level = LogLevel.Info)
+    public static void Print(this object[] obj, ConsoleColor color, LogLevel level = LogLevel.Info)
     {
         string text = obj.ArrayToString();
 
