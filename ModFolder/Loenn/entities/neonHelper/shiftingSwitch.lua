@@ -27,6 +27,8 @@ shiftingSwitch.placements = {
         connectorSprite = "objects/ChroniaHelper/shiftingSwitch/connector",
         speed = 3.0,
         distance = 32.0,
+        onNormal = 1,
+        onRebound = 0,
         left = true,
         right = true,
         top = true,
@@ -37,6 +39,29 @@ shiftingSwitch.placements = {
 }
 
 shiftingSwitch.justification = {0, 0}
+
+shiftingSwitch.fieldInformation = {
+    onNormal = {
+        options = {
+            ["Rebound"] = 0,
+            ["Normal Collision"] = 1,
+            ["Normal Override"] = 2,
+            ["Bounce"] = 3,
+            ["Ignore"] = 4,
+        },
+        editable = false,
+    },
+    onRebound = {
+        options = {
+            ["Rebound"] = 0,
+            ["Normal Collision"] = 1,
+            ["Normal Override"] = 2,
+            ["Bounce"] = 3,
+            ["Ignore"] = 4,
+        },
+        editable = false,
+    },
+}
 
 shiftingSwitch.sprite = function(room, entity)
     local sprites = {}

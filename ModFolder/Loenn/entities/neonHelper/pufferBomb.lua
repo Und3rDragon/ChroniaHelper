@@ -12,6 +12,44 @@ pufferBomb.placements = {
     data = {
         sprite = "pufferBomb",
         rangeIndicator = "bombRange",
+        basicColliders = "r,12,10,-6,-5",
+        playerColliders = "r,14,12,-7,-7",
+        detectCollider = "60,30,-30,0",
+        wallbreakCollider = "16,0,0",
+        longRange = false,
+        alwaysBoost = true,
+        ignoreSolids = false,
+    }
+}
+
+pufferBomb.fieldInformation = {
+    basicColliders = {
+        fieldType = "list",
+        elementSeparator = ";",
+        elementOptions = {
+            fieldType = "list",
+        },
+        allowsEmpty = false,
+    },
+    playerColliders = {
+        fieldType = "list",
+        elementSeparator = ";",
+        elementOptions = {
+            fieldType = "list",
+        },
+        allowsEmpty = false,
+    },
+    detectCollider = {
+        fieldType = "list",
+        minimumElements = 2,
+        maximumElements = 4,
+        allowsEmpty = false,
+    },
+    wallbreakCollider = {
+        fieldType = "list",
+        minimumElements = 1,
+        maximumElements = 3,
+        allowsEmpty = false,
     }
 }
 

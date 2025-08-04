@@ -109,6 +109,8 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		private Color connectorColor = Calc.HexToColor("aefaff");
 		private Color effectsColor = Calc.HexToColor("aefaff");
 
+		private DashCollisionResults normal, rebound;
+
 		public ShiftingSwitch(Vector2 position, bool left, bool right, bool top, bool down, float speed, float distance, List<Vector2> nodes, bool oneConnector, bool silent, EntityData data)
 			: base(position, 24f, 24f, safe: true)
 		{
@@ -117,7 +119,12 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			Add(sprite = GFX.SpriteBank.Create(data.Attr("sprite", "shiftingSwitch")));
 			connector = GFX.Game[data.Attr("connectorSprite", "objects/ChroniaHelper/shiftingSwitch/connector")];
 			sprite.Position = new Vector2(Width, Height) / 2f;
-			OnDashCollide = Dashed;
+
+			// custom rebounding
+			normal = (DashCollisionResults)data.Int("onNormal", 1);
+            rebound = (DashCollisionResults)data.Int("onRebound", 0);
+
+            OnDashCollide = Dashed;
 
 			this.speed = speed;
 			this.distance = distance;
@@ -227,30 +234,30 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 					{
 						return handleRebound(dir, Sides.Left);
 					}
-					return DashCollisionResults.NormalCollision;
+					return normal;
 
 				case Sides.Right:
 					if (activeSides.Contains(Sides.Right))
 					{
 						return handleRebound(dir, Sides.Right);
 					}
-					return DashCollisionResults.NormalCollision;
+					return normal;
 
 				case Sides.Up:
 					if (activeSides.Contains(Sides.Up))
 					{
 						return handleRebound(dir, Sides.Up);
 					}
-					return DashCollisionResults.NormalCollision;
+					return normal;
 
 				case Sides.Down:
 					if (activeSides.Contains(Sides.Down))
 					{
 						return handleRebound(dir, Sides.Down);
 					}
-					return DashCollisionResults.NormalCollision;
+					return normal;
 				default:
-					return DashCollisionResults.NormalCollision;
+					return normal;
 			}
 		}
 
@@ -312,7 +319,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 				sprite.Play("flash");
 			}
 
-			return DashCollisionResults.Rebound;
+			return rebound;
 		}
 
 		public override void Removed(Scene scene)

@@ -129,17 +129,61 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			this.alwaysBoost = alwaysBoost;
 			this.longRange = longRange;
 			this.ignoreSolids = ignoreSolids;
-            Collider = new Hitbox(12f, 10f, -6f, -5f);
+
+			// colliders set
+			bool cl_basic_done, cl_player_done;
+            ColliderList cl_basic = ParseColliderList(data.Attr("basicColliders", "r,12,10,-6,-5"), out cl_basic_done), 
+				cl_player = ParseColliderList(data.Attr("playerColliders", "r,14,12,-7,-7"), out cl_player_done);
+
+
+            Collider = cl_basic_done? cl_basic : new Hitbox(12f, 10f, -6f, -5f);
 			Add(explosionRange = GFX.SpriteBank.Create(data.Attr("rangeIndicator", "bombRange")));
-			Add(new PlayerCollider(OnPlayer, new Hitbox(14f, 12f, -7f, -7f)));
+			Add(new PlayerCollider(OnPlayer, cl_player_done? cl_player : new Hitbox(14f, 12f, -7f, -7f)));
 			Add(sprite = GFX.SpriteBank.Create(data.Attr("sprite", "pufferBomb")));
 			sprite.Play("idle");
 			anchorPosition = Position;
 			state = States.Idle;
 			startPosition = lastSinePosition = lastSpeedPosition = Position;
-			pushRadius = new Hitbox(longRange ? 120f : 60f, 60f, longRange ? -60f : -30f, -30f); ;
-			detectRadius = new Hitbox(60f, 30f, -30f, 0f);
-			breakWallsRadius = new Circle(16f);
+			pushRadius = new Hitbox(longRange ? 120f : 60f, 60f, longRange ? -60f : -30f, -30f);
+			// modified detectRadius
+			string[] dR = data.Attr("detectCollider", "60,30,-30,0").Split(",",StringSplitOptions.TrimEntries);
+			Hitbox d_detect = new Hitbox(60f, 30f, -30f, 0f);
+			if(dR.Length >= 2)
+			{
+				float w, h, x = 0, y = 0;
+				float.TryParse(dR[0], out w);
+                float.TryParse(dR[1], out h);
+				if(dR.Length >= 3)
+				{
+                    float.TryParse(dR[2], out x);
+                }
+				if(dR.Length >= 4)
+				{
+                    float.TryParse(dR[2], out y);
+                }
+
+				if(w > 0 && h > 0) { d_detect = new Hitbox(w, h, x, y);}
+            }
+            detectRadius = d_detect;
+			// modified WallBreak
+			string[] wbR = data.Attr("wallbreakCollider", "16,0,0").Split(",", StringSplitOptions.TrimEntries);
+			Circle wb = new Circle(16f);
+			if(wbR.Length >= 1)
+			{
+				float r, x = 0, y = 0;
+				float.TryParse(wbR[0], out r);
+				if(wbR.Length >= 2)
+				{
+                    float.TryParse(wbR[1], out x);
+                }
+				if(wbR.Length >= 3)
+				{
+                    float.TryParse(wbR[2], out y);
+                }
+				if(r > 0) { wb = new Circle(r, x, y); }
+			}
+			breakWallsRadius = wb;
+
 			onCollideV = OnCollideV;
 			onCollideH = OnCollideH;
 			scale = Vector2.One;
@@ -194,6 +238,46 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			self.Add(collider);
 		}
 
+		private ColliderList ParseColliderList(string attribute, out bool success)
+		{
+			string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
+			ColliderList cl = new(); success = false;
+			for(int i = 0; i < p.Length; i++)
+			{
+				string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
+				if (ps.Length <= 1) { continue; }
+
+				bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+				if (isRect && ps.Length < 3) { continue; }
+				if (isCir && ps.Length < 2) { continue; }
+				if (!isRect && !isCir) { continue; }
+
+				if (isRect)
+				{
+					float w, h, x = 0, y = 0;
+					float.TryParse(ps[1], out w);
+					if (w <= 0) { continue; }
+                    float.TryParse(ps[2], out h);
+					if (h <= 0) { continue; }
+					if(ps.Length >= 4) { float.TryParse(ps[3], out x); }
+                    if (ps.Length >= 5) { float.TryParse(ps[4], out y); }
+					cl.Add(new Hitbox(w, h, x, y));
+					success = true;
+                }
+				else if (isCir)
+				{
+					float r, x = 0, y = 0;
+                    float.TryParse(ps[1], out r);
+                    if (r <= 0) { continue; }
+                    if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
+                    if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
+					cl.Add(new Circle(r, x, y));
+					success = true;
+                }
+			}
+
+			return cl;
+		}
 
 		public override bool IsRiding(JumpThru jumpThru)
 		{

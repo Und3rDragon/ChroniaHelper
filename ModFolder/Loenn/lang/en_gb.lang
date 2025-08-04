@@ -769,8 +769,17 @@ entities.ChroniaHelper/PufferBombSpringDown.attributes.description.sprite=The XM
 # Shifting Switch
 entities.ChroniaHelper/ShiftingSwitch.placements.description.Shifting Switch=Shifting Switch (implementation from City of Broken Dreams)
 entities.ChroniaHelper/ShiftingSwitch.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
-entities.ChroniaHelper/ShiftingSwitch.attributes.description.oneConnector=If enabled, the shifting switch will only try to connect to the block nearest to its first node
+entities.ChroniaHelper/ShiftingSwitch.attributes.description.oneConnector=If enabled, the shifting switch will only show the connection to the block nearest to its first node \ninstead of showing all the connections it has
 
 # Shifting Block
 entities.ChroniaHelper/ShiftingBlock.placements.description.Shifting Block=Shifting Block (implementation from City of Broken Dreams)
 entities.ChroniaHelper/ShiftingBlock.attributes.description.noConnector=If enabled, the block will not show connector on its center
+
+# Puffer Bomb
+entities.ChroniaHelper/PufferBomb.placements.description.Puffer Bomb=Puffer Bomb (implementation from City of Broken Dreams)
+entities.ChroniaHelper/PufferBomb.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+entities.ChroniaHelper/PufferBomb.attributes.description.rangeIndicator=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+entities.ChroniaHelper/PufferBomb.attributes.description.basicColliders=Collider array separated by ";", each collider can be defined as: \n"r,width,height,offsetX,offsetY" as a rectangle hitbox \n"c,radius,offsetX,offsetY" as a circle hitbox
+entities.ChroniaHelper/PufferBomb.attributes.description.playerColliders=Collider array that will affect the player interactions, separated by ";", each collider can be defined as: \n"r,width,height,offsetX,offsetY" as a rectangle hitbox \n"c,radius,offsetX,offsetY" as a circle hitbox
+entities.ChroniaHelper/PufferBomb.attributes.description.detectCollider=The rectangular collider that detects whether the explosion happens
+entities.ChroniaHelper/PufferBomb.attributes.description.wallbreakCollider=The circle collider that defines the area the explosion can affect when the explosion should break some walls
