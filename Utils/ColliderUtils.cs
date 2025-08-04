@@ -95,6 +95,12 @@ public static class ColliderUtils
         return colliders.colliders.Length > 0 ? colliders : null;
     }
 
+    /// <summary>
+    /// "r,width,height,x,y;c,radius,x,y;..." => ColliderList
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <param name="success"></param>
+    /// <returns></returns>
     public static ColliderList ParseColliderList(this string attribute, out bool success)
     {
         string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
@@ -130,6 +136,45 @@ public static class ColliderUtils
                 if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
                 cl.Add(new Circle(r, x, y));
                 success = true;
+            }
+        }
+
+        return cl;
+    }
+
+    public static ColliderList ParseColliderList(this string attribute)
+    {
+        string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
+        ColliderList cl = new();
+        for (int i = 0; i < p.Length; i++)
+        {
+            string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
+            if (ps.Length <= 1) { continue; }
+
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            if (isRect && ps.Length < 3) { continue; }
+            if (isCir && ps.Length < 2) { continue; }
+            if (!isRect && !isCir) { continue; }
+
+            if (isRect)
+            {
+                float w, h, x = 0, y = 0;
+                float.TryParse(ps[1], out w);
+                if (w <= 0) { continue; }
+                float.TryParse(ps[2], out h);
+                if (h <= 0) { continue; }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out x); }
+                if (ps.Length >= 5) { float.TryParse(ps[4], out y); }
+                cl.Add(new Hitbox(w, h, x, y));
+            }
+            else if (isCir)
+            {
+                float r, x = 0, y = 0;
+                float.TryParse(ps[1], out r);
+                if (r <= 0) { continue; }
+                if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
+                cl.Add(new Circle(r, x, y));
             }
         }
 

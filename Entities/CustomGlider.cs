@@ -66,7 +66,6 @@ public class CustomGlider : Actor
     public string idlePath, heldPath, fallPath, fallLoopPath, deathPath, respawnPath;
     public float idleTime, heldTime, fallTime, fallLoopTime, deathTime, respawnAnimTime;
 
-    private float hbw, hbh, hbx, hby, hdw, hdh, hdx, hdy;
     public CustomGlider(EntityData e, Vector2 offset)
         : base(e.Position + offset)
     {
@@ -76,39 +75,8 @@ public class CustomGlider : Actor
         bool gfxoverride = e.Bool("XMLOverride", false);
 
         // New data from 1.23.7
-        var hitbox = e.Attr("hitboxParameters").Split(',',StringSplitOptions.TrimEntries);
-        var holdableHitbox = e.Attr("holdableParameters").Split(',',StringSplitOptions.TrimEntries);
-        int hitboxVars = hitbox.Length;
-        int holdableVars = holdableHitbox.Length;
-        hbw = 8f; hbh = 10f; hbx = -4f; hby = -10f;
-        hdw = 20f; hdh = 22f; hdx = -10f; hdy = -16f;
-        if (hitboxVars >= 1) { hbw = hitbox[0].ParseFloat(8f); }
-        if (hitboxVars >= 2) { hbh = hitbox[1].ParseFloat(10f); }
-        if (hitboxVars >= 3) { hbx = hitbox[2].ParseFloat(-4f); }
-        if (hitboxVars >= 4) { hby = hitbox[3].ParseFloat(-10f); }
-        if (holdableVars >= 1) { hdw = holdableHitbox[0].ParseFloat(20f); }
-        if (holdableVars >= 2) { hdh = holdableHitbox[1].ParseFloat(22f); }
-        if (holdableVars >= 3) { hdx = holdableHitbox[2].ParseFloat(-10f); }
-        if (holdableVars >= 4) { hdy = holdableHitbox[3].ParseFloat(-16f); }
+        base.Collider = e.Attr("hitboxParameters", "8,10,-4,-10").ParseRectangleCollider(new Hitbox(8,10,-4,-10));
 
-        // Old data before 1.23.7
-        if (!string.IsNullOrEmpty(e.Attr("hitboxWidth"))){
-            hbw = Math.Abs(e.Float("hitboxWidth", 8f));
-        }
-        if (!string.IsNullOrEmpty(e.Attr("hitboxHeight"))){
-            hbh = Math.Abs(e.Float("hitboxHeight", 10f));
-        }
-        if (!string.IsNullOrEmpty(e.Attr("hitboxX")))
-        {
-            hbx = e.Float("hitboxX", -4f);
-        }
-        if (!string.IsNullOrEmpty(e.Attr("hitboxY")))
-        {
-            hby = e.Float("hitboxY", -10f);
-        }
-        
-        
-        base.Collider = new Hitbox(hbw, hbh, hbx, hby);
         onCollideH = OnCollideH;
         onCollideV = OnCollideV;
 
@@ -152,7 +120,7 @@ public class CustomGlider : Actor
         Add(wiggler = Wiggler.Create(0.25f, 4f));
         base.Depth = e.Int("Depth", -5);
         Add(Hold = new Holdable(0.3f));
-        Hold.PickupCollider = new Hitbox(hdw, hdh, hdx, hdy);
+        Hold.PickupCollider = e.Attr("holdableParameters", "20,22,-10,-16").ParseRectangleCollider(new Hitbox(20f, 22f, -10f, -16f));
         Hold.SlowFall = true;
         Hold.SlowRun = false;
         Hold.OnPickup = OnPickup;
