@@ -181,4 +181,94 @@ public static class GeometryUtils
     {
         return a.X * b.Y - a.Y * b.X;
     }
+
+    /// <summary>
+    /// "x,y,width,height" => Rectangle
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <returns></returns>
+    public static Rectangle ParseRectangle(this string attribute)
+    {
+        string[] p = attribute.Split(",", StringSplitOptions.TrimEntries);
+        Rectangle rec = new Rectangle(0,0,16,16);
+        if (p.Length >= 4)
+        {
+            int w, h, x, y;
+            int.TryParse(p[2], out w);
+            int.TryParse(p[3], out h);
+            int.TryParse(p[0], out x);
+            int.TryParse(p[1], out y);
+
+            rec = new Rectangle(x, y, w, h);
+        }
+
+        return rec;
+    }
+
+    public static Rectangle ParseRectangle(this string attribute, Rectangle defaultRectangle)
+    {
+        string[] p = attribute.Split(",", StringSplitOptions.TrimEntries);
+        Rectangle rec = defaultRectangle;
+        if (p.Length >= 4)
+        {
+            int w, h, x, y;
+            int.TryParse(p[2], out w);
+            int.TryParse(p[3], out h);
+            int.TryParse(p[0], out x);
+            int.TryParse(p[1], out y);
+
+            rec = new Rectangle(x, y, w, h);
+        }
+
+        return rec;
+    }
+
+    /// <summary>
+    /// "r,x,y" => Circle
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <returns></returns>
+    public static Circle ParseCircle(this string attribute)
+    {
+        string[] p = attribute.Split(',', StringSplitOptions.TrimEntries);
+        Circle cir = new Circle(16f);
+        if (p.Length >= 1)
+        {
+            float r, x = 0, y = 0;
+            float.TryParse(p[0], out r);
+            if (p.Length >= 2)
+            {
+                float.TryParse(p[1], out x);
+            }
+            if (p.Length >= 3)
+            {
+                float.TryParse(p[2], out y);
+            }
+            if (r > 0) { cir = new Circle(r, x, y); }
+        }
+
+        return cir;
+    }
+
+    public static Circle ParseCircle(this string attribute, Circle defaultCircle)
+    {
+        string[] p = attribute.Split(',', StringSplitOptions.TrimEntries);
+        Circle cir = defaultCircle;
+        if (p.Length >= 1)
+        {
+            float r, x = 0, y = 0;
+            float.TryParse(p[0], out r);
+            if (p.Length >= 2)
+            {
+                float.TryParse(p[1], out x);
+            }
+            if (p.Length >= 3)
+            {
+                float.TryParse(p[2], out y);
+            }
+            if (r > 0) { cir = new Circle(r, x, y); }
+        }
+
+        return cir;
+    }
 }
