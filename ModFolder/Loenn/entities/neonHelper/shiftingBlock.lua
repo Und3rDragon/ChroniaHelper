@@ -16,6 +16,7 @@ shiftingBlock.placements = {
         height = 8,
         shakeTime = 0.4,
         easing = "QuadInOut",
+        connectorSprite = "objects/ChroniaHelper/shiftingSwitch/center",
         noConnector = false,
     }
 }

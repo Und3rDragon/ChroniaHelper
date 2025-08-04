@@ -62,7 +62,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
         public PufferBombSpring(EntityData data, Vector2 offset, CustomOrientations orientation) : base(data.Position + offset, CustomToRegularOrientation[orientation], data.Bool("playerCanUse", true))
         {
             bool playerCanUse = data.Bool("playerCanUse", true);
-            dir = data.Attr("directory", "objects/spring/");
+            dir = data.Attr("sprite", "pufferBombSpring");
             RenderOutline = data.Bool("renderOutline", true);
 
             DynData<Spring> self = new DynData<Spring>(this);
@@ -80,13 +80,13 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
             Sprite spr = self.Get<Sprite>("sprite");
 
             Remove(spr);
-            Add(Sprite = new Sprite(GFX.Game, dir));
-            Sprite.Add("idle", "", 0f, new int[1]);
-            Sprite.Add("bounce", "", 0.07f, "idle", 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 5);
-            Sprite.Add("disabled", "white", 0.07f);
+            Add(Sprite = GFX.SpriteBank.Create(dir));
+            //Sprite.Add("idle", "", 0f, new int[1]);
+            //Sprite.Add("bounce", "", 0.07f, "idle", 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 5);
+            //Sprite.Add("disabled", "white", 0.07f);
             Sprite.Play("idle", false, false);
-            Sprite.Origin.X = Sprite.Width / 2f;
-            Sprite.Origin.Y = Sprite.Height;
+            //Sprite.Origin.X = Sprite.Width / 2f;
+            //Sprite.Origin.Y = Sprite.Height;
 
             Depth = -8501;
 

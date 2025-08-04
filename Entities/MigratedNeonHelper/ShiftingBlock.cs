@@ -57,7 +57,9 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 
 		private Ease.Easer easing;
 
-		public ShiftingBlock(Vector2 position, char tiletype, float shakeTime, float width, float height, bool noConnector, string easing)
+		private string connectorPath;
+
+		public ShiftingBlock(Vector2 position, char tiletype, float shakeTime, float width, float height, bool noConnector, string easing, EntityData data)
 			: base(position, width, height, safe: false)
 		{
 			Depth = -12999;
@@ -67,6 +69,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			this.shakeTime = shakeTime;
 			this.noConnector = noConnector;
 			this.easing = EaseUtils.StringToEase(easing);
+			this.connectorPath = data.Attr("connectorSprite", "objects/ChroniaHelper/shiftingSwitch/center");
 
 			tileType = tiletype;
 			SurfaceSoundIndex = SurfaceIndex.TileToIndex[tileType];
@@ -84,7 +87,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		}
 
 		public ShiftingBlock(EntityData data, Vector2 offset, EntityID id)
-			: this(data.Position + offset, data.Char("tiletype", '3'), data.Float("shakeTime", 0.4f), data.Width, data.Height, data.Bool("noConnector"), data.Attr("easing", "quadinout"))
+			: this(data.Position + offset, data.Char("tiletype", '3'), data.Float("shakeTime", 0.4f), data.Width, data.Height, data.Bool("noConnector"), data.Attr("easing", "quadinout"), data)
 		{
 		}
 
@@ -173,7 +176,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			Add(new TileInterceptor(tileGrid, highPriority: true));
 			if (!noConnector)
 			{
-				Add(centerNode = new Image(GFX.Game["objects/NeonCity/shiftingSwitch/center"]));
+				Add(centerNode = new Image(GFX.Game[connectorPath]));
 				centerNode.CenterOrigin();
 				centerNode.Position = new Vector2(width / 2, height / 2);
 			}

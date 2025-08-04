@@ -137,5 +137,11 @@
 		<Loop id="idle" path="idle" delay="0.1"/>
 		<Anim id="explode" path="explode" delay="0.05"/>
 	</pufferBomb>
+	<pufferBombSpring path="objects/spring/" start="idle">
+		<Justify x="0.5" y="1"/>
+		<Anim id ="idle" path="" delay="0" frames="0"/>
+		<Anim id ="bounce" path="" delay="0.07" frames="0" goto="idle"/>
+		<Anim id ="disabled" path="white" delay="0.07" frames="0"/>
+	</pufferBombSpring>
 	
 </Sprites>

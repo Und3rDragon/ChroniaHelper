@@ -749,3 +749,28 @@ entities.ChroniaHelper/CustomCoreBlock.placements.name.fire=Custom Core Block (F
 entities.ChroniaHelper/CustomCoreBlock.placements.name.ice=Custom Core Block (Ice)
 entities.ChroniaHelper/CustomCoreBlock.attributes.description.iceBlockTexture=The texture of the ice block state. \nTo change the center crystal of the block, please check the "bumpBlockCenterIce" column in vanilla Sprites.xml
 entities.ChroniaHelper/CustomCoreBlock.attributes.description.fireBlockTexture=The texture of the fire block state. \nTo change the center crystal of the block, please check the "bumpBlockCenterFire" column in vanilla Sprites.xml
+
+# Puffer Bomb Spring
+entities.ChroniaHelper/PufferBombSpringUp.placements.name.up=Puffer Bomb Spring (Up)
+entities.ChroniaHelper/PufferBombSpringRight.placements.name.right=Puffer Bomb Spring (Right)
+entities.ChroniaHelper/PufferBombSpringLeft.placements.name.left=Puffer Bomb Spring (Left)
+entities.ChroniaHelper/PufferBombSpringDown.placements.name.down=Puffer Bomb Spring (Down)
+
+entities.ChroniaHelper/PufferBombSpringUp.placements.description.up=Puffer Bomb Spring (implementation from City of Broken Dreams)
+entities.ChroniaHelper/PufferBombSpringRight.placements.description.right=Puffer Bomb Spring (implementation from City of Broken Dreams)
+entities.ChroniaHelper/PufferBombSpringLeft.placements.description.left=Puffer Bomb Spring (implementation from City of Broken Dreams)
+entities.ChroniaHelper/PufferBombSpringDown.placements.description.down=Puffer Bomb Spring (implementation from City of Broken Dreams)
+
+entities.ChroniaHelper/PufferBombSpringUp.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+entities.ChroniaHelper/PufferBombSpringRight.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+entities.ChroniaHelper/PufferBombSpringLeft.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+entities.ChroniaHelper/PufferBombSpringDown.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+
+# Shifting Switch
+entities.ChroniaHelper/ShiftingSwitch.placements.description.Shifting Switch=Shifting Switch (implementation from City of Broken Dreams)
+entities.ChroniaHelper/ShiftingSwitch.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+entities.ChroniaHelper/ShiftingSwitch.attributes.description.oneConnector=If enabled, the shifting switch will only try to connect to the block nearest to its first node
+
+# Shifting Block
+entities.ChroniaHelper/ShiftingBlock.placements.description.Shifting Block=Shifting Block (implementation from City of Broken Dreams)
+entities.ChroniaHelper/ShiftingBlock.attributes.description.noConnector=If enabled, the block will not show connector on its center

@@ -10,7 +10,7 @@ springUp.texture = springTexture
 springUp.placements = {
     name = "up",
     data = {
-        directory = "objects/spring/",
+        sprite = "pufferBombSpring",
         playerCanUse = true,
         renderOutline = true,
     }
@@ -45,7 +45,7 @@ springRight.rotation = math.pi / 2
 springRight.placements = {
     name = "right",
     data = {
-        directory = "objects/spring/",
+        sprite = "pufferBombSpring",
         playerCanUse = true,
         renderOutline = true,
     }
@@ -79,7 +79,7 @@ springLeft.rotation = -math.pi / 2
 springLeft.placements = {
     name = "left",
     data = {
-        directory = "objects/spring/",
+        sprite = "pufferBombSpring",
         playerCanUse = true,
         renderOutline = true,
     }
@@ -113,7 +113,7 @@ springDown.rotation = math.pi
 springDown.placements = {
     name = "down",
     data = {
-        directory = "objects/spring/",
+        sprite = "pufferBombSpring",
         playerCanUse = true,
         renderOutline = true,
     }
