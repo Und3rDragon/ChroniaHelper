@@ -12,9 +12,9 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/ZaggingLine")]
 public class ZaggingLine : Entity
 {
-    public ZaggingLine(EntityData data, Vector2 position) : base(data.Position)
+    public ZaggingLine(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-        nodes = data.NodesWithPosition(Vector2.Zero);
+        nodes = data.NodesWithPosition(offset);
 
         // bg line
         hasBgLine = data.Bool("showBgLine", false);
@@ -110,7 +110,7 @@ public class ZaggingLine : Entity
     public override void Render()
     {
         base.Render();
-
+        
         for(int i = 0; i < nodes.MaxIndex(); i++)
         {
             Vector2 from = nodes[i], to = nodes[i + 1];
