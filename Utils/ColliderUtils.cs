@@ -1,4 +1,5 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using ChroniaHelper.Shortcuts;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Utils;
 
@@ -146,6 +147,177 @@ public static class ColliderUtils
     {
         string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
         ColliderList cl = new();
+        for (int i = 0; i < p.Length; i++)
+        {
+            string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
+            if (ps.Length <= 1) { continue; }
+
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            if (isRect && ps.Length < 3) { continue; }
+            if (isCir && ps.Length < 2) { continue; }
+            if (!isRect && !isCir) { continue; }
+
+            if (isRect)
+            {
+                float w, h, x = 0, y = 0;
+                float.TryParse(ps[1], out w);
+                if (w <= 0) { continue; }
+                float.TryParse(ps[2], out h);
+                if (h <= 0) { continue; }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out x); }
+                if (ps.Length >= 5) { float.TryParse(ps[4], out y); }
+                cl.Add(new Hitbox(w, h, x, y));
+            }
+            else if (isCir)
+            {
+                float r, x = 0, y = 0;
+                float.TryParse(ps[1], out r);
+                if (r <= 0) { continue; }
+                if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
+                cl.Add(new Circle(r, x, y));
+            }
+        }
+
+        return cl;
+    }
+
+    public static ColliderList ParseColliderList(this string attribute, ColliderList defaultSet, out bool success)
+    {
+        string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
+        ColliderList cl = defaultSet; success = false;
+        for (int i = 0; i < p.Length; i++)
+        {
+            string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
+            if (ps.Length <= 1) { continue; }
+
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            if (isRect && ps.Length < 3) { continue; }
+            if (isCir && ps.Length < 2) { continue; }
+            if (!isRect && !isCir) { continue; }
+
+            if (isRect)
+            {
+                float w, h, x = 0, y = 0;
+                float.TryParse(ps[1], out w);
+                if (w <= 0) { continue; }
+                float.TryParse(ps[2], out h);
+                if (h <= 0) { continue; }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out x); }
+                if (ps.Length >= 5) { float.TryParse(ps[4], out y); }
+                cl.Add(new Hitbox(w, h, x, y));
+                success = true;
+            }
+            else if (isCir)
+            {
+                float r, x = 0, y = 0;
+                float.TryParse(ps[1], out r);
+                if (r <= 0) { continue; }
+                if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
+                cl.Add(new Circle(r, x, y));
+                success = true;
+            }
+        }
+        
+        return cl;
+    }
+
+    public static ColliderList ParseColliderList(this string attribute, ColliderList defaultSet)
+    {
+        string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
+        ColliderList cl = defaultSet;
+        for (int i = 0; i < p.Length; i++)
+        {
+            string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
+            if (ps.Length <= 1) { continue; }
+
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            if (isRect && ps.Length < 3) { continue; }
+            if (isCir && ps.Length < 2) { continue; }
+            if (!isRect && !isCir) { continue; }
+
+            if (isRect)
+            {
+                float w, h, x = 0, y = 0;
+                float.TryParse(ps[1], out w);
+                if (w <= 0) { continue; }
+                float.TryParse(ps[2], out h);
+                if (h <= 0) { continue; }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out x); }
+                if (ps.Length >= 5) { float.TryParse(ps[4], out y); }
+                cl.Add(new Hitbox(w, h, x, y));
+            }
+            else if (isCir)
+            {
+                float r, x = 0, y = 0;
+                float.TryParse(ps[1], out r);
+                if (r <= 0) { continue; }
+                if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
+                cl.Add(new Circle(r, x, y));
+            }
+        }
+
+        return cl;
+    }
+
+    public static ColliderList ListToCollider(this List<Collider> colliders)
+    {
+        ColliderList cl = new();
+        foreach (var collider in colliders)
+        {
+            cl.Add(collider);
+        }
+
+        return cl;
+    }
+
+    public static ColliderList ParseColliderList(this string attribute, List<Collider> defaultSet, out bool success)
+    {
+        string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
+        ColliderList cl = defaultSet.ListToCollider(); success = false;
+        for (int i = 0; i < p.Length; i++)
+        {
+            string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
+            if (ps.Length <= 1) { continue; }
+
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            if (isRect && ps.Length < 3) { continue; }
+            if (isCir && ps.Length < 2) { continue; }
+            if (!isRect && !isCir) { continue; }
+
+            if (isRect)
+            {
+                float w, h, x = 0, y = 0;
+                float.TryParse(ps[1], out w);
+                if (w <= 0) { continue; }
+                float.TryParse(ps[2], out h);
+                if (h <= 0) { continue; }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out x); }
+                if (ps.Length >= 5) { float.TryParse(ps[4], out y); }
+                cl.Add(new Hitbox(w, h, x, y));
+                success = true;
+            }
+            else if (isCir)
+            {
+                float r, x = 0, y = 0;
+                float.TryParse(ps[1], out r);
+                if (r <= 0) { continue; }
+                if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
+                if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
+                cl.Add(new Circle(r, x, y));
+                success = true;
+            }
+        }
+
+        return cl;
+    }
+
+    public static ColliderList ParseColliderList(this string attribute, List<Collider> defaultSet)
+    {
+        string[] p = attribute.Split(";", StringSplitOptions.TrimEntries);
+        ColliderList cl = defaultSet.ListToCollider();
         for (int i = 0; i < p.Length; i++)
         {
             string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);

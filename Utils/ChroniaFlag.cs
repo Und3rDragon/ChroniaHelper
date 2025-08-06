@@ -129,10 +129,12 @@ public class ChroniaFlag
                         MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
                         Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                     }
+
+                    if (item.Value.Force)
+                    {
+                        MaP.session.SetFlag(item.Key, item.Value.Active);
+                    }
                 }
-
-                // Global Force Flags have no effect yet
-
             }
         }
     }
