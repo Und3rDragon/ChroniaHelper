@@ -79,6 +79,8 @@ public class ChroniaHelperSession : EverestModuleSession
         ZoneDepth = zone.Depth;
     }
 
+    // Flag Button Data
+    // Can be migrated but not necessary?
     public Dictionary<string, bool> switchFlag = new Dictionary<string, bool>();
     public List<string> flagNames = new List<string>();
     public List<string> lastRoom = new List<string>();

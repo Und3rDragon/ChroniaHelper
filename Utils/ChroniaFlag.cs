@@ -149,10 +149,7 @@ public class ChroniaFlag
     
     public List<Labels> PresetTags { get; set; } = new();
 
-    public ChroniaFlag()
-    {
-        
-    }
+    public ChroniaFlag() { }
 
     public ChroniaFlag(bool active = true, bool global = false, bool temporary = false,
         float timed = -1f)
