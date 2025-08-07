@@ -39,6 +39,8 @@ public class CustomBooster : Booster
 
         On.Celeste.Booster.AppearParticles += Booster_AppearParticles;
 
+        On.Celeste.Booster.PlayerBoosted += Booster_PlayerBoosted;
+
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash += RefillD;
@@ -110,6 +112,8 @@ public class CustomBooster : Booster
         IL.Celeste.Player.BoostUpdate -= PlayerOnBoostUpdate;
 
         On.Celeste.Booster.AppearParticles -= Booster_AppearParticles;
+
+        On.Celeste.Booster.PlayerBoosted -= Booster_PlayerBoosted;
         // Usable but unecessary
 
         // On.Celeste.Player.RefillDash -= RefillD;
@@ -134,13 +138,14 @@ public class CustomBooster : Booster
     private ParticleType customBurstParticleType, customAppearParticleType;
     private bool burstParticleColorOverride, appearParticleColorOverride;
     private float holdTime = 0.25f;
-    public bool DisableFastBubble;
+    public bool DisableFastBubble, allowDashout;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
     {
         base.Depth = data.Int("depth", -8500);
         Ch9HubBooster = data.Bool("ch9_hub_booster", false);
+        allowDashout = data.Bool("allowDashOutWhenBoosting", true);
 
         hbr = Math.Abs(data.Float("hitboxRadius", 10f));
         hbx = data.Float("hitboxX", 0f);
@@ -253,6 +258,63 @@ public class CustomBooster : Booster
         scene.Add(outline);
     }
 
+    private static void Booster_PlayerBoosted(On.Celeste.Booster.orig_PlayerBoosted orig, Booster self, Player player, Vector2 direction)
+    {
+        if(self is CustomBooster booster)
+        {
+            Audio.Play(booster.red ? "event:/game/05_mirror_temple/redbooster_dash" : "event:/game/04_cliffside/greenbooster_dash", booster.Position);
+            if (booster.red)
+            {
+                booster.loopingSfx.Play("event:/game/05_mirror_temple/redbooster_move");
+                booster.loopingSfx.DisposeOnTransition = false;
+            }
+
+            bool tag1 = booster.Ch9HubBooster && direction.Y < 0f,
+                tag2 = booster.allowDashout,
+                locked = tag1 || !tag2;
+            if (locked)
+            {
+                bool flag = true;
+                List<LockBlock> list = booster.Scene.Entities.FindAll<LockBlock>();
+                if (list.Count > 0)
+                {
+                    foreach (LockBlock item in list)
+                    {
+                        if (!item.UnlockingRegistered)
+                        {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (flag)
+                {
+                    booster.Ch9HubTransition = true;
+                    booster.Add(Alarm.Create(Alarm.AlarmMode.Oneshot, [MethodImpl(MethodImplOptions.NoInlining)] () =>
+                    {
+                        booster.Add(new SoundSource("event:/new_content/timeline_bubble_to_remembered")
+                        {
+                            DisposeOnTransition = false
+                        });
+                    }, 2f, start: true));
+                }
+            }
+
+            booster.BoostingPlayer = true;
+            booster.Tag = (int)Tags.Persistent | (int)Tags.TransitionUpdate;
+            booster.sprite.Play("spin");
+            booster.sprite.FlipX = player.Facing == Facings.Left;
+            booster.outline.Visible = true;
+            booster.wiggler.Start();
+            booster.dashRoutine.Replace(booster.BoostRoutine(player, direction));
+        }
+        else
+        {
+            orig(self, player, direction);
+        }
+        
+    }
     private static void Player_Boost(On.Celeste.Player.orig_Boost orig, Player self, Booster booster)
     {
         TempCurrentBooster = booster;
