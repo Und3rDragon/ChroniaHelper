@@ -47,7 +47,7 @@ public static class ChroniaFlagUtils
     {
         if (!flag.Check()) { return false; }
         
-        return Md.SaveData.ChroniaFlags[flag].PresetTags.Contains(label);
+        return Md.SaveData.ChroniaFlags[flag].PresetTags.Contains((int)label);
     }
 
     /// <summary>

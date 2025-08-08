@@ -47,55 +47,6 @@ public class CustomBooster : Booster
         // On.Celeste.Player.RefillStamina += RefillS;
     }
 
-    private static void ILHookDashCoroutine(ILContext il)
-    {
-        ILCursor cursor = new ILCursor(il);
-
-        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(0.25f)
-            ))
-        {
-            cursor.Index += 1;
-            cursor.EmitPop();
-            cursor.EmitDelegate<Func<float>>(() =>
-            {
-                Scene scene = Engine.Scene;
-                Player player = scene.Tracker.GetEntity<Player>();
-                if (player != null && player.CurrentBooster is CustomBooster booster)
-                    return booster.holdTime;
-                return 0.25f;
-            });
-        }
-    }
-
-    private static void PlayerOnBoostUpdate(ILContext il)
-    {
-        ILCursor cursor = new ILCursor(il);
-
-        MethodInfo moveToYMethod = typeof(Actor).GetMethod("MoveToY", BindingFlags.Instance | BindingFlags.Public);
-        if (cursor.TryGotoNext(ins => ins.MatchCall(moveToYMethod)
-            ))
-        {
-            cursor.Index += 1;
-            ILLabel label = cursor.DefineLabel();
-
-            cursor.EmitDelegate(() =>
-            {
-                Player player = Engine.Scene.Tracker.GetEntity<Player>();
-                if (player != null && player.CurrentBooster is CustomBooster customBooster)
-                {
-                    return customBooster.DisableFastBubble ? 1 : 0;
-                }
-
-                return 0;
-            });
-            cursor.EmitBrfalse(label);
-            cursor.EmitLdcI4(Player.StBoost);
-            cursor.EmitRet();
-
-            cursor.MarkLabel(label);
-        }
-    }
-
     public static void Unload()
     {
         On.Celeste.Booster.PlayerReleased -= Booster_PlayerReleased;
@@ -138,7 +89,7 @@ public class CustomBooster : Booster
     private ParticleType customBurstParticleType, customAppearParticleType;
     private bool burstParticleColorOverride, appearParticleColorOverride;
     private float holdTime = 0.25f;
-    public bool DisableFastBubble, allowDashout;
+    public bool DisableFastBubble, allowDashout, onlyOnce;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -146,6 +97,7 @@ public class CustomBooster : Booster
         base.Depth = data.Int("depth", -8500);
         Ch9HubBooster = data.Bool("ch9_hub_booster", false);
         allowDashout = data.Bool("allowDashOutWhenBoosting", true);
+        onlyOnce = data.Bool("onlyOnce", false);
 
         hbr = Math.Abs(data.Float("hitboxRadius", 10f));
         hbx = data.Float("hitboxX", 0f);
@@ -315,6 +267,56 @@ public class CustomBooster : Booster
         }
         
     }
+
+    private static void ILHookDashCoroutine(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        if (cursor.TryGotoNext(ins => ins.MatchLdcR4(0.25f)
+            ))
+        {
+            cursor.Index += 1;
+            cursor.EmitPop();
+            cursor.EmitDelegate<Func<float>>(() =>
+            {
+                Scene scene = Engine.Scene;
+                Player player = scene.Tracker.GetEntity<Player>();
+                if (player != null && player.CurrentBooster is CustomBooster booster)
+                    return booster.holdTime;
+                return 0.25f;
+            });
+        }
+    }
+
+    private static void PlayerOnBoostUpdate(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        MethodInfo moveToYMethod = typeof(Actor).GetMethod("MoveToY", BindingFlags.Instance | BindingFlags.Public);
+        if (cursor.TryGotoNext(ins => ins.MatchCall(moveToYMethod)
+            ))
+        {
+            cursor.Index += 1;
+            ILLabel label = cursor.DefineLabel();
+
+            cursor.EmitDelegate(() =>
+            {
+                Player player = Engine.Scene.Tracker.GetEntity<Player>();
+                if (player != null && player.CurrentBooster is CustomBooster customBooster)
+                {
+                    return customBooster.DisableFastBubble ? 1 : 0;
+                }
+
+                return 0;
+            });
+            cursor.EmitBrfalse(label);
+            cursor.EmitLdcI4(Player.StBoost);
+            cursor.EmitRet();
+
+            cursor.MarkLabel(label);
+        }
+    }
+
     private static void Player_Boost(On.Celeste.Player.orig_Boost orig, Player self, Booster booster)
     {
         TempCurrentBooster = booster;
@@ -409,6 +411,10 @@ public class CustomBooster : Booster
         if (self is CustomBooster myBooster)
         {
             myBooster.respawnTimer = myBooster.tr;
+            if (myBooster.onlyOnce)
+            {
+                myBooster.RemoveSelf();
+            }
         }
     }
 
@@ -470,6 +476,16 @@ public class CustomBooster : Booster
         else
         {
             orig(self);
+        }
+    }
+
+    public override void Render()
+    {
+        base.Render();
+
+        if (onlyOnce)
+        {
+            ActiveFont.Draw("!", Position, new Vector2(0.5f, 0.5f), new Vector2(0.35f, 0.35f), Color.Red);
         }
     }
 

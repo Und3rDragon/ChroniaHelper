@@ -41,6 +41,7 @@ booster.placements={
 		appearParticleColor = "ffffff",
 		disableFastBubble = false,
 		allowDashOutWhenBoosting = true,
+		onlyOnce = false,
 	}
 }
 

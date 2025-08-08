@@ -13,15 +13,18 @@ namespace ChroniaHelper.Utils;
 
 public enum ExpectedResetState
 {
-    False,
-    True,
-    ReversedActive
+    False = 0,
+    True = 1,
+    ReversedActive = 2,
 }
 
 /// <summary>
 /// For "Serial" label, there must be a "serialHolder" data in CustomData
 /// </summary>
-public enum Labels { Serial }
+public enum Labels
+{
+    Serial = 0,
+}
 
 public class ChroniaFlag
 {
@@ -138,18 +141,18 @@ public class ChroniaFlag
             }
         }
     }
-
+    
     public bool Active { get; set; } = false;
     public bool Global { get; set; } = false;
     public bool Temporary { get; set; } = false;
     public bool Force { get; set; } = false;
     public float Timed { get; set; } = -1f;
     
-    public ExpectedResetState DefaultResetState { get; set; } = (ExpectedResetState)0;
+    public int DefaultResetState { get; set; } = 0;
     public List<string> Tags { get; set; } = new();
     public Dictionary<string, string> CustomData { get; set; } = new();
     
-    public List<Labels> PresetTags { get; set; } = new();
+    public List<int> PresetTags { get; set; } = new();
 
     public ChroniaFlag() { }
 
@@ -174,7 +177,7 @@ public class ChroniaFlag
 
     public bool DefineResetState()
     {
-        switch (DefaultResetState)
+        switch ((ExpectedResetState)DefaultResetState)
         {
             case ExpectedResetState.False:
                 return false;
@@ -189,9 +192,9 @@ public class ChroniaFlag
 
     public void ChroniaFlagDataCheck()
     {
-        if(PresetTags.Contains(Labels.Serial) && !CustomData.ContainsKey("serialHolder", false))
+        if(PresetTags.Contains((int)Labels.Serial) && !CustomData.ContainsKey("serialHolder", false))
         {
-            PresetTags.SafeRemove(Labels.Serial);
+            PresetTags.SafeRemove((int)Labels.Serial);
         }
     }
 }
