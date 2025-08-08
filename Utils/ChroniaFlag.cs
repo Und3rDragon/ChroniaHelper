@@ -148,11 +148,11 @@ public class ChroniaFlag
     public bool Force { get; set; } = false;
     public float Timed { get; set; } = -1f;
     
-    public int DefaultResetState { get; set; } = 0;
+    public ExpectedResetState DefaultResetState { get; set; } = 0;
     public List<string> Tags { get; set; } = new();
     public Dictionary<string, string> CustomData { get; set; } = new();
     
-    public List<int> PresetTags { get; set; } = new();
+    public List<Labels> PresetTags { get; set; } = new();
 
     public ChroniaFlag() { }
 
@@ -192,9 +192,9 @@ public class ChroniaFlag
 
     public void ChroniaFlagDataCheck()
     {
-        if(PresetTags.Contains((int)Labels.Serial) && !CustomData.ContainsKey("serialHolder", false))
+        if(PresetTags.Contains(Labels.Serial) && !CustomData.ContainsKey("serialHolder", false))
         {
-            PresetTags.SafeRemove((int)Labels.Serial);
+            PresetTags.SafeRemove(Labels.Serial);
         }
     }
 }
