@@ -30,7 +30,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 
 			public RingEffect()
 			{
-				ring = GFX.Game["objects/NeonCity/shiftingSwitch/ring"];
+				ring = GFX.Game["objects/ChroniaHelper/shiftingSwitch/ring"];
 				Depth = -12000;
 			}
 

@@ -227,4 +227,16 @@ public static class CollectiveUtils
 
         return array;
     }
+
+    public static T[] SetAll<T>(ref T[] array, T value)
+    {
+        if (array.Length == 0) { return Array.Empty<T>(); }
+
+        for(int i = 0; i < array.Length; i++)
+        {
+            array[i] = value;
+        }
+
+        return array;
+    }
 }
