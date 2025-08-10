@@ -37,6 +37,7 @@ ccm.placements = {
         screenPosX = 160,
         screenPosY = 90,
         detectSessionExpression = false,
+        vanillaRenderDistanceBehaviour = true,
     }, 
     nodeLimits = {0,2}
 }

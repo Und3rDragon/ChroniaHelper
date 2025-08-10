@@ -41,7 +41,7 @@ public class ColoredCustomCoreMessage : Entity
 
     private Level level;
 
-    private bool wholeDialog, useSE;
+    private bool wholeDialog, useSE, vanillaBehaviour;
 
     public string timerStatic, framesStatic;
 
@@ -57,6 +57,7 @@ public class ColoredCustomCoreMessage : Entity
         fLine = line;
 
         useSE = data.Bool("detectSessionExpression", false);
+        vanillaBehaviour = data.Bool("vanillaRenderDistanceBehaviour", true);
 
         // line process
         // FrostHelper SessionExpression support
@@ -177,13 +178,21 @@ public class ColoredCustomCoreMessage : Entity
             else if (!CustomPositionRange)
             {
                 if (entity != null)
-                    q = alphaMult * (defaultFadedValue + (1 - defaultFadedValue) * EaseType(Calc.ClampedMap(Math.Abs(base.X - entity.X), 0f, RenderDistance, 1f, 0f)));
+                {
+                    float dx = Math.Abs(base.X - entity.X);
+                    float dy = Math.Abs(base.Y - entity.Y);
+                    q = alphaMult * (defaultFadedValue + (1 - defaultFadedValue) * EaseType(Calc.ClampedMap(vanillaBehaviour ? dx : new Vector2(dx, dy).Length(), 
+                        0f, RenderDistance, 1f, 0f)));
+                }
                 else { q = alpha; }
             }
             else
             {
                 List<float> f = new List<float>();
-                f.Add(Calc.ClampedMap(Math.Abs(base.X - entity.X), 0f, RenderDistance, 1f, 0f));
+                float dx = Math.Abs(base.X - entity.X);
+                float dy = Math.Abs(base.Y - entity.Y);
+                f.Add(Calc.ClampedMap(vanillaBehaviour ? dx : new Vector2(dx, dy).Length(), 
+                    0f, RenderDistance, 1f, 0f));
                 for (int i = 0; i < nodes.Length; i += 2)
                 {
                     Vector2 v = Vector2.Lerp(nodes[i], nodes[i + 1], 0.5f);

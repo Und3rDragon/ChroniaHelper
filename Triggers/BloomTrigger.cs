@@ -1,4 +1,5 @@
-﻿using Celeste.Mod.Entities;
+﻿using System.Collections;
+using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using YoctoHelper.Hooks;
 
@@ -59,6 +60,25 @@ public class BloomTrigger : BaseTrigger
         }
     }
 
+    protected override IEnumerator OnEnterRoutine(Player player)
+    {
+        if (timedFade)
+        {
+            while (t >= 0f)
+            {
+                t = Calc.Approach(t, -1f, Engine.DeltaTime);
+                float progress = Calc.Clamp((timer - t) / timer, 0f, 1f);
+                float bloomBase = Calc.ClampedMap(progress, 0f, 1f, this.oldBloom.bloomBase, this.bloomBase);
+                base.level.Bloom.Base = bloomBase;
+                base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
+                base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, this.oldBloom.bloomStrength, this.bloomStrength);
+                this.SetBloomColor(Color.Lerp(this.oldBloom.bloomColor, this.bloomColor, progress));
+
+                yield return null;
+            }
+        }
+    }
+
     protected override void LeaveReset(Player player)
     {
         base.level.Bloom.Base = this.oldBloom.bloomBase;
@@ -67,24 +87,6 @@ public class BloomTrigger : BaseTrigger
         this.SetBloomColor(this.oldBloom.bloomColor);
     }
 
-    public override void Update()
-    {
-        base.Update();
-
-        if (timedFade)
-        {
-            t = Calc.Approach(t, -1f, Engine.DeltaTime);
-            if (t >= 0f)
-            {
-                float progress = Calc.Clamp((timer - t) / timer, 0f, 1f);
-                float bloomBase = Calc.ClampedMap(progress, 0f, 1f, this.oldBloom.bloomBase, this.bloomBase);
-                base.level.Bloom.Base = bloomBase;
-                base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
-                base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, this.oldBloom.bloomStrength, this.bloomStrength);
-                this.SetBloomColor(Color.Lerp(this.oldBloom.bloomColor, this.bloomColor, progress));
-            }
-        }
-    }
 
     private Color GetBloomColor()
     {

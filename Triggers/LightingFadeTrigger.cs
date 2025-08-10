@@ -1,4 +1,5 @@
-﻿using Celeste.Mod.Entities;
+﻿using System.Collections;
+using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 
@@ -47,6 +48,22 @@ public class LightingFadeTrigger : BaseTrigger
         }
     }
 
+    protected override IEnumerator OnEnterRoutine(Player player)
+    {
+        if (timed > 0f)
+        {
+            while (timer >= 0f)
+            {
+                timer = Calc.Approach(timer, -1f, Engine.DeltaTime);
+                float progress = FadeUtils.LerpValue(timer, timed, 0f, 0f, 1f);
+                level.Lighting.BaseColor = Color.Lerp(lightingColorFrom, lightingColorTo, progress);
+                level.Lighting.Alpha = FadeUtils.LerpValue(timer, timed, 0f, lightingAlphaFrom, lightingAlphaTo);
+
+                yield return null;
+            }
+        }
+    }
+
     protected override void OnStayExecute(Player player)
     {
         float lerp = base.GetPositionLerp(player, this.positionMode);
@@ -66,19 +83,4 @@ public class LightingFadeTrigger : BaseTrigger
         base.session.LightingAlphaAdd = this.oldLighting.lightingAlphaAdd;
     }
 
-    public override void Update()
-    {
-        base.Update();
-
-        if(timed > 0f)
-        {
-            if (timer >= 0f)
-            {
-                timer = Calc.Approach(timer, -1f, Engine.DeltaTime);
-                float progress = FadeUtils.LerpValue(timer, timed, 0f, 0f, 1f);
-                level.Lighting.BaseColor = Color.Lerp(lightingColorFrom, lightingColorTo, progress);
-                level.Lighting.Alpha = FadeUtils.LerpValue(timer, timed, 0f, lightingAlphaFrom, lightingAlphaTo);
-            }
-        }
-    }
 }
