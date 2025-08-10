@@ -134,7 +134,8 @@ public class SpriteEntity : Actor
         Add(light = new VertexLight(Color.White, 0f, 32, 64));
         Add(bloom = new BloomPoint(0f, 0f));
 
-        Add(holdable = new Holdable(0.3f));
+        //Add(holdable = new Holdable(0.3f));
+        holdable = new Holdable(0.3f);
         holdable.SpeedGetter = () => Speed;
         holdable.OnPickup = OnPickup;
         holdable.OnRelease = OnRelease;
@@ -423,6 +424,7 @@ public class SpriteEntity : Actor
                 }
 
                 holdable.PickupCollider = new Hitbox(width, height, x, y);
+                Add(holdable);
             }
 
             else if (execute == Command.Current_Frame)
@@ -456,7 +458,10 @@ public class SpriteEntity : Actor
                     bool.TryParse(commandLine[5], out safe);
                 }
 
-                MapProcessor.level.Remove(solid);
+                if (solid != null)
+                {
+                    MapProcessor.level.Remove(solid);
+                }
                 solid = new Solid(Position + solidPos, size.X, size.Y, safe);
                 solid.Collidable = true;
                 MapProcessor.level.Add(solid);
@@ -1738,7 +1743,6 @@ public class SpriteEntity : Actor
         Vector2 calculated = center + (Position - center) * parallax;
         sprite.RenderPosition = calculated.Floor();
 
-        //solid.Position = Position + solidPos;
         solid.MoveTo(Position + solidPos);
 
         if (killOnCollide)
