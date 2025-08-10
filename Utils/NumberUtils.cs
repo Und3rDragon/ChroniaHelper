@@ -310,6 +310,41 @@ public static class NumberUtils
         return r;
     }
 
+    public enum ClosestConditions { Default = 0, UsePositive = 1, UseNegative = 2, IgnoreOverride = 3 }
+    public static float Closest(float baseline, ClosestConditions conditions, params float[] values)
+    {
+        float r = baseline, a = 0f;
+        int condition = (int)conditions;
+        for (int i = 0; i < values.Length; i++)
+        {
+            if (i == 0)
+            {
+                r = values[i];
+                a = (values[i] - baseline).GetAbs();
+            }
+            else
+            {
+                if ((values[i] - baseline).GetAbs() == a)
+                {
+                    bool isPositive = values[i] >= 0;
+                    bool c1 = condition == 0, c2 = condition == 1 && isPositive, c3 = condition == 2 && !isPositive;
+                    
+                    if(c1 || c2 || c3)
+                    {
+                        r = values[i];
+                    }
+                }
+
+                else if ((values[i] - baseline).GetAbs() < a)
+                {
+                    r = values[i];
+                }
+            }
+        }
+
+        return r;
+    }
+
     public static int Clamp(this int value, int value1, int value2)
     {
         int min = value1 <= value2 ? value1 : value2, max = value2 >= value1 ? value2 : value1;

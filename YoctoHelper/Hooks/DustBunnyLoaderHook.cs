@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using MonoMod.Utils;
 using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Hooks;
 

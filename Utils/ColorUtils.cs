@@ -216,4 +216,19 @@ public static class ColorUtils
         }
     }
 
+    public static Color[] ParseColorArray(string input)
+    {
+        if (StringUtils.IsNullOrWhiteSpace(input))
+        {
+            return new Color[0];
+        }
+        string[] split = StringUtils.Split(input);
+        Color[] colorArray = new Color[split.Length];
+        for (int i = 0; i < split.Length; i++)
+        {
+            colorArray[i] = ColorUtils.ParseColor(split[i]);
+        }
+        return colorArray;
+    }
+
 }

@@ -4,6 +4,7 @@ using Mono.Cecil.Cil;
 using MonoMod.RuntimeDetour;
 using YoctoHelper.Cores;
 using YoctoHelper.Entities;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Hooks;
 

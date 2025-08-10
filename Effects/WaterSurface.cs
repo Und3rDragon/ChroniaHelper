@@ -74,6 +74,8 @@ public class WaterSurface : Backdrop
         )
     {
         //this.Scroll = Vector2.Zero;
+        base.LoopX = false;
+        base.LoopY = false;
 
         baseRenderY1 = pos1.Y; baseRenderY2 = pos2.Y;
         renderY1 = baseRenderY1; renderY2 = baseRenderY2;
@@ -151,7 +153,7 @@ public class WaterSurface : Backdrop
 
     public override void Render(Scene scene)
     {
-        Draw.Rect(0f, NumberUtils.Closest(0f, renderY1, renderY2),
+        Draw.Rect(0f, Calc.Min(renderY1, renderY2),
                 320f + extX, (renderY1 - renderY2).GetAbs(),
                 surfaceColor * surfaceAlpha);
         if (farLine)

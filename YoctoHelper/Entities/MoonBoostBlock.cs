@@ -3,6 +3,7 @@ using System;
 using Celeste.Mod.Entities;
 using System.Linq;
 using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Entities;
 
@@ -10,11 +11,11 @@ namespace YoctoHelper.Entities;
 [CustomEntity("ChroniaHelper/MoonBoostBlock")]
 public class MoonBoostBlock : BaseSolid
 {
-    private EaseModes dashAnimEase;
+    private EaseMode dashAnimEase;
 
     private float dashMomentum;
 
-    private EaseModes sinkAnimEase;
+    private EaseMode sinkAnimEase;
 
     private float sinkMomentum;
 
@@ -58,9 +59,9 @@ public class MoonBoostBlock : BaseSolid
 
     public MoonBoostBlock(Vector2 position, EntityData data, EntityID id) : base(position, data, id)
     {
-        this.dashAnimEase = data.Enum<EaseModes>("dashAnimEase", EaseModes.QuadIn);
+        this.dashAnimEase = data.Enum<EaseMode>("dashAnimEase", EaseMode.QuadIn);
         this.dashMomentum = data.Float("dashMomentum", 1F);
-        this.sinkAnimEase = data.Enum<EaseModes>("sinkAnimEase", EaseModes.SineInOut);
+        this.sinkAnimEase = data.Enum<EaseMode>("sinkAnimEase", EaseMode.SineInOut);
         this.sinkMomentum = data.Float("sinkMomentum", 1F);
         this.waveRange = data.Float("waveRange", 4F);
         this.waveFrequency = data.Float("waveFrequency", 1F);
@@ -76,9 +77,9 @@ public class MoonBoostBlock : BaseSolid
     private void Old(EntityData data)
     {
         if (data.Has("dashEase"))
-            dashAnimEase = data.Enum<EaseModes>("dashEase"); // EaseModes.QuadIn);
+            dashAnimEase = data.Enum<EaseMode>("dashEase"); // EaseModes.QuadIn);
         if (data.Has("sinkingEase"))
-            sinkAnimEase = data.Enum<EaseModes>("sinkingEase"); // EaseModes.SineInOut);
+            sinkAnimEase = data.Enum<EaseMode>("sinkingEase"); // EaseModes.SineInOut);
         if (data.Has("sinkingMomentum"))
             sinkMomentum = data.Float("sinkingMomentum"); // 1F);
         if (data.Has("waveRange"))

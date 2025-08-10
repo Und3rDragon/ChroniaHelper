@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ChroniaHelper;
 using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Hooks;
 

@@ -5,6 +5,7 @@ using ChroniaHelper;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Hooks;
 

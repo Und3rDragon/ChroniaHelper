@@ -2,6 +2,7 @@
 using Celeste.Mod.Entities;
 using MonoMod.Utils;
 using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Triggers;
 

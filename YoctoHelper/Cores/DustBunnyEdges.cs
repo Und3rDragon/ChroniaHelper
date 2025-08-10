@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using YoctoHelper.Components;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Cores;
 

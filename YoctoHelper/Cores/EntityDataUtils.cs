@@ -1,4 +1,6 @@
-﻿namespace YoctoHelper.Cores;
+﻿using ChroniaHelper.Utils;
+
+namespace YoctoHelper.Cores;
 
 public static class EntityDataUtils
 {

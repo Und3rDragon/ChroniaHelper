@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Triggers;
 
