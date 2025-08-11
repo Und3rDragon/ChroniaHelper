@@ -121,6 +121,8 @@ public class SpriteEntity : Actor
         spriteName = data.Attr("xmlLabel", "SpriteEntity");
         sprite = GFX.SpriteBank.Create(spriteName);
         Add(sprite);
+        origSprite = sprite;
+        spriteColor = Color.White;
         // sprite center == entity position
 
         string command = data.Attr("commands");
@@ -154,7 +156,7 @@ public class SpriteEntity : Actor
         base.Tag = normalTag;
     }
     private string spriteName;
-    private Sprite sprite;
+    private Sprite sprite, origSprite;
     private string[] commands;
     private SoundSource sfx;
     private Holdable holdable;
@@ -170,6 +172,7 @@ public class SpriteEntity : Actor
     private Vector2[] nodes; private int nodeCount;
     private bool killOnCollide = false;
     private ColliderList colliderList = new();
+    private Color spriteColor;
 
     public override void Added(Scene scene)
     {
@@ -1045,8 +1048,10 @@ public class SpriteEntity : Actor
             }
 
             float progress = 0f;
-            Color from = sprite.Color, to = from * alpha;
-            if (instant) { sprite.Color = to;
+            Color from = sprite.Color, to = spriteColor * alpha;
+            if (instant) { 
+                sprite.Color = to;
+
                 yield break;
             }
             while (progress < 1f)
@@ -1079,13 +1084,15 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             Color from = sprite.Color;
-            if (instant) { sprite.Color = color;
+            if (instant) { 
+                sprite.Color = spriteColor = color;
+                
                 yield break;
             }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
-                sprite.Color = Color.Lerp(from, color, ease(progress));
+                sprite.Color = spriteColor = Color.Lerp(from, color, ease(progress));
 
                 yield return null;
             }
