@@ -144,4 +144,16 @@
 		<Anim id ="disabled" path="white" delay="0.07" frames="0"/>
 	</pufferBombSpring>
 	
+	<!--The following is for FASF2025 Helper-->
+	<dreamkevin_face path="objects/Fangame/FASF2025/DreamKevin/" start="idle">
+		<Center/>
+		<Loop id="idle" path="idle_face" delay="0.08"/>
+		<Anim id="hurt" path="hurt" frames="3-12" delay="0.08" goto="idle"/>
+		<Anim id="hit" path="hit" delay="0.08"/>
+		<Loop id="left" path="hit_left" delay="0.08"/>
+		<Loop id="right" path="hit_right" delay="0.08"/>
+		<Loop id="up" path="hit_up" delay="0.08"/>
+		<Loop id="down" path="hit_down" delay="0.08"/>
+	</dreamkevin_face>
+	
 </Sprites>

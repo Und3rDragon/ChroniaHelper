@@ -1,22 +1,24 @@
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using Celeste;
+using Celeste.Mod;
 using Celeste.Mod.ChroniaHelperIndicatorZone;
 using Celeste.Mod.Helpers;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Effects;
 using ChroniaHelper.Entities;
+using ChroniaHelper.Entities.MigratedNeonHelper;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils;
-using YoctoHelper.Hooks;
-using Celeste;
-using Celeste.Mod;
-using ChroniaHelper.Effects;
-using ChroniaHelper.Imports;
-using MonoMod.ModInterop;
 using FMOD.Studio;
-using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-using ChroniaHelper.Entities.MigratedNeonHelper;
+using MonoMod.ModInterop;
+using YoctoHelper.Hooks;
+using FASF2025Helper.Utils;
 
 namespace ChroniaHelper;
 
@@ -58,6 +60,8 @@ public class ChroniaHelperModule : EverestModule
     }
 
     public static bool FrostHelperLoaded;
+    public static bool CommunalHelperLoaded { get; private set; }
+    public static Assembly CommunalHelperAssembly { get; private set; }
 
     public override void Load()
     {
@@ -108,6 +112,22 @@ public class ChroniaHelperModule : EverestModule
             Version = new Version(1, 70, 2)
         };
         FrostHelperLoaded = Everest.Loader.DependencyLoaded(frostHelperMetadata);
+
+        // Communal Helper load judgement
+        EverestModuleMetadata communalHelperMetadata = new()
+        {
+            Name = "CommunalHelper",
+            Version = new Version("1.23.0"),
+        };
+        CommunalHelperLoaded = Everest.Loader.DependencyLoaded(communalHelperMetadata);
+
+        if (Everest.Loader.TryGetDependency(communalHelperMetadata, out var communalModule))
+        {
+            CommunalHelperAssembly = communalModule.GetType().Assembly;
+        }
+
+        // migrated FASF2025
+        AttributeHelper.InvokeAll<LoadAttribute>();
     }
 
     public override void Unload()
@@ -143,6 +163,8 @@ public class ChroniaHelperModule : EverestModule
         // migrated from NeonHelper
         PufferBomb.Unload();
 
+        // migrated FASF2025
+        AttributeHelper.InvokeAll<UnLoadAttribute>();
     }
 
     private static void LevelLoader_OnLoadingThread(Level level)

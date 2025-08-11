@@ -783,3 +783,12 @@ entities.ChroniaHelper/PufferBomb.attributes.description.basicColliders=Collider
 entities.ChroniaHelper/PufferBomb.attributes.description.playerColliders=Collider array that will affect the player interactions, separated by ";", each collider can be defined as: \n"r,width,height,offsetX,offsetY" as a rectangle hitbox \n"c,radius,offsetX,offsetY" as a circle hitbox
 entities.ChroniaHelper/PufferBomb.attributes.description.detectCollider=The rectangular collider that detects whether the explosion happens
 entities.ChroniaHelper/PufferBomb.attributes.description.wallbreakCollider=The circle collider that defines the area the explosion can affect when the explosion should break some walls
+
+# Kevins
+entities.ChroniaHelper/DreamKevin.placements.name.DreamKevin=Dream Kevin
+entities.ChroniaHelper/ReskinnableKevin.placements.name.both=Kevin (Reskinnable, Both)
+entities.ChroniaHelper/ReskinnableKevin.placements.name.horizontal=Kevin (Reskinnable, Horizontal)
+entities.ChroniaHelper/ReskinnableKevin.placements.name.vertical=Kevin (Reskinnable, Vertical)
+
+entities.ChroniaHelper/ReskinnableKevin.attributes.description.spriteDirectory=The folder that contains all the necessary sprites \nGenerally please check the preset folder for necessary files \nWhich is: objects/Fangame/FASF2025/DreamKevin/
+entities.ChroniaHelper/ReskinnableKevin.attributes.description.faceSpriteXML=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
