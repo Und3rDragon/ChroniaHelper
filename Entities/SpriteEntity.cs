@@ -186,6 +186,13 @@ public class SpriteEntity : Actor
         // start executing commands when entering the room
         Add(new Coroutine(Execution()));
 
+        routine_rounding = false;
+        routine_positioning = false;
+        routine_accelerate = false;
+        Add(new Coroutine(Positioning()));
+        Add(new Coroutine(Accelerate()));
+        Add(new Coroutine(Rounding()));
+
         base.Added(scene);
 
     }
@@ -197,6 +204,81 @@ public class SpriteEntity : Actor
 
     // Holdable parameters
     private Vector2 Speed;
+
+    private EaseMode position_ease;
+    private Vector2 position_from, position_to;
+    private float position_timer, position_maxTime = -1f;
+    private bool routine_positioning = false;
+    public IEnumerator Positioning()
+    {
+        while (!routine_positioning)
+        {
+            yield return null;
+        }
+
+        position_timer = 0f;
+        while(true)
+        {
+            position_timer = Calc.Approach(position_timer, position_maxTime, Engine.DeltaTime);
+            Position = position_timer.LerpValue(0f, position_timer, position_from, position_to, position_ease);
+
+            yield return null;
+        }
+    }
+
+    private bool routine_accelerate = false;
+    public IEnumerator Accelerate()
+    {
+        while (!routine_accelerate)
+        {
+            yield return null;
+        }
+
+        while (true)
+        {
+            Position += basicSpeed * Engine.DeltaTime;
+            for (int i = 0; i < accelerations.Length; i++)
+            {
+                if (i == 0)
+                {
+                    basicSpeed += accelerations[0] * Engine.DeltaTime;
+                }
+                else
+                {
+                    accelerations[i - 1] += accelerations[i] * Engine.DeltaTime;
+                }
+            }
+        }
+    }
+
+    private float rounding_dx, rounding_dy, rounding_angle, rounding_timer;
+    private Ease.Easer rounding_ease;
+    private bool routine_rounding = false;
+    public IEnumerator Rounding()
+    {
+        while (!routine_rounding)
+        {
+            yield return null;
+        }
+
+        Vector2 obj = Position;
+
+        float targetAngle = rounding_angle * Calc.DegToRad;
+        Vector2 start = obj, center = start + new Vector2(rounding_dx, rounding_dy),
+            needle = start - center, progressVector = needle;
+
+        float progress = 0f;
+        while (progress < 1f)
+        {
+            progress = Calc.Approach(progress, 1f, Engine.DeltaTime / rounding_timer);
+            progressVector = needle.Rotate(targetAngle * rounding_ease(progress));
+            obj = center + progressVector;
+
+            Position = obj;
+
+            yield return null;
+        }
+    }
 
     public IEnumerator Execution()
     {
@@ -1731,19 +1813,6 @@ public class SpriteEntity : Actor
         base.Update();
 
         DebugInfo();
-
-        Position += basicSpeed * Engine.DeltaTime;
-        for (int i = 0; i < accelerations.Length; i++)
-        {
-            if (i == 0)
-            {
-                basicSpeed += accelerations[0] * Engine.DeltaTime;
-            }
-            else
-            {
-                accelerations[i - 1] += accelerations[i] * Engine.DeltaTime;
-            }
-        }
 
         Vector2 camPos = MapProcessor.level.Camera.Position + MapProcessor.level.CameraOffset;
         Vector2 center = camPos.Floor() + new Vector2(camX, camY); // by default should be (160, 90) in pixel or (960, 540) in HD
