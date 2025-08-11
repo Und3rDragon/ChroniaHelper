@@ -112,6 +112,38 @@ public static class EaseUtils
         {EaseMode.BounceInOut,  Ease.BounceInOut }
     };
 
+    public static Dictionary<Ease.Easer, EaseMode> EaseToEaseMode = new()
+    {
+        {Ease.Linear, EaseMode.Linear },
+        {Ease.SineIn, EaseMode.SineIn },
+        {Ease.SineOut,  EaseMode.SineOut },
+        {Ease.SineInOut,  EaseMode.SineInOut },
+        {Ease.QuadIn,  EaseMode.QuadIn },
+        {Ease.QuadOut,  EaseMode.QuadOut },
+        {Ease.QuadInOut,  EaseMode.QuadInOut },
+        {Ease.CubeIn,  EaseMode.CubeIn },
+        {Ease.CubeOut,  EaseMode.CubeOut },
+        {Ease.CubeInOut,  EaseMode.CubeInOut },
+        {Ease.QuintIn,  EaseMode.QuintIn },
+        {Ease.QuintOut,  EaseMode.QuintOut },
+        {Ease.QuintInOut,  EaseMode.QuintInOut },
+        {Ease.ExpoIn,  EaseMode.ExpoIn },
+        {Ease.ExpoOut,  EaseMode.ExpoOut },
+        {Ease.ExpoInOut,  EaseMode.ExpoInOut },
+        {Ease.BackIn,  EaseMode.BackIn },
+        {Ease.BackOut,  EaseMode.BackOut },
+        {Ease.BackInOut,  EaseMode.BackInOut },
+        {Ease.BigBackIn,  EaseMode.BigBackIn },
+        {Ease.BigBackOut,  EaseMode.BigBackOut },
+        {Ease.BigBackInOut,  EaseMode.BigBackInOut },
+        {Ease.ElasticIn,  EaseMode.ElasticIn },
+        {Ease.ElasticOut,  EaseMode.ElasticOut },
+        {Ease.ElasticInOut,  EaseMode.ElasticInOut },
+        {Ease.BounceIn,  EaseMode.BounceIn },
+        {Ease.BounceOut,  EaseMode.BounceOut },
+        {Ease.BounceInOut,  EaseMode.BounceInOut }
+    };
+
     public static Ease.Easer StringToEase (string str)
     {
         switch (str.ToLower())

@@ -174,6 +174,7 @@ public class SpriteEntity : Actor
     private ColliderList colliderList = new();
     private Color spriteColor;
 
+    private Coroutine positioning, accelerate, rounding;
     public override void Added(Scene scene)
     {
         foreach (var command in Enum.GetValues<Command>())
@@ -183,15 +184,15 @@ public class SpriteEntity : Actor
 
         MapProcessor.level.Add(solid);
 
-        // start executing commands when entering the room
-        Add(new Coroutine(Execution()));
-
         routine_rounding = false;
         routine_positioning = false;
         routine_accelerate = false;
-        Add(new Coroutine(Positioning()));
-        Add(new Coroutine(Accelerate()));
-        Add(new Coroutine(Rounding()));
+        Add(positioning = new Coroutine(Positioning()));
+        Add(accelerate = new Coroutine(Accelerate()));
+        Add(rounding = new Coroutine(Rounding()));
+
+        // start executing commands when entering the room
+        Add(new Coroutine(Execution()));
 
         base.Added(scene);
 
@@ -205,6 +206,17 @@ public class SpriteEntity : Actor
     // Holdable parameters
     private Vector2 Speed;
 
+    private void StopAllMovement()
+    {
+        routine_accelerate = false;
+        routine_positioning = false;
+        routine_rounding = false;
+
+        positioning.Replace(Positioning());
+        accelerate.Replace(Accelerate());
+        rounding.Replace(Rounding());
+    }
+
     private EaseMode position_ease;
     private Vector2 position_from, position_to;
     private float position_timer, position_maxTime = -1f;
@@ -217,16 +229,18 @@ public class SpriteEntity : Actor
         }
 
         position_timer = 0f;
+        position_from = Position;
         while(true)
         {
             position_timer = Calc.Approach(position_timer, position_maxTime, Engine.DeltaTime);
-            Position = position_timer.LerpValue(0f, position_timer, position_from, position_to, position_ease);
+            Position = position_timer.LerpValue(0f, position_maxTime, position_from, position_to, position_ease);
 
             yield return null;
         }
     }
 
     private bool routine_accelerate = false;
+    private float accelerate_timer, accelerate_maxTimer = 100000f;
     public IEnumerator Accelerate()
     {
         while (!routine_accelerate)
@@ -234,8 +248,12 @@ public class SpriteEntity : Actor
             yield return null;
         }
 
-        while (true)
+        accelerate_timer = 0f;
+
+        while (accelerate_timer < accelerate_maxTimer)
         {
+            accelerate_timer = Calc.Approach(accelerate_timer, accelerate_maxTimer, Engine.DeltaTime);
+
             Position += basicSpeed * Engine.DeltaTime;
             for (int i = 0; i < accelerations.Length; i++)
             {
@@ -248,10 +266,12 @@ public class SpriteEntity : Actor
                     accelerations[i - 1] += accelerations[i] * Engine.DeltaTime;
                 }
             }
+
+            yield return null;
         }
     }
 
-    private float rounding_dx, rounding_dy, rounding_angle, rounding_timer;
+    private float rounding_dx, rounding_dy, rounding_angle, rounding_timer, rounding_maxTime;
     private Ease.Easer rounding_ease;
     private bool routine_rounding = false;
     public IEnumerator Rounding()
@@ -267,10 +287,13 @@ public class SpriteEntity : Actor
         Vector2 start = obj, center = start + new Vector2(rounding_dx, rounding_dy),
             needle = start - center, progressVector = needle;
 
+        rounding_timer = 0f;
+
         float progress = 0f;
-        while (progress < 1f)
+        while (rounding_timer < rounding_maxTime)
         {
-            progress = Calc.Approach(progress, 1f, Engine.DeltaTime / rounding_timer);
+            rounding_timer = Calc.Approach(rounding_timer, rounding_maxTime, Engine.DeltaTime);
+            progress = rounding_timer.LerpValue(0f, rounding_maxTime, 0f, 1f, EaseUtils.EaseToEaseMode[rounding_ease]);
             progressVector = needle.Rotate(targetAngle * rounding_ease(progress));
             obj = center + progressVector;
 
@@ -939,13 +962,27 @@ public class SpriteEntity : Actor
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
 
-            Vector2 obj;
+            Vector2 obj = Position;
             switch (execute)
             {
-                case Command.Move: obj = Position; break;
+                case Command.Move:
+                    StopAllMovement();
+                    position_from = Position;
+                    position_to = position_from + new Vector2(dx, dy);
+                    position_maxTime = timer;
+                    position_ease = EaseUtils.EaseToEaseMode[ease];
+                    routine_positioning = true;
+                    break;
                 case Command.Light_Move: obj = light.Position; break;
                 case Command.Bloom_Move: obj = bloom.Position; break;
-                default: obj = Position; break;
+                default:
+                    StopAllMovement();
+                    position_from = Position;
+                    position_to = position_from + new Vector2(dx, dy);
+                    position_maxTime = timer;
+                    position_ease = EaseUtils.EaseToEaseMode[ease];
+                    routine_positioning = true;
+                    break;
             }
             Vector2 pos1 = obj, pos2 = pos1 + new Vector2(dx, dy);
             if (instant)
@@ -954,10 +991,9 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.Move: Position = obj; break;
                     case Command.Light_Move: light.Position = obj; break;
                     case Command.Bloom_Move: bloom.Position = obj; break;
-                    default: Position = obj; break;
+                    default: break;
                 }
 
                 yield break;
@@ -970,10 +1006,12 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.Move: Position = obj; break;
+                    case Command.Move:
+                        break;
                     case Command.Light_Move: light.Position = obj; break;
                     case Command.Bloom_Move: bloom.Position = obj; break;
-                    default: obj = Position; break;
+                    default: 
+                        break;
                 }
 
                 yield return null;
@@ -1002,13 +1040,27 @@ public class SpriteEntity : Actor
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
 
-            Vector2 obj;
+            Vector2 obj = Position;
             switch (execute)
             {
-                case Command.MoveTo: obj = Position; break;
+                case Command.MoveTo:
+                    StopAllMovement();
+                    position_from = Position;
+                    position_to = new Vector2(x, y);
+                    position_maxTime = timer;
+                    position_ease = EaseUtils.EaseToEaseMode[ease];
+                    routine_positioning = true;
+                    break;
                 case Command.Light_MoveTo: obj = light.Position; break;
                 case Command.Bloom_MoveTo: obj = bloom.Position; break;
-                default: obj = Position; break;
+                default:
+                    StopAllMovement();
+                    position_from = Position;
+                    position_to = new Vector2(x, y);
+                    position_maxTime = timer;
+                    position_ease = EaseUtils.EaseToEaseMode[ease];
+                    routine_positioning = true;
+                    break;
             }
             Vector2 pos1 = obj, pos2 = new Vector2(x, y);
             if (instant) { 
@@ -1016,10 +1068,12 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.MoveTo: Position = obj; break;
+                    case Command.MoveTo:
+                        break;
                     case Command.Light_MoveTo: light.Position = obj; break;
                     case Command.Bloom_MoveTo: bloom.Position = obj; break;
-                    default: Position = obj; break;
+                    default: 
+                        break;
                 }
 
                 yield break;
@@ -1032,10 +1086,12 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.MoveTo: Position = obj; break;
+                    case Command.MoveTo: 
+                        break;
                     case Command.Light_MoveTo: light.Position = obj; break;
                     case Command.Bloom_MoveTo: bloom.Position = obj; break;
-                    default: Position = obj; break;
+                    default: 
+                        break;
                 }
 
                 yield return null;
@@ -1065,13 +1121,25 @@ public class SpriteEntity : Actor
                 ease = EaseUtils.StringToEase(commandLine[5].ToLower());
             }
 
-            Vector2 obj;
+            Vector2 obj = Position;
             switch (execute)
             {
-                case Command.Move_Around: obj = Position; break;
+                case Command.Move_Around:
+                    StopAllMovement();
+                    rounding_dx = dx; rounding_dy = dy;
+                    rounding_angle = angle; rounding_maxTime = timer;
+                    rounding_ease = ease;
+                    routine_rounding = true;
+                    break;
                 case Command.Light_Move_Around: obj = light.Position; break;
                 case Command.Bloom_Move_Around: obj = bloom.Position; break;
-                default: obj = Position; break;
+                default:
+                    StopAllMovement();
+                    rounding_dx = dx; rounding_dy = dy;
+                    rounding_angle = angle; rounding_maxTime = timer;
+                    rounding_ease = ease;
+                    routine_rounding = true;
+                    break;
             }
             float targetAngle = angle * Calc.DegToRad;
             Vector2 start = obj, center = start + new Vector2(dx, dy),
@@ -1082,10 +1150,12 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.Move_Around: Position = obj; break;
+                    case Command.Move_Around: 
+                        break;
                     case Command.Light_Move_Around: light.Position = obj; break;
                     case Command.Bloom_Move_Around: bloom.Position = obj; break;
-                    default: Position = obj; break;
+                    default: 
+                        break;
                 }
 
                 yield break;
@@ -1099,10 +1169,12 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.Move_Around: Position = obj; break;
+                    case Command.Move_Around: 
+                        break;
                     case Command.Light_Move_Around: light.Position = obj; break;
                     case Command.Bloom_Move_Around: bloom.Position = obj; break;
-                    default: Position = obj; break;
+                    default: 
+                        break;
                 }
 
                 yield return null;
