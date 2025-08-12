@@ -17,6 +17,9 @@ kevin.fieldInformation = {
     axes = {
         options = axesOptions,
         editable = false
+    },
+    fillerColor = {
+        fieldType = "color",
     }
 }
 kevin.placements = {}
@@ -27,8 +30,10 @@ for _, axis in pairs(axesOptions) do
         data = {
             width = 24,
             height = 24,
-            spriteDirectory = "objects/Fangame/FASF2025/DreamKevin/",
-            faceSpriteXML = "dreamkevin_face",
+            spriteDirectory = "objects/ChroniaHelper/reskinnableKevin/",
+            giantFaceSpriteXML = "big_kevin_face",
+            faceSpriteXML = "kevin_face",
+            fillerColor = "62222b",
             axes = axis,
             chillout = false
         }

@@ -90,8 +90,9 @@ public class ReskinnableKevin : Solid
     public ReskinnableKevin(Vector2 position, float width, float height, Axes axes, EntityData data, bool chillOut = false)
         : base(position, width, height, safe: false)
     {
-        dir = data.Attr("spriteDirectory", "objects/Fangame/FASF2025/DreamKevin/");
-
+        dir = data.Attr("spriteDirectory", "objects/ChroniaHelper/reskinnableKevin/");
+        fill = Calc.HexToColor(data.Attr("fillerColor", "62222b"));
+        
         OnDashCollide = OnDashed;
         returnStack = new List<MoveState>();
         this.chillOut = chillOut;
@@ -120,7 +121,9 @@ public class ReskinnableKevin : Solid
                 break;
         }
 
-        Add(face = GFX.SpriteBank.Create(data.Attr("faceSpriteXML", "dreamkevin_face")));
+        string f = data.Attr("faceSpriteXML", "kevin_face");
+        string bf = data.Attr("giantFaceSpriteXML", "big_kevin_face");
+        Add(face = GFX.SpriteBank.Create(giant? bf: f));
         face.Position = new Vector2(base.Width, base.Height) / 2f;
         face.Play("idle");
         face.OnLastFrame = (string f) =>

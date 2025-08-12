@@ -155,5 +155,24 @@
 		<Loop id="up" path="hit_up" delay="0.08"/>
 		<Loop id="down" path="hit_down" delay="0.08"/>
 	</dreamkevin_face>
+
+	<kevin_face path="objects/ChroniaHelper/reskinnableKevin/" start="idle">
+		<Center/>
+		<Loop id="idle" path="idle_face" delay="0.08"/>
+		<Anim id="hurt" path="hurt" frames="3-12" delay="0.08" goto="idle"/>
+		<Anim id="hit" path="hit" delay="0.08"/>
+		<Loop id="left" path="hit_left" delay="0.08"/>
+		<Loop id="right" path="hit_right" delay="0.08"/>
+		<Loop id="up" path="hit_up" delay="0.08"/>
+		<Loop id="down" path="hit_down" delay="0.08"/>
+	</kevin_face>
+
+	<big_kevin_face path="objects/ChroniaHelper/reskinnableKevin/" start="idle">
+		<Center/>
+		<Loop id="idle" path="giant_block" frames="0" delay="0.08"/>
+		<Anim id="hurt"  path="giant_block" frames="8-12" delay="0.08" goto="idle"/>
+		<Anim id="hit" path="giant_block" frames="0-5" delay="0.08"/>
+		<Loop id="right" path="giant_block" frames="6,7"  delay="0.08"/>
+	</big_kevin_face>
 	
 </Sprites>
