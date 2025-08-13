@@ -13,7 +13,8 @@ public class TrackProgressBar : Entity
 {
     public TrackProgressBar(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-
+        ID = data.ID;
     }
+    private int ID;
 
 }

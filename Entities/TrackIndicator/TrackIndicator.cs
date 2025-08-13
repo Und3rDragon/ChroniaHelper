@@ -16,6 +16,7 @@ public class TrackIndicator : Entity
 {
     public TrackIndicator(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
+        ID = data.ID;
         nodes = data.NodesWithPosition(offset);
         lines = new Line[nodes.Length];
         for(int i = 0; i < nodes.MaxIndex(); i++)
@@ -25,6 +26,7 @@ public class TrackIndicator : Entity
     }
     private Vector2[] nodes;
     private Line[] lines;
+    private int ID;
 
     public override void Added(Scene scene)
     {

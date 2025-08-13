@@ -13,6 +13,7 @@ public class TrackIncidents : Entity
 {
     public TrackIncidents(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-
+        ID = data.ID;
     }
+    private int ID;
 }
