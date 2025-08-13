@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Graphics;
 using static On.Celeste.Player;
 using System.IO;
+using Line = ChroniaHelper.Utils.GeometryUtils.Line;
 
 namespace ChroniaHelper.Entities;
 
@@ -285,19 +286,6 @@ public class OmniZipEntity : Entity
     public bool sideflag;
 
     public bool customSkin;
-
-    public struct Line
-    {
-        public Vector2 A;
-
-        public Vector2 B;
-
-        public Line(Vector2 a, Vector2 b)
-        {
-            A = a;
-            B = b;
-        }
-    }
 
     // OnDash parameters
     public bool triggered = false;

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using ChroniaHelper.Entities;
 using ChroniaHelper.Utils;
 using FMOD;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Cores;
 
 public class OmniZipSolid : ConnectedSolid
 {
+
     public OmniZipSolid(EntityData data, Vector2 offset) : this(data, data.Position + offset, data.Width, data.Height)
     {
         

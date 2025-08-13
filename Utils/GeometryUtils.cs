@@ -271,4 +271,101 @@ public static class GeometryUtils
 
         return cir;
     }
+
+    public struct Line
+    {
+        public Vector2 A;
+        public Vector2 B;
+
+        public Line(Vector2 A, Vector2 B)
+        {
+            this.A = A;
+            this.B = B;
+        }
+
+        public float Length()
+        {
+            Vector2 AB = B - A;
+            return AB.Length();
+        }
+
+        public float GetDistance(Vector2 C)
+        {
+            Vector2 AB = B - A;
+            Vector2 AC = C - A;
+
+            // 计算叉积 (AB × AC) 的模（在 2D 中是标量）
+            float crossProduct = AB.X * AC.Y - AB.Y * AC.X;
+
+            // 计算向量 AB 的长度
+            float lengthAB = AB.Length();
+
+            // 避免除以零（A 和 B 不能重合）
+            if (lengthAB == 0f)
+                return AC.Length(); // A 和 B 重合，退化为点到点距离
+
+            // 距离 = |叉积| / |AB|
+            return Math.Abs(crossProduct) / lengthAB;
+        }
+
+        /// <summary>
+        /// 计算点 C 到直线 AB 的垂足 D，并返回 AD 向量
+        /// </summary>
+        public Vector2 GetADVector(Vector2 C)
+        {
+            Vector2 AB = B - A;
+            Vector2 AC = C - A;
+
+            float abLengthSquared = AB.LengthSquared();
+
+            // 防止 A 和 B 重合
+            if (abLengthSquared == 0f)
+                return Vector2.Zero; // 或 throw
+
+            // 计算投影系数 t
+            float t = Vector2.Dot(AC, AB) / abLengthSquared;
+
+            // AD 向量 = t * AB
+            Vector2 AD = t * AB;
+
+            return AD;
+        }
+
+        /// <summary>
+        /// 返回垂足 D 的坐标
+        /// </summary>
+        public Vector2 GetFootPointD(Vector2 C)
+        {
+            Vector2 AB = B - A;
+            Vector2 AC = C - A;
+
+            float abLengthSquared = AB.LengthSquared();
+
+            if (abLengthSquared == 0f)
+                return A; // A 和 B 重合
+
+            float t = Vector2.Dot(AC, AB) / abLengthSquared;
+
+            return A + t * AB;
+        }
+
+        /// <summary>
+        /// 返回 AD 的长度（带符号，表示方向）
+        /// </summary>
+        public float GetADLengthSigned(Vector2 C)
+        {
+            Vector2 AB = B - A;
+            Vector2 AC = C - A;
+
+            float abLengthSquared = AB.LengthSquared();
+
+            if (abLengthSquared == 0f)
+                return 0f;
+
+            float t = Vector2.Dot(AC, AB) / abLengthSquared;
+
+            // 有符号长度：t * |AB|
+            return t * AB.Length();
+        }
+    }
 }

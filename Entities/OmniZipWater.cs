@@ -6,6 +6,7 @@ using ChroniaHelper.Utils;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Graphics;
 using static On.Celeste.Player;
+using Line = ChroniaHelper.Utils.GeometryUtils.Line;
 
 namespace ChroniaHelper.Entities;
 

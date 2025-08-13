@@ -25,6 +25,17 @@ public static class FadeUtils
         return EaseUtils.EaseMatch[ease]((float)(n - a) / (float)(b - a));
     }
 
+    public static float ClampProgress(this Vector2 point, Vector2 a, Vector2 b, EaseMode ease = EaseMode.Linear)
+    {
+        if(a == b) { return 1f; }
+
+        GeometryUtils.Line AB = new GeometryUtils.Line(a, b);
+        float L = AB.GetADLengthSigned(point);
+        float P = float.Clamp(L, 0f, AB.Length());
+
+        return EaseUtils.EaseMatch[ease](P / AB.Length());
+    }
+
     public static int LerpValue(this float source, float clampA, float clampB, int valueA, int valueB, EaseMode ease = EaseMode.Linear)
     {
         // redefine

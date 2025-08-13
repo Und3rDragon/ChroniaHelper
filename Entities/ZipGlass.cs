@@ -6,9 +6,7 @@ using ChroniaHelper.Utils;
 using ChroniaHelper.Cores;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Graphics;
-using static Celeste.Slider;
-using System.IO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Line = ChroniaHelper.Utils.GeometryUtils.Line;
 
 namespace ChroniaHelper.Entities;
 
@@ -279,18 +277,6 @@ public class ZipGlass : OmniZipSolid
 
     private bool customSkin;
 
-    public struct Line
-    {
-        public Vector2 A;
-
-        public Vector2 B;
-
-        public Line(Vector2 a, Vector2 b)
-        {
-            A = a;
-            B = b;
-        }
-    }
 
     public ZipGlass(EntityData data, Vector2 position,
         int width, int height, Vector2[] nodes,
