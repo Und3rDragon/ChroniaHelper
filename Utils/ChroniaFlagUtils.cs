@@ -60,6 +60,7 @@ public static class ChroniaFlagUtils
         if (!name.Check())
         {
             Md.SaveData.ChroniaFlags.Enter(name, new());
+            //return new();
         }
 
         return Md.SaveData.ChroniaFlags[name];
@@ -73,7 +74,7 @@ public static class ChroniaFlagUtils
     public static void PushFlag(this ChroniaFlag flag, string name)
     {
         Md.SaveData.ChroniaFlags.Enter(name, flag);
-        MaP.level.Session.SetFlag(name, flag.Active);
+        MaP.session.SetFlag(name, flag.Active);
         Refresh();
     }
 
@@ -90,27 +91,39 @@ public static class ChroniaFlagUtils
 
     public static void SetFlag(this string name, bool active)
     {
+        //ChroniaFlag flag = name.PullFlag();
+        //flag.Active = active;
+        //flag.PushFlag(name);
         name.PullFlag().Active = active;
-        MaP.level.Session.SetFlag(name, active);
+        MaP.session.SetFlag(name, active);
 
         Refresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global)
     {
+        //ChroniaFlag flag = name.PullFlag();
+        //flag.Global = global;
+        //flag.Active = active;
+        //flag.PushFlag(name);
         name.PullFlag().Active = active;
         name.PullFlag().Global = global;
-        MaP.level.Session.SetFlag(name, active);
+        MaP.session.SetFlag(name, active);
 
         Refresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global, bool temporary)
     {
+        //ChroniaFlag flag = name.PullFlag();
+        //flag.Active = active;
+        //flag.Global = global;
+        //flag.Temporary = temporary;
+        //flag.PushFlag(name);
         name.PullFlag().Active = active;
         name.PullFlag().Global = global;
         name.PullFlag().Temporary = temporary;
-        MaP.level.Session.SetFlag(name, active);
+        MaP.session.SetFlag(name, active);
 
         Refresh();
     }
@@ -149,11 +162,17 @@ public static class ChroniaFlagUtils
 
     public static void SetTimedFlag(this string name, bool basicState, float timer, bool global = false, bool temporary = false)
     {
+        //ChroniaFlag flag = name.PullFlag();
+        //flag.Active = basicState;
+        //flag.Global = global;
+        //flag.Temporary = temporary;
+        //flag.Timed = timer;
+        //flag.PushFlag(name);
         name.PullFlag().Active = basicState;
         name.PullFlag().Global = global;
         name.PullFlag().Temporary = temporary;
         name.PullFlag().Timed = timer;
-        MaP.level.Session.SetFlag(name, basicState);
+        MaP.session.SetFlag(name, basicState);
 
         Refresh();
     }
@@ -173,7 +192,7 @@ public static class ChroniaFlagUtils
         }
         else
         {
-            return MaP.level.Session.GetFlag(name);
+            return MaP.session.GetFlag(name);
         }
     }
 }

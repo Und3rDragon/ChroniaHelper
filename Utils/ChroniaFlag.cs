@@ -53,7 +53,7 @@ public class ChroniaFlag
         {
             if (item.Value.Temporary)
             {
-                MaP.level.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                MaP.session.SetFlag(item.Key, item.Value.DefineResetState());
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -63,7 +63,7 @@ public class ChroniaFlag
         {
             if (item.Value.Global)
             {
-                MaP.level.Session.SetFlag(item.Key, item.Value.Active);
+                MaP.session.SetFlag(item.Key, item.Value.Active);
             }
         }
     }
@@ -77,7 +77,7 @@ public class ChroniaFlag
         {
             if (item.Value.Global && !item.Value.Temporary)
             {
-                MaP.level.Session.SetFlag(item.Key, item.Value.Active);
+                MaP.session.SetFlag(item.Key, item.Value.Active);
             }
         }
     }
@@ -97,18 +97,18 @@ public class ChroniaFlag
                 }
                 else if (item.Value.Timed == 0f)
                 {
-                    MaP.level.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                    MaP.session.SetFlag(item.Key, item.Value.DefineResetState());
                     Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                 }
             }
 
             if (item.Value.Force)
             {
-                MaP.level.Session.SetFlag(item.Key, item.Value.Active);
+                MaP.session.SetFlag(item.Key, item.Value.Active);
             }
         }
 
-        //foreach(var item in Md.SaveData.ChroniaFlags)
+        //foreach (var item in Md.SaveData.ChroniaFlags)
         //{
         //    Log.Error(item.Key, item.Value.Active, item.Value.Global, item.Value.Temporary, item.Value.Force);
         //}
@@ -137,13 +137,13 @@ public class ChroniaFlag
                     }
                     else if (item.Value.Timed == 0f)
                     {
-                        MaP.level.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                        MaP.session.SetFlag(item.Key, item.Value.DefineResetState());
                         Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                     }
 
                     if (item.Value.Force)
                     {
-                        MaP.level.Session.SetFlag(item.Key, item.Value.Active);
+                        MaP.session.SetFlag(item.Key, item.Value.Active);
                     }
                 }
             }

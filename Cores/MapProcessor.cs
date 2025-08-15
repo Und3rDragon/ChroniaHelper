@@ -1,19 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Modules;
-using ChroniaHelper.Triggers;
-using MonoMod.RuntimeDetour;
 using ChroniaHelper.Utils;
-using ChroniaHelper.Effects;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using static Celeste.ClutterBlock;
-using System.Collections;
-using Celeste.Mod.Entities;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
@@ -46,6 +32,7 @@ public static class MapProcessor
     public static MapData mapdata;
     public static int saveSlotIndex;
     public static Level level;
+    public static Session session;
     public static Dictionary<Type, List<Entity>> entities;
 
     public static Entity globalEntityDummy = new Monocle.Entity();
@@ -56,7 +43,9 @@ public static class MapProcessor
     public static Vector2 camOffset = Vector2.Zero;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
-        MapProcessor.level = level;
+        MaP.level = level;
+        MaP.session = level.Session;
+
         entities = level.Tracker.Entities;
         player = level.Tracker.GetEntity<Player>();
         playerAlive = player != null;
@@ -72,7 +61,7 @@ public static class MapProcessor
         {
             if (Md.SaveData.FlagTimerS[flag] > 0)
             {
-                ChroniaFlagUtils.SetFlag(flag, true);
+                flag.SetFlag(true);
             }
         }
         
@@ -148,7 +137,9 @@ public static class MapProcessor
         foreach (var timer in Md.Session.FlagTimer.Keys)
         {
             Md.Session.FlagTimer[timer] = Monocle.Calc.Approach(Md.Session.FlagTimer[timer], 0f, Monocle.Engine.DeltaTime);
-            if (Md.Session.FlagTimer[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
+            if (Md.Session.FlagTimer[timer] == 0f) {
+                timer.SetFlag(false);
+            }
         }
 
         orig(self);
@@ -160,7 +151,6 @@ public static class MapProcessor
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)
     {
         orig(self);
-        level = self as Level;
 
         if (Md.SaveData.IsNotNull())
         {
@@ -168,7 +158,9 @@ public static class MapProcessor
             foreach (var timer in Md.SaveData.FlagTimerS.Keys)
             {
                 Md.SaveData.FlagTimerS[timer] = Monocle.Calc.Approach(Md.SaveData.FlagTimerS[timer], 0f, Monocle.Engine.DeltaTime);
-                if (Md.SaveData.FlagTimerS[timer] == 0f) { ChroniaFlagUtils.SetFlag(timer, false); }
+                if (Md.SaveData.FlagTimerS[timer] == 0f) {
+                    timer.SetFlag(false);
+                }
             }
         }
     }

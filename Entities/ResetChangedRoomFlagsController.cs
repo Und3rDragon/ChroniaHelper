@@ -32,7 +32,7 @@ public class ResetChangedRoomFlagsController : Entity
         increasedFlags = new();
         decreasedFlags = new();
 
-        last_flags = MaP.level.Session.Flags;
+        last_flags = MaP.session.Flags;
     }
 
     public override void Removed(Scene scene)
@@ -60,7 +60,7 @@ public class ResetChangedRoomFlagsController : Entity
     {
         base.Update();
 
-        last_flags.Compare(MaP.level.Session.Flags, out List<string> i, out List<string> d);
+        last_flags.Compare(MaP.session.Flags, out List<string> i, out List<string> d);
         if (inspectMode != Inspection.Off)
         {
             i.AddTo(ref increasedFlags);

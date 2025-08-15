@@ -115,16 +115,6 @@ public class FlagTrigger : Trigger
         RecordedStates.Clear();
     }
 
-    public override void Removed(Scene scene)
-    {
-        base.Removed(scene);
-    }
-
-    public override void Added(Scene scene)
-    {
-        base.Added(scene);
-    }
-
     public override void OnEnter(Player player)
     {
         base.OnEnter(player);
