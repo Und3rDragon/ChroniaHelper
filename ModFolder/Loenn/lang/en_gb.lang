@@ -793,3 +793,6 @@ entities.ChroniaHelper/ReskinnableKevin.placements.name.vertical=Kevin (Reskinna
 entities.ChroniaHelper/ReskinnableKevin.attributes.description.spriteDirectory=The folder that contains all the necessary sprites \nGenerally please check the preset folder for necessary files \nWhich is: objects/Fangame/FASF2025/DreamKevin/
 entities.ChroniaHelper/ReskinnableKevin.attributes.description.faceSpriteXML=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
 entities.ChroniaHelper/ReskinnableKevin.attributes.description.giantFaceSpriteXML=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
+
+# Changed Room Flag Controller
+entities.ChroniaHelper/ResetChangedRoomFlagsController.placements.name.Controller=Reset Changed Room Flags Controller

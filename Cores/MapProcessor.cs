@@ -46,7 +46,6 @@ public static class MapProcessor
     public static MapData mapdata;
     public static int saveSlotIndex;
     public static Level level;
-    public static Session session;
     public static Dictionary<Type, List<Entity>> entities;
 
     public static Entity globalEntityDummy = new Monocle.Entity();
@@ -58,13 +57,12 @@ public static class MapProcessor
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MapProcessor.level = level;
-        session = level.Session;
         entities = level.Tracker.Entities;
         player = level.Tracker.GetEntity<Player>();
         playerAlive = player != null;
         camOffset = level.CameraOffset;
-        mapdata = session.MapData;
-        areakey = session.MapData.Area;
+        mapdata = level.Session.MapData;
+        areakey = level.Session.MapData.Area;
 
         // Dummy Entity setup
         level.Add(globalEntityDummy);
@@ -162,6 +160,7 @@ public static class MapProcessor
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)
     {
         orig(self);
+        level = self as Level;
 
         if (Md.SaveData.IsNotNull())
         {

@@ -111,7 +111,7 @@ public class FlagTrigger : Trigger
                 }
             }
         }
-
+        
         RecordedStates.Clear();
     }
 
@@ -132,7 +132,7 @@ public class FlagTrigger : Trigger
         RecordState();
 
         NormalSetup();
-
+        
         if (temp)
         {
             foreach (var item in trueFlags)

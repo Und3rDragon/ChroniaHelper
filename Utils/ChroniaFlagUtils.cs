@@ -73,7 +73,7 @@ public static class ChroniaFlagUtils
     public static void PushFlag(this ChroniaFlag flag, string name)
     {
         Md.SaveData.ChroniaFlags.Enter(name, flag);
-        MapProcessor.session.SetFlag(name, flag.Active);
+        MaP.level.Session.SetFlag(name, flag.Active);
         Refresh();
     }
 
@@ -81,7 +81,7 @@ public static class ChroniaFlagUtils
     {
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
-            if (!item.Value.Using() && item.Value.IsNormalFlag())
+            if (!item.Value.IsCustomFlag() && item.Value.IsNormalFlag())
             {
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
@@ -91,7 +91,7 @@ public static class ChroniaFlagUtils
     public static void SetFlag(this string name, bool active)
     {
         name.PullFlag().Active = active;
-        MaP.session.SetFlag(name, active);
+        MaP.level.Session.SetFlag(name, active);
 
         Refresh();
     }
@@ -100,7 +100,7 @@ public static class ChroniaFlagUtils
     {
         name.PullFlag().Active = active;
         name.PullFlag().Global = global;
-        MaP.session.SetFlag(name, active);
+        MaP.level.Session.SetFlag(name, active);
 
         Refresh();
     }
@@ -110,7 +110,7 @@ public static class ChroniaFlagUtils
         name.PullFlag().Active = active;
         name.PullFlag().Global = global;
         name.PullFlag().Temporary = temporary;
-        MaP.session.SetFlag(name, active);
+        MaP.level.Session.SetFlag(name, active);
 
         Refresh();
     }
@@ -153,7 +153,7 @@ public static class ChroniaFlagUtils
         name.PullFlag().Global = global;
         name.PullFlag().Temporary = temporary;
         name.PullFlag().Timed = timer;
-        MaP.session.SetFlag(name, basicState);
+        MaP.level.Session.SetFlag(name, basicState);
 
         Refresh();
     }
@@ -173,7 +173,7 @@ public static class ChroniaFlagUtils
         }
         else
         {
-            return MapProcessor.session.GetFlag(name);
+            return MaP.level.Session.GetFlag(name);
         }
     }
 }

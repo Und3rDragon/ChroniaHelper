@@ -53,7 +53,7 @@ public class TrackIndicator : Entity
                 playerIndex++;
                 playerProgress = 0f;
             }
-
+            
             yield return null;
         }
     }

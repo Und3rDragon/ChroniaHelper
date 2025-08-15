@@ -121,7 +121,7 @@ public static class Log
     }
 
     public enum LogMode { Info, Warn, Error }
-    public static void Each(Array objs, LogMode mode = LogMode.Info)
+    public static void Each<T>(ICollection<T> objs, LogMode mode = LogMode.Info)
     {
         foreach (var obj in objs)
         {

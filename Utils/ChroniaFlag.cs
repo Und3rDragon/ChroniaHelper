@@ -47,13 +47,13 @@ public class ChroniaFlag
     public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
         orig(self);
-
+        
         // Remove temporary flags
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Temporary)
             {
-                MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
+                MaP.level.Session.SetFlag(item.Key, item.Value.DefineResetState());
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -63,7 +63,7 @@ public class ChroniaFlag
         {
             if (item.Value.Global)
             {
-                MapProcessor.session.SetFlag(item.Key, item.Value.Active);
+                MaP.level.Session.SetFlag(item.Key, item.Value.Active);
             }
         }
     }
@@ -73,11 +73,11 @@ public class ChroniaFlag
         orig(self, intro, fromLoader);
 
         // Apply global flags
-        foreach(var item in Md.SaveData.ChroniaFlags)
+        foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Global && !item.Value.Temporary)
             {
-                MapProcessor.session.SetFlag(item.Key, item.Value.Active);
+                MaP.level.Session.SetFlag(item.Key, item.Value.Active);
             }
         }
     }
@@ -97,16 +97,22 @@ public class ChroniaFlag
                 }
                 else if (item.Value.Timed == 0f)
                 {
-                    MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
+                    MaP.level.Session.SetFlag(item.Key, item.Value.DefineResetState());
                     Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                 }
             }
 
             if (item.Value.Force)
             {
-                MapProcessor.session.SetFlag(item.Key, item.Value.Active);
+                MaP.level.Session.SetFlag(item.Key, item.Value.Active);
             }
         }
+
+        //foreach(var item in Md.SaveData.ChroniaFlags)
+        //{
+        //    Log.Error(item.Key, item.Value.Active, item.Value.Global, item.Value.Temporary, item.Value.Force);
+        //}
+        //Log.Error("______________");
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
@@ -115,6 +121,8 @@ public class ChroniaFlag
 
         if (Md.SaveData.IsNotNull())
         {
+            ChroniaFlagUtils.Refresh();
+
             foreach (var item in Md.SaveData.ChroniaFlags)
             {
                 // Security Check
@@ -129,13 +137,13 @@ public class ChroniaFlag
                     }
                     else if (item.Value.Timed == 0f)
                     {
-                        MapProcessor.session.SetFlag(item.Key, item.Value.DefineResetState());
+                        MaP.level.Session.SetFlag(item.Key, item.Value.DefineResetState());
                         Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                     }
 
                     if (item.Value.Force)
                     {
-                        MaP.session.SetFlag(item.Key, item.Value.Active);
+                        MaP.level.Session.SetFlag(item.Key, item.Value.Active);
                     }
                 }
             }
@@ -170,9 +178,9 @@ public class ChroniaFlag
         return Tags.Count == 0 && PresetTags.Count == 0 && CustomData.Count == 0;
     }
 
-    public bool Using()
+    public bool IsCustomFlag()
     {
-        return Active || Global || Temporary || Force || Timed >= 0f;
+        return Global || Temporary || Force || Timed >= 0f;
     }
 
     public bool DefineResetState()

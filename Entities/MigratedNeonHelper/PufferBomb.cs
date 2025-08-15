@@ -147,7 +147,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			startPosition = lastSinePosition = lastSpeedPosition = Position;
 			pushRadius = new Hitbox(longRange ? 120f : 60f, 60f, longRange ? -60f : -30f, -30f);
 			// modified detectRadius
-            detectRadius = data.Attr("detectCollider", "60,30,-30,0").ParseRectangleCollider(new Hitbox(60f, 30f, -30f, 0f));
+			detectRadius = data.Attr("detectCollider", "60,30,-30,0").ParseRectangleCollider(new Hitbox(60f, 30f, -30f, 0f));
 			// modified WallBreak
 			breakWallsRadius = data.Attr("wallbreakCollider", "16,0,0").ParseCircle(new Circle(16f));
 

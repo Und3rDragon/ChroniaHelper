@@ -373,7 +373,7 @@ public static class ColliderUtils
             }
             if (p.Length >= 4)
             {
-                float.TryParse(p[2], out y);
+                float.TryParse(p[3], out y);
             }
 
             if (w > 0 && h > 0) { rec = new Hitbox(w, h, x, y); }
@@ -388,7 +388,7 @@ public static class ColliderUtils
         Hitbox rec = defaultValue;
         if (p.Length >= 2)
         {
-            float w, h, x = 0, y = 0;
+            float w, h, x = rec.Position.X, y = rec.Position.Y;
             float.TryParse(p[0], out w);
             float.TryParse(p[1], out h);
             if (p.Length >= 3)
@@ -397,7 +397,7 @@ public static class ColliderUtils
             }
             if (p.Length >= 4)
             {
-                float.TryParse(p[2], out y);
+                float.TryParse(p[3], out y);
             }
 
             if (w > 0 && h > 0) { rec = new Hitbox(w, h, x, y); }
