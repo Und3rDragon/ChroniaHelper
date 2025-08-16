@@ -65,7 +65,7 @@ public class SpriteEntity : Actor
 
     // assumption:
     // several commands controlling how this entity moves or acts
-    
+
     public enum Command
     {
         None, Wait_Flag, Set_Flag, Play, Flag_Play, Wait, MoveTo,
@@ -152,7 +152,7 @@ public class SpriteEntity : Actor
         solid.Collidable = false;
 
         Add(mover = new StaticMover());
-        
+
         base.Tag = normalTag;
     }
     private string spriteName;
@@ -165,16 +165,15 @@ public class SpriteEntity : Actor
     private float parallax = 1f, camX = 160f, camY = 90f;
     private Solid solid; private Vector2 solidPos = Vector2.Zero;
     private StaticMover mover;
-    private BitTag normalTag = Tags.TransitionUpdate; 
+    private BitTag normalTag = Tags.TransitionUpdate;
     // acceleration
     private Vector2 basicSpeed = Vector2.Zero;
-    private Vector2[] accelerations = new Vector2[1] {Vector2.Zero};
+    private Vector2[] accelerations = new Vector2[1] { Vector2.Zero };
     private Vector2[] nodes; private int nodeCount;
     private bool killOnCollide = false;
     private ColliderList colliderList = new();
     private Color spriteColor;
 
-    private Coroutine positioning, accelerate, rounding;
     public override void Added(Scene scene)
     {
         foreach (var command in Enum.GetValues<Command>())
@@ -183,13 +182,6 @@ public class SpriteEntity : Actor
         }
 
         MapProcessor.level.Add(solid);
-
-        routine_rounding = false;
-        routine_positioning = false;
-        routine_accelerate = false;
-        Add(positioning = new Coroutine(Positioning()));
-        Add(accelerate = new Coroutine(Accelerate()));
-        Add(rounding = new Coroutine(Rounding()));
 
         // start executing commands when entering the room
         Add(new Coroutine(Execution()));
@@ -206,103 +198,6 @@ public class SpriteEntity : Actor
     // Holdable parameters
     private Vector2 Speed;
 
-    private void StopAllMovement()
-    {
-        routine_accelerate = false;
-        routine_positioning = false;
-        routine_rounding = false;
-
-        positioning.Replace(Positioning());
-        accelerate.Replace(Accelerate());
-        rounding.Replace(Rounding());
-    }
-
-    private EaseMode position_ease;
-    private Vector2 position_from, position_to;
-    private float position_timer, position_maxTime = -1f;
-    private bool routine_positioning = false;
-    public IEnumerator Positioning()
-    {
-        while (!routine_positioning)
-        {
-            yield return null;
-        }
-
-        position_timer = 0f;
-        position_from = Position;
-        while(true)
-        {
-            position_timer = Calc.Approach(position_timer, position_maxTime, Engine.DeltaTime);
-            Position = position_timer.LerpValue(0f, position_maxTime, position_from, position_to, position_ease);
-
-            yield return null;
-        }
-    }
-
-    private bool routine_accelerate = false;
-    private float accelerate_timer, accelerate_maxTimer = 100000f;
-    public IEnumerator Accelerate()
-    {
-        while (!routine_accelerate)
-        {
-            yield return null;
-        }
-
-        accelerate_timer = 0f;
-
-        while (accelerate_timer < accelerate_maxTimer)
-        {
-            accelerate_timer = Calc.Approach(accelerate_timer, accelerate_maxTimer, Engine.DeltaTime);
-
-            Position += basicSpeed * Engine.DeltaTime;
-            for (int i = 0; i < accelerations.Length; i++)
-            {
-                if (i == 0)
-                {
-                    basicSpeed += accelerations[0] * Engine.DeltaTime;
-                }
-                else
-                {
-                    accelerations[i - 1] += accelerations[i] * Engine.DeltaTime;
-                }
-            }
-
-            yield return null;
-        }
-    }
-
-    private float rounding_dx, rounding_dy, rounding_angle, rounding_timer, rounding_maxTime;
-    private Ease.Easer rounding_ease;
-    private bool routine_rounding = false;
-    public IEnumerator Rounding()
-    {
-        while (!routine_rounding)
-        {
-            yield return null;
-        }
-
-        Vector2 obj = Position;
-
-        float targetAngle = rounding_angle * Calc.DegToRad;
-        Vector2 start = obj, center = start + new Vector2(rounding_dx, rounding_dy),
-            needle = start - center, progressVector = needle;
-
-        rounding_timer = 0f;
-
-        float progress = 0f;
-        while (rounding_timer < rounding_maxTime)
-        {
-            rounding_timer = Calc.Approach(rounding_timer, rounding_maxTime, Engine.DeltaTime);
-            progress = rounding_timer.LerpValue(0f, rounding_maxTime, 0f, 1f, EaseUtils.EaseToEaseMode[rounding_ease]);
-            progressVector = needle.Rotate(targetAngle * rounding_ease(progress));
-            obj = center + progressVector;
-
-            Position = obj;
-
-            yield return null;
-        }
-    }
-
     public IEnumerator Execution()
     {
         ignoreActivated = false;
@@ -314,7 +209,7 @@ public class SpriteEntity : Actor
                 bool shouldSkip = false;
                 foreach (var flag in ignoreFlags.Keys)
                 {
-                    bool flagArg = ignoreFlags[flag] ? !MaP.session.GetFlag(flag) : MaP.session.GetFlag(flag);
+                    bool flagArg = ignoreFlags[flag] ? !MapProcessor.session.GetFlag(flag) : MapProcessor.session.GetFlag(flag);
 
                     if (flagArg && ignoreIndexes[flag].Contains(index)) { shouldSkip = true; }
                 }
@@ -357,7 +252,7 @@ public class SpriteEntity : Actor
 
                 if (hasOverride)
                 {
-                    if (!MaP.session.GetFlag(overrideFlag))
+                    if (!MapProcessor.session.GetFlag(overrideFlag))
                     {
                         index = newIndex - 1;
                     }
@@ -373,7 +268,7 @@ public class SpriteEntity : Actor
                 // valid syntax: "play,spriteName, (resetAnimation, random)"
 
                 string playSprite = string.Empty;
-                
+
                 if (segs == 1) { continue; }
                 if (segs >= 2) { playSprite = commandLine[1]; }
                 bool random = false, reset = false;
@@ -388,7 +283,7 @@ public class SpriteEntity : Actor
                 // valid syntax: "flagplay,flag,spriteName,(inverted, reset, random)"
 
                 string playSprite = string.Empty, flag = string.Empty;
-                
+
                 if (segs < 3) { continue; }
                 if (segs >= 3) { flag = commandLine[1]; playSprite = commandLine[2]; }
                 bool inverted = false, reset = false, random = false;
@@ -396,11 +291,11 @@ public class SpriteEntity : Actor
                 if (segs >= 5) { bool.TryParse(commandLine[4], out reset); }
                 if (segs >= 6) { bool.TryParse(commandLine[5], out random); }
 
-                if (inverted && MaP.session.GetFlag(flag))
+                if (inverted && MapProcessor.session.GetFlag(flag))
                 {
                     continue;
                 }
-                if (!inverted && !MaP.session.GetFlag(flag))
+                if (!inverted && !MapProcessor.session.GetFlag(flag))
                 {
                     continue;
                 }
@@ -472,7 +367,7 @@ public class SpriteEntity : Actor
                 // valid syntax: "music, eventName"
                 if (segs < 2) { continue; }
 
-                MaP.session.Audio.Music.Event = SFX.EventnameByHandle(commandLine[1]);
+                MapProcessor.session.Audio.Music.Event = SFX.EventnameByHandle(commandLine[1]);
             }
 
             else if (execute == Command.Hitbox)
@@ -494,7 +389,7 @@ public class SpriteEntity : Actor
                 }
 
                 bool isAdd = false;
-                if(segs >= 6)
+                if (segs >= 6)
                 {
                     bool.TryParse(commandLine[5], out isAdd);
                 }
@@ -510,7 +405,7 @@ public class SpriteEntity : Actor
                     colliderList.Add(new Hitbox(width, height, x, y));
                     base.Collider = colliderList;
                 }
-                
+
             }
 
             else if (execute == Command.Holdable_Collider)
@@ -559,7 +454,7 @@ public class SpriteEntity : Actor
                 ConditionalParseFloat(commandLine[2], out solidPos.Y);
                 ConditionalParseFloat(commandLine[3], out size.X);
                 ConditionalParseFloat(commandLine[4], out size.Y);
-                if(size.X == 0 || size.Y == 0) { solid.Collidable = false; continue; }
+                if (size.X == 0 || size.Y == 0) { solid.Collidable = false; continue; }
 
                 if (segs >= 6)
                 {
@@ -634,7 +529,7 @@ public class SpriteEntity : Actor
                 // syntax: "variable, name, type, value"
                 if (segs < 4) { continue; }
                 bool checkEmpty = false;
-                for(int i = 0; i < 3; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     if (string.IsNullOrEmpty(commandLine[i])) { checkEmpty = true; break; }
                 }
@@ -677,7 +572,7 @@ public class SpriteEntity : Actor
                 bool checkEmpty = false;
                 for (int i = 0; i < 5; i++)
                 {
-                    if (string.IsNullOrEmpty(commandLine[i])){ checkEmpty = true; break; }
+                    if (string.IsNullOrEmpty(commandLine[i])) { checkEmpty = true; break; }
                 }
                 if (checkEmpty) { continue; }
 
@@ -706,7 +601,7 @@ public class SpriteEntity : Actor
 
             }
 
-            else if(execute == Command.Change_Tag)
+            else if (execute == Command.Change_Tag)
             {
                 // syntax: change_tag, tagName or index
                 Dictionary<string, BitTag> reference = new()
@@ -716,7 +611,7 @@ public class SpriteEntity : Actor
                     {"hud", Tags.HUD }
                 };
 
-                if(segs < 2)
+                if (segs < 2)
                 {
                     continue;
                 }
@@ -730,7 +625,7 @@ public class SpriteEntity : Actor
             else if (execute == Command.Kill_On_Collide)
             {
                 // syntax: kill_on_collide, enabled?
-                if(segs < 2) { killOnCollide = false; }
+                if (segs < 2) { killOnCollide = false; }
 
                 bool.TryParse(commandLine[1], out killOnCollide);
             }
@@ -778,7 +673,7 @@ public class SpriteEntity : Actor
             if (segs >= 2) { flagName = commandLine[1]; }
             if (segs >= 3) { bool.TryParse(commandLine[2], out flagValue); }
 
-            MaP.session.SetFlag(flagName, flagValue);
+            MapProcessor.session.SetFlag(flagName, flagValue);
         }
 
         else if (execute == Command.Wait_Flag)
@@ -794,11 +689,11 @@ public class SpriteEntity : Actor
             {
                 if (!inverted)
                 {
-                    if (MaP.session.GetFlag(flag)) { break; }
+                    if (MapProcessor.session.GetFlag(flag)) { break; }
                 }
                 else
                 {
-                    if (!MaP.session.GetFlag(flag)) { break; }
+                    if (!MapProcessor.session.GetFlag(flag)) { break; }
                 }
                 yield return null;
             }
@@ -962,27 +857,13 @@ public class SpriteEntity : Actor
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
 
-            Vector2 obj = Position;
+            Vector2 obj;
             switch (execute)
             {
-                case Command.Move:
-                    StopAllMovement();
-                    position_from = Position;
-                    position_to = position_from + new Vector2(dx, dy);
-                    position_maxTime = timer;
-                    position_ease = EaseUtils.EaseToEaseMode[ease];
-                    routine_positioning = true;
-                    break;
+                case Command.Move: obj = Position; break;
                 case Command.Light_Move: obj = light.Position; break;
                 case Command.Bloom_Move: obj = bloom.Position; break;
-                default:
-                    StopAllMovement();
-                    position_from = Position;
-                    position_to = position_from + new Vector2(dx, dy);
-                    position_maxTime = timer;
-                    position_ease = EaseUtils.EaseToEaseMode[ease];
-                    routine_positioning = true;
-                    break;
+                default: obj = Position; break;
             }
             Vector2 pos1 = obj, pos2 = pos1 + new Vector2(dx, dy);
             if (instant)
@@ -991,9 +872,10 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
+                    case Command.Move: Position = obj; break;
                     case Command.Light_Move: light.Position = obj; break;
                     case Command.Bloom_Move: bloom.Position = obj; break;
-                    default: break;
+                    default: Position = obj; break;
                 }
 
                 yield break;
@@ -1006,12 +888,10 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.Move:
-                        break;
+                    case Command.Move: Position = obj; break;
                     case Command.Light_Move: light.Position = obj; break;
                     case Command.Bloom_Move: bloom.Position = obj; break;
-                    default: 
-                        break;
+                    default: obj = Position; break;
                 }
 
                 yield return null;
@@ -1040,40 +920,25 @@ public class SpriteEntity : Actor
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
 
-            Vector2 obj = Position;
+            Vector2 obj;
             switch (execute)
             {
-                case Command.MoveTo:
-                    StopAllMovement();
-                    position_from = Position;
-                    position_to = new Vector2(x, y);
-                    position_maxTime = timer;
-                    position_ease = EaseUtils.EaseToEaseMode[ease];
-                    routine_positioning = true;
-                    break;
+                case Command.MoveTo: obj = Position; break;
                 case Command.Light_MoveTo: obj = light.Position; break;
                 case Command.Bloom_MoveTo: obj = bloom.Position; break;
-                default:
-                    StopAllMovement();
-                    position_from = Position;
-                    position_to = new Vector2(x, y);
-                    position_maxTime = timer;
-                    position_ease = EaseUtils.EaseToEaseMode[ease];
-                    routine_positioning = true;
-                    break;
+                default: obj = Position; break;
             }
             Vector2 pos1 = obj, pos2 = new Vector2(x, y);
-            if (instant) { 
+            if (instant)
+            {
                 obj = pos2;
 
                 switch (execute)
                 {
-                    case Command.MoveTo:
-                        break;
+                    case Command.MoveTo: Position = obj; break;
                     case Command.Light_MoveTo: light.Position = obj; break;
                     case Command.Bloom_MoveTo: bloom.Position = obj; break;
-                    default: 
-                        break;
+                    default: Position = obj; break;
                 }
 
                 yield break;
@@ -1086,12 +951,10 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.MoveTo: 
-                        break;
+                    case Command.MoveTo: Position = obj; break;
                     case Command.Light_MoveTo: light.Position = obj; break;
                     case Command.Bloom_MoveTo: bloom.Position = obj; break;
-                    default: 
-                        break;
+                    default: Position = obj; break;
                 }
 
                 yield return null;
@@ -1121,25 +984,13 @@ public class SpriteEntity : Actor
                 ease = EaseUtils.StringToEase(commandLine[5].ToLower());
             }
 
-            Vector2 obj = Position;
+            Vector2 obj;
             switch (execute)
             {
-                case Command.Move_Around:
-                    StopAllMovement();
-                    rounding_dx = dx; rounding_dy = dy;
-                    rounding_angle = angle; rounding_maxTime = timer;
-                    rounding_ease = ease;
-                    routine_rounding = true;
-                    break;
+                case Command.Move_Around: obj = Position; break;
                 case Command.Light_Move_Around: obj = light.Position; break;
                 case Command.Bloom_Move_Around: obj = bloom.Position; break;
-                default:
-                    StopAllMovement();
-                    rounding_dx = dx; rounding_dy = dy;
-                    rounding_angle = angle; rounding_maxTime = timer;
-                    rounding_ease = ease;
-                    routine_rounding = true;
-                    break;
+                default: obj = Position; break;
             }
             float targetAngle = angle * Calc.DegToRad;
             Vector2 start = obj, center = start + new Vector2(dx, dy),
@@ -1150,12 +1001,10 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.Move_Around: 
-                        break;
+                    case Command.Move_Around: Position = obj; break;
                     case Command.Light_Move_Around: light.Position = obj; break;
                     case Command.Bloom_Move_Around: bloom.Position = obj; break;
-                    default: 
-                        break;
+                    default: Position = obj; break;
                 }
 
                 yield break;
@@ -1169,12 +1018,10 @@ public class SpriteEntity : Actor
 
                 switch (execute)
                 {
-                    case Command.Move_Around: 
-                        break;
+                    case Command.Move_Around: Position = obj; break;
                     case Command.Light_Move_Around: light.Position = obj; break;
                     case Command.Bloom_Move_Around: bloom.Position = obj; break;
-                    default: 
-                        break;
+                    default: Position = obj; break;
                 }
 
                 yield return null;
@@ -1203,7 +1050,8 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             Color from = sprite.Color, to = spriteColor * alpha;
-            if (instant) { 
+            if (instant)
+            {
                 sprite.Color = to;
 
                 yield break;
@@ -1238,9 +1086,10 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             Color from = sprite.Color;
-            if (instant) { 
+            if (instant)
+            {
                 sprite.Color = spriteColor = color;
-                
+
                 yield break;
             }
             while (progress < 1f)
@@ -1277,7 +1126,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             Vector2 from = sprite.Scale, to = new Vector2(scaleX, scaleY);
-            if (instant) { sprite.Scale = to;
+            if (instant)
+            {
+                sprite.Scale = to;
                 yield break;
             }
             while (progress < 1f)
@@ -1313,7 +1164,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             float from = sprite.Rotation, to = isDelta ? sprite.Rotation + Calc.DegToRad * angle : Calc.DegToRad * angle;
-            if (instant) { sprite.Rotation = to;
+            if (instant)
+            {
+                sprite.Rotation = to;
                 yield break;
             }
             while (progress < 1f)
@@ -1346,7 +1199,9 @@ public class SpriteEntity : Actor
 
             float progress = 0f;
             int from = Depth;
-            if (instant) { base.Depth = depth;
+            if (instant)
+            {
+                base.Depth = depth;
                 yield break;
             }
             while (progress < 1f)
@@ -1383,7 +1238,9 @@ public class SpriteEntity : Actor
             }
 
             Vector2 from = (Vector2)sprite.Justify;
-            if (instant) { sprite.Justify = origin;
+            if (instant)
+            {
+                sprite.Justify = origin;
                 yield break;
             }
             float progress = 0f;
@@ -1419,7 +1276,9 @@ public class SpriteEntity : Actor
             }
 
             float progress = 0f, from = sprite.Rate;
-            if (instant) { sprite.Rate = rate;
+            if (instant)
+            {
+                sprite.Rate = rate;
                 yield break;
             }
             while (progress < 1f)
@@ -1434,12 +1293,13 @@ public class SpriteEntity : Actor
         else if (execute == Command.Light)
         {
             // valid syntax: "light, color, alpha, startFade, endFade, (time, easing)"
-            if (segs < 5) { 
-                yield break; 
+            if (segs < 5)
+            {
+                yield break;
             }
 
-            Color color =  Color.White; 
-            float alpha = 0f, timer = 0f; int startFade = 32, endFade = 64;  Ease.Easer ease = Ease.Linear;
+            Color color = Color.White;
+            float alpha = 0f, timer = 0f; int startFade = 32, endFade = 64; Ease.Easer ease = Ease.Linear;
             color = Calc.HexToColor(commandLine[1]);
             ConditionalParseFloat(commandLine[2], out alpha); float.Clamp(alpha, 0f, 1f);
             ConditionalParseInt(commandLine[3], out startFade); startFade.MakeAbs();
@@ -1462,8 +1322,8 @@ public class SpriteEntity : Actor
             }
 
             float progress = 0f;
-            Color color0 = light.Color; 
-            float alpha0 = light.Alpha; 
+            Color color0 = light.Color;
+            float alpha0 = light.Alpha;
             float startFade0 = light.StartRadius, endFade0 = light.EndRadius;
             while (progress < 1f)
             {
@@ -1480,7 +1340,8 @@ public class SpriteEntity : Actor
         else if (execute == Command.Bloom)
         {
             // valid syntax: "bloom, alpha, radius, (time, easing)"
-            if (segs < 3) {
+            if (segs < 3)
+            {
                 yield break;
             }
 
@@ -1552,7 +1413,7 @@ public class SpriteEntity : Actor
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
-                parallax = Calc.LerpSnap(from,to, ease(progress), 0.001f);
+                parallax = Calc.LerpSnap(from, to, ease(progress), 0.001f);
 
                 yield return null;
             }
@@ -1694,7 +1555,7 @@ public class SpriteEntity : Actor
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
                 MapProcessor.level.Camera.Position = Vector2.Lerp(from, to, ease(progress));
-                
+
                 yield return null;
             }
         }
@@ -1747,9 +1608,9 @@ public class SpriteEntity : Actor
             int n = 0;
             ConditionalParseInt(commandLine[1], 0, out n);
             n = int.Clamp(n, 0, nodeCount - 1);
-            
+
             float timer = 0f;
-            if(segs >= 3)
+            if (segs >= 3)
             {
                 ConditionalParseFloat(commandLine[2], 0f, out timer);
                 timer.MakeAbs();
@@ -1757,7 +1618,7 @@ public class SpriteEntity : Actor
             }
 
             Ease.Easer ease = Ease.Linear;
-            if(segs >= 4)
+            if (segs >= 4)
             {
                 ease = EaseUtils.StringToEase(commandLine[3]);
             }
@@ -1873,7 +1734,7 @@ public class SpriteEntity : Actor
 
     private void DebugInfo()
     {
-        
+
     }
 
     public override void Render()
@@ -1885,6 +1746,19 @@ public class SpriteEntity : Actor
         base.Update();
 
         DebugInfo();
+
+        Position += basicSpeed * Engine.DeltaTime;
+        for (int i = 0; i < accelerations.Length; i++)
+        {
+            if (i == 0)
+            {
+                basicSpeed += accelerations[0] * Engine.DeltaTime;
+            }
+            else
+            {
+                accelerations[i - 1] += accelerations[i] * Engine.DeltaTime;
+            }
+        }
 
         Vector2 camPos = MapProcessor.level.Camera.Position + MapProcessor.level.CameraOffset;
         Vector2 center = camPos.Floor() + new Vector2(camX, camY); // by default should be (160, 90) in pixel or (960, 540) in HD
