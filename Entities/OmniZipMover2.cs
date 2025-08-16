@@ -238,7 +238,7 @@ public class OmniZipMover2 : Solid
 
     public OmniZipMover2(EntityID entityID, EntityData data, Vector2 position) : base(position, data.Width, data.Height, safe: false)
     {
-        id = entityID;
+        id = data.ID;
         nodes = data.NodesWithPosition(position);
 
         Position = nodes[0];
@@ -339,7 +339,7 @@ public class OmniZipMover2 : Solid
 
         SurfaceSoundIndex = SurfaceIndex.Girder;
     }
-    private EntityID id;
+    private int id;
     private Vector2[] nodes;
     private Color ropeColor, ropeLightColor;
     private Coroutine seq;

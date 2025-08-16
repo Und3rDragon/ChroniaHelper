@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using YamlDotNet.Serialization.NamingConventions;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Utils;
+
 
 public enum ExpectedResetState
 {
@@ -34,6 +36,7 @@ public class ChroniaFlag
         On.Celeste.Level.LoadLevel += OnLoadLevel;
         On.Celeste.Level.Update += OnLevelUpdate;
         On.Monocle.Scene.Update += GlobalUpdate;
+        On.Celeste.Level.TransitionRoutine += OnLevelTransition;
     }
 
     public static void Unload()
@@ -42,13 +45,12 @@ public class ChroniaFlag
         On.Celeste.Level.LoadLevel -= OnLoadLevel;
         On.Celeste.Level.Update -= OnLevelUpdate;
         On.Monocle.Scene.Update -= GlobalUpdate;
+        On.Celeste.Level.TransitionRoutine -= OnLevelTransition;
     }
 
-    public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
+    public static IEnumerator OnLevelTransition(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData levelData, Vector2 dir)
     {
-        orig(self);
-        
-        // Remove temporary flags
+        // Remove temporary flags on transitions
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Temporary)
@@ -58,26 +60,53 @@ public class ChroniaFlag
             }
         }
 
+        yield return new SwapImmediately(orig(self, levelData, dir)); //On transition
+    }
+
+    public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
+    {
+        orig(self); // Once per reload, not on first enter
+
+        // Remove temporary flags
+        foreach (var item in Md.SaveData.ChroniaFlags)
+        {
+            if (item.Value.Temporary)
+            {
+                self.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
+            }
+        }
+
         // Apply global flags
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Global)
             {
-                MaP.session.SetFlag(item.Key, item.Value.Active);
+                self.Session.SetFlag(item.Key, item.Value.Active);
             }
         }
     }
 
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
-        orig(self, intro, fromLoader);
+        orig(self, intro, fromLoader); // Once per level load, also reload
+
+        // Remove temporary flags
+        foreach (var item in Md.SaveData.ChroniaFlags)
+        {
+            if (item.Value.Temporary)
+            {
+                self.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
+            }
+        }
 
         // Apply global flags
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (item.Value.Global && !item.Value.Temporary)
             {
-                MaP.session.SetFlag(item.Key, item.Value.Active);
+                self.Session.SetFlag(item.Key, item.Value.Active);
             }
         }
     }
@@ -97,22 +126,16 @@ public class ChroniaFlag
                 }
                 else if (item.Value.Timed == 0f)
                 {
-                    MaP.session.SetFlag(item.Key, item.Value.DefineResetState());
+                    self.Session.SetFlag(item.Key, item.Value.DefineResetState());
                     Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                 }
             }
 
             if (item.Value.Force)
             {
-                MaP.session.SetFlag(item.Key, item.Value.Active);
+                self.Session.SetFlag(item.Key, item.Value.Active);
             }
         }
-
-        //foreach (var item in Md.SaveData.ChroniaFlags)
-        //{
-        //    Log.Error(item.Key, item.Value.Active, item.Value.Global, item.Value.Temporary, item.Value.Force);
-        //}
-        //Log.Error("______________");
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
@@ -146,6 +169,8 @@ public class ChroniaFlag
                         MaP.session.SetFlag(item.Key, item.Value.Active);
                     }
                 }
+
+                //Log.Info(item.Key, item.Value.Active, item.Value.Global, item.Value.Temporary);
             }
         }
     }

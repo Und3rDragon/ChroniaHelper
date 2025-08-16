@@ -44,4 +44,4 @@ controller.sprite = function(room, entity)
     return sprite
 end
 
---return controller
+return controller

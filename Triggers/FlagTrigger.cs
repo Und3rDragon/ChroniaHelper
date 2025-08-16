@@ -5,17 +5,15 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
-using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Triggers;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/FlagTrigger")]
-public class FlagTrigger : Trigger
+public class FlagTrigger : BaseTrigger
 {
     public bool set;
     public string[] flagList;
-    public List<string> trueFlags, falseFlags;
     public bool temp;
     public bool saves;
     public bool reset;
@@ -38,127 +36,52 @@ public class FlagTrigger : Trigger
         // flag processing
         string input = data.Attr("flag", "Flag");
         flagList = input.Split(',', StringSplitOptions.TrimEntries);
-        trueFlags = new List<string>();
-        falseFlags = new List<string>();
-        foreach (var item in flagList)
-        {
-            bool s = item.StartsWith('!');
-            if (!s)
-            {
-                trueFlags.Add(item);
-            }
-            else
-            {
-                falseFlags.Add(item.TrimStart('!'));
-            }
-        }
     }
 
-    public void NormalSetup()
+    private Dictionary<string, bool> records = new();
+    protected override void OnEnterExecute(Player player)
     {
-        foreach (var item in trueFlags)
+        foreach(var item in flagList)
         {
-            item.SetFlag(set, saves);
-        }
-        foreach (var item in falseFlags)
-        {
-            item.SetFlag(!set, saves);
+            bool revert = item.StartsWith("!");
+            string name = item.TrimStart('!');
+            bool defState = revert ? !set : set;
+
+            if (filtering && defState == name.GetFlag()) { continue; }
+
+            name.SetFlag(defState, saves, temp);
+            records.Enter(name, defState);
         }
     }
 
-    private Dictionary<string, ChroniaFlag> RecordedStates = new();
-    private List<string> Unchanged = new();
-    public void RecordState()
-    {
-        foreach (var item in trueFlags)
-        {
-            RecordedStates.Enter(item, new(item.GetFlag(), item.PullFlag().Global));
-            if(item.GetFlag() == set)
-            {
-                Unchanged.Enter(item);
-            }
-        }
-        foreach (var item in falseFlags)
-        {
-            RecordedStates.Enter(item, new(item.GetFlag(), item.PullFlag().Global));
-            if(item.GetFlag() == !set)
-            {
-                Unchanged.Enter(item);
-            }
-        }
-    }
-
-    public void LoadState(bool filtering)
-    {
-        if (!filtering)
-        {
-            foreach (var item in trueFlags)
-            {
-                item.SetFlag(!set, saves);
-            }
-            foreach (var item in falseFlags)
-            {
-                item.SetFlag(set, saves);
-            }
-        }
-        else
-        {
-            foreach (var item in RecordedStates)
-            {
-                if (filtering && !Unchanged.Contains(item.Key))
-                {
-                    item.Key.SetFlag(item.Value.Active, item.Value.Global);
-                }
-            }
-        }
-        
-        RecordedStates.Clear();
-    }
-
-    public override void OnEnter(Player player)
-    {
-        base.OnEnter(player);
-
-        RecordState();
-
-        NormalSetup();
-        
-        if (temp)
-        {
-            foreach (var item in trueFlags)
-            {
-                if (item.Check())
-                {
-                    Md.SaveData.ChroniaFlags[item].Temporary = true;
-                }
-            }
-            foreach(var item in falseFlags)
-            {
-                if (item.Check())
-                {
-                    Md.SaveData.ChroniaFlags[item].Temporary = true;
-                }
-            }
-            foreach (var item in RecordedStates.Values)
-            {
-                item.Temporary = true;
-            }
-        }
-    }
-
-    public override void OnStay(Player player)
+    protected override void OnStayExecute(Player player)
     {
         if (onStay)
         {
-            NormalSetup();
+            foreach (var item in flagList)
+            {
+                bool revert = item.StartsWith("!");
+                string name = item.TrimStart('!');
+                bool defState = revert ? !set : set;
+
+                if (filtering && defState == name.GetFlag()) { continue; }
+
+                name.SetFlag(defState, saves, temp);
+                records.Enter(name, defState);
+            }
         }
     }
 
-    public override void OnLeave(Player player)
+    protected override void LeaveReset(Player player)
     {
         if (reset)
         {
-            LoadState(filtering);
+            foreach(var item in records.Keys)
+            {
+                item.SetFlag(!records[item], saves, temp);
+            }
+            records.Clear();
         }
     }
+
 }

@@ -15,18 +15,13 @@ public static class GeometryUtils
         bool c = Md.Session.Geometry_Rectangles.ContainsKey(groupName);
         if (c)
         {
-            Md.Session.Geometry_Rectangles[groupName].Enter(
-                new KeyValuePair<Vector2, Vector2>(
-                        new Vector2(rectangle.Left, rectangle.Top), new Vector2(rectangle.Right, rectangle.Bottom)
-                    )
-                );
+            Md.Session.Geometry_Rectangles[groupName].Enter(rectangle);
         }
         else
         {
-            List<KeyValuePair<Vector2, Vector2>> k = new();
-            KeyValuePair<Vector2, Vector2> v = new KeyValuePair<Vector2, Vector2>(new Vector2(rectangle.Left, rectangle.Top), new Vector2(rectangle.Right, rectangle.Bottom));
-            k.Enter(v);
-            Md.Session.Geometry_Rectangles.Enter(groupName, k);
+            HashSet<Rectangle> r = new();
+            r.Add(rectangle);
+            Md.Session.Geometry_Rectangles.Enter(groupName, r);
         }
     }
 
@@ -35,20 +30,17 @@ public static class GeometryUtils
         bool c = Md.Session.Geometry_Rectangles.ContainsKey(groupName);
         if (c)
         {
-            Md.Session.Geometry_Rectangles[groupName].Enter(
-                new KeyValuePair<Vector2, Vector2>(point1, point2)
-                );
+            Md.Session.Geometry_Rectangles[groupName].Enter(ParseRectangle(point1, point2));
         }
         else
         {
-            List<KeyValuePair<Vector2, Vector2>> k = new();
-            KeyValuePair<Vector2, Vector2> v = new KeyValuePair<Vector2, Vector2>(point1, point2);
-            k.Enter(v);
-            Md.Session.Geometry_Rectangles.Enter(groupName, k);
+            HashSet<Rectangle> r = new();
+            r.Add(ParseRectangle(point1, point2));
+            Md.Session.Geometry_Rectangles.Enter(groupName, r);
         }
     }
 
-    public static List<KeyValuePair<Vector2, Vector2>> GetRectangleGroup(string index)
+    public static HashSet<Rectangle> GetRectangleGroup(string index)
     {
         bool c = Md.Session.Geometry_Rectangles.ContainsKey(index);
 
@@ -58,7 +50,7 @@ public static class GeometryUtils
         }
         else
         {
-            return new List<KeyValuePair<Vector2, Vector2>>();
+            return new HashSet<Rectangle>();
         }
     }
 
@@ -68,7 +60,7 @@ public static class GeometryUtils
 
         foreach (var item in r)
         {
-            float x1 = item.Key.X, x2 = item.Value.X, y1 = item.Key.Y, y2 = item.Value.Y;
+            float x1 = item.Left, x2 = item.Right, y1 = item.Top, y2 = item.Bottom;
             bool flag1 = point.X >= float.Min(x1, x2) && point.X <= float.Max(x1, x2),
                 flag2 = point.Y >= float.Min(y1, y2) && point.Y <= float.Max(y1, y2);
             if(flag1 && flag2)
@@ -221,6 +213,13 @@ public static class GeometryUtils
         }
 
         return rec;
+    }
+
+    public static Rectangle ParseRectangle(this Vector2 a, Vector2 b)
+    {
+        if (a == b) { return new Rectangle(-8,-8,16,16); }
+
+        return new((int)Calc.Min(a.X, b.X), (int)Calc.Min(a.Y, b.Y), (int)(a.X - b.X).GetAbs(), (int)(a.Y - b.Y).GetAbs());
     }
 
     /// <summary>

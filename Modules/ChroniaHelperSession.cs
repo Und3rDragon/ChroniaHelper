@@ -19,32 +19,33 @@ public class ChroniaHelperSession : EverestModuleSession
     [YamlIgnore] public readonly Dictionary<Color, List<DustBunnyEdge>> EdgeColorDictionary = new Dictionary<Color, List<DustBunnyEdge>>();
 
     [YamlIgnore] public Dictionary<string, FlagCarouselTrigger> CarouselDictionary { get; private set; } = new Dictionary<string, FlagCarouselTrigger>();
-
+    
     public bool ActiveTera = false;
-
+    
     public TeraType StartTera = TeraType.Any;
 
     //timer
+    
     public int timerD = 0, timerC = 0, timerB = 0, timerA = 0, timerFrames = 0;
+    
     public string timer;
 
     //AppleSheep Timer
     public Dictionary<string, long> TimeRecords { get; set; } = new Dictionary<string, long>();
-
+    
     public long RawTime;
-
+    
     public long Time;
-
+    
     public bool TimerStarted;
-
+    
     public bool TimerPauseed;
-
+    
     public bool TimerCompleted;
 
     [YamlIgnore] public List<MTexture> Icons { get; set; }
     [YamlIgnore] public List<Vector2> IconOffsets { get; set; }
     [YamlIgnore] public List<Color> IconColors { get; set; }
-
     public List<string> IconsSave { get; set; }
     public List<Vector2> IconOffsetsSave { get; set; }
     public List<string> IconColorsSave { get; set; }
@@ -129,13 +130,17 @@ public class ChroniaHelperSession : EverestModuleSession
     public int platformLine_SP_depth = 9001, platformLine_MP_depth = 9001;
 
     // Omni Zip Mover 2 records
-    public Dictionary<EntityID, int> Zipmover_NodeIndex = new();
-    public Dictionary<EntityID, bool> Zipmover_NextForward = new();
+    public Dictionary<int, int> Zipmover_NodeIndex = new();
+    public Dictionary<int, bool> Zipmover_NextForward = new();
 
     // Flag Timer Trigger
     public Dictionary<string, float> FlagTimer = new();
 
     // GeometryUtils
-    public Dictionary<string, List<KeyValuePair<Vector2, Vector2>>> Geometry_Rectangles = new();
+    public Dictionary<string, HashSet<Rectangle>> Geometry_Rectangles = new();
     public Dictionary<string, List<Vector2>> Geometry_Points = new();
+
+    // Changed Room Flag Controller
+    public HashSet<string> increasedFlags = new();
+    public HashSet<string> decreasedFlags = new();
 }

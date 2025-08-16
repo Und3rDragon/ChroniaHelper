@@ -12,6 +12,38 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/ResetChangedRoomFlagsController")]
 public class ResetChangedRoomFlagsController : Entity
 {
+    public static void Load()
+    {
+        On.Celeste.Session.SetFlag += OnSetFlag;
+    }
+
+    public static void Unload()
+    {
+        On.Celeste.Session.SetFlag -= OnSetFlag;
+    }
+
+    public static void OnSetFlag(On.Celeste.Session.orig_SetFlag orig, Session self, string flag, bool set)
+    {
+        if (set)
+        {
+            if (Md.Session.decreasedFlags.Contains(flag))
+            {
+                Md.Session.decreasedFlags.Remove(flag);
+            }
+            Md.Session.increasedFlags.Add(flag);
+        }
+        else
+        {
+            if (Md.Session.increasedFlags.Contains(flag))
+            {
+                Md.Session.increasedFlags.Remove(flag);
+            }
+            Md.Session.decreasedFlags.Add(flag);
+        }
+
+        orig(self, flag, set);
+    }
+
     public ResetChangedRoomFlagsController(EntityData data, Vector2 offset): base(data.Position + offset)
     {
         inspectMode = (Inspection)data.Int("inspectMode", 0);
@@ -22,37 +54,41 @@ public class ResetChangedRoomFlagsController : Entity
     private Inspection inspectMode;
     private Method resetMethod;
 
-    private HashSet<string> last_flags;
-    private List<string> increasedFlags = new(), decreasedFlags = new();
-
     public override void Added(Scene scene)
     {
         base.Added(scene);
 
-        increasedFlags = new();
-        decreasedFlags = new();
-
-        last_flags = MaP.session.Flags;
+        Md.Session.increasedFlags = new();
+        Md.Session.decreasedFlags = new();
     }
 
     public override void Removed(Scene scene)
     {
         base.Removed(scene);
 
+        if(inspectMode == Inspection.On)
+        {
+            Md.Session.decreasedFlags = new();
+        }
+        if(inspectMode == Inspection.Off)
+        {
+            Md.Session.increasedFlags = new();
+        }
+
         if (resetMethod == Method.Invert)
         {
-            decreasedFlags.EachDo(item => item.SetFlag(true));
-            increasedFlags.EachDo(item => item.SetFlag(false));
+            Md.Session.decreasedFlags.EachDo(item => item.SetFlag(true));
+            Md.Session.increasedFlags.EachDo(item => item.SetFlag(false));
         }
         else if (resetMethod == Method.True)
         {
-            increasedFlags.EachDo(item => item.SetFlag(true));
-            decreasedFlags.EachDo(item => item.SetFlag(true));
+            Md.Session.increasedFlags.EachDo(item => item.SetFlag(true));
+            Md.Session.decreasedFlags.EachDo(item => item.SetFlag(true));
         }
         else
         {
-            increasedFlags.EachDo(item => item.SetFlag(false));
-            decreasedFlags.EachDo(item => item.SetFlag(false));
+            Md.Session.increasedFlags.EachDo(item => item.SetFlag(false));
+            Md.Session.decreasedFlags.EachDo(item => item.SetFlag(false));
         }
     }
 
@@ -60,18 +96,8 @@ public class ResetChangedRoomFlagsController : Entity
     {
         base.Update();
 
-        last_flags.Compare(MaP.session.Flags, out List<string> i, out List<string> d);
-        if (inspectMode != Inspection.Off)
-        {
-            i.AddTo(ref increasedFlags);
-        }
-        if (inspectMode != Inspection.On)
-        {
-            d.AddTo(ref decreasedFlags);
-        }
-
-        //Log.Each(increasedFlags, Log.LogMode.Info);
-        //Log.Each(decreasedFlags, Log.LogMode.Warn);
-        //Log.Info("_________________");
+        //Log.Each(Md.Session.increasedFlags);
+        //Log.Each(Md.Session.decreasedFlags);
+        //Log.Error("____________________");
     }
 }

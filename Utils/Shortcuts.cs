@@ -1,6 +1,7 @@
 ﻿global using FI = ChroniaHelper.Imports.FrostHelperImports;
 global using MaP = ChroniaHelper.Cores.MapProcessor;
 global using Md = ChroniaHelper.ChroniaHelperModule;
+global using Sav = ChroniaHelper.Modules.ChroniaHelperSaveData;
 using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Shortcuts;

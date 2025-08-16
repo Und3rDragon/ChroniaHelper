@@ -25,7 +25,7 @@ return{
 	triggerText = function(room, entity)
 		local base = "flag\n(" ..entity.flag .. ")"
 		if entity.set == false then
-			base = "inverted\nflag (!" ..entity.flag .. ")"
+			base = "inverted\nflag (" ..entity.flag .. ")"
 		end
 		if entity.ignoreUnchanged then
 			base = "safe " .. base

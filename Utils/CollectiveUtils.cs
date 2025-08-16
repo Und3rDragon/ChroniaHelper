@@ -144,7 +144,7 @@ public static class CollectiveUtils
         return true;
     }
 
-    public static void Enter<Type>(this List<Type> list, Type item)
+    public static void Enter<Type>(this ICollection<Type> list, Type item)
     {
         if (!list.Contains(item))
         {
