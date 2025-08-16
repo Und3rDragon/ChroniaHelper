@@ -146,12 +146,17 @@ public class DreamKevin : Solid
     {
         if (Md.CommunalHelperLoaded)
         {
-            fieldGetter_dreamTunnelDashAttacking = DelegateHelper.CreateFieldGetter(typeof(Celeste.Mod.CommunalHelper.DashStates.DreamTunnelDash), "dreamTunnelDashAttacking");
-            if (fieldGetter_dreamTunnelDashAttacking == null)
-                Logger.Error("FASF2025/DelegateHelper", "Failed to create field getter for CommunalHelper.DashStates.DreamTunnelDash.dreamTunnelDashAttacking");
+            HookCommunalHelper();
         }
 
         On.Celeste.DreamBlock.FootstepRipple += DreamBlock_FootstepRipple;
+    }
+
+    private static void HookCommunalHelper()
+    {
+        fieldGetter_dreamTunnelDashAttacking = DelegateHelper.CreateFieldGetter(typeof(Celeste.Mod.CommunalHelper.DashStates.DreamTunnelDash), "dreamTunnelDashAttacking");
+        if (fieldGetter_dreamTunnelDashAttacking == null)
+            Logger.Error("FASF2025/DelegateHelper", "Failed to create field getter for CommunalHelper.DashStates.DreamTunnelDash.dreamTunnelDashAttacking");
     }
 
     [UnLoad]
