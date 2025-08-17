@@ -21,51 +21,6 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/SpriteEntity")]
 public class SpriteEntity : Actor
 {
-    //public Dictionary<string, Command> GetCommand = new Dictionary<string, Command>()
-    //{
-    //    { "setflag", Command.Set_Flag },
-    //    { "moveto", Command.MoveTo },
-    //    { "move", Command.Move },
-    //    { "play", Command.Play },
-    //    { "flagplay", Command.Flag_Play },
-    //    { "wait", Command.Wait },
-    //    { "waitflag", Command.Wait_Flag },
-    //    { "alpha", Command.Alpha },
-    //    { "color", Command.Color },
-    //    { "scale", Command.Scale },
-    //    { "rotate", Command.Rotate },
-    //    { "depth", Command.Depth },
-    //    { "repeat", Command.Repeat },
-    //    { "movearound", Command.Move_Around },
-    //    { "origin", Command.Origin },
-    //    { "rate", Command.Rate },
-    //    { "ignore", Command.Ignore },
-    //    { "sound", Command.Sound },
-    //    { "music", Command.Music },
-    //    { "hitbox", Command.Hitbox },
-    //    { "holdablecollider", Command.Holdable_Collider },
-    //    { "bloom", Command.Bloom },
-    //    { "light", Command.Light },
-    //    { "bloommove", Command.Bloom_Move },
-    //    { "bloommoveto", Command.Bloom_MoveTo },
-    //    { "bloommovearound", Command.Bloom_Move_Around },
-    //    { "lightmove", Command.Light_Move },
-    //    { "lightmoveto", Command.Light_MoveTo },
-    //    { "lightmovearound", Command.Light_Move_Around },
-    //    { "parallax", Command.Parallax },
-    //    { "renderpositioninroom", Command.Render_Position_InRoom },
-    //    { "currentframe", Command.Current_Frame },
-    //    { "cameraoffset", Command.Camera_Offset },
-    //    { "solid", Command.Solid },
-    //    { "jump", Command.Jump },
-    //    { "speed", Command.Speed },
-    //    { "cameraposition", Command.Camera_Position },
-    //    { "disablemovement", Command.Disable_Movement }
-    //};
-
-    // assumption:
-    // several commands controlling how this entity moves or acts
-
     public enum Command
     {
         None, Wait_Flag, Set_Flag, Play, Flag_Play, Wait, MoveTo,
@@ -111,13 +66,6 @@ public class SpriteEntity : Actor
     }
     public SpriteEntity(Vector2 position, EntityData data) : base(position)
     {
-        //this.nodes = nodes;
-        //nodeCount = nodes.Length;
-        //foreach(var node in nodes)
-        //{
-        //    Log.Info(node);
-        //}
-
         spriteName = data.Attr("xmlLabel", "SpriteEntity");
         sprite = GFX.SpriteBank.Create(spriteName);
         Add(sprite);
