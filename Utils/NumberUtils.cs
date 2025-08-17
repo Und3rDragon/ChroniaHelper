@@ -291,7 +291,7 @@ public static class NumberUtils
     public static float Closest(float baseline, params float[] values)
     {
         float r = baseline, a = 0f;
-        for(int i = 0; i< values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
             if (i == 0)
             {
@@ -328,8 +328,8 @@ public static class NumberUtils
                 {
                     bool isPositive = values[i] >= 0;
                     bool c1 = condition == 0, c2 = condition == 1 && isPositive, c3 = condition == 2 && !isPositive;
-                    
-                    if(c1 || c2 || c3)
+
+                    if (c1 || c2 || c3)
                     {
                         r = values[i];
                     }
@@ -361,5 +361,47 @@ public static class NumberUtils
     {
         return new(value.X.Clamp(value1.X, value2.X), value.Y.Clamp(value1.Y, value2.Y));
     }
+
+    public enum Comparator
+    {
+        Equals = 0,
+        Lower = 1,
+        Greater = 2,
+        EqualsOrLower = 3,
+        EqualsOrGreater = 4,
+        WithinRange = 5,
+    }
+    public static bool Compare(this int source, int target, Comparator mode = 0, int anotherRange = 0) => mode switch
+    {
+        Comparator.Equals => source == target,
+        Comparator.Lower => source < target,
+        Comparator.Greater => source > target,
+        Comparator.EqualsOrLower => source <= target,
+        Comparator.EqualsOrGreater => source >= target,
+        Comparator.WithinRange => source >= Math.Min(target, anotherRange) && source <= Math.Max(target,anotherRange),
+        _ => false,
+    };
+
+    public static bool Compare(this float source, float target, Comparator mode = 0, float anotherRange = 0) => mode switch
+    {
+        Comparator.Equals => source == target,
+        Comparator.Lower => source < target,
+        Comparator.Greater => source > target,
+        Comparator.EqualsOrLower => source <= target,
+        Comparator.EqualsOrGreater => source >= target,
+        Comparator.WithinRange => source >= Math.Min(target, anotherRange) && source <= Math.Max(target, anotherRange),
+        _ => false,
+    };
+
+    public static bool Compare(this double source, double target, Comparator mode = 0, double anotherRange = 0) => mode switch
+    {
+        Comparator.Equals => source == target,
+        Comparator.Lower => source < target,
+        Comparator.Greater => source > target,
+        Comparator.EqualsOrLower => source <= target,
+        Comparator.EqualsOrGreater => source >= target,
+        Comparator.WithinRange => source >= Math.Min(target, anotherRange) && source <= Math.Max(target, anotherRange),
+        _ => false,
+    };
 
 }

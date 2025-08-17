@@ -95,6 +95,7 @@ public class ChroniaHelperModule : EverestModule
         SpriteEntity.Load();
         PlatformLineController.Load();
         ResetChangedRoomFlagsController.Load();
+        AbstractInputController.Load();
 
         MapProcessor.Load();
         ChroniaFlag.Onload();
@@ -158,6 +159,7 @@ public class ChroniaHelperModule : EverestModule
         SpriteEntity.Unload();
         PlatformLineController.Unload();
         ResetChangedRoomFlagsController.Unload();
+        AbstractInputController.Unload();
 
         MapProcessor.Unload();
         ChroniaFlag.Unload();

@@ -796,3 +796,15 @@ entities.ChroniaHelper/ReskinnableKevin.attributes.description.giantFaceSpriteXM
 
 # Changed Room Flag Controller
 entities.ChroniaHelper/ResetChangedRoomFlagsController.placements.name.Controller=Reset Changed Room Flags Controller
+
+# Input Controller
+entities.ChroniaHelper/InputFlagController.placements.name.controller=Input Flag Controller (Input Listener)
+entities.ChroniaHelper/InputFlagController.attributes.description.flags=Flags to be operated, can be grouped by using ";" and separated using ","
+entities.ChroniaHelper/InputFlagController.attributes.description.ifFlagCondition=Flags required for this controller to take effect, flags prefixed with "!" are required to be disabled \nThe flags are separated by a comma
+entities.ChroniaHelper/InputFlagController.attributes.description.restraints=Enable use times as a constraint
+entities.ChroniaHelper/InputFlagController.attributes.description.resetCounter=Whether the controller session counter should reset when leaving the room
+entities.ChroniaHelper/InputFlagController.attributes.description.activateByDefault=The controller can be activated by pressing the custom key set in ModSettings - Communal Helper
+entities.ChroniaHelper/InputFlagController.attributes.description.controllerIDPrefix=Each Controller has an session counter that calculates how many times the trigger keys are pressed, \nand this is the prefix of the session counter name, which will be used as the display under "Counter Suffix" mode \nand for calculating restraints, can be reset by "Reset Counter" \nSession Counter ID: Controller ID Prefix + ID, ID refers to the entity ID number above
+entities.ChroniaHelper/InputFlagController.attributes.description.detectCounterID=The session counter that calculates how many times the setup keys are pressed in total, \nwill not be calculated as in restraints, can be reset by "Reset Detect Session"
+entities.ChroniaHelper/InputFlagController.attributes.description.resetDetectSession=Reset the level session counter that calculates how many times the set up keys are pressed in total when player leaves the room, \nsince the counter ID can be identical, this could be an output accumulating inputs \nand be used in FrostHelper expressions etc.
+
