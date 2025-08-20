@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities;
 

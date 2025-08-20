@@ -2,7 +2,7 @@
 global using MaP = ChroniaHelper.Cores.MapProcessor;
 global using Md = ChroniaHelper.ChroniaHelperModule;
 global using Sav = ChroniaHelper.Modules.ChroniaHelperSaveData;
-using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Shortcuts;
 

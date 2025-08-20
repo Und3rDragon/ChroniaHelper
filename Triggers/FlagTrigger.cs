@@ -5,6 +5,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Triggers;
 
