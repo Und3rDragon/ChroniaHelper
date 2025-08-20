@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
 
-namespace ChroniaHelper.Utils;
+namespace ChroniaHelper.Utils.ChroniaSystem;
 
 public static class ChroniaFlagUtils
 {
-    public static bool Check(this string flag)
+    public static bool CheckFlag(this string flag)
     {
         return Md.SaveData.ChroniaFlags.ContainsKey(flag);
     }
 
-    public static bool CheckTag(this string flag, string tag)
+    public static bool CheckFlagTag(this string flag, string tag)
     {
-        if (!flag.Check())
+        if (!flag.CheckFlag())
         {
             return false;
         }
@@ -26,16 +26,16 @@ public static class ChroniaFlagUtils
         return Md.SaveData.ChroniaFlags[flag].Tags.Contains(tag);
     }
 
-    public static bool CheckCustomData(this string flag, string dataName)
+    public static bool CheckFlagCustomData(this string flag, string dataName)
     {
-        if (!flag.Check()) { return false; }
+        if (!flag.CheckFlag()) { return false; }
 
         return Md.SaveData.ChroniaFlags[flag].CustomData.ContainsKey(dataName);
     }
 
-    public static string GetCustomData(this string flag, string dataName)
+    public static string GetFlagCustomData(this string flag, string dataName)
     {
-        if (!flag.CheckCustomData(dataName))
+        if (!flag.CheckFlagCustomData(dataName))
         {
             return string.Empty;
         }
@@ -43,9 +43,9 @@ public static class ChroniaFlagUtils
         return Md.SaveData.ChroniaFlags[flag].CustomData[dataName];
     }
 
-    public static bool CheckPresetTag(this string flag, Labels label)
+    public static bool CheckFlagPresetTag(this string flag, Labels label)
     {
-        if (!flag.Check()) { return false; }
+        if (!flag.CheckFlag()) { return false; }
         
         return Md.SaveData.ChroniaFlags[flag].PresetTags.Contains(label);
     }
@@ -57,7 +57,7 @@ public static class ChroniaFlagUtils
     /// <returns>By default, you'll get the item stored in ChroniaFlags. If the item doesn't exist, you'll get an empty ChroniaFlag (name, false, false, false)</returns>
     public static ChroniaFlag PullFlag(this string name)
     {
-        if (!name.Check())
+        if (!name.CheckFlag())
         {
             Md.SaveData.ChroniaFlags.Enter(name, new());
             //return new();
@@ -75,10 +75,10 @@ public static class ChroniaFlagUtils
     {
         Md.SaveData.ChroniaFlags.Enter(name, flag);
         MaP.session.SetFlag(name, flag.Active);
-        Refresh();
+        FlagRefresh();
     }
 
-    public static void Refresh()
+    public static void FlagRefresh()
     {
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
@@ -97,7 +97,7 @@ public static class ChroniaFlagUtils
         name.PullFlag().Active = active;
         MaP.session.SetFlag(name, active);
 
-        Refresh();
+        FlagRefresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global)
@@ -110,7 +110,7 @@ public static class ChroniaFlagUtils
         name.PullFlag().Global = global;
         MaP.session.SetFlag(name, active);
 
-        Refresh();
+        FlagRefresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global, bool temporary)
@@ -125,7 +125,7 @@ public static class ChroniaFlagUtils
         name.PullFlag().Temporary = temporary;
         MaP.session.SetFlag(name, active);
 
-        Refresh();
+        FlagRefresh();
     }
 
     public static void SetFlag(this string[] list, bool active)
@@ -174,7 +174,7 @@ public static class ChroniaFlagUtils
         name.PullFlag().Timed = timer;
         MaP.session.SetFlag(name, basicState);
 
-        Refresh();
+        FlagRefresh();
     }
 
     /// <summary>
@@ -187,7 +187,7 @@ public static class ChroniaFlagUtils
     {
         if (checkRecordState)
         {
-            return name.Check() ?
+            return name.CheckFlag() ?
                 Md.SaveData.ChroniaFlags[name].Active : false;
         }
         else

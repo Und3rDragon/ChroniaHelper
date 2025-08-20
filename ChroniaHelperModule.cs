@@ -19,6 +19,7 @@ using FMOD.Studio;
 using MonoMod.ModInterop;
 using YoctoHelper.Hooks;
 using FASF2025Helper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper;
 
@@ -99,6 +100,7 @@ public class ChroniaHelperModule : EverestModule
 
         MapProcessor.Load();
         ChroniaFlag.Onload();
+        ChroniaCounter.Onload();
 
         // migrated from NeonHelper
         PufferBomb.Load();
@@ -163,6 +165,7 @@ public class ChroniaHelperModule : EverestModule
 
         MapProcessor.Unload();
         ChroniaFlag.Unload();
+        ChroniaCounter.Unload();
 
         // migrated from NeonHelper
         PufferBomb.Unload();

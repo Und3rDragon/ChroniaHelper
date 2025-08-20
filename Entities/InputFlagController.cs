@@ -8,6 +8,7 @@ using Celeste.Mod.CommunalHelper;
 using Celeste.Mod.CommunalHelper.Entities;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using MonoMod.Cil;
 
 namespace ChroniaHelper.Entities;

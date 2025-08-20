@@ -10,7 +10,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YoctoHelper.Cores;
 
-namespace ChroniaHelper.Utils;
+namespace ChroniaHelper.Utils.ChroniaSystem;
 
 
 public enum ExpectedResetState
@@ -144,7 +144,7 @@ public class ChroniaFlag
 
         if (Md.SaveData.IsNotNull())
         {
-            ChroniaFlagUtils.Refresh();
+            ChroniaFlagUtils.FlagRefresh();
 
             foreach (var item in Md.SaveData.ChroniaFlags)
             {
@@ -210,7 +210,7 @@ public class ChroniaFlag
 
     public bool DefineResetState()
     {
-        switch ((ExpectedResetState)DefaultResetState)
+        switch (DefaultResetState)
         {
             case ExpectedResetState.False:
                 return false;

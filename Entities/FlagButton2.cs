@@ -9,6 +9,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Entities;
