@@ -89,6 +89,14 @@ public static class CollectiveUtils
         return false;
     }
 
+    public static void Create<A, B>(this Dictionary<A,B> dic, A key, B value)
+    {
+        if (!dic.ContainsKey(key))
+        {
+            dic.Add(key, value);
+        }
+    }
+
     public enum Input { normal, onlyAdd, onlyModify }
     public static void Enter<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA key, TypeB value, Input modify = Input.normal)
     {

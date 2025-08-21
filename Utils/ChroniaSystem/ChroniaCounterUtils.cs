@@ -28,10 +28,7 @@ public static class ChroniaCounterUtils
 
     public static ChroniaCounter PullCounter(this string name)
     {
-        if (!Md.SaveData.ChroniaCounters.ContainsKey(name))
-        {
-            return new();
-        }
+        Md.SaveData.ChroniaCounters.Create(name, new());
 
         return Md.SaveData.ChroniaCounters[name];
     }
@@ -49,5 +46,16 @@ public static class ChroniaCounterUtils
             name.PullCounter().Reset();
             name.PullCounter().SetCounter(name);
         }
+    }
+
+    public static int GetCounter(this string name)
+    {
+        return MaP.session.GetCounter(name);
+    }
+
+    public static void SetCounter(this string name, int value)
+    {
+        name.PullCounter().Value = value;
+        name.PullCounter().SetCounter(name);
     }
 }
