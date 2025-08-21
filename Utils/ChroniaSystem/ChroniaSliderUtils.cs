@@ -27,10 +27,7 @@ public static class ChroniaSliderUtils
 
     public static ChroniaSlider PullSlider(this string name)
     {
-        if (!Md.SaveData.ChroniaSliders.ContainsKey(name))
-        {
-            return new();
-        }
+        Md.SaveData.ChroniaSliders.Create(name, new());
 
         return Md.SaveData.ChroniaSliders[name];
     }
@@ -48,5 +45,16 @@ public static class ChroniaSliderUtils
             name.PullSlider().Reset();
             name.PullSlider().SetSlider(name);
         }
+    }
+
+    public static float GetSlider(this string name)
+    {
+        return MaP.session.GetSlider(name);
+    }
+
+    public static void SetSlider(this string name, float value)
+    {
+        name.PullSlider().Value = value;
+        name.PullSlider().SetSlider(name);
     }
 }

@@ -36,7 +36,9 @@ public class ChroniaSlider
             {
                 foreach (var Slider in MaP.session.Sliders)
                 {
-                    if (Slider.Key == item.Key) { MaP.session.SetSlider(item.Key, item.Value.DefaultValue); }
+                    if (Slider.Key == item.Key) { 
+                        MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                    }
                 }
                 Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
             }
@@ -54,7 +56,9 @@ public class ChroniaSlider
         {
             foreach (var Slider in MaP.session.Sliders)
             {
-                if (Slider.Key == item.Key) { MaP.session.SetSlider(item.Key, item.Value.DefaultValue); }
+                if (Slider.Key == item.Key) { 
+                    MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                }
             }
             Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
         }
@@ -78,7 +82,9 @@ public class ChroniaSlider
         {
             foreach (var Slider in MaP.session.Sliders)
             {
-                if (Slider.Key == item.Key) { MaP.session.SetSlider(item.Key, item.Value.DefaultValue); }
+                if (Slider.Key == item.Key) { 
+                    MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                }
             }
             Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
         }
@@ -110,7 +116,9 @@ public class ChroniaSlider
                 {
                     foreach (var Slider in MaP.session.Sliders)
                     {
-                        if (Slider.Key == item.Key) { MaP.session.SetSlider(item.Key, item.Value.DefaultValue); }
+                        if (Slider.Key == item.Key) { 
+                            MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                        }
                     }
                     Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
                 }
@@ -127,6 +135,10 @@ public class ChroniaSlider
             foreach (var item in Md.SaveData.ChroniaSliders)
             {
                 // Security Check
+                if(!item.Value.Active || !item.Value.Customized())
+                {
+                    Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
+                }
 
                 // Global stuffs only
                 if (item.Value.Global)
@@ -139,7 +151,9 @@ public class ChroniaSlider
                     {
                         foreach (var Slider in MaP.session.Sliders)
                         {
-                            if (Slider.Key == item.Key) { MaP.session.SetSlider(item.Key, item.Value.DefaultValue); }
+                            if (Slider.Key == item.Key) { 
+                                MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                            }
                         }
                         Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
                     }
@@ -148,6 +162,7 @@ public class ChroniaSlider
         }
     }
 
+    public bool Active { get; set; } = true;
     public float Value { get; set; } = 0;
     public float Timed { get; set; } = -1f;
     public bool Global { get; set; } = false;
@@ -165,5 +180,10 @@ public class ChroniaSlider
     public void Reset()
     {
         Value = DefaultValue;
+    }
+
+    public bool Customized()
+    {
+        return Value != DefaultValue || Timed != -1f || Global || Temporary;
     }
 }
