@@ -112,9 +112,10 @@ se.fieldInformation = {
 					"camera_zoom,zoom,(changeTime),(easer)",
 					"disable_movement,active?",
 					"kill_player",
-					"passby functionName",
+					"passby functionName,...",
 					"change_tag,(normal or hud)",
 					"kill_on_collide,enable?",
+					"player_collider,width,height,(x),(y),(addOnCurrent?)",
 				}
 			},
 			editable = true,

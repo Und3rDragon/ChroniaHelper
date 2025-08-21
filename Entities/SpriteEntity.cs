@@ -34,6 +34,7 @@ public class SpriteEntity : Actor
         Disable_Movement, Kill_Player, Change_Tag,
         //done
         Holdable_Collider, Jump, Variable, Random, MoveTo_Node, Kill_On_Collide,
+        Player_Collider,
         //undone
     }
     private Command execute = Command.None;
@@ -43,7 +44,7 @@ public class SpriteEntity : Actor
     public List<Command> NoSideRoutines = new List<Command>() {
         Command.None, Command.Set_Flag, Command.Play, Command.Flag_Play,
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
-        Command.Hitbox, Command.Holdable_Collider, Command.Current_Frame, Command.Solid, Command.Speed,
+        Command.Hitbox, Command.Holdable_Collider, Command.Player_Collider, Command.Current_Frame, Command.Solid, Command.Speed,
         Command.Disable_Movement, Command.Kill_Player, Command.Variable, Command.Random,
         Command.Change_Tag, Command.Kill_On_Collide,
     };
@@ -119,8 +120,17 @@ public class SpriteEntity : Actor
     private Vector2[] accelerations = new Vector2[1] { Vector2.Zero };
     private Vector2[] nodes; private int nodeCount;
     private bool killOnCollide = false;
-    private ColliderList colliderList = new();
+    private ColliderList colliderList = new(), playerColliderList = new();
     private Color spriteColor;
+    private PlayerCollider playerCollider = null;
+
+    public void OnCollide(Player player)
+    {
+        if (killOnCollide)
+        {
+            player.Die(player.Speed);
+        }
+    }
 
     public override void Added(Scene scene)
     {
@@ -376,6 +386,39 @@ public class SpriteEntity : Actor
 
                 holdable.PickupCollider = new Hitbox(width, height, x, y);
                 Add(holdable);
+            }
+
+            else if(execute == Command.Player_Collider)
+            {
+                // syntax: playercollider, width, height, x, y, add?
+                if(segs < 3) { continue; }
+                float w = 16, h = 16;
+                float.TryParse(commandLine[1], out w);
+                float.TryParse(commandLine[2], out h);
+
+                if(w <= 0f || h <= 0f) { continue; }
+
+                float x = 0, y = 0;
+                if(segs >= 4) { float.TryParse(commandLine[3], out x); }
+                if(segs >= 5) { float.TryParse(commandLine[4], out y); }
+
+                bool add = false;
+                if(segs >= 6)
+                {
+                    bool.TryParse(commandLine[5], out add);
+                }
+
+                if (add) { playerColliderList.Add(new Hitbox(w, h, x, y)); }
+                else { playerColliderList = new(); playerColliderList.Add(new Hitbox(w, h, x, y)); }
+
+                foreach(var item in Components)
+                {
+                    if(item is PlayerCollider)
+                    {
+                        Remove(item);
+                    }
+                }
+                Add(playerCollider = new PlayerCollider(OnCollide, playerColliderList));
             }
 
             else if (execute == Command.Current_Frame)
@@ -1714,14 +1757,6 @@ public class SpriteEntity : Actor
         sprite.RenderPosition = calculated.Floor();
 
         solid.MoveTo(Position + solidPos);
-
-        if (killOnCollide)
-        {
-            if (CollideCheck<Player>())
-            {
-                MapProcessor.level.Tracker.GetEntity<Player>().Die(Vector2.Zero);
-            }
-        }
     }
 
     #region Holdable setups
