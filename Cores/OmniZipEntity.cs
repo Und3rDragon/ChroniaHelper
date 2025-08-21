@@ -14,7 +14,7 @@ namespace ChroniaHelper.Entities;
 [Tracked(false)]
 public class OmniZipEntity : Entity
 {
-
+    
     public class PathRenderer : Entity
     {
         public class Segment
@@ -24,7 +24,7 @@ public class OmniZipEntity : Entity
             public Vector2 from, to;
             public Vector2 dir, twodir, perp;
             public float length;
-
+            
             public Vector2 lineStartA, lineStartB;
             public Vector2 lineEndA, lineEndB;
 
@@ -67,7 +67,7 @@ public class OmniZipEntity : Entity
 
                 Bounds = b;
             }
-
+            
             public void Spark(Level level)
             {
                 level.ParticlesBG.Emit(ZipMover.P_Sparks, from + sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirStartA);

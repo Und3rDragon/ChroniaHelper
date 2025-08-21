@@ -1,7 +1,4 @@
-﻿using ChroniaHelper.Shortcuts;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace ChroniaHelper.Utils;
+﻿namespace ChroniaHelper.Utils;
 
 public enum ColliderSide
 {
@@ -402,7 +399,7 @@ public static class ColliderUtils
 
             if (w > 0 && h > 0) { rec = new Hitbox(w, h, x, y); }
         }
-
+        
         return rec;
     }
 }
