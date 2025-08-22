@@ -14,4 +14,7 @@ public static class Shortcuts
     public static Dictionary<string, ChroniaFlag> CFlags => Md.SaveData.ChroniaFlags;
     public static Dictionary<string, ChroniaSlider> CSliders => Md.SaveData.ChroniaSliders;
     public static Dictionary<string, ChroniaCounter> CCounters => Md.SaveData.ChroniaCounters;
+
+    public static Sav Sav => Md.SaveData;
+    public static Ses Ses => Md.Session;
 }
