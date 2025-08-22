@@ -16,15 +16,15 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/InputFlagController")]
 public class InputFlagController : AbstractInputController
 {
-    public bool Activated => 
-        (activateByGrab && Input.Grab.Pressed) ||
-        (activateByDash && Input.Dash.Pressed) ||
-        (activateByCrouchDash && Input.CrouchDash.Pressed) ||
-        (activateByESC && Input.ESC.Pressed) ||
-        (activateByJump && Input.Jump.Pressed) ||
-        (activateByPause && Input.Pause.Pressed) ||
-        (activateByTalk && Input.Talk.Pressed) ||
-        (activateByDefault && CommunalHelperModule.Settings.ActivateFlagController.Pressed);
+    public bool Activated =>
+        (activateByGrab && (onlyOnHeld ? Input.Grab.Check : Input.Grab.Pressed)) ||
+        (activateByDash && (onlyOnHeld ? Input.Dash.Check : Input.Dash.Pressed)) ||
+        (activateByCrouchDash && (onlyOnHeld ? Input.CrouchDash.Check : Input.CrouchDash.Pressed)) ||
+        (activateByESC && (onlyOnHeld ? Input.ESC.Check : Input.ESC.Pressed)) ||
+        (activateByJump && (onlyOnHeld ? Input.Jump.Check : Input.Jump.Pressed)) ||
+        (activateByPause && (onlyOnHeld ? Input.Pause.Check : Input.Pause.Pressed)) ||
+        (activateByTalk && (onlyOnHeld ? Input.Talk.Check : Input.Talk.Pressed)) ||
+        (activateByDefault && (onlyOnHeld ? CommunalHelperModule.Settings.ActivateFlagController.Check : CommunalHelperModule.Settings.ActivateFlagController.Pressed));
 
     public string[][] Flags;
     private int flagIndex = 0;
@@ -64,7 +64,8 @@ public class InputFlagController : AbstractInputController
         activateByTalk = false,
         activateByCrouchDash = false,
         activateByESC = false,
-        activateByPause = false;
+        activateByPause = false,
+        onlyOnHeld = false;
 
     public InputFlagController(EntityData data, Vector2 _)
     {
@@ -101,6 +102,7 @@ public class InputFlagController : AbstractInputController
         activateByCrouchDash = data.Bool("activateByCrouchDash", false);
         activateByESC = data.Bool("activateByESC", false);
         activateByPause = data.Bool("activateByPause", false);
+        onlyOnHeld = data.Bool("onlyOnHeld", false);
     }
     private string staticCounterID;
     public bool CheckFlagCondition()

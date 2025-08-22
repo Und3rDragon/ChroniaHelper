@@ -29,6 +29,7 @@ inputFlagController.placements = {
             activateByCrouchDash = false,
             activateByESC = false,
             activateByPause = false,
+            onlyOnHeld = false,
         }
     }
 }
