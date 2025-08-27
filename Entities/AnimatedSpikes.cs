@@ -94,8 +94,15 @@ public class AnimatedSpikes : Entity
             }
             if (this.parent.rainbow)
             {
-                this.disabledColor = ColorUtils.GetRainbowHue(this.parent.Scene, this.position);
-                this.enabledColor = ColorUtils.GetRainbowHue(this.parent.Scene, this.position);
+                CrystalStaticSpinner spinner = parent.Spinner;
+                if (spinner == null)
+                {
+                    spinner = parent.Spinner = new CrystalStaticSpinner(Vector2.Zero, false, Celeste.CrystalColor.Rainbow);
+                    parent.Spinner.Scene = parent.Scene;
+                }
+
+                this.disabledColor = spinner.GetHue(this.position);
+                this.enabledColor = spinner.GetHue(this.position);
             }
         }
 
@@ -172,6 +179,7 @@ public class AnimatedSpikes : Entity
 
     }
 
+    public CrystalStaticSpinner Spinner;
     private int size;
 
     private DirectionMode direction;

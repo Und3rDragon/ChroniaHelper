@@ -18,7 +18,6 @@ namespace ChroniaHelper.Entities;
 ])]
 public class AdvancedSpikes : Entity
 {
-
     public static Entity LoadUp(Level level, LevelData levelData, Vector2 offset, EntityData entityData)
     {
         return new AdvancedSpikes(entityData, offset, DirectionMode.Up);
@@ -41,7 +40,6 @@ public class AdvancedSpikes : Entity
 
     private struct SpikeInfo
     {
-
         public AdvancedSpikes parent;
 
         public Vector2 position;
@@ -59,6 +57,7 @@ public class AdvancedSpikes : Entity
         public float lerp;
 
         public Color color;
+
 
         public void Update()
         {
@@ -78,9 +77,17 @@ public class AdvancedSpikes : Entity
                     this.triggered = false;
                 }
             }
+
             if (this.parent.rainbow)
             {
-                this.color = ColorUtils.GetRainbowHue(this.parent.Scene, this.position);
+                CrystalStaticSpinner spinner = parent.Spinner;
+                if (spinner == null)
+                {
+                    spinner = parent.Spinner = new CrystalStaticSpinner(Vector2.Zero, false, Celeste.CrystalColor.Rainbow);
+                    parent.Spinner.Scene = parent.Scene;
+                }
+
+                this.color = spinner.GetHue(this.position);
             }
         }
 
@@ -102,6 +109,7 @@ public class AdvancedSpikes : Entity
                             Audio.Play(this.parent.triggerSound, this.parent.Position + this.position);
                         }
                     }
+
                     this.retractDelayTimer = this.parent.retractDelay;
                 }
             }
@@ -122,6 +130,7 @@ public class AdvancedSpikes : Entity
                     {
                         Audio.Play(this.parent.retractSound, this.parent.Position + this.position);
                     }
+
                     this.triggered = false;
                 }
             }
@@ -133,30 +142,35 @@ public class AdvancedSpikes : Entity
             {
                 return false;
             }
+
             if (!this.triggered)
             {
                 if (!FlagUtils.IsCorrectFlag(this.parent.level, this.parent.triggerFlag))
                 {
                     return false;
                 }
+
                 if (!string.IsNullOrEmpty(this.parent.touchSound))
                 {
                     Audio.Play(this.parent.touchSound, this.parent.Position + this.position);
                 }
+
                 this.triggerDelayTimer = this.parent.triggerDelay;
                 this.triggered = true;
                 return false;
             }
+
             if (this.lerp >= this.parent.lerpMoveTime)
             {
                 player.Die(outwards);
                 return true;
             }
+
             return false;
         }
-
     }
 
+    public CrystalStaticSpinner Spinner;
     private int size;
 
     private DirectionMode direction;
@@ -263,7 +277,6 @@ public class AdvancedSpikes : Entity
         this.retractFlag = FlagUtils.Parse(data.Attr("retractFlag")); //null
         this.retractLerpMove = data.Float("retractLerpMove"); //8F
         this.textureIndex = data.Int("textureIndex"); //0
-
     }
 
     public AdvancedSpikes(Vector2 position, EntityData data, DirectionMode direction) : base(position)
@@ -302,10 +315,12 @@ public class AdvancedSpikes : Entity
         {
             this.triggerDelay = Engine.DeltaTime;
         }
+
         if (this.retractDelay == 0F)
         {
             this.retractDelay = Engine.DeltaTime;
         }
+
         switch (this.direction)
         {
             case DirectionMode.Up:
@@ -333,6 +348,7 @@ public class AdvancedSpikes : Entity
                 base.Add(new LedgeBlocker(this.SideSafeBlockCheck));
                 break;
         }
+
         base.Add(new SafeGroundBlocker());
         base.Add(new PlayerCollider(this.OnCollide));
         if (this.attached)
@@ -344,6 +360,7 @@ public class AdvancedSpikes : Entity
                 JumpThruChecker = this.IsRiding
             });
         }
+
         base.Depth = data.Int("depth", -50);
     }
 
@@ -358,14 +375,19 @@ public class AdvancedSpikes : Entity
         {
             if (!spikes[i].triggered)
             {
-                triggered = false; break;
+                triggered = false;
+                break;
             }
         }
+
         if (trigger && !triggered)
         {
             return false;
         }
-        else { return true; }
+        else
+        {
+            return true;
+        }
         // Overwritten Original Logic
         // The codes below is ignored
 
@@ -376,6 +398,7 @@ public class AdvancedSpikes : Entity
         {
             return false;
         }
+
         left = Math.Max(left, 0);
         right = Math.Min(right, this.spikes.Length - 1);
         for (int i = left; i <= right; i++)
@@ -385,6 +408,7 @@ public class AdvancedSpikes : Entity
                 return true;
             }
         }
+
         return false;
     }
 
@@ -396,6 +420,7 @@ public class AdvancedSpikes : Entity
         {
             return false;
         }
+
         top = Math.Max(top, 0);
         bottom = Math.Min(bottom, this.spikes.Length - 1);
         for (int i = top; i <= bottom; i++)
@@ -405,6 +430,7 @@ public class AdvancedSpikes : Entity
                 return true;
             }
         }
+
         return false;
     }
 
@@ -415,10 +441,12 @@ public class AdvancedSpikes : Entity
         {
             return;
         }
+
         if (this.grouped && !this.enterFlag)
         {
             this.enterGrouped = true;
         }
+
         minIndex = Math.Max(minIndex, 0);
         maxIndex = Math.Min(maxIndex, this.spikes.Length - 1);
         for (int i = minIndex; i <= maxIndex; i++)
@@ -441,6 +469,7 @@ public class AdvancedSpikes : Entity
                     minIndex = (int)((player.Left - base.Left) / this.singleSize);
                     maxIndex = (int)((player.Right - base.Left) / this.singleSize);
                 }
+
                 break;
             case DirectionMode.Down:
                 if (player.Speed.Y <= 0F)
@@ -448,6 +477,7 @@ public class AdvancedSpikes : Entity
                     minIndex = (int)((player.Left - base.Left) / this.singleSize);
                     maxIndex = (int)((player.Right - base.Left) / this.singleSize);
                 }
+
                 break;
             case DirectionMode.Left:
                 if (player.Speed.X >= 0F)
@@ -455,6 +485,7 @@ public class AdvancedSpikes : Entity
                     minIndex = (int)((player.Top - base.Top) / this.singleSize);
                     maxIndex = (int)((player.Bottom - base.Top) / this.singleSize);
                 }
+
                 break;
             case DirectionMode.Right:
                 if (player.Speed.X <= 0F)
@@ -462,6 +493,7 @@ public class AdvancedSpikes : Entity
                     minIndex = (int)((player.Top - base.Top) / this.singleSize);
                     maxIndex = (int)((player.Bottom - base.Top) / this.singleSize);
                 }
+
                 break;
         }
     }
@@ -531,10 +563,12 @@ public class AdvancedSpikes : Entity
                     this.spikes[i].Update();
                 }
             }
+
             if (!base.CollideCheck<Player>())
             {
                 this.enterGrouped = false;
             }
+
             this.enterFlag = true;
         }
         else if (this.enterFlag)
@@ -543,12 +577,14 @@ public class AdvancedSpikes : Entity
             {
                 this.spikes[i].Update();
             }
+
             for (int i = 0; i < this.spikes.Length; i++)
             {
                 if (this.spikes[i].lerp != this.lerpMoveTime)
                 {
                     break;
                 }
+
                 this.enterFlag = false;
             }
         }
@@ -585,6 +621,7 @@ public class AdvancedSpikes : Entity
                 justify = new Vector2(0.1F, 0.5F);
                 break;
         }
+
         for (int i = 0; i < this.spikes.Length; i++)
         {
             MTexture mTexture = this.spikeTextures[this.spikes[i].textureIndex];
@@ -602,8 +639,8 @@ public class AdvancedSpikes : Entity
         {
             return false;
         }
+
         this.GetPlayerCollideIndex(player, out var minIndex, out var maxIndex);
         return (minIndex <= spikeIndex + 1) && (maxIndex >= spikeIndex - 1);
     }
-
 }
