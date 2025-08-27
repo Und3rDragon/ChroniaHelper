@@ -229,14 +229,11 @@ namespace ChroniaHelper.Entities
                                                             (instr.Operand as MethodReference)?.GetID() == "System.Boolean Monocle.Entity::CollideCheck<Celeste.Spikes>(Microsoft.Xna.Framework.Vector2)"))
             {
                 Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on spikes at {cursor.Index} in IL for {cursor.Method.Name}");
-                ILLabel label = null;
-                cursor.GotoNext(MoveType.After, instr => instr.MatchBrfalse(out label));
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.EmitDelegate(IsDangerousSpike);
-                cursor.Emit(OpCodes.Brfalse, label);
             }
         }
-        private static bool IsDangerousSpike(Player player)
+        private static bool IsDangerousSpike(bool origResult, Player player)
         {
             /*
             if (!ChroniaHelperModule.teraMode)
@@ -260,7 +257,7 @@ namespace ChroniaHelper.Entities
                 }
                 return true;
             }
-            return false;
+            return origResult;
         }
         private static void OnActorCreate(On.Celeste.Actor.orig_ctor orig, Actor self, Vector2 position)
         {
