@@ -340,6 +340,15 @@ local fieldTable = {
             fieldType = "boolean",
             allowEmpty = false
         }
+    },
+    canRefillDashOnTouch =
+    {
+        data = false,
+        info =
+        {
+            fieldType = "boolean",
+            allowEmpty = false
+        }
     }
 }
 

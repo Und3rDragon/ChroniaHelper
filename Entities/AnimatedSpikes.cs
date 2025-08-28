@@ -179,6 +179,7 @@ public class AnimatedSpikes : Entity
 
     }
 
+    public bool CanRefillDashOnTouch;
     public CrystalStaticSpinner Spinner;
     private int size;
 
@@ -442,6 +443,7 @@ public class AnimatedSpikes : Entity
             });
         }
         base.Depth = data.Int("depth", -50);
+        CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
     }
 
     public AnimatedSpikes(EntityData data, Vector2 offset, DirectionMode direction) : this(data.Position + offset, data, direction)

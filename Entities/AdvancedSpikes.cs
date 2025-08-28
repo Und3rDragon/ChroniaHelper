@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System;
+using System.Reflection;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 
 namespace ChroniaHelper.Entities;
 
@@ -170,7 +173,48 @@ public class AdvancedSpikes : Entity
         }
     }
 
+    public static ILHook PlayerOrigUpdateHook;
+
+    public static void OnLoad()
+    {
+        PlayerOrigUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update", BindingFlags.Instance | BindingFlags.Public), PlayerOnOrigUpdate);
+    }
+
+    public static void OnUnload()
+    {
+        PlayerOrigUpdateHook?.Dispose();
+        PlayerOrigUpdateHook = null;
+    }
+
+    private static void PlayerOnOrigUpdate(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+        if (cursor.TryGotoNext(
+                ins=>ins.MatchCall("Monocle.Entity", "System.Boolean CollideCheck<Celeste.Spikes>(Microsoft.Xna.Framework.Vector2)")
+                ))
+        {
+            cursor.Index += 1;
+            cursor.EmitLdarg0();
+            cursor.EmitDelegate<Func<bool, Player, bool>>(( origResult,  player)=>
+            {
+                    if (player.CollideFirst<AdvancedSpikes>() is {} spike1)
+                    {
+                        if (!spike1.CanRefillDashOnTouch)
+                            return true;
+                    }
+                    if (player.CollideFirst<AnimatedSpikes>() is {} spike2)
+                    {
+                        if (!spike2.CanRefillDashOnTouch)
+                            return true;
+                    }
+                return origResult;
+            });
+        }
+    }
+
+
     public CrystalStaticSpinner Spinner;
+    public bool CanRefillDashOnTouch;
     private int size;
 
     private DirectionMode direction;
@@ -362,6 +406,7 @@ public class AdvancedSpikes : Entity
         }
 
         base.Depth = data.Int("depth", -50);
+        CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
     }
 
     public AdvancedSpikes(EntityData data, Vector2 offset, DirectionMode direction) : this(data.Position + offset, data, direction)
