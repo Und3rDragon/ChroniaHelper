@@ -276,14 +276,13 @@ public class CustomBooster : Booster
             ))
         {
             cursor.Index += 1;
-            cursor.EmitPop();
-            cursor.EmitDelegate<Func<float>>(() =>
+            cursor.EmitDelegate<Func<float, float>>(defaultHoldTime =>
             {
                 Scene scene = Engine.Scene;
                 Player player = scene.Tracker.GetEntity<Player>();
                 if (player != null && player.CurrentBooster is CustomBooster booster)
                     return booster.holdTime;
-                return 0.25f;
+                return defaultHoldTime;
             });
         }
     }
