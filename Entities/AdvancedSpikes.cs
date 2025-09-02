@@ -199,12 +199,12 @@ public class AdvancedSpikes : Entity
             {
                     if (player.CollideFirst<AdvancedSpikes>() is {} spike1)
                     {
-                        if (!spike1.CanRefillDashOnTouch)
+                        if (!spike1.CanRefillDashOnTouch || !spike1.trigger)
                             return true;
                     }
                     if (player.CollideFirst<AnimatedSpikes>() is {} spike2)
                     {
-                        if (!spike2.CanRefillDashOnTouch)
+                        if (!spike2.CanRefillDashOnTouch || !spike2.trigger)
                             return true;
                     }
                 return origResult;

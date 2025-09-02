@@ -245,7 +245,7 @@ public class AnimatedSpikes : Entity
 
     private string retractSound;
 
-    private bool trigger;
+    public bool trigger;
 
     private bool waitPlayerLeave;
 
