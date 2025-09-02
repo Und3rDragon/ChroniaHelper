@@ -34,10 +34,10 @@ public class ChroniaSlider
         {
             if (item.Value.Temporary)
             {
-                foreach (var Slider in MaP.session.Sliders)
+                foreach (var Slider in MaP.sliders)
                 {
                     if (Slider.Key == item.Key) { 
-                        MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                        MaP.sliders.SafeRemove(item.Key); 
                     }
                 }
                 Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
@@ -54,10 +54,10 @@ public class ChroniaSlider
         // Remove temporary
         foreach (var item in Md.SaveData.ChroniaSliders)
         {
-            foreach (var Slider in MaP.session.Sliders)
+            foreach (var Slider in MaP.sliders)
             {
                 if (Slider.Key == item.Key) { 
-                    MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                    MaP.sliders.SafeRemove(item.Key); 
                 }
             }
             Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
@@ -80,10 +80,10 @@ public class ChroniaSlider
         // Remove temporary
         foreach (var item in Md.SaveData.ChroniaSliders)
         {
-            foreach (var Slider in MaP.session.Sliders)
+            foreach (var Slider in MaP.sliders)
             {
                 if (Slider.Key == item.Key) { 
-                    MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                    MaP.sliders.SafeRemove(item.Key); 
                 }
             }
             Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
@@ -117,7 +117,7 @@ public class ChroniaSlider
                     foreach (var Slider in MaP.session.Sliders)
                     {
                         if (Slider.Key == item.Key) { 
-                            MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                            MaP.sliders.SafeRemove(item.Key); 
                         }
                     }
                     Md.SaveData.ChroniaSliders.SafeRemove(item.Key);
@@ -152,7 +152,7 @@ public class ChroniaSlider
                         foreach (var Slider in MaP.session.Sliders)
                         {
                             if (Slider.Key == item.Key) { 
-                                MaP.session.SetSlider(item.Key, item.Value.DefaultValue); 
+                                MaP.sliders.SafeRemove(item.Key); 
                             }
                         }
                         Md.SaveData.ChroniaSliders.SafeRemove(item.Key);

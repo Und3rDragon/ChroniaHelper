@@ -1,6 +1,7 @@
 ﻿using System;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using MonoMod.Utils;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
@@ -42,6 +43,8 @@ public static class MapProcessor
     public static Player player = null;
     public static bool playerAlive = false;
     public static Vector2 camOffset = Vector2.Zero;
+
+    public static Dictionary<string, Session.Slider> sliders = new();
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
@@ -53,6 +56,9 @@ public static class MapProcessor
         camOffset = level.CameraOffset;
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
+
+        object _slider = new DynamicData(session).Get("_Sliders");
+        sliders = (Dictionary<string, Session.Slider>)_slider;
 
         // Dummy Entity setup
         level.Add(globalEntityDummy);
