@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -76,5 +77,51 @@ public static class FadeUtils
         var r = a + d * p;
 
         return new Vector2(r.Y, r.Z);
+    }
+
+    public enum ColorLerp { ColorLerp, HSLLerp, HSVLerp }
+    public static Color LerpValue(this float source, float clampA, float clampB, Color valueA, Color valueB, EaseMode ease = EaseMode.Linear, ColorLerp lerp = ColorLerp.ColorLerp)
+    {
+        float p = source.ClampProgress(clampA, clampB, ease);
+
+        if (lerp == ColorLerp.HSLLerp)
+        {
+            return LerpValue(source, clampA, clampB,
+                new ColorUtils.HSLColor(valueA), new ColorUtils.HSLColor(valueB), ease).ToColor();
+        }
+        else if(lerp == ColorLerp.HSVLerp)
+        {
+            return LerpValue(source, clampA, clampB,
+                new ColorUtils.HSVColor(valueA), new ColorUtils.HSVColor(valueB), ease).ToColor();
+        }
+        else
+        {
+            return Color.Lerp(valueA, valueB, p);
+        }
+
+    }
+
+    public static ColorUtils.HSLColor LerpValue(this float source, float clampA, float clampB, ColorUtils.HSLColor valueA, ColorUtils.HSLColor valueB, EaseMode ease = EaseMode.Linear)
+    {
+        float p = source.ClampProgress(clampA, clampB, ease);
+
+        int h = source.LerpValue(clampA, clampB, valueA.H, valueB.H, ease);
+        int s = source.LerpValue(clampA, clampB, valueA.S, valueB.S, ease);
+        int l = source.LerpValue(clampA, clampB, valueA.L, valueB.L, ease);
+        int a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
+
+        return new ColorUtils.HSLColor((byte)h, (byte)s, (byte)l, (byte)a);
+    }
+
+    public static ColorUtils.HSVColor LerpValue(this float source, float clampA, float clampB, ColorUtils.HSVColor valueA, ColorUtils.HSVColor valueB, EaseMode ease = EaseMode.Linear)
+    {
+        float p = source.ClampProgress(clampA, clampB, ease);
+
+        int h = source.LerpValue(clampA, clampB, valueA.H, valueB.H, ease);
+        int s = source.LerpValue(clampA, clampB, valueA.S, valueB.S, ease);
+        int v = source.LerpValue(clampA, clampB, valueA.V, valueB.V, ease);
+        int a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
+
+        return new ColorUtils.HSVColor((byte)h, (byte)s, (byte)v, (byte)a);
     }
 }

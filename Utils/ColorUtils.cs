@@ -231,4 +231,193 @@ public static class ColorUtils
         return colorArray;
     }
 
+    public struct HSLColor
+    {
+        public byte H;
+        public byte S;
+        public byte L;
+        public byte A;
+
+        public HSLColor(byte H = 0, byte S = 0, byte L = 0, byte A = 255)
+        {
+            this.H = H;
+            this.S = S;
+            this.L = L;
+            this.A = A;
+        }
+
+        public HSLColor(Color color)
+        {
+            RGBToHSL(color);
+        }
+
+        public HSLColor(string hex)
+        {
+            RGBToHSL(Calc.HexToColorWithAlpha(hex));
+        }
+
+        private void RGBToHSL(Color color)
+        {
+            float r = color.R / 255f;
+            float g = color.G / 255f;
+            float b = color.B / 255f;
+
+            float max = Math.Max(r, Math.Max(g, b));
+            float min = Math.Min(r, Math.Min(g, b));
+            float delta = max - min;
+
+            float l = (max + min) / 2f;
+
+            float s = 0f;
+            if (delta != 0)
+            {
+                if (l < 0.5f)
+                    s = delta / (max + min);
+                else
+                    s = delta / (2f - max - min);
+            }
+
+            float h = 0f;
+            if (delta != 0)
+            {
+                if (max == r)
+                    h = ((g - b) / delta + (g < b ? 6 : 0)) * 60;
+                else if (max == g)
+                    h = ((b - r) / delta + 2) * 60;
+                else if (max == b)
+                    h = ((r - g) / delta + 4) * 60;
+            }
+
+            H = (byte)h;
+            S = (byte)s;
+            L = (byte)l;
+            A = color.A;
+        }
+
+        public Color ToColor()
+        {
+            float h = H;              // 0 ~ 360
+            float s = S / 100f;       // 0 ~ 1
+            float l = L / 100f;       // 0 ~ 1
+
+            float c = (1 - Math.Abs(2 * l - 1)) * s;  // Chroma
+            float x = c * (1 - Math.Abs((h / 60f) % 2 - 1));
+            float m = l - c / 2;
+
+            float r1 = 0, g1 = 0, b1 = 0;
+            int sector = (int)(h / 60) % 6;
+
+            switch (sector)
+            {
+                case 0: r1 = c; g1 = x; b1 = 0; break;
+                case 1: r1 = x; g1 = c; b1 = 0; break;
+                case 2: r1 = 0; g1 = c; b1 = x; break;
+                case 3: r1 = 0; g1 = x; b1 = c; break;
+                case 4: r1 = x; g1 = 0; b1 = c; break;
+                case 5: r1 = c; g1 = 0; b1 = x; break;
+            }
+
+            byte R = (byte)Math.Clamp((r1 + m) * 255, 0, 255);
+            byte G = (byte)Math.Clamp((g1 + m) * 255, 0, 255);
+            byte B = (byte)Math.Clamp((b1 + m) * 255, 0, 255);
+
+            return new Color(R, G, B, A);
+        }
+
+    }
+
+    public struct HSVColor
+    {
+        public byte H;
+        public byte S;
+        public byte V;
+        public byte A;
+
+        public HSVColor(byte h = 0, byte s = 0, byte v = 0, byte a = 255)
+        {
+            this.H = h;
+            this.S = s;
+            this.V = v;
+            this.A = a;
+        }
+
+        public HSVColor(Color color)
+        {
+            RGBToHSV(color);
+        }
+
+        public HSVColor(string hex)
+        {
+            RGBToHSV(Calc.HexToColorWithAlpha(hex));
+        }
+
+        private void RGBToHSV(Color color)
+        {
+            float r = color.R / 255f;
+            float g = color.G / 255f;
+            float b = color.B / 255f;
+
+            float max = MathHelper.Max(r, MathHelper.Max(g, b));
+            float min = MathHelper.Min(r, MathHelper.Min(g, b));
+            float delta = max - min;
+
+            // Value (V)
+            float v = max;
+
+            // Saturation (S)
+            float s = max == 0 ? 0 : delta / max;
+
+            // Hue (H)
+            float h = 0;
+            if (delta != 0)
+            {
+                if (max == r)
+                    h = ((g - b) / delta + (g < b ? 6 : 0)) * 60;
+                else if (max == g)
+                    h = ((b - r) / delta + 2) * 60;
+                else if (max == b)
+                    h = ((r - g) / delta + 4) * 60;
+            }
+            // h ∈ [0, 360)
+
+            // 映射到 byte (0~255)
+            H = (byte)Math.Clamp((int)(h * 255f / 360f), 0, 255);
+            S = (byte)Math.Clamp((int)(s * 255), 0, 255);
+            V = (byte)Math.Clamp((int)(v * 255), 0, 255);
+            A = color.A;
+        }
+
+        public Color ToColor()
+        {
+            // 先将 byte 映射回浮点范围
+            float h = H * 360f / 255f;  // 0~255 → 0~360
+            float s = S / 255f;         // 0~255 → 0~1
+            float v = V / 255f;         // 0~255 → 0~1
+
+            // HSV → RGB 算法
+            float c = v * s;           // Chroma
+            float x = c * (1 - Math.Abs((h / 60f) % 2 - 1));
+            float m = v - c;
+
+            float r1 = 0, g1 = 0, b1 = 0;
+            int sector = (int)(h / 60) % 6;
+
+            switch (sector)
+            {
+                case 0: r1 = c; g1 = x; b1 = 0; break;
+                case 1: r1 = x; g1 = c; b1 = 0; break;
+                case 2: r1 = 0; g1 = c; b1 = x; break;
+                case 3: r1 = 0; g1 = x; b1 = c; break;
+                case 4: r1 = x; g1 = 0; b1 = c; break;
+                case 5: r1 = c; g1 = 0; b1 = x; break;
+            }
+
+            byte R = (byte)Math.Clamp((r1 + m) * 255, 0, 255);
+            byte G = (byte)Math.Clamp((g1 + m) * 255, 0, 255);
+            byte B = (byte)Math.Clamp((b1 + m) * 255, 0, 255);
+
+            return new Color(R, G, B, A);
+        }
+    }
+
 }
