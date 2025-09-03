@@ -233,17 +233,17 @@ public static class ColorUtils
 
     public struct HSLColor
     {
-        public byte H;
-        public byte S;
-        public byte L;
-        public byte A;
+        public float H;
+        public float S;
+        public float L;
+        public float A;
 
-        public HSLColor(byte H = 0, byte S = 0, byte L = 0, byte A = 255)
+        public HSLColor(float H = 0, float S = 0, float L = 0, float A = 1f)
         {
-            this.H = H;
-            this.S = S;
-            this.L = L;
-            this.A = A;
+            this.H = Math.Clamp(H, 0f, 360f);
+            this.S = Math.Clamp(S, 0f, 1f);
+            this.L = Math.Clamp(L, 0f, 1f);
+            this.A = Math.Clamp(A, 0f, 1f);
         }
 
         public HSLColor(Color color)
@@ -288,17 +288,17 @@ public static class ColorUtils
                     h = ((r - g) / delta + 4) * 60;
             }
 
-            H = (byte)h;
-            S = (byte)s;
-            L = (byte)l;
-            A = color.A;
+            H = h;
+            S = s;
+            L = l;
+            A = Math.Clamp(color.A / 255f, 0f, 1f);
         }
 
         public Color ToColor()
         {
             float h = H;              // 0 ~ 360
-            float s = S / 100f;       // 0 ~ 1
-            float l = L / 100f;       // 0 ~ 1
+            float s = S;       // 0 ~ 1
+            float l = L;       // 0 ~ 1
 
             float c = (1 - Math.Abs(2 * l - 1)) * s;  // Chroma
             float x = c * (1 - Math.Abs((h / 60f) % 2 - 1));
@@ -317,9 +317,9 @@ public static class ColorUtils
                 case 5: r1 = c; g1 = 0; b1 = x; break;
             }
 
-            byte R = (byte)Math.Clamp((r1 + m) * 255, 0, 255);
-            byte G = (byte)Math.Clamp((g1 + m) * 255, 0, 255);
-            byte B = (byte)Math.Clamp((b1 + m) * 255, 0, 255);
+            int R = Math.Clamp((int)((r1 + m) * 255), 0, 255);
+            int G = Math.Clamp((int)((g1 + m) * 255), 0, 255);
+            int B = Math.Clamp((int)((b1 + m) * 255), 0, 255);
 
             return new Color(R, G, B, A);
         }
@@ -328,17 +328,17 @@ public static class ColorUtils
 
     public struct HSVColor
     {
-        public byte H;
-        public byte S;
-        public byte V;
-        public byte A;
+        public float H;
+        public float S;
+        public float V;
+        public float A;
 
-        public HSVColor(byte h = 0, byte s = 0, byte v = 0, byte a = 255)
+        public HSVColor(float h = 0, float s = 0, float v = 0, float a = 1f)
         {
-            this.H = h;
-            this.S = s;
-            this.V = v;
-            this.A = a;
+            this.H = Math.Clamp(h, 0f, 360f);
+            this.S = Math.Clamp(s, 0f, 1f);
+            this.V = Math.Clamp(v, 0f, 1f);
+            this.A = Math.Clamp(a, 0f, 1f);
         }
 
         public HSVColor(Color color)
@@ -381,18 +381,18 @@ public static class ColorUtils
             // h ∈ [0, 360)
 
             // 映射到 byte (0~255)
-            H = (byte)Math.Clamp((int)(h * 255f / 360f), 0, 255);
-            S = (byte)Math.Clamp((int)(s * 255), 0, 255);
-            V = (byte)Math.Clamp((int)(v * 255), 0, 255);
-            A = color.A;
+            H = h;
+            S = s;
+            V = v;
+            A = Math.Clamp(color.A / 255f, 0f, 1f);
         }
 
         public Color ToColor()
         {
             // 先将 byte 映射回浮点范围
-            float h = H * 360f / 255f;  // 0~255 → 0~360
-            float s = S / 255f;         // 0~255 → 0~1
-            float v = V / 255f;         // 0~255 → 0~1
+            float h = H;  // 0~360
+            float s = S;         // 0~1
+            float v = V;         // 0~1
 
             // HSV → RGB 算法
             float c = v * s;           // Chroma
@@ -412,9 +412,9 @@ public static class ColorUtils
                 case 5: r1 = c; g1 = 0; b1 = x; break;
             }
 
-            byte R = (byte)Math.Clamp((r1 + m) * 255, 0, 255);
-            byte G = (byte)Math.Clamp((g1 + m) * 255, 0, 255);
-            byte B = (byte)Math.Clamp((b1 + m) * 255, 0, 255);
+            int R = Math.Clamp((int)((r1 + m) * 255), 0, 255);
+            int G = Math.Clamp((int)((g1 + m) * 255), 0, 255);
+            int B = Math.Clamp((int)((b1 + m) * 255), 0, 255);
 
             return new Color(R, G, B, A);
         }

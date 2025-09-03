@@ -105,23 +105,23 @@ public static class FadeUtils
     {
         float p = source.ClampProgress(clampA, clampB, ease);
 
-        int h = source.LerpValue(clampA, clampB, valueA.H, valueB.H, ease);
-        int s = source.LerpValue(clampA, clampB, valueA.S, valueB.S, ease);
-        int l = source.LerpValue(clampA, clampB, valueA.L, valueB.L, ease);
-        int a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
+        float h = source.LerpValue(clampA, clampB, valueA.H, valueB.H, ease);
+        float s = source.LerpValue(clampA, clampB, valueA.S, valueB.S, ease);
+        float l = source.LerpValue(clampA, clampB, valueA.L, valueB.L, ease);
+        float a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
 
-        return new ColorUtils.HSLColor((byte)h, (byte)s, (byte)l, (byte)a);
+        return new ColorUtils.HSLColor(h, s, l, a);
     }
 
     public static ColorUtils.HSVColor LerpValue(this float source, float clampA, float clampB, ColorUtils.HSVColor valueA, ColorUtils.HSVColor valueB, EaseMode ease = EaseMode.Linear)
     {
         float p = source.ClampProgress(clampA, clampB, ease);
 
-        int h = source.LerpValue(clampA, clampB, valueA.H, valueB.H, ease);
-        int s = source.LerpValue(clampA, clampB, valueA.S, valueB.S, ease);
-        int v = source.LerpValue(clampA, clampB, valueA.V, valueB.V, ease);
-        int a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
+        float h = source.LerpValue(clampA, clampB, valueA.H, valueB.H, ease);
+        float s = source.LerpValue(clampA, clampB, valueA.S, valueB.S, ease);
+        float v = source.LerpValue(clampA, clampB, valueA.V, valueB.V, ease);
+        float a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
 
-        return new ColorUtils.HSVColor((byte)h, (byte)s, (byte)v, (byte)a);
+        return new ColorUtils.HSVColor(h, s, v, a);
     }
 }
