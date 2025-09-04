@@ -438,16 +438,22 @@ public static class ColorUtils
         public Color color;
         public float alpha;
 
-        public ChroniaColor(byte R = 0, byte G = 0, byte B = 0, byte A = 0)
+        public ChroniaColor(Color color, float alpha)
+        {
+            this.color = color;
+            this.alpha = Math.Clamp(alpha, 0f, 1f);
+        }
+
+        public ChroniaColor(byte R, byte G, byte B, byte A)
         {
             color = new Color(R, G, B);
             alpha = A / 255f;
         }
 
-        public ChroniaColor(float R, float G, float B, float A)
+        public ChroniaColor(float R = 0f, float G = 0f, float B = 0f, float A = 0f)
         {
             color = new Color((int)R, (int)G, (int)B);
-            alpha = A;
+            alpha = Math.Clamp(A, 0f, 1f);
         }
 
         public ChroniaColor(string hex)
@@ -469,6 +475,11 @@ public static class ColorUtils
             alpha = hsv.A;
             Color c = hsv.ToColor();
             color = new Color(c.R, c.G, c.B);
+        }
+
+        public Color Parsed()
+        {
+            return color * alpha;
         }
     }
 

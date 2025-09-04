@@ -71,7 +71,7 @@ public class SpriteEntity : Actor
         sprite = GFX.SpriteBank.Create(spriteName);
         Add(sprite);
         origSprite = sprite;
-        spriteColor = Color.White;
+        spriteColor = new (Color.White, 1f);
         // sprite center == entity position
 
         string command = data.Attr("commands");
@@ -121,7 +121,7 @@ public class SpriteEntity : Actor
     private Vector2[] nodes; private int nodeCount;
     private bool killOnCollide = false;
     private ColliderList colliderList = new(), playerColliderList = new();
-    private Color spriteColor;
+    private ColorUtils.ChroniaColor spriteColor;
     private PlayerCollider playerCollider = null;
 
     public void OnCollide(Player player)
@@ -1022,11 +1022,10 @@ public class SpriteEntity : Actor
         else if (execute == Command.Alpha)
         {
             // valid syntax: "alpha,0.3", "alpha,0.3,1", "alpha,0.3,1,linear"
-            float alpha = 1f;
             if (segs <= 1) { yield break; }
 
-            if (segs >= 2) { ConditionalParseFloat(commandLine[1], out alpha); }
-            alpha = float.Clamp(alpha, 0f, 1f);
+            if (segs >= 2) { ConditionalParseFloat(commandLine[1], out spriteColor.alpha); }
+            spriteColor.alpha = float.Clamp(spriteColor.alpha, 0f, 1f);
 
             float timer = 0.1f;
             if (segs >= 3) { ConditionalParseFloat(commandLine[2], out timer); }
@@ -1040,7 +1039,7 @@ public class SpriteEntity : Actor
             }
 
             float progress = 0f;
-            Color from = sprite.Color, to = spriteColor * alpha;
+            Color from = sprite.Color, to = spriteColor.Parsed();
             if (instant)
             {
                 sprite.Color = to;
@@ -1061,8 +1060,7 @@ public class SpriteEntity : Actor
             // valid syntax: "color,ffffff", "color,ffffff,0.1", "color,ffffff,0.1,sinein"
             if (segs <= 1) { yield break; }
 
-            Color color = Color.White;
-            if (segs >= 2) { color = Calc.HexToColor(commandLine[1]); }
+            if (segs >= 2) { spriteColor.color = Calc.HexToColor(commandLine[1]); }
 
             float timer = 0.1f;
             if (segs >= 3) { ConditionalParseFloat(commandLine[2], out timer); }
@@ -1079,14 +1077,14 @@ public class SpriteEntity : Actor
             Color from = sprite.Color;
             if (instant)
             {
-                sprite.Color = spriteColor = color;
+                sprite.Color = spriteColor.Parsed();
 
                 yield break;
             }
             while (progress < 1f)
             {
                 progress = Calc.Approach(progress, 1f, Engine.DeltaTime / timer);
-                sprite.Color = spriteColor = Color.Lerp(from, color, ease(progress));
+                sprite.Color = Color.Lerp(from, spriteColor.Parsed(), ease(progress));
 
                 yield return null;
             }
