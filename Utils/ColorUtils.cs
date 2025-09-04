@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using YoctoHelper.Cores;
@@ -251,6 +252,12 @@ public static class ColorUtils
             RGBToHSL(color);
         }
 
+        public HSLColor(ChroniaColor color)
+        {
+            RGBToHSL(color.color);
+            A = color.alpha;
+        }
+
         public HSLColor(string hex)
         {
             RGBToHSL(Calc.HexToColorWithAlpha(hex));
@@ -346,6 +353,12 @@ public static class ColorUtils
             RGBToHSV(color);
         }
 
+        public HSVColor(ChroniaColor color)
+        {
+            RGBToHSV(color.color);
+            A = color.alpha;
+        }
+
         public HSVColor(string hex)
         {
             RGBToHSV(Calc.HexToColorWithAlpha(hex));
@@ -417,6 +430,45 @@ public static class ColorUtils
             int B = Math.Clamp((int)((b1 + m) * 255), 0, 255);
 
             return new Color(R, G, B, A);
+        }
+    }
+
+    public struct ChroniaColor
+    {
+        public Color color;
+        public float alpha;
+
+        public ChroniaColor(byte R = 0, byte G = 0, byte B = 0, byte A = 0)
+        {
+            color = new Color(R, G, B);
+            alpha = A / 255f;
+        }
+
+        public ChroniaColor(float R, float G, float B, float A)
+        {
+            color = new Color((int)R, (int)G, (int)B);
+            alpha = A;
+        }
+
+        public ChroniaColor(string hex)
+        {
+            Color c = Calc.HexToColorWithAlpha(hex);
+            color = new Color(c.R, c.G, c.B);
+            alpha = c.A / 255f;
+        }
+
+        public ChroniaColor(HSLColor hsl)
+        {
+            alpha = hsl.A;
+            Color c = hsl.ToColor();
+            color = new Color(c.R, c.G, c.B);
+        }
+
+        public ChroniaColor(HSVColor hsv)
+        {
+            alpha = hsv.A;
+            Color c = hsv.ToColor();
+            color = new Color(c.R, c.G, c.B);
         }
     }
 
