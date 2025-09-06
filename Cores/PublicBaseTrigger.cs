@@ -4,52 +4,52 @@ using ChroniaHelper.Utils;
 namespace ChroniaHelper.Cores;
 
 [Tracked(true)]
-public abstract class BaseTrigger : Trigger
+public abstract class PublicBaseTrigger : Trigger
 {
 
-    protected RelationalOperator levelDeathMode;
+    public RelationalOperator levelDeathMode;
 
-    protected int levelDeathCount;
+    public int levelDeathCount;
 
-    protected RelationalOperator totalDeathMode;
+    public RelationalOperator totalDeathMode;
 
-    protected int totalDeathCount;
+    public int totalDeathCount;
 
-    protected TriggerEnterMode enterMode;
+    public TriggerEnterMode enterMode;
 
-    protected float enterDelay;
+    public float enterDelay;
 
-    protected string[] enterIfFlag;
+    public string[] enterIfFlag;
 
-    protected string enterSound;
+    public string enterSound;
 
-    protected TriggerLeaveMode leaveMode;
+    public TriggerLeaveMode leaveMode;
 
-    protected float leaveDelay;
+    public float leaveDelay;
 
-    protected string[] leaveIfFlag;
+    public string[] leaveIfFlag;
 
-    protected string leaveSound;
+    public string leaveSound;
 
-    protected string[] updateIfFlag;
+    public string[] updateIfFlag;
 
-    protected float updateDelay;
+    public float updateDelay;
 
-    protected float freeze;
+    public float freeze;
 
-    protected bool onlyOnce;
+    public bool onlyOnce;
 
-    protected bool leaveReset;
+    public bool leaveReset;
 
-    protected Level level;
+    public Level level;
 
-    protected Session session;
+    public Session session;
 
     private bool isCorrectEnter;
 
-    protected bool inzone;
+    public bool inzone;
 
-    protected BaseTrigger(EntityData data, Vector2 offset) : base(data, offset)
+    public PublicBaseTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         levelDeathMode = data.Enum("levelDeathMode", RelationalOperator.Equal);
         levelDeathCount = data.Int("levelDeathCount", -1);
@@ -79,11 +79,11 @@ public abstract class BaseTrigger : Trigger
         Add(new Coroutine(AddedRoutine(scene), true));
     }
 
-    protected virtual void AddedExecute(Scene scene)
+    public virtual void AddedExecute(Scene scene)
     {
     }
 
-    protected virtual IEnumerator AddedRoutine(Scene scene)
+    public virtual IEnumerator AddedRoutine(Scene scene)
     {
         yield break;
     }
@@ -97,11 +97,11 @@ public abstract class BaseTrigger : Trigger
         Add(new Coroutine(AwakeRoutine(scene), true));
     }
 
-    protected virtual void AwakeExecute(Scene scene)
+    public virtual void AwakeExecute(Scene scene)
     {
     }
 
-    protected virtual IEnumerator AwakeRoutine(Scene scene)
+    public virtual IEnumerator AwakeRoutine(Scene scene)
     {
         yield break;
     }
@@ -149,11 +149,11 @@ public abstract class BaseTrigger : Trigger
         yield return OnEnterRoutine(player);
     }
 
-    protected virtual void OnEnterExecute(Player player)
+    public virtual void OnEnterExecute(Player player)
     {
     }
 
-    protected virtual IEnumerator OnEnterRoutine(Player player)
+    public virtual IEnumerator OnEnterRoutine(Player player)
     {
         yield break;
     }
@@ -169,11 +169,11 @@ public abstract class BaseTrigger : Trigger
         Add(new Coroutine(OnStayRoutine(player), true));
     }
 
-    protected virtual void OnStayExecute(Player player)
+    public virtual void OnStayExecute(Player player)
     {
     }
 
-    protected virtual IEnumerator OnStayRoutine(Player player)
+    public virtual IEnumerator OnStayRoutine(Player player)
     {
         yield break;
     }
@@ -230,20 +230,20 @@ public abstract class BaseTrigger : Trigger
         yield break;
     }
 
-    protected virtual void OnLeaveExecute(Player player)
+    public virtual void OnLeaveExecute(Player player)
     {
     }
 
-    protected virtual IEnumerator OnLeaveRoutine(Player player)
+    public virtual IEnumerator OnLeaveRoutine(Player player)
     {
         yield break;
     }
 
-    protected virtual void LeaveReset(Player player)
+    public virtual void LeaveReset(Player player)
     {
     }
 
-    protected virtual bool OnlyOnceExpression(Player player) => true;
+    public virtual bool OnlyOnceExpression(Player player) => true;
 
     public override void Update()
     {
@@ -268,7 +268,7 @@ public abstract class BaseTrigger : Trigger
         }
     }
 
-    protected virtual bool UpdateInvokeExpression(Player player) => true;
+    public virtual bool UpdateInvokeExpression(Player player) => true;
 
     private IEnumerator UpdateInvoke(Player player)
     {
@@ -280,11 +280,11 @@ public abstract class BaseTrigger : Trigger
         yield return UpdateRoutine(player);
     }
 
-    protected virtual void UpdateExecute(Player player)
+    public virtual void UpdateExecute(Player player)
     {
     }
 
-    protected virtual IEnumerator UpdateRoutine(Player player)
+    public virtual IEnumerator UpdateRoutine(Player player)
     {
         yield break;
     }

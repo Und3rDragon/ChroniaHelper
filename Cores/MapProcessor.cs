@@ -75,11 +75,17 @@ public static class MapProcessor
         // Check all the switches and save the flags
         var levels = level.Session.MapData.Levels;
         string flagName;
+        HashSet<string> switches = new()
+        { 
+            "ChroniaHelper/RealFlagSwitch", 
+            "ChroniaHelper/RealFlagSwitchAlt", 
+            "ChroniaHelper/RealFlagSwitch2" 
+        };
         foreach (var lv in levels)
         {
             foreach (var item in lv.Entities)
             {
-                if (item.Name == "ChroniaHelper/RealFlagSwitch" || item.Name == "ChroniaHelper/RealFlagSwitchAlt" || item.Name == "ChroniaHelper/RealFlagSwitch2")
+                if (switches.Contains(item.Name))
                 {
                     // Can get the Entity ID here
                     flagName = item.Values["flag"].ToString().Trim();

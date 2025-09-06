@@ -83,8 +83,8 @@ public class ChroniaHelperSession : EverestModuleSession
     // Flag Button Data
     // Can be migrated but not necessary?
     public Dictionary<string, bool> switchFlag = new Dictionary<string, bool>();
-    public List<string> flagNames = new List<string>();
-    public List<string> lastRoom = new List<string>();
+    public HashSet<string> flagNames = new HashSet<string>();
+    public HashSet<string> lastRoom = new HashSet<string>();
     public Dictionary<int, int> touchSwitchFrame = new Dictionary<int, int>();
 
     // Flag Carousel Trigger extended
@@ -139,6 +139,7 @@ public class ChroniaHelperSession : EverestModuleSession
     // GeometryUtils
     public Dictionary<string, HashSet<Rectangle>> Geometry_Rectangles = new();
     public Dictionary<string, List<Vector2>> Geometry_Points = new();
+    public Dictionary<string, HashSet<Vector4>> Geometry_FreeRectangles = new();
 
     // Changed Room Flag Controller
     public HashSet<string> increasedFlags = new();

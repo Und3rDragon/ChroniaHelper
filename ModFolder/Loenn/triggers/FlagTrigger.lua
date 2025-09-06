@@ -8,6 +8,7 @@ return{
 		data =
 		{
 			flag = "flag",
+			extensionTag = "",
 			set = true,
 			temporary = false,
 			global = false,

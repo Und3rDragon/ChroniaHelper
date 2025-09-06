@@ -98,33 +98,46 @@ public static class CollectiveUtils
     }
 
     public enum Input { normal, onlyAdd, onlyModify }
-    public static void Enter<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA key, TypeB value, Input modify = Input.normal)
+    public static void Enter<TKey, TValue>(
+    this Dictionary<TKey, TValue> dict,
+    TKey key,
+    TValue value,
+    Input modify = Input.normal)
     {
-        if (dictionary.ContainsKey(key))
+        if (dict.TryGetValue(key, out _))
         {
             if (modify != Input.onlyAdd)
-            {
-                dictionary[key] = value;
-            }
+                dict[key] = value;
         }
         else
         {
             if (modify != Input.onlyModify)
-            {
-                dictionary.Add(key, value);
-            }
+                dict[key] = value; // 直接赋值也可添加
         }
     }
 
-    public static void SafeRemove<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA key)
+    public static void SafeRemove<TKey, TValue>(
+    this ICollection<KeyValuePair<TKey, TValue>> collection,
+    TKey key)
     {
-        if (dictionary.ContainsKey(key))
+        if (collection is IDictionary<TKey, TValue> dict)
         {
-            dictionary.Remove(key);
+            dict.Remove(key); // 如果是字典，直接用 Remove(key)
+            return;
+        }
+
+        // 否则：遍历所有匹配项
+        var itemsToRemove = collection
+            .Where(kvp => Equals(kvp.Key, key))
+            .ToList();
+
+        foreach (var item in itemsToRemove)
+        {
+            collection.Remove(item);
         }
     }
 
-    public static void SafeRemove<TypeA>(this List<TypeA> list, TypeA key)
+    public static void SafeRemove<TypeA>(this ICollection<TypeA> list, TypeA key)
     {
         if (list.Contains(key))
         {
@@ -138,17 +151,23 @@ public static class CollectiveUtils
         dictionary.Enter(newKey, newValue);
     }
 
-    public static bool ReplaceKey<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey)
+    public static bool ReplaceKey<TKey, TValue>(
+    this ICollection<KeyValuePair<TKey, TValue>> collection,
+    TKey oldKey,
+    TKey newKey)
     {
-        if (!dictionary.ContainsKey(oldKey))
+        var found = collection
+            .Where(kvp => Equals(kvp.Key, oldKey))
+            .ToList();
+
+        if (found.Count == 0) return false;
+
+        foreach (var kvp in found)
         {
-            return false;
+            collection.Remove(kvp);
         }
 
-        TypeB oldValue = dictionary[oldKey];
-        dictionary.SafeRemove(oldKey);
-        dictionary.Enter(newKey, oldValue);
-
+        collection.Add(new KeyValuePair<TKey, TValue>(newKey, found[0].Value));
         return true;
     }
 
@@ -160,7 +179,27 @@ public static class CollectiveUtils
         }
     }
 
-    public static bool ContainsKey<TypeA>(this Dictionary<string, TypeA> dic, string key, bool caseSensitive = true)
+    public static void Enter<TKey, TValue>(
+    this ICollection<KeyValuePair<TKey, TValue>> collection,
+    TKey key,
+    TValue value)
+    {
+        var itemsToRemove = collection
+            .Where(kvp => Equals(kvp.Key, key))
+            .ToList();
+
+        foreach (var item in itemsToRemove)
+        {
+            collection.Remove(item);
+        }
+
+        collection.Add(new KeyValuePair<TKey, TValue>(key, value));
+    }
+
+    public static bool ContainsKey<T>(
+    this Dictionary<string, T> dic,
+    string key,
+    bool caseSensitive = true)
     {
         if (caseSensitive)
         {
@@ -168,14 +207,8 @@ public static class CollectiveUtils
         }
         else
         {
-            foreach (var item in dic.Keys)
-            {
-                if (key.ToLower() == item.ToLower())
-                {
-                    return true;
-                }
-            }
-            return false;
+            return dic.Keys
+                .Any(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
         }
     }
 
@@ -451,7 +484,7 @@ public static class CollectiveUtils
                 ot.Add(item);
             }
         }
-
+        
         uniqueInSource = os; uniqueInTarget = ot;
         return;
     }

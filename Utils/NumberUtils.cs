@@ -403,5 +403,97 @@ public static class NumberUtils
         Comparator.WithinRange => source >= Math.Min(target, anotherRange) && source <= Math.Max(target, anotherRange),
         _ => false,
     };
+    public static T Max<T>(this IEnumerable<T> source) where T : IComparable<T>
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
 
+        using var enumerator = source.GetEnumerator();
+        if (!enumerator.MoveNext()) return default(T); // 空集合返回 default
+
+        T max = enumerator.Current;
+        while (enumerator.MoveNext())
+        {
+            if (enumerator.Current.CompareTo(max) > 0)
+                max = enumerator.Current;
+        }
+        return max;
+    }
+
+    public static T Min<T>(this IEnumerable<T> source) where T : IComparable<T>
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+
+        using var enumerator = source.GetEnumerator();
+        if (!enumerator.MoveNext()) return default(T);
+
+        T min = enumerator.Current;
+        while (enumerator.MoveNext())
+        {
+            if (enumerator.Current.CompareTo(min) < 0)
+                min = enumerator.Current;
+        }
+        return min;
+    }
+
+    public static N GetMax<T, N>(this IEnumerable<T> source, Func<T, N> selector)
+        where N : IComparable
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        return source.Select(selector).Max();
+    }
+
+    public static N GetMin<T, N>(this IEnumerable<T> source, Func<T, N> selector)
+        where N : IComparable
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        return source.Select(selector).Min();
+    }
+
+    public static T GetMaxItem<T, N>(this IEnumerable<T> source, Func<T, N> selector)
+    where N : IComparable
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+
+        using var enumerator = source.GetEnumerator();
+        if (!enumerator.MoveNext()) return default(T);
+
+        T maxItem = enumerator.Current;
+        N maxValue = selector(maxItem);
+
+        while (enumerator.MoveNext())
+        {
+            N currentValue = selector(enumerator.Current);
+            if (currentValue.CompareTo(maxValue) > 0)
+            {
+                maxItem = enumerator.Current;
+                maxValue = currentValue;
+            }
+        }
+
+        return maxItem;
+    }
+
+    public static T GetMinItem<T, N>(this IEnumerable<T> source, Func<T, N> selector)
+        where N : IComparable
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+
+        using var enumerator = source.GetEnumerator();
+        if (!enumerator.MoveNext()) return default(T);
+
+        T minItem = enumerator.Current;
+        N minValue = selector(minItem);
+
+        while (enumerator.MoveNext())
+        {
+            N currentValue = selector(enumerator.Current);
+            if (currentValue.CompareTo(minValue) < 0)
+            {
+                minItem = enumerator.Current;
+                minValue = currentValue;
+            }
+        }
+
+        return minItem;
+    }
 }

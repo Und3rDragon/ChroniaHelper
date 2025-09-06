@@ -33,16 +33,16 @@ public class FlagTrigger : BaseTrigger
         reset = data.Bool("resetOnLeave", false);
         filtering = data.Bool("ignoreUnchanged", true);
         onStay = data.Bool("onStay", false);
-
+        
         // flag processing
         string input = data.Attr("flag", "Flag");
         flagList = input.Split(',', StringSplitOptions.TrimEntries);
     }
 
-    private Dictionary<string, bool> records = new();
+    public Dictionary<string, bool> records = new();
     protected override void OnEnterExecute(Player player)
     {
-        foreach(var item in flagList)
+        foreach (var item in flagList)
         {
             bool revert = item.StartsWith("!");
             string name = item.TrimStart('!');

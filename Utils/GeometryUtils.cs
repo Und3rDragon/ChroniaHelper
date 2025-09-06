@@ -10,6 +10,14 @@ namespace ChroniaHelper.Utils;
 
 public static class GeometryUtils
 {
+    public static void EnterRectangleGroup(string groupName, ICollection<Rectangle> rectangles)
+    {
+        foreach(var r in rectangles)
+        {
+            EnterRectangleGroup(groupName, r);
+        }
+    }
+
     public static void EnterRectangleGroup(string groupName, Rectangle rectangle)
     {
         bool c = Md.Session.Geometry_Rectangles.ContainsKey(groupName);
@@ -64,6 +72,79 @@ public static class GeometryUtils
             bool flag1 = point.X >= float.Min(x1, x2) && point.X <= float.Max(x1, x2),
                 flag2 = point.Y >= float.Min(y1, y2) && point.Y <= float.Max(y1, y2);
             if(flag1 && flag2)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static void EnterFreeRectangleGroup(this string groupName, Vector2 point1, Vector2 point2)
+    {
+        if (point1 == point2) { return; }
+        if (point1.IsNull() || point2.IsNull()) { return; }
+        if (Md.Session.Geometry_FreeRectangles.ContainsKey(groupName))
+        {
+            Md.Session.Geometry_FreeRectangles[groupName].Enter(
+                new(point1.X, point1.Y, point2.X, point2.Y)
+                );
+        }
+        else
+        {
+            Md.Session.Geometry_FreeRectangles.Enter(groupName, new());
+            Md.Session.Geometry_FreeRectangles[groupName].Enter(
+                new(point1.X, point1.Y, point2.X, point2.Y)
+                );
+        }
+    }
+
+    public static void EnterFreeRectangleGroup(this string groupName, Vector2 topLeft, float width, float height)
+    {
+        EnterFreeRectangleGroup(groupName, topLeft, topLeft + new Vector2(width, height));
+    }
+
+    public static HashSet<Vector4> GetFreeRectangleGroup(this string groupName)
+    {
+        if (Md.Session.Geometry_FreeRectangles.ContainsKey(groupName))
+        {
+            return Md.Session.Geometry_FreeRectangles[groupName];
+        }
+
+        return new HashSet<Vector4>();
+    }
+
+    public static bool FreeRectangleGroupCollide(this Vector2 point, string groupIndex)
+    {
+        var r = GetFreeRectangleGroup(groupIndex);
+
+        foreach (var item in r)
+        {
+            Vector2 a = new(Calc.Min(item.X, item.Z), Calc.Min(item.Y, item.W)), 
+                b = new(Calc.Max(item.X, item.Z), Calc.Max(item.Y, item.W));
+            if (point.X >= a.X && point.X <= b.X && point.Y >= a.Y && point.Y <= b.Y)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static bool FreeRectangleGroupCollide(this Player player, string groupIndex)
+    {
+        var r = GetFreeRectangleGroup(groupIndex);
+
+        foreach (var item in r)
+        {
+            Vector2 a = new(Calc.Min(item.X, item.Z), Calc.Min(item.Y, item.W)),
+                b = new(Calc.Max(item.X, item.Z), Calc.Max(item.Y, item.W));
+
+            if (player.BottomRight.X >= a.X && player.BottomRight.X <= b.X && player.BottomRight.Y >= a.Y && player.BottomRight.Y <= b.Y)
+            {
+                return true;
+            }
+            if (player.TopLeft.X >= a.X && player.TopLeft.X <= b.X && player.TopLeft.Y >= a.Y && player.TopLeft.Y <= b.Y)
             {
                 return true;
             }
