@@ -18,12 +18,14 @@ public class FallThrough : JumpthruPlatform
 {
     private float playerDuckTimer = 0;
     private float FallTime = 0.35f;
+    private float mechanicTime = 0.25f;
     private bool collidableOverride;
 
     public FallThrough(EntityData data, Vector2 offset) : base(data, offset)
     {
         FallTime = data.Float("FallTime", 0.35f);
-        collidableOverride = data.Bool("collidableOverride", false);
+        collidableOverride = !data.Bool("ignoreAllJumpthrus", false);
+        mechanicTime = data.Float("mechanicTime", 0.25f).GetAbs();
     }
 
     public override void Update()
@@ -50,7 +52,7 @@ public class FallThrough : JumpthruPlatform
             GoThrough(player, true);
         }
         player.Speed = new Vector2(0f, 60f);
-        yield return 0.25f;
+        yield return mechanicTime;
         while (!PlayerUtils.TryGetAlivePlayer(out player)) //Fixes up some janky stuff
         {
             yield return null;

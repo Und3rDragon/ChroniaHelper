@@ -11,9 +11,11 @@ fakeWall.placements = {
         width = 8,
         height = 8,
         depth = -13000,
-        audioEvent = "",
+        audioEvent = "event:/game/general/secret_revealed",
         playReveal = "NotOnTransition",
-        permanent = true
+        recover = false,
+        permanent = false,
+        playSoundOnEachTrigger = true,
     }
 }
 
@@ -22,11 +24,12 @@ fakeWall.fieldInformation = function(entity)
     local orig = fakeTilesHelper.getFieldInformation("tiletype")(entity)
     orig["Depth"] ={
         fieldType = "integer",
-        options = require('consts.object_depths')
+        options = require("mods").requireFromPlugin("helpers.field_options").depths
     }
     orig['playReveal'] = {
         fieldType = "string",
-        options = {"Never","NotOnTransition","Always"}
+        options = {"Never","NotOnTransition","Always"},
+        editable = false,
     }
     return orig
 end

@@ -897,8 +897,13 @@ entities.ChroniaHelper/FallThrough.placements.name.cliffside=Fall Through (Cliff
 entities.ChroniaHelper/FallThrough.placements.name.reflection=Fall Through (Reflection)
 entities.ChroniaHelper/FallThrough.placements.name.core=Fall Through (Core)
 entities.ChroniaHelper/FallThrough.placements.name.moon=Fall Through (Moon)
+entities.ChroniaHelper/FallThrough.attributes.description.ignoreAllJumpthrus=When enabled, the player would ignore all jump thrus and fall through them
+entities.ChroniaHelper/FallThrough.attributes.description.mechanicTime=When player falling, the player speed will be overrided for this amount of time \nAnd if you choose to ignore all jumpthrus, this is also the duration of the effect
 
 # ================= Custom Fake Wall
 
 entities.ChroniaHelper/CustomFakeWall.placements.name.CustomFakeWall=Custom Fake Wall
+entities.ChroniaHelper/CustomFakeWall.attributes.description.playReveal=Defines whether the sound should play under transitions
+entities.ChroniaHelper/CustomFakeWall.attributes.description.recover=When enabled, the block will recover after the player leaves from inside \nWill be overrided by "permanent"
+entities.ChroniaHelper/CustomFakeWall.attributes.description.playSoundOnEachTrigger=The reveal sound would play every time the player touches it
 

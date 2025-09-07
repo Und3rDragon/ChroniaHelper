@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
@@ -29,7 +30,7 @@ namespace ChroniaHelper.Entities {
 
         private TileGrid tiles;
 
-        private bool fade, permanent, freezeGame;
+        private bool fade, recover, fadein, permanent, freezeGame, audioPlayed, repeatPlay;
 
         private EffectCutout cutout;
 
@@ -57,12 +58,16 @@ namespace ChroniaHelper.Entities {
             playReveal = data.Enum<RevealType>("playReveal");
             audioEvent = data.Attr("audioEvent", "event:/game/general/secret_revealed");
             Depth = data.Int("depth", -13000);
-            permanent = data.Bool("permanent", true);
-
+            permanent = data.Bool("permanent", false);
+            recover = data.Bool("recover", false);
+            repeatPlay = data.Bool("playSoundOnEachTrigger", true);
         }
 
         public override void Added(Scene scene) {
             base.Added(scene);
+
+            audioPlayed = false;
+
             int tilesX = (int) base.Width / 8;
             int tilesY = (int) base.Height / 8;
             Level level = SceneAs<Level>();
@@ -80,6 +85,7 @@ namespace ChroniaHelper.Entities {
             if (CollideCheck<Player>()) {
                 tiles.Alpha = 0f;
                 fade = true;
+                fadein = false;
                 cutout.Visible = false;
                 if (playReveal == RevealType.Always) {
                     Audio.Play(audioEvent, base.Center);
@@ -132,18 +138,43 @@ namespace ChroniaHelper.Entities {
             if (fade) {
                 tiles.Alpha = Calc.Approach(tiles.Alpha, 0f, 2f * Engine.DeltaTime);
                 cutout.Alpha = tiles.Alpha;
-                if (tiles.Alpha <= 0f) {
+                if (tiles.Alpha <= 0f && !recover) {
                     RemoveSelf();
                 }
-                return;
+                if (!recover)
+                {
+                    return;
+                }
             }
+            else if (recover && fadein) 
+            {
+                tiles.Alpha = Calc.Approach(tiles.Alpha, 1f, 2f * Engine.DeltaTime);
+                cutout.Alpha = tiles.Alpha;
+                if(tiles.Alpha < 1f)
+                {
+                    return;
+                }
+            }
+
             Player player = CollideFirst<Player>();
             if (player != null && player.StateMachine.State != 9) {
                 if(permanent)
                     SceneAs<Level>().Session.DoNotLoad.Add(eid);
                 fade = true;
-                if(playReveal != RevealType.Never)
+                fadein = false;
+                if(playReveal != RevealType.Never && !audioPlayed){ 
                     Audio.Play(audioEvent, base.Center);
+                    audioPlayed = true;
+                }
+            }
+            else if(!CollideCheck<Player>())
+            {
+                fade = false;
+                fadein = true;
+                if (repeatPlay)
+                {
+                    audioPlayed = false;
+                }
             }
         }
 

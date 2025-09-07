@@ -12,7 +12,7 @@ end
 local fallThru = {}
 
 fallThru.name = "ChroniaHelper/FallThrough"
-fallThru.depth = -9000
+fallThru.depth = function(room,entity) return entity.depth or -9000 end
 fallThru.canResize = {true, false}
 fallThru.fieldInformation = {
     texture = {
@@ -21,7 +21,10 @@ fallThru.fieldInformation = {
     surfaceIndex = {
         options = enums.tileset_sound_ids,
         fieldType = "integer"
-    }
+    },
+    depth = {
+        options = require("mods").requireFromPlugin("helpers.field_options").depths
+    },
 }
 fallThru.placements = {}
 
@@ -33,7 +36,9 @@ for i, texture in ipairs(textures) do
             width = 8,
             texture = texture,
             surfaceIndex = -1,
-            collidableOverride = false,
+            depth = -9000,
+            mechanicTime = 0.25,
+            ignoreAllJumpthrus = false,
         }
     }
 end
