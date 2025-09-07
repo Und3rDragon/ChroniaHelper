@@ -4,35 +4,22 @@ style.effects.ChroniaHelper/CustomRain.name=Custom Rain
 style.effects.ChroniaHelper/WindRainFG.name=Wind Rain
 style.effects.ChroniaHelper/WaterSurface.name=Water Surface
 
-entities.ChroniaHelper/DecreaseRefill.placements.name.DecreaseRefill=Decrease Refill
-entities.ChroniaHelper/GroupedKillerBlock.placements.name.GroupedKillerBlock=Grouped Killer Block
-entities.ChroniaHelper/KillerBlock.placements.name.KillerBlock=Killer Block
-entities.ChroniaHelper/KillerWall.placements.name.KillerWall=Killer Wall
-entities.ChroniaHelper/PlayerIndicatorZone.placements.name.PlayerIndicatorZone=Player Indicator Zone (Old)
-entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.normal= Player Indicator Zone
-entities.ChroniaHelper/SeamlessSpinner.placements.name.SeamlessSpinner=Seamless Spinner
-entities.ChroniaHelper/UpSpikes.placements.name.UpSpikes=Spikes (Up)
-entities.ChroniaHelper/DownSpikes.placements.name.DownSpikes=Spikes (Down)
-entities.ChroniaHelper/LeftSpikes.placements.name.LeftSpikes=Spikes (Left)
-entities.ChroniaHelper/RightSpikes.placements.name.RightSpikes=Spikes (Right)
-entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.PlayerIndicatorZoneCustom=Player Indicator Zone (Custom)
-entities.ChroniaHelper/AnimatedZipMover.placements.name.start=Animated Zipmover
+# ================= WIPs
 
-triggers.ChroniaHelper/AxisCameraOffset.placements.name.AxisCameraOffset=Camera Offset
-triggers.ChroniaHelper/SmoothToOffsetCamera.placements.name.SmoothToOffsetCamera=Smooth Camera Offset
-
-# WIPs
 entities.ChroniaHelper/LineIndicator.placements.name.default=Line Indicator
 entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.block=Multi-Node Flag Switch Gate (default)
 entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.mirror=Multi-Node Flag Switch Gate (mirror)
 entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.temple=Multi-Node Flag Switch Gate (temple)
 entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.stars=Multi-Node Flag Switch Gate (stars)
 
-# Animated Zipmover
+# ================= Animated Zipmover
+
+entities.ChroniaHelper/AnimatedZipMover.placements.name.start=Animated Zipmover
 entities.ChroniaHelper/AnimatedZipMover.attributes.description.spritePath=You need several picture arrays inside the path folder\n"idle" for the static state of zipmover block\n"active" for the active state of the block\n"return" for return animation of the block\n"unlit" for back to static animation of the block\n"innerSprite_idle" is the same but for the center sprite\n"innerSprite_active" is the same but for the center sprite\n"innerSprite_return" is the same but for the center sprite\n"innerSprite_unlit" is the same but for the center sprite
 
-# Decrease Refill
+# ================= Decrease Refill
 
+entities.ChroniaHelper/DecreaseRefill.placements.name.DecreaseRefill=Decrease Refill
 entities.ChroniaHelper/DecreaseRefill.attributes.description.dashes=The number of dashes that will be decreased by the refill, \nor be used to trade for stamina
 entities.ChroniaHelper/DecreaseRefill.attributes.description.decreaseStamina=Whether the stamina will be taken from Madeline, ignored when "Trade for Stamina"
 entities.ChroniaHelper/DecreaseRefill.attributes.description.clearAllDashes=All the dashes will be taken, ignoring the "Dashes" parameter
@@ -40,8 +27,9 @@ entities.ChroniaHelper/DecreaseRefill.attributes.description.tradeDashesToStamin
 entities.ChroniaHelper/DecreaseRefill.attributes.description.sprites=The texture to apply on the refill, the directory is relative to Gameplay/,\nyou must end with a "/", the files in your folder must include "idle", "flash", and "outline"
 entities.ChroniaHelper/DecreaseRefill.attributes.description.frameRates=The Frame Rate of "idle" and "flash" animation, there is a space after the comma\nExample:"xxx, xxx"
 
-# Seamless Spinner
+# ================= Seamless Spinner
 
+entities.ChroniaHelper/SeamlessSpinner.placements.name.SeamlessSpinner=Seamless Spinner
 entities.ChroniaHelper/SeamlessSpinner.attributes.description.hitboxType="default" - official game hitbox\n"loosened" - the hitbox would be a r=6 circle\n"seamless round" - the hitbox would be a r=8 circle\n"seamless square" - the hitbox would be a 16x16 px square
 entities.ChroniaHelper/SeamlessSpinner.attributes.description.foreDirectory=Starting after "Gameplay/" and ends with the file name with no suffix.\nFor example, if your file is "Gameplay/danger/yourspinner/texture00.png"\nYou should fill in "danger/yourspinner/texture" here.
 entities.ChroniaHelper/SeamlessSpinner.attributes.description.backDirectory=Starting after "Gameplay/" and ends with the file name with no suffix.\nFor example, if your file is "Gameplay/danger/yourspinner/texture00.png"\nYou should fill in "danger/yourspinner/texture" here.
@@ -50,8 +38,9 @@ entities.ChroniaHelper/SeamlessSpinner.attributes.description.solidTileCutoff=Wh
 entities.ChroniaHelper/SeamlessSpinner.attributes.description.dynamic=Whether the sprite should be an animation in-game\ninstead of a random image from the image array\nNOTICE: Re-open this window to see the new options
 entities.ChroniaHelper/SeamlessSpinner.attributes.description.trigger=Whether this Spinner should works like Timed Trigger Spikes, being disabled by default\nAnd triggered when player touches it\nCustomization is only allowed on the main sprites, not the connection parts for indication purposes\nTo customize the trigger animation, if your ForeDirectory is ".../xxx", you'll need another animation array ".../xxx_base"
 
-# Player Indicator Zone
+# ================= Player Indicator Zone
 
+entities.ChroniaHelper/PlayerIndicatorZone.placements.name.PlayerIndicatorZone=Player Indicator Zone (Old)
 entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.mode="Limited mode", the indicator would only appear in the zone\n"Toggle Mode", when there's at least one zone in the room, however big it is,\nthe working area would be the whole room, but the icons would only be toggled if the player touches the zone\neg. If you placed a zone outside the room area, it would still work, but the settings inside\nto toggle the idicator wouldn't work since the player couldn't touch the zone
 entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.renderBorder=Whether the zone border should be rendered in game
 entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.renderInside=Whether there whould be a filler area rendered inside the zone
@@ -59,6 +48,8 @@ entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.continuousLine
 entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.flagToggle=How the zone controls the "flag"
 entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.flag=The flag that "flag mode" controls
 
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.normal= Player Indicator Zone
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.PlayerIndicatorZoneCustom=Player Indicator Zone (Custom)
 entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.mode="Limited mode", the indicator would only appear in the zone\n"Toggle Mode", when there's at least one zone in the room, however big it is,\nthe working area would be the whole room, but the icons would only be toggled if the player touches the zone\neg. If you placed a zone outside the room area, it would still work, but the settings inside\nto toggle the idicator wouldn't work since the player couldn't touch the zone
 entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderBorder=Whether the zone border should be rendered in game
 entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderInside=Whether there whould be a filler area rendered inside the zone
@@ -71,17 +62,28 @@ entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconOffs
 entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconColors=The color hex code of each icon, seperated by a comma
 entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.independentFlag=Whether the zone controlling the flag requires "Mode" being not "None"
 
-# Killer Series
+# ================= Killer Series
 
+entities.ChroniaHelper/KillerBlock.placements.name.KillerBlock=Killer Block
 entities.ChroniaHelper/KillerBlock.attributes.description.standFall=Whether the player standing on the block will cause the block to fall
 entities.ChroniaHelper/KillerBlock.attributes.description.fallDelay=The shaking time before the block finally starts to fall
 entities.ChroniaHelper/KillerBlock.attributes.description.movement=Four parameters seperated by comma\nFirst number: The speed when the block is just starting to fall, default 0\nSecond number: The maximum speed, default 130\nThird number: Acceleration, default 500\nFourth number: The maximum speed under 'finalBoss' mode, default 160
 entities.ChroniaHelper/KillerBlock.attributes.description.canTrigger=Whether the block can be triggered to fall by entities like springs\nWIP: If disabled, this switch will cut off any interactions to this block, including standing, climbing and springs etc.
 
+entities.ChroniaHelper/GroupedKillerBlock.placements.name.GroupedKillerBlock=Grouped Killer Block
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.standFall=Whether the player standing on the block will cause the block to fall
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.fallDelay=The shaking time before the block finally starts to fall
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.movement=Four parameters seperated by comma\nFirst number: The speed when the block is just starting to fall, default 0\nSecond number: The maximum speed, default 130\nThird number: Acceleration, default 500\nFourth number: The maximum speed under 'finalBoss' mode, default 160
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.canTrigger=Whether the block can be triggered to fall by entities like springs\nWIP: If disabled, this switch will cut off any interactions to this block, including standing, climbing and springs etc.
+
+entities.ChroniaHelper/KillerWall.placements.name.KillerWall=Killer Wall
+
+# ================= Spikes
+
+entities.ChroniaHelper/UpSpikes.placements.name.UpSpikes=Spikes (Up)
+entities.ChroniaHelper/DownSpikes.placements.name.DownSpikes=Spikes (Down)
+entities.ChroniaHelper/LeftSpikes.placements.name.LeftSpikes=Spikes (Left)
+entities.ChroniaHelper/RightSpikes.placements.name.RightSpikes=Spikes (Right)
 
 entities.ChroniaHelper/UpSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/UpSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -107,7 +109,11 @@ entities.ChroniaHelper/RightSpikes.attributes.description.triggerDelay=If "trigg
 entities.ChroniaHelper/RightSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
 entities.ChroniaHelper/RightSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 
+# ================= Bubble Field
+
 entities.ChroniaHelper/BubbleField.attributes.description.particleDirs=A series of particle directories seperated by a comma\nThe directory starts after "Gameplay/"\nFor example, "Gameplay/yourMod/yourParticle" would be "yourMod/yourParticle" here
+
+# ================= Omni Zip Mover
 
 entities.ChroniaHelper/OmniZipMover.placements.name.normal=Omni Zip Mover (Normal)
 entities.ChroniaHelper/OmniZipMover.placements.name.moon=Omni Zip Mover (Moon)
@@ -141,7 +147,8 @@ entities.ChroniaHelper/OmniZipMover.attributes.description.returnDelays=The same
 entities.ChroniaHelper/OmniZipMover.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
 entities.ChroniaHelper/OmniZipMover.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
 
-# ZipGlass
+# ================= ZipGlass
+
 entities.ChroniaHelper/ZipGlass.placements.name.zipglass=Omni Zip Mover (Glass Block Skin)
 entities.ChroniaHelper/ZipGlass.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
 entities.ChroniaHelper/ZipGlass.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
@@ -173,7 +180,8 @@ entities.ChroniaHelper/ZipGlass.attributes.description.returnDelays=The same as 
 entities.ChroniaHelper/ZipGlass.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
 entities.ChroniaHelper/ZipGlass.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
 
-# ZipWater
+# ================= Zip Water
+
 entities.ChroniaHelper/ZipWater.placements.name.zipwater=Omni Zip Mover (Water Skin)
 entities.ChroniaHelper/ZipWater.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
 entities.ChroniaHelper/ZipWater.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
@@ -206,7 +214,8 @@ entities.ChroniaHelper/ZipWater.attributes.description.returnDelays=The same as 
 entities.ChroniaHelper/ZipWater.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
 entities.ChroniaHelper/ZipWater.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
 
-# real Zip Water
+# ================= Real Zip Water
+
 entities.ChroniaHelper/OmniZipWater.placements.name.zipwater=Omni Zip Water
 entities.ChroniaHelper/OmniZipWater.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
 entities.ChroniaHelper/OmniZipWater.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
@@ -239,7 +248,8 @@ entities.ChroniaHelper/OmniZipWater.attributes.description.returnDelays=The same
 entities.ChroniaHelper/OmniZipWater.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
 entities.ChroniaHelper/OmniZipWater.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
 
-# Zip Bumper
+# ================= Zip Bumper
+
 entities.ChroniaHelper/OmniZipBumper.placements.name.zipbumper=Omni Zip Bumper
 entities.ChroniaHelper/OmniZipBumper.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
 entities.ChroniaHelper/OmniZipBumper.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
@@ -272,7 +282,8 @@ entities.ChroniaHelper/OmniZipBumper.attributes.description.returnDelays=The sam
 entities.ChroniaHelper/OmniZipBumper.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
 entities.ChroniaHelper/OmniZipBumper.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
 
-# ZipDream
+# ================= Zip Dream
+
 entities.ChroniaHelper/ZipDream.placements.name.zipdreamblock=Omni Zip Mover (Dream Block Skin)
 entities.ChroniaHelper/ZipDream.attributes.description.customSkin=The path to a directory with custom textures for this Connected Zip Mover. \nThis is relative to Graphics/Atlases/Gameplay.\nIn order to let the zipmover display correctly in Lonn, you'd need these files:\n"light01.png", "cog.png"
 entities.ChroniaHelper/ZipDream.attributes.description.theme=If Custom Skin is not set, this determines the appearance of the Connected Zip Mover. \nThis also determines the sounds used. The Cliffside theme is a custom theme.
@@ -304,7 +315,8 @@ entities.ChroniaHelper/ZipDream.attributes.description.returnDelays=The same as 
 entities.ChroniaHelper/ZipDream.attributes.description.sideFlag=If enabled, the zipmover will also check on flag "synctag" when checking "ZipMoverSync:synctag"
 entities.ChroniaHelper/ZipDream.attributes.description.touchSensitive=Whether this zipmover can be activated by touching it (in vanilla you'd need to grab or stand on it)
 
-# Flag Touch Switch Wall
+# ================= Flag Touch Switch Wall
+
 entities.ChroniaHelper/FlagTouchSwitch.placements.name.touch_switch=~ Chronia Touch Switch / Chronia Switch Wall
 entities.ChroniaHelper/FlagTouchSwitch.placements.description.touch_switch=This entity is now mended into and handled by Maddie's Helping Hand
 entities.ChroniaHelper/FlagTouchSwitch.attributes.description.flag=The session flag this touch switch sets. Give the same to multiple touch switches and switch gates to group them.
@@ -325,7 +337,8 @@ entities.ChroniaHelper/FlagTouchSwitch.attributes.name.completeSoundFromSwitch=C
 entities.ChroniaHelper/FlagTouchSwitch.attributes.name.completeSoundFromScene=Complete Sound (Global)
 entities.ChroniaHelper/FlagTouchSwitch.attributes.description.hideIfFlag=If a session flag is specified here, turning it on will make the touch switch disappear, and will make other touch switches in the room ignore it for the group's completion.
 
-# Moving Flag Touch Switch
+# ================= Moving Flag Touch Switch
+
 entities.ChroniaHelper/MovingFlagTouchSwitch.placements.name.touch_switch=Flag Touch Switch (Moving)
 entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.flag=The session flag this touch switch sets. Give the same to multiple touch switches and switch gates to group them.
 entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.icon=The name of the icon for the touch switch (relative to objects/ChroniaHelper/flagTouchSwitch), or "vanilla" for the default one.
@@ -337,7 +350,8 @@ entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.activeColor=
 entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.finishColor=The switch color when the group is complete.
 entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.hideIfFlag=If a session flag is specified here, turning it on will make the touch switch disappear, and will make other touch switches in the room ignore it for the group's completion.
 
-# Flag Switch Gate
+# ================= Flag Switch Gate
+
 entities.ChroniaHelper/FlagSwitchGate.placements.name.block=~ Chronia Switch Gate (Block)
 entities.ChroniaHelper/FlagSwitchGate.placements.name.mirror=~ Chronia Switch Gate (Mirror)
 entities.ChroniaHelper/FlagSwitchGate.placements.name.temple=~ Chronia Switch Gate (Temple)
@@ -362,12 +376,14 @@ entities.ChroniaHelper/FlagSwitchGate.attributes.description.finishedSound=The s
 entities.ChroniaHelper/FlagSwitchGate.attributes.description.smoke=Whether the switch gate should emit smoke when reaching its final position.
 entities.ChroniaHelper/FlagSwitchGate.attributes.description.surfaceIndex=Footstep sound when walking on the switch gate.
 
+# ================= Camera Offset
+
+triggers.ChroniaHelper/AxisCameraOffset.placements.name.AxisCameraOffset=Camera Offset
+triggers.ChroniaHelper/SmoothToOffsetCamera.placements.name.SmoothToOffsetCamera=Smooth Camera Offset
 triggers.ChroniaHelper/AxisCameraOffset.attributes.description.units=The offset length unit presets\n"offset", using the default setting\n"offsetSquared", offset 1.0 = 48 px\n"tiles", offset 1.0 = 8 px
 
+# ================= Refill
 
-# Migration from ChroniaHelper
-
-# Refill
 entities.ChroniaHelper/Refill.placements.name.Refill=Refill
 entities.ChroniaHelper/Refill.placements.name.TwoDashesRefill=Refill (Two Dashes)
 entities.ChroniaHelper/Refill.attributes.description.freeze=The number of freeze frames
@@ -375,7 +391,8 @@ entities.ChroniaHelper/Refill.attributes.description.fewerMode=When player's cer
 entities.ChroniaHelper/Refill.attributes.description.resetMode=The effect of this entity when player interacts
 entities.ChroniaHelper/Refill.attributes.description.sprite=The sprite or animation folder for the refill, relative to Gameplay folder\nIf it ends with a "/", then it will read the image arrays inside it\nIf not, it'll be read as a standalone image\nIf it's a folder, you should have several image arrays: "idle", "flash", and "outline"
 
-# Refill Wall
+# ================= Refill Wall
+
 entities.ChroniaHelper/RefillWall.placements.name.RefillWall=Refill Wall
 entities.ChroniaHelper/RefillWall.placements.name.TwoDashesRefillWall=Refill Wall (Two Dashes)
 entities.ChroniaHelper/RefillWall.attributes.description.freeze=The number of freeze frames
@@ -383,7 +400,8 @@ entities.ChroniaHelper/RefillWall.attributes.description.fewerMode=When player's
 entities.ChroniaHelper/RefillWall.attributes.description.resetMode=The effect of this entity when player interacts
 entities.ChroniaHelper/RefillWall.attributes.description.sprite=The sprite or animation folder for the refill, relative to Gameplay folder\nIf it ends with a "/", then it will read the image arrays inside it\nIf not, it'll be read as a standalone image\nIf it's a folder, you should have several image arrays: "idle", "flash", and "outline"
 
-# Advanced Spikes
+# ================= Advanced Spikes
+
 entities.ChroniaHelper/UpAdvancedSpikes.placements.name.UpAdvancedSpikes=Advanced Spikes (Up)
 entities.ChroniaHelper/DownAdvancedSpikes.placements.name.DownAdvancedSpikes=Advanced Spikes (Down)
 entities.ChroniaHelper/LeftAdvancedSpikes.placements.name.LeftAdvancedSpikes=Advanced Spikes (Left)
@@ -414,7 +432,8 @@ entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=I
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 
 
-# Animated Spikes
+# ================= Animated Spikes
+
 entities.ChroniaHelper/UpAnimatedSpikes.placements.name.UpAnimatedSpikes=Animated Spikes (Up)
 entities.ChroniaHelper/DownAnimatedSpikes.placements.name.DownAnimatedSpikes=Animated Spikes (Down)
 entities.ChroniaHelper/LeftAnimatedSpikes.placements.name.LeftAnimatedSpikes=Animated Spikes (Left)
@@ -446,22 +465,27 @@ entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.trigger=If ena
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
 
-# Crumble Block
+# ================= Crumble Block
+
 entities.ChroniaHelper/CrumbleBlock.placements.name.CrumbleBlock=Crumble Block
 entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayTouchTop=If player's touching the top of this block\nTouchTop Delay or JumpOff delay being above 0 will activate the crumbling\nBut Jumpoff Delay prioritizes
 entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayOnClimb=If player is climbing, this timer will override the other timers
 entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayJumpoff=If player's touching the top of this block\nTouchTop Delay or JumpOff delay being above 0 will activate the crumbling\nBut Jumpoff Delay prioritizes
 
-# Corner Boost Block
+# ================= Corner Boost Block
+
 entities.ChroniaHelper/CornerBoostBlock.placements.name.CornerBoostBlock=Corner Boost Block
 
-# Moon Boost Block
+# ================= Moon Boost Block
+
 entities.ChroniaHelper/MoonBoostBlock.placements.name.MoonBoostBlock=Moon Boost Block
 
-# No Coyote Time Block
+# ================= No Coyote Time Block
+
 entities.ChroniaHelper/NoCoyoteTimeBlock.placements.name.NoCoyoteTimeBlock=No Coyote Time Block
 
-# Flag Trigger
+# ================= Flag Triggers (Yocto Legacy)
+
 triggers.ChroniaHelper/FlagAddTrigger.placements.name.FlagAddTrigger=Flag Add Trigger
 triggers.ChroniaHelper/FlagRemoveTrigger.placements.name.FlagRemoveTrigger=Flag Remove Trigger
 triggers.ChroniaHelper/FlagClearTrigger.placements.name.FlagClearTrigger=Flag Clear Trigger
@@ -487,44 +511,54 @@ triggers.ChroniaHelper/FlagRandomTrigger.attributes.description.randomFlagDictio
 
 triggers.ChroniaHelper/FlagSwitchTrigger.attributes.description.defaultFlag=Whether one of the flags needs to be active for this trigger to work
 
-# Teleport Trigger
+# ================= Teleport Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/TeleportPositionTrigger.placements.name.TeleportPositionTrigger=Teleport Position Trigger
 triggers.ChroniaHelper/TeleportTargetTrigger.placements.name.TeleportTargetTrigger=Teleport Target Trigger
 
-# Target Id Trigger
+# ================= Target Id Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/TargetIdTrigger.placements.name.TargetIdTrigger=Target Id Trigger
 
-# Bloom Trigger
+# ================= Bloom Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/BloomTrigger.placements.name.BloomTrigger=Bloom Trigger
 triggers.ChroniaHelper/BloomFadeTrigger.placements.name.BloomFadeTrigger=Bloom Fade Trigger
 
-# Lighting Trigger
+# ================= Lighting Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/LightingTrigger.placements.name.LightingTrigger=Lighting Trigger
 triggers.ChroniaHelper/LightingFadeTrigger.placements.name.LightingFadeTrigger=Lighting Fade Trigger
 
-# Music Trigger
+# ================= Music Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/MusicTrigger.placements.name.MusicTrigger=Music Trigger
 triggers.ChroniaHelper/MusicFadeTrigger.placements.name.MusicFadeTrigger=Music Fade Trigger
 
-# Ambience Trigger
+# ================= Ambience Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/AmbienceTrigger.placements.name.AmbienceTrigger=Ambience Trigger
 triggers.ChroniaHelper/AmbienceFadeTrigger.placements.name.AmbienceFadeTrigger=Ambience Fade Trigger
 
-# Sub Pixel Trigger
+# ================= Sub Pixel Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/SubPixelTrigger.placements.name.SubPixelTrigger=Sub Pixel Trigger
 triggers.ChroniaHelper/SubPixelTrigger.attributes.description.subPixelX=When player enters the map, their default subpixelX is 0.5,\nand this value is the relative to it, for example, if you want to set the player sub-pixelX to 0.9\nyou should fill in 0.4
 triggers.ChroniaHelper/SubPixelTrigger.attributes.description.subPixelY=When player enters the map, their default subpixelY is 0.5,\nand this value is the relative to it, for example, if you want to set the player sub-pixelX to 0.9\nyou should fill in 0.4
 
-# Fast Fall Collider Trigger
+# ================= Fast Fall Collider Trigger (Yocto Legacy)
+
 triggers.ChroniaHelper/FastFallColliderTrigger.placements.name.FastFallColliderTrigger=Fast Fall Collider Trigger
 
-# Custom Core Message
+# ================= Custom Core Message
+
 entities.ChroniaHelper/CustomCoreMessage.placements.name.CustomCoreMessage=Custom Core Message
 entities.ChroniaHelper/CustomCoreMessage.attributes.description.dialog=ChroniaHelper CustomCoreMessage supports frame-based timer display\nYou can check the option menu for timer display\nThe Dialog names followed by "Static" will only change per room load\nUse flag "ChroniaHelperTimer.pause" to pause the timer\nUse flag "ChroniaHelperTimer.reset" to reset the timer\nTo display the text you type in ChroniaHelper/PasswordKeyboard, use the built-in Dialog ID "keyboardSync_(tagID)"\nThe "tagID" refers to the "tag" option in the Password Keyboard
 entities.ChroniaHelper/CustomCoreMessage.attributes.description.wholeDialog=This option will ignore the "line" option and show all Dialogs instead of one line
 entities.ChroniaHelper/CustomCoreMessage.attributes.description.detectSessionExpression=Session Expression is a feature imported from Frost Helper \nWhen enabled, this entity will require FrostHelper as a dependency \nAnd start detecting if the option contains certain syntax that would trigger Frost Helper Session Expression mechanisms
 
-# Custom Timer by AppleSheep
+# ================= Custom Timer by AppleSheep
+
 entities.ChroniaHelper/TimerRecordStuff.placements.name.timeRecordStuff=Custom Timer Recorder
 entities.ChroniaHelper/CustomTimer.placements.name.CustomTimer=Custom Timer
 triggers.ChroniaHelper/TimerControlTrigger.placements.name.TimerControlTrigger=Custom Timer Control Trigger
@@ -534,31 +568,38 @@ entities.ChroniaHelper/TimerRecordStuff.attributes.description.text=The title ov
 entities.ChroniaHelper/CustomTimer.attributes.description.checkTimeLimit=Enable the time limit checker, if the time is overdue, the text color will change
 entities.ChroniaHelper/CustomTimer.attributes.description.text=The title over the timer
 
-# Tile Block
-entities.ChroniaHelper/TileBlock.placements.name.TileBlock=Tile Block
+# ================= Tile Block
 
+entities.ChroniaHelper/TileBlock.placements.name.TileBlock=Tile Block
 entities.ChroniaHelper/AlternateTileBlock.placements.name.TileBlock=Tile Block (Nine Patch)
 
-# Custom Billboard
+# ================= Custom Billboard
+
 entities.ChroniaHelper/CustomBillboard.placements.name.customBillboard=Custom Billboard
 
-# Custom Dust Bunny
+# ================= Custom Dust Bunny
+
 entities.ChroniaHelper/CustomDustBunny.placements.name.CustomDustBunny=Custom Dust Bunny
 
-# Seperated Tile
+# ================= Seperated Tile
+
 entities.ChroniaHelper/SeperatedTile.placements.name.SeperatedTile=Floaty Bg Tile (Seperated)
 
-# Auto Skip Dialog Trigger
+# ================= Auto Skip Dialog Trigger
+
 triggers.ChroniaHelper/AutoDialogSkipTrigger.placements.name.AutoSkipTrigger=Auto Dialog Skip Trigger
 
-# Custom Torch
+# ================= Custom Torch
+
 entities.ChroniaHelper/CustomTorch.placements.name.main=Custom Torch
 entities.ChroniaHelper/CustomTorch.attributes.description.RegisterRadius=The collider size of this entity which player can turn on the light with
 
-# Open URL
+# ================= Open URL
+
 triggers.ChroniaHelper/OpenUrlTrigger.placements.name.normal=Open URL Trigger
 
-# Custom Booster
+# ================= Custom Booster
+
 entities.ChroniaHelper/CustomBooster.placements.name.normal=Custom Booster
 entities.ChroniaHelper/CustomBooster.attributes.description.directory=The folder path relative to Gameplay\nSeveral animations (image arrays) must be inside the folder:\n"loop", "inside", "spin", and "pop"\nIf this booster is a red booster ("red" option enabled)\n Then "appear" animation is also required
 entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillDashes=If enabled, this booster will set up the player dashes instead of refilling it
@@ -566,7 +607,8 @@ entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillStamina=I
 entities.ChroniaHelper/CustomBooster.attributes.description.XMLOverride=If enabled, the "directory" will work as the XML object tag\nAnd all the animation parameters in the options will be ignored
 entities.ChroniaHelper/CustomBooster.attributes.description.holdTime=The time that player stays inside before it activates and start moving
 
-# Custom Glider
+# ================= Custom Glider
+
 entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Glider
 entities.ChroniaHelper/CustomGlider.attributes.description.Directory=The folder path of your sprite files\nThe sprites should contain: "idle", "held", "fall", "fallLoop" and "death" animations
 entities.ChroniaHelper/CustomGlider.attributes.description.hitboxParameters=A series of numbers representing\nHitbox Width, Hitbox Height, Hitbox X, and Hitbox Y
@@ -576,15 +618,19 @@ entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedY=The ma
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedX=After you throw the glider, the glider will decelerate on its Speed X\nAnd this option will set up the final Speed X of this glider
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedXMultiplier=If enabled, the value filled in "dropping speed x" will be a multiplier to the throwing speed\ninstead of a certain value
 
-# Real Flag Switch
+# ================= Real Flag Switch
+
 entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitch=Flag Button
 entities.ChroniaHelper/RealFlagSwitch.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
 entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitchwall=Flag Button Wall
-# Real Flag Switch Alt
+
+# ================= Real Flag Switch Alt
+
 entities.ChroniaHelper/RealFlagSwitchAlt.placements.name.flagswitch=~ Flag Button (Alternate) (Deprecated)
 entities.ChroniaHelper/RealFlagSwitchAlt.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
 
-# Real Flag Switch 2 (Animation Recoded)
+# ================= Real Flag Switch 2 (Animation Recoded)
+
 entities.ChroniaHelper/RealFlagSwitch2.placements.name.flagswitch=Custom Flag Button
 entities.ChroniaHelper/RealFlagSwitch2.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
 entities.ChroniaHelper/RealFlagSwitch2.placements.name.flagswitchwall=Custom Flag Button Wall
@@ -596,44 +642,54 @@ entities.ChroniaHelper/RealFlagSwitch2.attributes.description.iconFinishedAnimat
 entities.ChroniaHelper/RealFlagSwitch2.attributes.description.borderTexture=The file path for the outline sprite behind the icon, \ndoesn't include suffix numbers \neg. Your file is "objects/ChroniaHelper/myCustomSwitch/container00.png" \nYour option should be: objects/ChroniaHelper/myCustomSwitch/container
 entities.ChroniaHelper/RealFlagSwitch2.attributes.description.borderAnimation=The animation interval for your border
 
-# Summit Cloud
+# ================= Summit Cloud
+
 entities.ChroniaHelper/CustomSummitCloud.placements.name.cloud=Custom Summit Cloud
 entities.ChroniaHelper/CustomSummitCloud.attributes.description.alignment=Base Position would be top left
 
-# Summit Cloud 2
+# ================= Summit Cloud 2
+
 entities.ChroniaHelper/CustomSummitCloud2.placements.name.cloud=Custom Summit Cloud 2
 
-# Auto Skip Trigger
+# ================= Auto Skip Trigger
+
 triggers.ChroniaHelper/AutoDialogSkipTrigger.placements.name.AutoSkipTrigger=Auto Dialog Trigger
 triggers.ChroniaHelper/AutoDialogSkipTrigger.attributes.description.dialogId=If you want to use the auto skip feature\nInclude {trigger 0} to start the auto skip\nInclude {trigger 1} to stop the auto skip
 
-# Flag String Trigger
+# ================= Flag String Trigger
+
 triggers.ChroniaHelper/FlagStringTrigger.placements.name.FlagStringTrigger=Flag String Trigger
 triggers.ChroniaHelper/FlagStringTrigger.attributes.description.baseString=The base string to find as an argument for editing the flag string
 triggers.ChroniaHelper/FlagStringTrigger.attributes.description.newString=The new string to be operated
 
-# Wind Tunnels
+# ================= Wind Tunnels
+
 entities.ChroniaHelper/WindTunnel.attributes.description.direction=You can choose between the options\nOr input a specific number inside, 0 is right, and 90 is up
 
-# Resort Lantern
+# ================= Resort Lantern
+
 entities.ChroniaHelper/CustomResortLantern.placements.name.lantern=Custom Resort Lantern
 entities.ChroniaHelper/CustomResortLantern.attributes.description.spriteDirectory=The folder of your sprites, relative to "Gameplay/"\nThere should be a static image "holder.png" and an image array "lantern" inside this folder\nNotice: The "holder" image isn't a must, if your folder doesn't have this image, the holder for this lantern will be automatically ignored\nIf you do want a holder for your lantern, check Graphics Dump for the initial facing of your holder image
 
-# Flag Date Trigger
+# ================= Flag Date Trigger
+
 triggers.ChroniaHelper/FlagDateTrigger.placements.name.FlagDateTrigger=Flag Date Trigger
 triggers.ChroniaHelper/FlagDateTrigger.attributes.description.requirements=A series of requirements seperated by ';'\nEach requirement should look like this: "format, A, B"\nA and B represents two integers, the formula like this means certain format of time should be larger than A (contained)\nand smaller than B (not contained), all the requirements must be met for this trigger to activate\nSpecially, requirement like "format, A" means the time should be larger than A\nRequirement like "format, , B" means the time should be smaller than B\nIf the first slot of requirement begins with an exclamation point '!'\nFor example, "!second, 10, 20", then this requirement will be inverted when being judged\nNotice that if the requirement you fill in is invalid or not correctly formatted,\nit will be ignored and signal "true" when the trigger is checking this requirement
 
-# Custom Playback
+# ================= Custom Playback
+
 entities.ChroniaHelper/CustomPlayback.placements.name.main=Custom Playback (Flag-control)
 
-# Patient Booster
+# ================= Patient Booster
+
 entities.ChroniaHelper/PatientBooster.placements.name.default=Patient Booster
 entities.ChroniaHelper/PatientBooster.placements.name.red=Patient Booster (Red)
 entities.ChroniaHelper/PatientBooster.attributes.description.customHitbox=You can create your own hitbox here.\n"r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"\nIf leave empty, the spinner will process by default values or ignored.
 
-# Dash gate block
-# most tooltips stolen from maddie's helping hand
-# https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang#L194
+# ================= Dash gate block
+
+# ================= most tooltips stolen from maddie's helping hand
+# ================= https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang# =================L194
 entities.ChroniaHelper/DashGateBlock.placements.name.Both=Omni Dash Gate Block (Both, Multi-node)
 entities.ChroniaHelper/DashGateBlock.placements.name.Horizontal=Omni Dash Gate Block (Horizontal, Multi-node)
 entities.ChroniaHelper/DashGateBlock.placements.name.Vertical=Omni Dash Gate Block (Vertical, Multi-node)
@@ -659,9 +715,10 @@ entities.ChroniaHelper/DashGateBlock.attributes.description.axes=Determines whic
 entities.ChroniaHelper/DashGateBlock.attributes.name.linkTag=Flag On Activate
 entities.ChroniaHelper/DashGateBlock.attributes.description.linkTag=An optional session flag to enable when the block activates.
 
-# Touch gate block
-# most tooltips stolen from maddie's helping hand
-# https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang#L194
+# ================= Touch gate block
+
+# ================= most tooltips stolen from maddie's helping hand
+# ================= https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang# =================L194
 entities.ChroniaHelper/TouchGateBlock.placements.name.normal=Omni Touch Gate Block (Multi-node)
 entities.ChroniaHelper/TouchGateBlock.placements.name.normalaltname=Omni Gate Block (Touch Activated) (Activate On Touch) (Multi-node)
 entities.ChroniaHelper/TouchGateBlock.attributes.description.inactiveColor=The color of the block when not triggered yet.
@@ -683,16 +740,19 @@ entities.ChroniaHelper/TouchGateBlock.attributes.description.moveOnStaticMover=W
 entities.ChroniaHelper/TouchGateBlock.attributes.name.linkTag=Flag On Activate
 entities.ChroniaHelper/TouchGateBlock.attributes.description.linkTag=An optional session flag to enable when the block activates.
 
-# Zip Booster
+# ================= Zip Booster
+
 entities.ChroniaHelper/BoosterZipper.placements.name.zipbooster=Zip Booster
 
-# Sprite Entity
+# ================= Sprite Entity
+
 entities.ChroniaHelper/SpriteEntity.placements.name.SpriteEntity=Sprite Entity
-entities.ChroniaHelper/SpriteEntity.attributes.description.commands=Check out submenu for split-up options tooltips, \nthose with a bracket(), meaning that this sub-element can be ignored and deleted if you don't wanna set it up, \nthose end with question marks? meaning that it's supposed to be a boolean value\nthose start with hash tag# meaning that it's a string,\notherwise it's a number\n----------WARNING:----------\nWhen you use the submenu (those options has a "v" icon) looking up commands, \nmake sure there's only one item left on the list (only one option with "v" icon on the right), \notherwise you're gonna get confused.
+entities.ChroniaHelper/SpriteEntity.attributes.description.commands=Check out submenu for split-up options tooltips, \nthose with a bracket(), meaning that this sub-element can be ignored and deleted if you don't wanna set it up, \nthose end with question marks? meaning that it's supposed to be a boolean value\nthose start with hash tag# ================= meaning that it's a string,\notherwise it's a number\n----------WARNING:----------\nWhen you use the submenu (those options has a "v" icon) looking up commands, \nmake sure there's only one item left on the list (only one option with "v" icon on the right), \notherwise you're gonna get confused.
 entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionX=The render position of the sprite when parallax is set to zero
 entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionY=The render position of the sprite when parallax is set to zero
 
-# Password Keyboard
+# ================= Password Keyboard
+
 entities.ChroniaHelper/PasswordKeyboard.placements.name.normal=Password Keyboard
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.mode=Normal Mode: You need to input the correct password to activate the flag\nProgressive Passwords supported, enter several passwords separated by ";" and several flags separated by ","\nPassword 1 unlocks Flag 1, Password 2 unlocks Flag 2\Only when Password 1 is matched, Password 2 will be free for detection\nExclusive Mode:What you input will be stored in the Helper session so that other entities may react to it\nOutput Flag Mode: Whatever you input will be transformed into a flag, it's suggested to use with "Use Times" limit \nSystematic Mode: Enter several passwords separated by ";" and several flags separated by "," \nPassword 1 unlocks Flag 1, Password 2 unlocks Flag 2 etc. The flag unlocks depending on the password you entered
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.flagToEnable=When the password is correct, the flag will be activated
@@ -705,13 +765,15 @@ entities.ChroniaHelper/PasswordKeyboard.attributes.description.passwordEncrypted
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.showEncryptedPasswordInConsole=If enabled, the encrypted password will appear inside the console for you to copy
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.caseSensitive=Whether all the letters would be seen as lower case when checking the password\nIf you're using Aurora's website to generate the encrypted password, tick "Hash input in lowercase" option on the website
 
-# Platform Line Controller
+# ================= Platform Line Controller
+
 entities.ChroniaHelper/PlatformLineController.placements.name.platfromLineController=Platform Line Controller
 entities.ChroniaHelper/PlatformLineController.attributes.description.edgeColor=The edge color of the platform line
 entities.ChroniaHelper/PlatformLineController.attributes.description.centerColor=The main platform track color
 entities.ChroniaHelper/PlatformLineController.attributes.description.renderMode=Which type of platform line should this controller react to\nNotice that the settings of individual has higher priority than the settings of overall\nFor example, if you place a "overall" controller and a "moving platform" controller, the "overall" controller is gonna be deleted
 
-# Flag Trigger
+# ================= Flag Trigger
+
 triggers.ChroniaHelper/FlagTrigger.placements.name.FlagTrigger=Flag Trigger
 triggers.ChroniaHelper/FlagTrigger.attributes.description.temporary=The flags in setup will be reverted to the entering state when player dies \n(supporting cross-room)
 triggers.ChroniaHelper/FlagTrigger.attributes.description.global=The flag changes will be listed into save data and enable once per map load \nEg. Player dies, F5, F6 etc.
@@ -720,37 +782,44 @@ triggers.ChroniaHelper/FlagTrigger.attributes.description.ignoreUnchanged=For ex
 triggers.ChroniaHelper/FlagTrigger.attributes.description.onStay=The flag setup will be applied constantly when player is inside the trigger
 triggers.ChroniaHelper/FlagTrigger.attributes.description.flag=A list of flags separated by comma, supporting "!" as inverted sign
 
-# Flag Serial Trigger
+# ================= Flag Serial Trigger
+
 triggers.ChroniaHelper/FlagSerialTrigger.placements.name.FlagSerialTrigger=Flag Serial Trigger
 triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.serialFlag=The serial flag syntax containing the "target symbol" \nWhen player enters the trigger, if the position mode isn't "No effect" \nThen the trigger will enable the flag replacing the target symbol to numbers \nFor example, if my target symbol is "&" and the serial flag is "flag_&", when I enter the trigger in-game \nFlag "flag_0" will be active, then "flag_0" disable and "flag_1" enable etc.
 triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.interval=The interval between each flag step, only usable when position mode isn't "No effect"
 triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.staircase=Normally the previous flag in the array would be removed before processing the next flag, \nIf enabled, the previous flags will also be kept, and the activated flags will look like a staircase
 
-# Flag Array Trigger
+# ================= Flag Array Trigger
+
 triggers.ChroniaHelper/FlagArrayTrigger.placements.name.FlagArrayTrigger=Flag Array Trigger
 triggers.ChroniaHelper/FlagArrayTrigger.attributes.description.intervals=The interval between changing each flags, only usable when position mode isn't "No effect"
 triggers.ChroniaHelper/FlagArrayTrigger.attributes.description.staircase=Normally the previous flag in the array would be removed before processing the next flag, \nIf enabled, the previous flags will also be kept, and the activated flags will look like a staircase
 
-# Flag Timer Trigger
+# ================= Flag Timer Trigger
+
 triggers.ChroniaHelper/FlagTimerTrigger.placements.name.FlagTimerTrigger=Flag Timer Trigger
 triggers.ChroniaHelper/FlagTimerTrigger.attributes.description.setups=flag A,existing time A; flagB, existing time B; ...
 triggers.ChroniaHelper/FlagTimerTrigger.attributes.description.range="room": When player exits, the room, all the flags will be set to false \n"map": The flag will only disable after the time runs out in this map
 
-# Flag Choose Trigger 2
-triggers.ChroniaHelper/FlagChooseTrigger2.placements.name.FlagChooseTrigger2=Flag Choose Trigger 2
-triggers.ChroniaHelper/FlagChooseTrigger2.attributes.description.flagDictionary=A formula representing how the flags should react with each other \nExample: flag1, !flag2 >>flag3, *flag4, !*flag5 \nThe ">>" syntax means that the flags separated by comma on the right (results) \nare the flags that should react to the flags separated by comma on the left (conditions) \nFor conditions, those flags containing "!" are the ones that need to be reversed \nFor results, those flags containing "!" are the ones this trigger should disable \nand those flags containing "*" are the ones this trigger should enable as global flags \nthose contain both are the ones that this trigger should disable in the global flags \nFor example, the given example above means: When flag1 is on and flag2 is off, this trigger will enable flag3, enable global flag4, and disable global flag5 \nThe given example is called a formula, you can include multiple formula in the line separated by ";" \nNewly introduced syntax "#" is a wildcard representation, take "flag_#_a, flag_# >> flag_b_#" as example \nWhen any flags inside the level looking like "flag_??_a", for example, flag "flag_X_a", is enabled \nAnd the matching "flag_X" is also enabled, notice that they share the same part of letter "X" \nThe result would be flag "flag_b_X" being enabled. In this example, the wildcard symbol "#" represents "X".
+# ================= Flag Choose Trigger 2
 
-# Flag Dictionary Trigger
+triggers.ChroniaHelper/FlagChooseTrigger2.placements.name.FlagChooseTrigger2=Flag Choose Trigger 2
+triggers.ChroniaHelper/FlagChooseTrigger2.attributes.description.flagDictionary=A formula representing how the flags should react with each other \nExample: flag1, !flag2 >>flag3, *flag4, !*flag5 \nThe ">>" syntax means that the flags separated by comma on the right (results) \nare the flags that should react to the flags separated by comma on the left (conditions) \nFor conditions, those flags containing "!" are the ones that need to be reversed \nFor results, those flags containing "!" are the ones this trigger should disable \nand those flags containing "*" are the ones this trigger should enable as global flags \nthose contain both are the ones that this trigger should disable in the global flags \nFor example, the given example above means: When flag1 is on and flag2 is off, this trigger will enable flag3, enable global flag4, and disable global flag5 \nThe given example is called a formula, you can include multiple formula in the line separated by ";" \nNewly introduced syntax "# =================" is a wildcard representation, take "flag_# =================_a, flag_# ================= >> flag_b_# =================" as example \nWhen any flags inside the level looking like "flag_??_a", for example, flag "flag_X_a", is enabled \nAnd the matching "flag_X" is also enabled, notice that they share the same part of letter "X" \nThe result would be flag "flag_b_X" being enabled. In this example, the wildcard symbol "# =================" represents "X".
+
+# ================= Flag Dictionary Trigger
+
 triggers.ChroniaHelper/FlagDictionaryTrigger.placements.name.FlagDictionaryTrigger=Flag Dictionary Trigger
 triggers.ChroniaHelper/FlagDictionaryTrigger.attributes.description.flagDictionary=A formula representing how the flags should react with each other \nExample: flag1, !flag2 >>flag3, *flag4, !*flag5 \nThe ">>" syntax means that the flags separated by comma on the right (results) \nare the flags that should react to the flags separated by comma on the left (conditions) \nFor conditions, those flags containing "!" are the ones that need to be reversed \nFor results, those flags containing "!" are the ones this trigger should disable \nand those flags containing "*" are the ones this trigger should enable as global flags \nthose contain both are the ones that this trigger should disable in the global flags \nFor example, the given example above means: When flag1 is on and flag2 is off, this trigger will enable flag3, enable global flag4, and disable global flag5 \nThe given example is called a formula, you can include multiple formula in the line separated by ";"
 
-# Custom Core Block
+# ================= Custom Core Block
+
 entities.ChroniaHelper/CustomCoreBlock.placements.name.fire=Custom Core Block (Fire)
 entities.ChroniaHelper/CustomCoreBlock.placements.name.ice=Custom Core Block (Ice)
 entities.ChroniaHelper/CustomCoreBlock.attributes.description.iceBlockTexture=The texture of the ice block state. \nTo change the center crystal of the block, please check the "bumpBlockCenterIce" column in vanilla Sprites.xml
 entities.ChroniaHelper/CustomCoreBlock.attributes.description.fireBlockTexture=The texture of the fire block state. \nTo change the center crystal of the block, please check the "bumpBlockCenterFire" column in vanilla Sprites.xml
 
-# Puffer Bomb Spring
+# ================= Puffer Bomb Spring
+
 entities.ChroniaHelper/PufferBombSpringUp.placements.name.up=Puffer Bomb Spring (Up)
 entities.ChroniaHelper/PufferBombSpringRight.placements.name.right=Puffer Bomb Spring (Right)
 entities.ChroniaHelper/PufferBombSpringLeft.placements.name.left=Puffer Bomb Spring (Left)
@@ -766,16 +835,19 @@ entities.ChroniaHelper/PufferBombSpringRight.attributes.description.sprite=The X
 entities.ChroniaHelper/PufferBombSpringLeft.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
 entities.ChroniaHelper/PufferBombSpringDown.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
 
-# Shifting Switch
+# ================= Shifting Switch
+
 entities.ChroniaHelper/ShiftingSwitch.placements.description.Shifting Switch=Shifting Switch (implementation from City of Broken Dreams)
 entities.ChroniaHelper/ShiftingSwitch.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
 entities.ChroniaHelper/ShiftingSwitch.attributes.description.oneConnector=If enabled, the shifting switch will only show the connection to the block nearest to its first node \ninstead of showing all the connections it has
 
-# Shifting Block
+# ================= Shifting Block
+
 entities.ChroniaHelper/ShiftingBlock.placements.description.Shifting Block=Shifting Block (implementation from City of Broken Dreams)
 entities.ChroniaHelper/ShiftingBlock.attributes.description.noConnector=If enabled, the block will not show connector on its center
 
-# Puffer Bomb
+# ================= Puffer Bomb
+
 entities.ChroniaHelper/PufferBomb.placements.description.Puffer Bomb=Puffer Bomb (implementation from City of Broken Dreams)
 entities.ChroniaHelper/PufferBomb.attributes.description.sprite=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
 entities.ChroniaHelper/PufferBomb.attributes.description.rangeIndicator=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
@@ -784,7 +856,8 @@ entities.ChroniaHelper/PufferBomb.attributes.description.playerColliders=Collide
 entities.ChroniaHelper/PufferBomb.attributes.description.detectCollider=The rectangular collider that detects whether the explosion happens
 entities.ChroniaHelper/PufferBomb.attributes.description.wallbreakCollider=The circle collider that defines the area the explosion can affect when the explosion should break some walls
 
-# Kevins
+# ================= Kevins
+
 entities.ChroniaHelper/DreamKevin.placements.name.DreamKevin=Dream Kevin
 entities.ChroniaHelper/ReskinnableKevin.placements.name.both=Kevin (Reskinnable, Both)
 entities.ChroniaHelper/ReskinnableKevin.placements.name.horizontal=Kevin (Reskinnable, Horizontal)
@@ -794,10 +867,12 @@ entities.ChroniaHelper/ReskinnableKevin.attributes.description.spriteDirectory=T
 entities.ChroniaHelper/ReskinnableKevin.attributes.description.faceSpriteXML=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
 entities.ChroniaHelper/ReskinnableKevin.attributes.description.giantFaceSpriteXML=The XML reference of the entity \nThe "XXX" part of <XXX path="somePath"> in Sprites.xml
 
-# Changed Room Flag Controller
+# ================= Changed Room Flag Controller
+
 entities.ChroniaHelper/ResetChangedRoomFlagsController.placements.name.Controller=Reset Changed Room Flags Controller
 
-# Input Controller
+# ================= Input Controller
+
 entities.ChroniaHelper/InputFlagController.placements.name.controller=Input Flag Controller (Input Listener)
 entities.ChroniaHelper/InputFlagController.attributes.description.flags=Flags to be operated, can be grouped by using ";" and separated using ","
 entities.ChroniaHelper/InputFlagController.attributes.description.ifFlagCondition=Flags required for this controller to take effect, flags prefixed with "!" are required to be disabled \nThe flags are separated by a comma
@@ -807,4 +882,23 @@ entities.ChroniaHelper/InputFlagController.attributes.description.activateByDefa
 entities.ChroniaHelper/InputFlagController.attributes.description.controllerIDPrefix=Each Controller has an session counter that calculates how many times the trigger keys are pressed, \nand this is the prefix of the session counter name, which will be used as the display under "Counter Suffix" mode \nand for calculating restraints, can be reset by "Reset Counter" \nSession Counter ID: Controller ID Prefix + ID, ID refers to the entity ID number above
 entities.ChroniaHelper/InputFlagController.attributes.description.detectCounterID=The session counter that calculates how many times the setup keys are pressed in total, \nwill not be calculated as in restraints, can be reset by "Reset Detect Session"
 entities.ChroniaHelper/InputFlagController.attributes.description.resetDetectSession=Reset the level session counter that calculates how many times the set up keys are pressed in total when player leaves the room, \nsince the counter ID can be identical, this could be an output accumulating inputs \nand be used in FrostHelper expressions etc.
+
+# ================= Trigger Extension
+
+triggers.ChroniaHelper/TriggerExtension.placements.name.TriggerExtension=Trigger Extension
+
+# ================= Fall Through
+
+entities.ChroniaHelper/FallThrough.placements.name.wood=Fall Through (Wood)
+entities.ChroniaHelper/FallThrough.placements.name.dream=Fall Through (Dream)
+entities.ChroniaHelper/FallThrough.placements.name.temple=Fall Through (Temple)
+entities.ChroniaHelper/FallThrough.placements.name.templeB=Fall Through (Alternate Temple)
+entities.ChroniaHelper/FallThrough.placements.name.cliffside=Fall Through (Cliffside)
+entities.ChroniaHelper/FallThrough.placements.name.reflection=Fall Through (Reflection)
+entities.ChroniaHelper/FallThrough.placements.name.core=Fall Through (Core)
+entities.ChroniaHelper/FallThrough.placements.name.moon=Fall Through (Moon)
+
+# ================= Custom Fake Wall
+
+entities.ChroniaHelper/CustomFakeWall.placements.name.CustomFakeWall=Custom Fake Wall
 

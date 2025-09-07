@@ -355,4 +355,21 @@ public static class StringUtils
         }
         return wildcardPart;
     }
+
+    public static bool IsBool(this string input)
+    {
+        return input.ToLower() == "true" || input.ToLower() == "false";
+    }
+
+    public static bool IsInt(this string input)
+    {
+        int n = 0;
+        return int.TryParse(input, out n);
+    }
+
+    public static bool IsFloat(this string input)
+    {
+        float n = 0;
+        return float.TryParse(input, out n);
+    }
 }
