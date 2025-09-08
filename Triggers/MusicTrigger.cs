@@ -27,10 +27,7 @@ public class MusicTrigger : BaseTrigger
         this.musicParameter = data.Attr("musicParameter", null);
         this.musicParameterValue = data.Float("musicParameterValue", 1F);
         this.musicLayers = StringUtils.SplitToIntArray(data.Attr("musicLayers", null));
-        if (string.IsNullOrEmpty(this.musicParameter))
-        {
-            this.musicParameter = "fade";
-        }
+
         deathReset = data.Bool("resetOnDeath", false);
     }
     private bool deathReset;
@@ -50,7 +47,10 @@ public class MusicTrigger : BaseTrigger
             audioState.Music.Event = SFX.EventnameByHandle(this.musicTrack);
         }
         audioState.Music.Progress = this.musicProgress;
-        audioState.Music.Param(this.musicParameter, this.musicParameterValue);
+        if (!musicParameter.IsNullOrEmpty())
+        {
+            audioState.Music.Param(this.musicParameter, this.musicParameterValue);
+        }
         foreach (int layer in this.musicLayers)
         {
             audioState.Music.Layer(layer, true);

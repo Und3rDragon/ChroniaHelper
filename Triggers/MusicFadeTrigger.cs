@@ -26,10 +26,6 @@ public class MusicFadeTrigger : BaseTrigger
         this.musicParameterValueTo = data.Float("musicParameterValueTo", 0F);
         this.musicParameter = data.Attr("musicParameter", null);
         this.positionMode = data.Enum<PositionModes>("positionMode", PositionModes.NoEffect);
-        if (string.IsNullOrEmpty(this.musicParameter))
-        {
-            this.musicParameter = "fade";
-        }
     }
 
     protected override void OnEnterExecute(Player player)
@@ -45,7 +41,10 @@ public class MusicFadeTrigger : BaseTrigger
         float lerp = base.GetPositionLerp(player, this.positionMode);
         float musicParameterValue = Calc.ClampedMap(lerp, 0f, 1f, this.musicParameterValueFrom, this.musicParameterValueTo);
         AudioState audioState = base.session.Audio;
-        audioState.Music.Param(this.musicParameter, musicParameterValue);
+        if (!musicParameter.IsNullOrEmpty())
+        {
+            audioState.Music.Param(this.musicParameter, musicParameterValue);
+        }
         audioState.Apply();
     }
 
