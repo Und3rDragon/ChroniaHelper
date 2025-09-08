@@ -10,12 +10,17 @@ trigger.placements = {
 	name = "PolygonTrigger",
 	data =
 	{
-		types = "",
+		triggerIDs = "",
 		oneUse = false,
 	}
 }
 trigger.fieldInformation = {
-
+	triggerIDs = {
+		fieldType = "list",
+		elementOptions = {
+			fieldType = "integer",
+		},
+	},
 }
 trigger.triggerText = function(room, entity)
 	local base = "Polygon Trigger"
@@ -23,7 +28,7 @@ trigger.triggerText = function(room, entity)
 	return base
 end
 
-trigger.sprite = arbitrary.getSpriteFunc("00ff00", "fcf579", "000000", "ff0000")
+trigger.sprite = arbitrary.getSpriteFunc("00ff00", "2A4F47", "253532", "ff0000")
 trigger.nodeSprite = arbitrary.nodeSprite
 trigger.selection = arbitrary.selection
 

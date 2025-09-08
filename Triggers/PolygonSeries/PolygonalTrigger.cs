@@ -1,124 +1,113 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Monocle;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Celeste;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
-using Microsoft.Xna.Framework;
-using Monocle;
 
 namespace ChroniaHelper.Triggers.PolygonSeries
 {
-    [CustomEntity(new string[]
+    [CustomEntity("ChroniaHelper/PolygonTrigger")]
+    public class PolygonTrigger : Trigger
     {
-        "ChroniaHelper/PolygonTrigger"
-    })]
-    public class PolygonalTriggerTrigger : AbstractPolygonTrigger
-    {
-        public PolygonalTriggerTrigger(EntityData data, Vector2 offset) : base(data, offset)
+        public PolygonCollider polygonCollider => (PolygonCollider)Collider;
+        public VertexPositionColor[] shanpe;
+        public Color RenderColor { get; set; } = Color.Transparent;
+        internal Vector2 prevPos; internal Color prevColor;
+
+        public PolygonTrigger(EntityData data, Vector2 offset) : base(data, offset)
         {
-            this.triggerPoint = this.Position;
-            this.onlyOnce = data.Bool("oneUse", false);
-            base.Collider = new PolygonCollider(data.NodesWithPosition(offset), this, true);
-            string typeSet = data.Attr("Types", "");
-            this.assignableTypes = new List<Type>();
-            this.Types = new List<Type>();
-            VivHelper.VivHelper.AppendTypesToList(typeSet, ref this.Types, ref this.assignableTypes, typeof(Trigger));
-            this.Collidable = false;
-            this.Associators = new List<Trigger>(this.Types.Count + this.assignableTypes.Count);
-            this.Visible = true;
+            Collider = new PolygonCollider(data.NodesWithPosition(offset), this, true);
+
+            string[] _ids = data.Attr("triggerIDs").Split(',', StringSplitOptions.TrimEntries);
+            foreach(var id in _ids)
+            {
+                if (id.IsInt()) { ids.Enter(id.ParseInt()); }
+            }
+
+            once = data.Bool("oneUse", false);
+
+            Visible = true;
+            Collidable = true;
         }
+        private HashSet<int> ids = new();
+        private HashSet<Trigger> targets = new();
+        private bool once;
 
         public override void Awake(Scene scene)
         {
-            base.Awake(scene);
-            foreach (Entity entity in Enumerable.Where<Entity>(scene.Entities, (Entity f) => Collide.CheckPoint(f, this.triggerPoint)))
+            foreach(var i in MaP.level.Tracker.GetEntities<Trigger>())
             {
-                bool flag = VivHelper.VivHelper.MatchTypeFromTypeSet(entity.GetType(), this.Types, this.assignableTypes) && entity.Collider.GetType() != typeof(PolygonCollider);
-                if (flag)
+                if (ids.Contains(i.SourceData.ID))
                 {
-                    this.Associators.Add(entity as Trigger);
-                    entity.Collidable = false;
-                    break;
+                    targets.Enter(i as Trigger);
                 }
             }
-            this.Collidable = true;
+
+            base.Awake(scene);
         }
 
         public override void OnEnter(Player player)
         {
             base.OnEnter(player);
-            foreach (Trigger trigger in this.Associators)
+
+            foreach(var trigger in targets)
             {
-                Log.Info($"associator {trigger.SourceData.ID}");
-
-                bool flag = trigger == null || trigger.Scene == null || (this.flagToggle != null && !(base.Scene as Level).Session.GetFlag(this.flagToggle));
-
-                Log.Info(trigger == null, trigger.Scene == null, this.flagToggle != null, (base.Scene as Level).Session.GetFlag(this.flagToggle));
-                Log.Info(flag);
-
-                if (!flag)
-                {
-                    Vector2 position = player.Position;
-                    Vector2 value = base.GetPercentageOfBoundingBox_Safe(player.Center).Value;
-                    player.Position = trigger.TopLeft + new Vector2(trigger.Width * value.X, trigger.Height * value.Y);
-                    trigger.Triggered = true;
-                    trigger.OnEnter(player);
-
-                    Log.Info(trigger.SourceData.ID, "triggered");
-
-                    player.Position = position;
-                }
+                trigger.OnEnter(player);
             }
         }
-
         public override void OnStay(Player player)
         {
             base.OnStay(player);
-            foreach (Trigger trigger in this.Associators)
+
+            foreach (var trigger in targets)
             {
-                bool flag = trigger == null || trigger.Scene == null || (this.flagToggle != null && !(base.Scene as Level).Session.GetFlag(this.flagToggle));
-                if (!flag)
-                {
-                    Vector2 position = player.Position;
-                    Vector2 value = base.GetPercentageOfBoundingBox_Safe(player.Center).Value;
-                    player.Position = trigger.TopLeft + new Vector2(trigger.Width * value.X, trigger.Height * value.Y);
-                    trigger.OnStay(player);
-                    player.Position = position;
-                }
+                trigger.OnStay(player);
             }
         }
 
         public override void OnLeave(Player player)
         {
-            base.OnStay(player);
-            foreach (Trigger trigger in this.Associators)
+            base.OnLeave(player);
+
+            foreach (var trigger in targets)
             {
-                bool flag = trigger == null || trigger.Scene == null || (this.flagToggle != null && !(base.Scene as Level).Session.GetFlag(this.flagToggle));
-                if (!flag)
-                {
-                    Vector2 position = player.Position;
-                    Vector2 value = base.GetPercentageOfBoundingBox_Safe(player.Center).Value;
-                    player.Position = trigger.TopLeft + new Vector2(trigger.Width * value.X, trigger.Height * value.Y);
-                    trigger.OnLeave(player);
-                    trigger.Triggered = false;
-                    player.Position = position;
-                }
+                trigger.OnLeave(player);
             }
+
+            if (once) { RemoveSelf(); }
         }
 
-        public string flagToggle;
+        public override void Update()
+        {
+            base.Update();
+            if (Visible && (prevPos != Position || RenderColor != prevColor) || shanpe == null)
+            {
+                if (shanpe == null)
+                    shanpe = new VertexPositionColor[polygonCollider.Indices.Length];
+                for (int i = 0; i < polygonCollider.Indices.Length; i += 3)
+                {
+                    shanpe[i].Position = new Vector3(Position + polygonCollider.TriangulatedPoints[polygonCollider.Indices[i]], 0f);
+                    shanpe[i].Color = RenderColor;
+                    shanpe[i + 1].Position = new Vector3(Position + polygonCollider.TriangulatedPoints[polygonCollider.Indices[i + 1]], 0f);
+                    shanpe[i + 1].Color = RenderColor;
+                    shanpe[i + 2].Position = new Vector3(Position + polygonCollider.TriangulatedPoints[polygonCollider.Indices[i + 2]], 0f);
+                    shanpe[i + 2].Color = RenderColor;
+                }
+            }
+            prevPos = Position;
+            prevColor = RenderColor;
+        }
+        public override void Render()
+        {
+            if (RenderColor != Color.Transparent)
+                GFX.DrawVertices((Scene as Level)!.Camera.Matrix, shanpe, polygonCollider.Indices.Length);
+        }
 
-        public new bool onlyOnce;
-
-        public List<Trigger> Associators;
-
-        public List<Type> Types;
-
-        public List<Type> assignableTypes;
-
-        private Vector2 triggerPoint;
-
-        internal Vector2 percentageBoundingBox;
     }
 }

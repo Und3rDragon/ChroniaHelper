@@ -912,4 +912,7 @@ entities.ChroniaHelper/CustomFakeWall.attributes.description.playSoundOnEachTrig
 # ================= Polygon Series (Vivhelper legacy)
 
 entities.ChroniaHelper/PolygonKillbox.placements.name.PolygonKillbox=Polygon Killbox
+entities.ChroniaHelper/PolygonKillbox.attributes.description.flag=Whether the killbox require flag to operate
+
 entities.ChroniaHelper/PolygonTrigger.placements.name.PolygonTrigger=Polygon Trigger
+entities.ChroniaHelper/PolygonTrigger.attributes.description.triggerIDs=The polygon trigger targets, separated by comma
