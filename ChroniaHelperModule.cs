@@ -20,6 +20,7 @@ using MonoMod.ModInterop;
 using YoctoHelper.Hooks;
 using FASF2025Helper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Triggers.PolygonSeries;
 
 namespace ChroniaHelper;
 
@@ -62,7 +63,9 @@ public class ChroniaHelperModule : EverestModule
 
     public static bool FrostHelperLoaded;
     public static bool CommunalHelperLoaded { get; private set; }
+    public static bool VivHelperLoaded;
     public static Assembly CommunalHelperAssembly { get; private set; }
+    public static Assembly VivHelperAssembly { get; private set; }
 
     public override void Load()
     {
@@ -131,6 +134,21 @@ public class ChroniaHelperModule : EverestModule
             CommunalHelperAssembly = communalModule.GetType().Assembly;
         }
 
+        // Viv Helper load judgement
+        EverestModuleMetadata vivHelperMetadata = new()
+        {
+            Name = "VivHelper",
+            Version = new Version("1.14.10"),
+        };
+        VivHelperLoaded = Everest.Loader.DependencyLoaded(vivHelperMetadata);
+
+        if (Everest.Loader.TryGetDependency(vivHelperMetadata, out var vivModule))
+        {
+            VivHelperAssembly = vivModule.GetType().Assembly;
+        }
+
+        PolygonCollider.Load();
+
         // migrated FASF2025
         AttributeHelper.InvokeAll<LoadAttribute>();
     }
@@ -164,6 +182,7 @@ public class ChroniaHelperModule : EverestModule
         ResetChangedRoomFlagsController.Unload();
         AbstractInputController.Unload();
         AdvancedSpikes.OnUnload();
+        PolygonCollider.Unload();
 
         MapProcessor.Unload();
         ChroniaFlag.Unload();

@@ -909,3 +909,7 @@ entities.ChroniaHelper/CustomFakeWall.attributes.description.playReveal=Defines 
 entities.ChroniaHelper/CustomFakeWall.attributes.description.recover=When enabled, the block will recover after the player leaves from inside \nWill be overrided by "permanent"
 entities.ChroniaHelper/CustomFakeWall.attributes.description.playSoundOnEachTrigger=The reveal sound would play every time the player touches it
 
+# ================= Polygon Series (Vivhelper legacy)
+
+entities.ChroniaHelper/PolygonKillbox.placements.name.PolygonKillbox=Polygon Killbox
+entities.ChroniaHelper/PolygonTrigger.placements.name.PolygonTrigger=Polygon Trigger

@@ -24,6 +24,10 @@
 		<CelesteModReference Include="CommunalHelper" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<CelesteModReference Include="VivHelper" />
+	</ItemGroup>
+
     <!--Implement dependencies here in an ItemGroup-->
 
 
