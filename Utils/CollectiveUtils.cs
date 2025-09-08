@@ -97,36 +97,16 @@ public static class CollectiveUtils
         }
     }
 
-    public enum Input { normal, onlyAdd, onlyModify }
-    public static void Enter<TKey, TValue>(
-    this Dictionary<TKey, TValue> dict,
-    TKey key,
-    TValue value,
-    Input modify = Input.normal)
-    {
-        if (dict.TryGetValue(key, out _))
-        {
-            if (modify != Input.onlyAdd)
-                dict[key] = value;
-        }
-        else
-        {
-            if (modify != Input.onlyModify)
-                dict[key] = value; // 直接赋值也可添加
-        }
-    }
-
     public static void SafeRemove<TKey, TValue>(
     this ICollection<KeyValuePair<TKey, TValue>> collection,
     TKey key)
     {
         if (collection is IDictionary<TKey, TValue> dict)
         {
-            dict.Remove(key); // 如果是字典，直接用 Remove(key)
+            dict.Remove(key);
             return;
         }
 
-        // 否则：遍历所有匹配项
         var itemsToRemove = collection
             .Where(kvp => Equals(kvp.Key, key))
             .ToList();
@@ -145,6 +125,17 @@ public static class CollectiveUtils
         }
     }
 
+    public static void Replace<T>(this ICollection<T> dic, T find, T replaceWith)
+    {
+        foreach (var i in dic)
+        {
+            if (i.Equals(find))
+            {
+                dic.Remove(i);
+                dic.Add(replaceWith);
+            }
+        }
+    }
     public static void Replace<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey, TypeB newValue)
     {
         dictionary.SafeRemove(oldKey);
@@ -169,6 +160,25 @@ public static class CollectiveUtils
 
         collection.Add(new KeyValuePair<TKey, TValue>(newKey, found[0].Value));
         return true;
+    }
+
+    public enum Input { normal, onlyAdd, onlyModify }
+    public static void Enter<TKey, TValue>(
+    this Dictionary<TKey, TValue> dict,
+    TKey key,
+    TValue value,
+    Input modify = Input.normal)
+    {
+        if (dict.TryGetValue(key, out _))
+        {
+            if (modify != Input.onlyAdd)
+                dict[key] = value;
+        }
+        else
+        {
+            if (modify != Input.onlyModify)
+                dict[key] = value; // 直接赋值也可添加
+        }
     }
 
     public static void Enter<Type>(this ICollection<Type> list, Type item)

@@ -8,6 +8,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using YamlDotNet.Serialization;
 
 namespace ChroniaHelper.Triggers.TriggerExtension;
 
@@ -19,48 +20,71 @@ public class TriggerExtension : BaseTrigger
     {
         ID = data.ID;
         extensionTag = data.Attr("extensionTag");
+        extensionID = data.Int("overrideID", -1);
     }
     public string extensionTag;
+    public int extensionID;
     public int ID;
 
     private Trigger masterTrigger;
-    protected override void AwakeExecute(Scene scene)
+    private void FindMasterTrigger()
     {
-        // Find master trigger
+        bool overrided = false;
         HashSet<Trigger> triggers = new();
-        foreach(var i in MaP.level.Tracker.GetEntities<Trigger>())
+        foreach (var i in MaP.level.Tracker.GetEntities<Trigger>())
         {
             Trigger trigger = i as Trigger;
 
             if (trigger.SourceData.Has("extensionTag") && !(trigger is TriggerExtension))
             {
-                if(trigger.SourceData.Attr("extensionTag") == extensionTag)
+                if (trigger.SourceData.Attr("extensionTag") == extensionTag && !extensionTag.IsNullOrEmpty())
                 {
-                    triggers.Add(trigger);
+                    triggers.Enter(trigger);
                 }
+            }
+
+            if (trigger.SourceData.ID == extensionID && !(trigger is TriggerExtension))
+            {
+                masterTrigger = trigger;
+                overrided = true;
+                break;
             }
         }
 
-        masterTrigger = triggers.GetMaxItem((trigger) => trigger.SourceData.ID); // checked
+        if (!overrided)
+        {
+            masterTrigger = triggers.GetMaxItem((trigger) => trigger.SourceData.ID); // checked
+        }
     }
 
-    protected override void OnEnterExecute(Player player)
+    public override void Awake(Scene scene)
     {
+        FindMasterTrigger();
+
+        base.Awake(scene);
+    }
+
+    public override void OnEnter(Player player)
+    {
+        base.OnEnter(player);
+
         if (CollideOther(player)) { return; }
 
         masterTrigger.OnEnter(player);
     }
 
-    protected override void OnStayExecute(Player player)
+    public override void OnStay(Player player)
     {
+        base.OnStay(player);
+
         masterTrigger.OnStay(player);
     }
 
-    protected override void OnLeaveExecute(Player player)
+    public override void OnLeave(Player player)
     {
-        if (CollideOther(player)) { return; }
+        base.OnLeave(player);
 
-        masterTrigger.OnLeave(player);
+        if (CollideOther(player)) { return; }
 
         // standalone arguments
         if (masterTrigger is FlagTrigger)
@@ -74,24 +98,39 @@ public class TriggerExtension : BaseTrigger
                 }
                 ft.records.Clear();
             }
+
+            return;
         }
+
+        masterTrigger.OnLeave(player);
     }
 
-    private bool Collide(Player player)
+    private HashSet<Trigger> GetExtensionsList()
     {
         HashSet<Trigger> triggers = new();
-        foreach (var i in MaP.level.Tracker.GetEntities<Trigger>())
+        foreach (var i in MaP.level.Tracker.GetEntities<TriggerExtension>())
         {
-            Trigger trigger = i as Trigger;
+            TriggerExtension trigger = i as TriggerExtension;
 
-            if (trigger.SourceData.Has("extensionTag"))
+            if (extensionID >= 0)
             {
-                if (trigger.SourceData.Attr("extensionTag") == extensionTag)
+                if(trigger.extensionID == extensionID)
                 {
-                    triggers.Add(trigger);
+                    triggers.Enter(trigger);
                 }
             }
+            else if (trigger.extensionTag == extensionTag && !extensionTag.IsNullOrEmpty())
+            {
+                triggers.Enter(trigger);
+            }
         }
+
+        return triggers;
+    }
+    private bool Collide(Player player)
+    {
+        var triggers = GetExtensionsList();
+        triggers.Replace(this, masterTrigger);
 
         foreach (var i in triggers)
         {
@@ -103,19 +142,8 @@ public class TriggerExtension : BaseTrigger
 
     private bool CollideOther(Player player)
     {
-        HashSet<Trigger> triggers = new();
-        foreach (var i in MaP.level.Tracker.GetEntities<Trigger>())
-        {
-            Trigger trigger = i as Trigger;
-
-            if (trigger.SourceData.Has("extensionTag"))
-            {
-                if (trigger.SourceData.Attr("extensionTag") == extensionTag && trigger.SourceData.ID != ID)
-                {
-                    triggers.Add(trigger);
-                }
-            }
-        }
+        var triggers = GetExtensionsList();
+        triggers.SafeRemove(this);
         
         foreach (var i in triggers)
         {

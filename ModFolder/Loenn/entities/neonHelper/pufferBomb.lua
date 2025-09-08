@@ -28,28 +28,30 @@ pufferBomb.fieldInformation = {
         elementSeparator = ";",
         elementOptions = {
             fieldType = "list",
+            allowEmpty = false,
         },
-        allowsEmpty = false,
+        minimumElements = 1,
     },
     playerColliders = {
         fieldType = "list",
         elementSeparator = ";",
         elementOptions = {
             fieldType = "list",
+            allowEmpty = false,
         },
-        allowsEmpty = false,
+        minimumElements = 1,
     },
     detectCollider = {
         fieldType = "list",
         minimumElements = 2,
         maximumElements = 4,
-        allowsEmpty = false,
+        minimumElements = 1,
     },
     wallbreakCollider = {
         fieldType = "list",
         minimumElements = 1,
         maximumElements = 3,
-        allowsEmpty = false,
+        minimumElements = 1,
     }
 }
 
