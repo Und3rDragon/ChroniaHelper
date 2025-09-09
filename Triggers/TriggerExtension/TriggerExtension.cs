@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using YamlDotNet.Serialization;
@@ -35,7 +36,7 @@ public class TriggerExtension : BaseTrigger
         {
             Trigger trigger = i as Trigger;
 
-            if (trigger.SourceData.Has("extensionTag") && !(trigger is TriggerExtension))
+            if (trigger.SourceData.Has("extensionTag") && !trigger.ExtensionBlacklisted())
             {
                 if (trigger.SourceData.Attr("extensionTag") == extensionTag && !extensionTag.IsNullOrEmpty())
                 {
@@ -43,7 +44,7 @@ public class TriggerExtension : BaseTrigger
                 }
             }
 
-            if (trigger.SourceData.ID == extensionID && !(trigger is TriggerExtension))
+            if (trigger.SourceData.ID == extensionID && !trigger.ExtensionBlacklisted())
             {
                 masterTrigger = trigger;
                 overrided = true;
@@ -151,5 +152,61 @@ public class TriggerExtension : BaseTrigger
         }
 
         return false;
+    }
+}
+
+[Tracked(true)]
+[CustomEntity("ChroniaHelper/TriggerExtensionTarget")]
+public class TriggerExtensionTarget : BaseTrigger
+{
+    public TriggerExtensionTarget(EntityData data, Vector2 offset) : base(data, offset)
+    {
+        extensionTag = data.Attr("extensionTag");
+    }
+    public string extensionTag;
+
+    public HashSet<Trigger> coveredTriggers = new();
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+
+        foreach(var i in MaP.level.Tracker.GetEntities<Trigger>())
+        {
+            if (CollideCheck(i))
+            {
+                coveredTriggers.Enter(i as Trigger);
+            }
+        }
+    }
+
+    public override void OnEnter(Player player)
+    {
+        base.OnEnter(player);
+
+        foreach(var i in coveredTriggers)
+        {
+            i.OnEnter(player);
+        }
+    }
+
+    public override void OnStay(Player player)
+    {
+        base.OnStay(player);
+
+        foreach (var i in coveredTriggers)
+        {
+            i.OnStay(player);
+        }
+    }
+
+    public override void OnLeave(Player player)
+    {
+        base.OnLeave(player);
+
+        foreach (var i in coveredTriggers)
+        {
+            i.OnLeave(player);
+        }
     }
 }

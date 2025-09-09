@@ -11,6 +11,7 @@ trigger.placements = {
 	data =
 	{
 		triggerIDs = "",
+		extensionTag = "",
 		oneUse = false,
 	}
 }

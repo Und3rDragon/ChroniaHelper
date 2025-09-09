@@ -10,6 +10,7 @@ using Celeste;
 using Celeste.Mod.Entities;
 
 namespace ChroniaHelper.Triggers.PolygonSeries {
+    [Tracked(true)]
     [CustomEntity("ChroniaHelper/PolygonKillbox")]
     public class PolygonalKillbox : Trigger {
         public PolygonCollider polygonCollider => (PolygonCollider) Collider;

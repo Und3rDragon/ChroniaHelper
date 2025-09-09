@@ -916,3 +916,4 @@ entities.ChroniaHelper/PolygonKillbox.attributes.description.flag=Whether the ki
 
 entities.ChroniaHelper/PolygonTrigger.placements.name.PolygonTrigger=Polygon Trigger Entity
 entities.ChroniaHelper/PolygonTrigger.attributes.description.triggerIDs=The polygon trigger targets, separated by comma
+entities.ChroniaHelper/PolygonTrigger.attributes.description.extensionTag=If the trigger IDs are empty, this trigger will try to activate the triggers with the same extension tag

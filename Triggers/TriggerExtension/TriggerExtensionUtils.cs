@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Triggers.TriggerExtension;
 
 public static class TriggerExtensionUtils
 {
+    public static HashSet<Type> extensionBlacklist = new()
+    {
+        typeof(TriggerExtension),
+        typeof(PolygonTrigger),
+    };
+
+    public static bool ExtensionBlacklisted(this object obj) => extensionBlacklist.Contains(obj.GetType());
+
     public static HashSet<TriggerExtension> GetExtensions(this string extensionTag)
     {
         HashSet<TriggerExtension> triggers = new();

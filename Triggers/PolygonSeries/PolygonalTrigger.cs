@@ -9,9 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Celeste;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Triggers.TriggerExtension;
 
 namespace ChroniaHelper.Triggers.PolygonSeries
 {
+    [Tracked(true)]
     [CustomEntity("ChroniaHelper/PolygonTrigger")]
     public class PolygonTrigger : Trigger
     {
@@ -29,23 +31,39 @@ namespace ChroniaHelper.Triggers.PolygonSeries
             {
                 if (id.IsInt()) { ids.Enter(id.ParseInt()); }
             }
+            unuseID = data.Attr("triggerIDs").IsNullOrEmpty();
 
+            extensionTag = data.Attr("extensionTag");
             once = data.Bool("oneUse", false);
 
             Visible = true;
             Collidable = true;
         }
+        private bool unuseID;
         private HashSet<int> ids = new();
         private HashSet<Trigger> targets = new();
         private bool once;
+        public string extensionTag;
 
         public override void Awake(Scene scene)
         {
             foreach(var i in MaP.level.Tracker.GetEntities<Trigger>())
             {
-                if (ids.Contains(i.SourceData.ID))
+                if (!unuseID)
                 {
-                    targets.Enter(i as Trigger);
+                    if (ids.Contains(i.SourceData.ID) && !i.ExtensionBlacklisted())
+                    {
+                        targets.Enter(i as Trigger);
+                    }
+                }
+                else if (!extensionTag.IsNullOrEmpty())
+                {
+                    if (i.SourceData.Has("extensionTag"))
+                    {
+                        if(i.SourceData.Attr("extensionTag") == extensionTag && !i.ExtensionBlacklisted()) { 
+                            targets.Enter(i as Trigger); 
+                        }
+                    }
                 }
             }
 
