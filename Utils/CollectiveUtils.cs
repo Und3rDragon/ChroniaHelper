@@ -162,25 +162,6 @@ public static class CollectiveUtils
         return true;
     }
 
-    public enum Input { normal, onlyAdd, onlyModify }
-    public static void Enter<TKey, TValue>(
-    this Dictionary<TKey, TValue> dict,
-    TKey key,
-    TValue value,
-    Input modify = Input.normal)
-    {
-        if (dict.TryGetValue(key, out _))
-        {
-            if (modify != Input.onlyAdd)
-                dict[key] = value;
-        }
-        else
-        {
-            if (modify != Input.onlyModify)
-                dict[key] = value; // 直接赋值也可添加
-        }
-    }
-
     public static void Enter<Type>(this ICollection<Type> list, Type item)
     {
         if (!list.Contains(item))
@@ -204,6 +185,17 @@ public static class CollectiveUtils
         }
 
         collection.Add(new KeyValuePair<TKey, TValue>(key, value));
+    }
+
+    public static void Enter<Type>(this ICollection<Type> list, params Type[] items)
+    {
+        for(int i = 0; i < items.Length; i++)
+        {
+            if (!list.Contains(items[i]))
+            {
+                list.Add(items[i]);
+            }
+        }
     }
 
     public static bool ContainsKey<T>(

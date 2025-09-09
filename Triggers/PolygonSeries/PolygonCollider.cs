@@ -92,6 +92,23 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
             Triangulator.Triangulator.Triangulate(vectors, Triangulator.WindingOrder.Clockwise, out TriangulatedPoints, out Indices);
         }
 
+        public PolygonCollider(Vector2[] vectors)
+        {
+            /// Defines the "center point" as the centroid of the given polygon. Currently, there is 0 check for centroid outside the convex hull which for sure means that the polygon is noncomplex.
+            /// I believe the exact limit uses some definition for a concave hull, if someone wants to math this out and let me know go for it
+            if (vectors.Length < 3)
+                throw new ArgumentException($"Vector2 array contains {vectors.Length} points, which is less than the 3 minimum.");
+            bool c = false;
+            int sign = 0;
+            float[] z = new float[4];
+            _center = GetCentroidOfNonComplexPolygon(vectors);
+            convex = GetConvexity(vectors, ref z);
+            offset = _center;
+            AABB = new Rectangle((int)(offset.X + z[0]), (int)(offset.Y + z[2]), (int)(z[1] - z[0]), (int)(z[3] - z[2]));
+            Points = vectors;
+            Triangulator.Triangulator.Triangulate(vectors, Triangulator.WindingOrder.Clockwise, out TriangulatedPoints, out Indices);
+        }
+
         internal static bool GetConvexity(Vector2[] _vertices, ref float[] z) {
             bool escape = _vertices.Length == 4;
             bool sign = false;

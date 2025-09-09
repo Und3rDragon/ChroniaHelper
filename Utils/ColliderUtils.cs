@@ -1,4 +1,8 @@
-﻿namespace ChroniaHelper.Utils;
+﻿using System.Net.NetworkInformation;
+using System.Runtime.Serialization;
+using ChroniaHelper.Triggers.PolygonSeries;
+
+namespace ChroniaHelper.Utils;
 
 public enum ColliderSide
 {
@@ -95,6 +99,7 @@ public static class ColliderUtils
 
     /// <summary>
     /// "r,width,height,x,y;c,radius,x,y;..." => ColliderList
+    /// "p,x1,y1,x2,y2,x3,y3,...bool,bool" => ColliderList
     /// </summary>
     /// <param name="attribute"></param>
     /// <param name="success"></param>
@@ -108,10 +113,12 @@ public static class ColliderUtils
             string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
             if (ps.Length <= 1) { continue; }
 
-            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c",
+                isPoly = ps[0].ToLower() == "p";
             if (isRect && ps.Length < 3) { continue; }
             if (isCir && ps.Length < 2) { continue; }
-            if (!isRect && !isCir) { continue; }
+            if (isPoly && ps.Length < 7) { continue; }
+            if (!isRect && !isCir && !isPoly) { continue; }
 
             if (isRect)
             {
@@ -133,6 +140,32 @@ public static class ColliderUtils
                 if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
                 if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
                 cl.Add(new Circle(r, x, y));
+                success = true;
+            }
+            else if (isPoly)
+            {
+                Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
+                    p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
+                    p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+                HashSet<Vector2> points = new(){ p1, p2, p3 };
+                if(ps.Length > 7)
+                {
+                    Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
+                    for(int j = 0; j * 2 + 7 < ps.Length; j++)
+                    {
+                        additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(), 
+                            ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    }
+
+                    foreach (var v in additional)
+                    {
+                        points.Enter(v);
+                    }
+                }
+
+                if (points.Count < 3) { continue; }
+
+                cl.Add(new PolygonCollider(points.ToArray()));
                 success = true;
             }
         }
@@ -149,10 +182,12 @@ public static class ColliderUtils
             string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
             if (ps.Length <= 1) { continue; }
 
-            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c",
+                isPoly = ps[0].ToLower() == "p";
             if (isRect && ps.Length < 3) { continue; }
             if (isCir && ps.Length < 2) { continue; }
-            if (!isRect && !isCir) { continue; }
+            if (isPoly && ps.Length < 7) { continue; }
+            if (!isRect && !isCir && !isPoly) { continue; }
 
             if (isRect)
             {
@@ -173,6 +208,31 @@ public static class ColliderUtils
                 if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
                 if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
                 cl.Add(new Circle(r, x, y));
+            }
+            else if (isPoly)
+            {
+                Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
+                    p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
+                    p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+                HashSet<Vector2> points = new() { p1, p2, p3 };
+                if (ps.Length > 7)
+                {
+                    Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
+                    for (int j = 0; j * 2 + 7 < ps.Length; j++)
+                    {
+                        additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(),
+                            ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    }
+
+                    foreach (var v in additional)
+                    {
+                        points.Enter(v);
+                    }
+                }
+
+                if (points.Count < 3) { continue; }
+
+                cl.Add(new PolygonCollider(points.ToArray()));
             }
         }
 
@@ -188,10 +248,12 @@ public static class ColliderUtils
             string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
             if (ps.Length <= 1) { continue; }
 
-            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c",
+                isPoly = ps[0].ToLower() == "p";
             if (isRect && ps.Length < 3) { continue; }
             if (isCir && ps.Length < 2) { continue; }
-            if (!isRect && !isCir) { continue; }
+            if (isPoly && ps.Length < 7) { continue; }
+            if (!isRect && !isCir && !isPoly) { continue; }
 
             if (isRect)
             {
@@ -215,8 +277,34 @@ public static class ColliderUtils
                 cl.Add(new Circle(r, x, y));
                 success = true;
             }
+            else if (isPoly)
+            {
+                Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
+                    p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
+                    p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+                HashSet<Vector2> points = new() { p1, p2, p3 };
+                if (ps.Length > 7)
+                {
+                    Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
+                    for (int j = 0; j * 2 + 7 < ps.Length; j++)
+                    {
+                        additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(),
+                            ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    }
+
+                    foreach (var v in additional)
+                    {
+                        points.Enter(v);
+                    }
+                }
+
+                if (points.Count < 3) { continue; }
+
+                cl.Add(new PolygonCollider(points.ToArray()));
+                success = true;
+            }
         }
-        
+
         return cl;
     }
 
@@ -229,10 +317,12 @@ public static class ColliderUtils
             string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
             if (ps.Length <= 1) { continue; }
 
-            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c",
+                isPoly = ps[0].ToLower() == "p";
             if (isRect && ps.Length < 3) { continue; }
             if (isCir && ps.Length < 2) { continue; }
-            if (!isRect && !isCir) { continue; }
+            if (isPoly && ps.Length < 7) { continue; }
+            if (!isRect && !isCir && !isPoly) { continue; }
 
             if (isRect)
             {
@@ -253,6 +343,31 @@ public static class ColliderUtils
                 if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
                 if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
                 cl.Add(new Circle(r, x, y));
+            }
+            else if (isPoly)
+            {
+                Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
+                    p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
+                    p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+                HashSet<Vector2> points = new() { p1, p2, p3 };
+                if (ps.Length > 7)
+                {
+                    Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
+                    for (int j = 0; j * 2 + 7 < ps.Length; j++)
+                    {
+                        additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(),
+                            ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    }
+
+                    foreach (var v in additional)
+                    {
+                        points.Enter(v);
+                    }
+                }
+
+                if (points.Count < 3) { continue; }
+
+                cl.Add(new PolygonCollider(points.ToArray()));
             }
         }
 
@@ -279,10 +394,12 @@ public static class ColliderUtils
             string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
             if (ps.Length <= 1) { continue; }
 
-            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c",
+                isPoly = ps[0].ToLower() == "p";
             if (isRect && ps.Length < 3) { continue; }
             if (isCir && ps.Length < 2) { continue; }
-            if (!isRect && !isCir) { continue; }
+            if (isPoly && ps.Length < 7) { continue; }
+            if (!isRect && !isCir && !isPoly) { continue; }
 
             if (isRect)
             {
@@ -304,6 +421,32 @@ public static class ColliderUtils
                 if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
                 if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
                 cl.Add(new Circle(r, x, y));
+                success = true;
+            }
+            else if (isPoly)
+            {
+                Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
+                    p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
+                    p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+                HashSet<Vector2> points = new() { p1, p2, p3 };
+                if (ps.Length > 7)
+                {
+                    Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
+                    for (int j = 0; j * 2 + 7 < ps.Length; j++)
+                    {
+                        additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(),
+                            ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    }
+
+                    foreach (var v in additional)
+                    {
+                        points.Enter(v);
+                    }
+                }
+
+                if (points.Count < 3) { continue; }
+
+                cl.Add(new PolygonCollider(points.ToArray()));
                 success = true;
             }
         }
@@ -320,10 +463,12 @@ public static class ColliderUtils
             string[] ps = p[i].Split(",", StringSplitOptions.TrimEntries);
             if (ps.Length <= 1) { continue; }
 
-            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c";
+            bool isRect = ps[0].ToLower() == "r", isCir = ps[0].ToLower() == "c",
+                isPoly = ps[0].ToLower() == "p";
             if (isRect && ps.Length < 3) { continue; }
             if (isCir && ps.Length < 2) { continue; }
-            if (!isRect && !isCir) { continue; }
+            if (isPoly && ps.Length < 7) { continue; }
+            if (!isRect && !isCir && !isPoly) { continue; }
 
             if (isRect)
             {
@@ -344,6 +489,31 @@ public static class ColliderUtils
                 if (ps.Length >= 3) { float.TryParse(ps[2], out x); }
                 if (ps.Length >= 4) { float.TryParse(ps[3], out y); }
                 cl.Add(new Circle(r, x, y));
+            }
+            else if (isPoly)
+            {
+                Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
+                    p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
+                    p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+                HashSet<Vector2> points = new() { p1, p2, p3 };
+                if (ps.Length > 7)
+                {
+                    Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
+                    for (int j = 0; j * 2 + 7 < ps.Length; j++)
+                    {
+                        additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(),
+                            ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    }
+
+                    foreach (var v in additional)
+                    {
+                        points.Enter(v);
+                    }
+                }
+
+                if (points.Count < 3) { continue; }
+
+                cl.Add(new PolygonCollider(points.ToArray()));
             }
         }
 
