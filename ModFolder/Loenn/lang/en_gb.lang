@@ -889,6 +889,9 @@ triggers.ChroniaHelper/TriggerExtension.placements.name.TriggerExtension=Trigger
 triggers.ChroniaHelper/TriggerExtension.attributes.description.extensionTag=When entering triggers with the same extension tag \nThe main trigger (that isn't Trigger Extension) that has the largest ID will be triggered \nAnd the effect will be delegated from the main trigger
 triggers.ChroniaHelper/TriggerExtension.attributes.description.overrideID=If this field isn't empty, this extension will focus on the triggers with this ID instead of extensionTag
 
+triggers.ChroniaHelper/TriggerExtensionTarget.placements.name.TriggerExtensionTarget=Trigger Extension Target
+triggers.ChroniaHelper/TriggerExtensionTarget.attributes.description.extensionTag
+
 # ================= Fall Through
 
 entities.ChroniaHelper/FallThrough.placements.name.wood=Fall Through (Wood)

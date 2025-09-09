@@ -17,7 +17,6 @@ public class FlagTrigger : BaseTrigger
     public string[] flagList;
     public bool temp;
     public bool saves;
-    public bool reset;
     public bool filtering;
     public bool onStay;
 
@@ -30,7 +29,7 @@ public class FlagTrigger : BaseTrigger
         set = data.Bool("set", true);
         temp = data.Bool("temporary", false);
         saves = data.Bool("global", false);
-        reset = data.Bool("resetOnLeave", false);
+        leaveReset = data.Bool("resetOnLeave", false);
         filtering = data.Bool("ignoreUnchanged", true);
         onStay = data.Bool("onStay", false);
         
@@ -75,14 +74,11 @@ public class FlagTrigger : BaseTrigger
 
     protected override void LeaveReset(Player player)
     {
-        if (reset)
+        foreach (var item in records.Keys)
         {
-            foreach(var item in records.Keys)
-            {
-                item.SetFlag(!records[item], saves, temp);
-            }
-            records.Clear();
+            item.SetFlag(!records[item], saves, temp);
         }
+        records.Clear();
     }
 
 }

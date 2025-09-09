@@ -87,22 +87,6 @@ public class TriggerExtension : BaseTrigger
 
         if (CollideOther(player)) { return; }
 
-        // standalone arguments
-        if (masterTrigger is FlagTrigger)
-        {
-            FlagTrigger ft = masterTrigger as FlagTrigger;
-            if (ft.reset)
-            {
-                foreach (var item in ft.records.Keys)
-                {
-                    item.SetFlag(!ft.records[item], ft.saves, ft.temp);
-                }
-                ft.records.Clear();
-            }
-
-            return;
-        }
-
         masterTrigger.OnLeave(player);
     }
 
@@ -173,7 +157,7 @@ public class TriggerExtensionTarget : BaseTrigger
 
         foreach(var i in MaP.level.Tracker.GetEntities<Trigger>())
         {
-            if (CollideCheck(i))
+            if (CollideCheck(i) && !(i is TriggerExtensionTarget))
             {
                 coveredTriggers.Enter(i as Trigger);
             }
