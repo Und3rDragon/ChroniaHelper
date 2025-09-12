@@ -87,14 +87,14 @@ public static class GeometryUtils
         if (Md.Session.Geometry_FreeRectangles.ContainsKey(groupName))
         {
             Md.Session.Geometry_FreeRectangles[groupName].Enter(
-                new(point1.X, point1.Y, point2.X, point2.Y)
+                new Vector4(point1.X, point1.Y, point2.X, point2.Y)
                 );
         }
         else
         {
             Md.Session.Geometry_FreeRectangles.Enter(groupName, new());
             Md.Session.Geometry_FreeRectangles[groupName].Enter(
-                new(point1.X, point1.Y, point2.X, point2.Y)
+                new Vector4(point1.X, point1.Y, point2.X, point2.Y)
                 );
         }
     }

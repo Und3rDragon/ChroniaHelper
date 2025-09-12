@@ -196,18 +196,18 @@ public class SpriteEntity : Actor
                 // valid syntax: "repeat, 0, (overrideFlag)"
                 if (segs < 2) { continue; }
 
-                int newIndex = int.TryParse(commandLine[1], out newIndex) ? newIndex : 0;
+                int newIndex = commandLine[1].ParseInt(0);
                 newIndex.MakeAbs();
 
                 bool hasOverride = false;
                 string overrideFlag = string.Empty;
                 if (segs >= 3)
                 {
-                    hasOverride = string.IsNullOrEmpty(commandLine[2]);
+                    hasOverride = !string.IsNullOrEmpty(commandLine[2]);
                 }
                 if (hasOverride)
                 { overrideFlag = commandLine[2]; }
-
+                
                 if (hasOverride)
                 {
                     if (!MapProcessor.session.GetFlag(overrideFlag))

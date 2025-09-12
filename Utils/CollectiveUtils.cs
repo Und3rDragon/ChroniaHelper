@@ -162,14 +162,6 @@ public static class CollectiveUtils
         return true;
     }
 
-    public static void Enter<Type>(this ICollection<Type> list, Type item)
-    {
-        if (!list.Contains(item))
-        {
-            list.Add(item);
-        }
-    }
-
     public static void Enter<TKey, TValue>(
     this ICollection<KeyValuePair<TKey, TValue>> collection,
     TKey key,
