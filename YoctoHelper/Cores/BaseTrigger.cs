@@ -1,4 +1,6 @@
-﻿namespace YoctoHelper.Cores;
+﻿using ChroniaHelper.Utils;
+
+namespace YoctoHelper.Cores;
 
 [Tracked(true)]
 public abstract class BaseTrigger : Trigger

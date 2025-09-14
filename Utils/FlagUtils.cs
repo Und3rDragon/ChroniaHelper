@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils.ChroniaSystem;
+using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Utils;
 
@@ -78,13 +80,13 @@ public static class FlagUtils
         flagHashSet.Clear();
     }
 
-    public static bool Contains(Level level, string flag) => FlagUtils.Contains(level.Session.Flags, flag);
+    public static bool Contains(Level level, string flag) => level.Session.Flags.Contains(flag);
 
-    public static bool Contains(Level level, string[] flags) => FlagUtils.Contains(level.Session.Flags, flags);
+    public static bool Contains(Level level, string[] flags) => level.Session.Flags.Contains(flags);
 
     public static bool Contains(HashSet<string> flagHashSet, string flag) => flagHashSet.Contains(flag);
 
-    public static bool Contains(HashSet<string> flagHashSet, string[] flags)
+    public static bool Contains(this HashSet<string> flagHashSet, string[] flags)
     {
         if (flags == null)
         {
@@ -97,6 +99,50 @@ public static class FlagUtils
                 return false;
             }
         }
+        return true;
+    }
+    
+    public static bool ConfirmFlags(this string conditions)
+    {
+        string[] _conditions = conditions.Split(',', StringSplitOptions.TrimEntries);
+
+        return ConfirmFlags(_conditions);
+    }
+    public static bool ConfirmFlags(this ICollection<string> flags)
+    {
+        if (flags == null)
+        {
+            return true;
+        }
+        foreach (string flag in flags)
+        {
+            bool i = flag.StartsWith("!");
+            string name = flag.Trim().TrimStart('!');
+            if (i ? name.GetFlag() : !name.GetFlag())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    public static bool ConfirmFlags(params string[] flags)
+    {
+        if (flags == null)
+        {
+            return true;
+        }
+        foreach (string flag in flags)
+        {
+            bool i = flag.StartsWith("!");
+            string name = flag.Trim().TrimStart('!');
+            if (i ? name.GetFlag() : !name.GetFlag())
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -176,6 +222,11 @@ public static class FlagUtils
             }
         }
         return dictionary;
+    }
+
+    public static bool CheckCorrectFlags(Level level, string[] flags)
+    {
+        return (ObjectUtils.IsNotNull(level)) && ((ArrayUtils.IsNullOrEmpty(flags)) || (FlagUtils.Contains(level, flags)));
     }
 
 }

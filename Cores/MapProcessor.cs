@@ -45,6 +45,12 @@ public static class MapProcessor
     public static Vector2 camOffset = Vector2.Zero;
 
     public static Dictionary<string, Session.Slider> sliders = new();
+
+    //BG Switch references
+    public static Grid bgSolidTilesGrid;
+    public static Solid bgModeSolidTiles;
+    public static Entity bgSolidTiles;
+    public static bool bgMode = false;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
@@ -99,6 +105,45 @@ public static class MapProcessor
         isRespawning = (intro != Player.IntroTypes.Transition);
         orig.Invoke(level, intro, isFromLoader);
         isRespawning = false;
+
+        bgSolidTilesGrid = CreateBgtileGrid(level);
+        bgModeSolidTiles = new Solid(new Vector2((float)level.Bounds.Left, (float)level.Bounds.Top), 1f, 1f, true)
+        {
+            AllowStaticMovers = false,
+            Collidable = bgMode,
+            Collider = ((bgMode || BgEntityInLevel(level)) ? bgSolidTilesGrid : null),
+            EnableAssistModeChecks = false
+        };
+        bgSolidTiles = new Entity(new Vector2((float)level.Bounds.Left, (float)level.Bounds.Top))
+        {
+            Collidable = true,
+            Collider = bgSolidTilesGrid,
+        };
+        level.Add(bgModeSolidTiles);
+        level.Add(bgSolidTiles);
+        level.Session.SetFlag("bg_mode", bgMode);
+        level.SolidTiles.Collidable = !bgMode;
+    }
+    
+    public static Grid CreateBgtileGrid(this Level level)
+    {
+        Rectangle rectangle = new Rectangle(level.Bounds.Left / 8, level.Bounds.Y / 8, level.Bounds.Width / 8, level.Bounds.Height / 8);
+        Rectangle tileBounds = level.Session.MapData.TileBounds;
+        bool[,] array = new bool[rectangle.Width, rectangle.Height];
+        for (int i = 0; i < rectangle.Width; i++)
+        {
+            for (int j = 0; j < rectangle.Height; j++)
+            {
+                array[i, j] = (level.BgData[i + rectangle.Left - tileBounds.Left, j + rectangle.Top - tileBounds.Top] != '0');
+            }
+        }
+        return new Grid(8f, 8f, array);
+    }
+
+    private static bool BgEntityInLevel(Level level)
+    {
+        //return level.Entities.Any((Entity e) => e is BGModeToggle || e is BGModeTrigger);
+        return false;
     }
     
     private static void OnMapDataLoad(On.Celeste.MapData.orig_Load orig, MapData map)
@@ -121,6 +166,7 @@ public static class MapProcessor
 
     private static void LevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
+        MaP.level = self;
         // Only once after respawn, not when into the room
         orig(self);
     }
@@ -133,6 +179,7 @@ public static class MapProcessor
 
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
+        MaP.level = self;
         // Flag Button Flag setup
         if (ChroniaHelperModule.Session.flagNames != null)
         {
