@@ -943,3 +943,7 @@ entities.ChroniaHelper/BGTileCollideController.placements.description.controller
 entities.ChroniaHelper/ComprehensiveController.placements.name.controller=Comprehensive Controller
 entities.ChroniaHelper/ComprehensiveController.placements.description.controller=An entity that sets flags or export data into the map \nby detecting several objects or states
 entities.ChroniaHelper/ComprehensiveController.attributes.description.Introduction=An entity that sets flags or export data into the map \nby detecting several objects or states
+
+# ================= Final Boost Trigger
+
+triggers.ChroniaHelper/FinalBoostTrigger.placements.name.FinalBoostTrigger=Final Boost Trigger
