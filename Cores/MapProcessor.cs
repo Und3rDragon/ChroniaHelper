@@ -40,8 +40,6 @@ public static class MapProcessor
     public static Entity globalEntityDummy = new Monocle.Entity();
 
     public static bool isRespawning = false;
-    public static Player player = null;
-    public static bool playerAlive = false;
     public static Vector2 camOffset = Vector2.Zero;
 
     public static Dictionary<string, Session.Slider> sliders = new();
@@ -51,14 +49,11 @@ public static class MapProcessor
     public static Solid bgModeSolidTiles;
     public static Entity bgSolidTiles;
     public static bool bgMode = false;
+    
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
         MaP.session = level.Session;
-
-        entities = level.Tracker.Entities;
-        player = level.Tracker.GetEntity<Player>();
-        playerAlive = player != null;
         camOffset = level.CameraOffset;
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
@@ -155,6 +150,8 @@ public static class MapProcessor
 
     private static void OnLevelReload(On.Celeste.LevelLoader.orig_LoadingThread orig, LevelLoader self)
     {
+        level = self.Level;
+        
         orig(self);
 
         // Flag Carousel Trigger State reset
@@ -166,7 +163,8 @@ public static class MapProcessor
 
     private static void LevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
-        MaP.level = self;
+        level = self;
+
         // Only once after respawn, not when into the room
         orig(self);
     }
@@ -179,7 +177,9 @@ public static class MapProcessor
 
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
-        MaP.level = self;
+        level = self;
+        entities = level.Tracker.Entities;
+
         // Flag Button Flag setup
         if (ChroniaHelperModule.Session.flagNames != null)
         {
@@ -203,9 +203,6 @@ public static class MapProcessor
         }
 
         orig(self);
-
-        player = level.Tracker.GetEntity<Player>();
-        playerAlive = player != null;
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)

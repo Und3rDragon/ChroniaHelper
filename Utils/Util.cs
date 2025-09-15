@@ -13,12 +13,6 @@ namespace ChroniaHelper.Utils;
 public static class Util
 {
 
-    public static bool TryGetPlayer(out Player player)
-    {
-        player = Engine.Scene?.Tracker?.GetEntity<Player>();
-        return player != null;
-    }
-
     public static int ToBitFlag(params bool[] b)
     {
         int ret = 0;

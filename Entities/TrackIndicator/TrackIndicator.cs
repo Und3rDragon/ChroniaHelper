@@ -44,10 +44,10 @@ public class TrackIndicator : Entity
         int maxIndex = lines.Length - 1;
         while (true)
         {
-            if (!MaP.playerAlive) { yield return null; continue; }
+            if (!PUt.getPlayer) { yield return null; continue; }
 
             Line line = lines[playerIndex];
-            playerProgress = MaP.player.Position.ClampProgress(line.A, line.B);
+            playerProgress = PUt.player.Position.ClampProgress(line.A, line.B);
             if(playerProgress == 1f && playerIndex < maxIndex)
             {
                 playerIndex++;

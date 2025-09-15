@@ -870,6 +870,7 @@ entities.ChroniaHelper/ReskinnableKevin.attributes.description.giantFaceSpriteXM
 # ================= Changed Room Flag Controller
 
 entities.ChroniaHelper/ResetChangedRoomFlagsController.placements.name.Controller=Reset Changed Room Flags Controller
+entities.ChroniaHelper/ResetChangedRoomFlagsController.placements.description.Controller=As titled, the controller listen to every flag changes in the room and pick up the changes, \nwhen the room is reloaded, the controller will take actions about these changed flags
 
 # ================= Input Controller
 
@@ -886,6 +887,7 @@ entities.ChroniaHelper/InputFlagController.attributes.description.resetDetectSes
 # ================= Trigger Extension
 
 triggers.ChroniaHelper/TriggerExtension.placements.name.TriggerExtension=Trigger Extension
+triggers.ChroniaHelper/TriggerExtension.placements.description.TriggerExtension=Trigger Extension works like a normal trigger but unlike normal triggers \nIt won't be re-activated as player go through the trigger borderlines, \nconsider it useful for connecting several "reset on leave" triggers
 triggers.ChroniaHelper/TriggerExtension.attributes.description.extensionTag=When entering triggers with the same extension tag \nThe main trigger (that isn't Trigger Extension) that has the largest ID will be triggered \nAnd the effect will be delegated from the main trigger
 triggers.ChroniaHelper/TriggerExtension.attributes.description.overrideID=If this field isn't empty, this extension will focus on the triggers with this ID instead of extensionTag
 
@@ -902,6 +904,16 @@ entities.ChroniaHelper/FallThrough.placements.name.cliffside=Fall Through (Cliff
 entities.ChroniaHelper/FallThrough.placements.name.reflection=Fall Through (Reflection)
 entities.ChroniaHelper/FallThrough.placements.name.core=Fall Through (Core)
 entities.ChroniaHelper/FallThrough.placements.name.moon=Fall Through (Moon)
+
+entities.ChroniaHelper/FallThrough.placements.description.wood=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+entities.ChroniaHelper/FallThrough.placements.description.dream=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+entities.ChroniaHelper/FallThrough.placements.description.temple=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+entities.ChroniaHelper/FallThrough.placements.description.templeB=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+entities.ChroniaHelper/FallThrough.placements.description.cliffside=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+entities.ChroniaHelper/FallThrough.placements.description.reflection=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+entities.ChroniaHelper/FallThrough.placements.description.core=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+entities.ChroniaHelper/FallThrough.placements.description.moon=Comparing to normal jump through, when player duck on it \nThey fell right through the entity and fall down
+
 entities.ChroniaHelper/FallThrough.attributes.description.ignoreAllJumpthrus=When enabled, the player would ignore all jump thrus and fall through them
 entities.ChroniaHelper/FallThrough.attributes.description.mechanicTime=When player falling, the player speed will be overrided for this amount of time \nAnd if you choose to ignore all jumpthrus, this is also the duration of the effect
 
@@ -924,3 +936,10 @@ entities.ChroniaHelper/PolygonTrigger.attributes.description.extensionTag=If the
 # ================= BG Tiles Collide Controller
 
 entities.ChroniaHelper/BGTileCollideController.placements.name.controller=BG Tiles Collide Controller
+entities.ChroniaHelper/BGTileCollideController.placements.description.controller=BG Tiles Collide Controller detects whether the player has BG Tiles behind their back \nAnd if not, whatever actions it should take
+
+# ================= Comprehensive Controller
+
+entities.ChroniaHelper/ComprehensiveController.placements.name.controller=Comprehensive Controller
+entities.ChroniaHelper/ComprehensiveController.placements.description.controller=An entity that sets flags or export data into the map \nby detecting several objects or states
+entities.ChroniaHelper/ComprehensiveController.attributes.description.Introduction=An entity that sets flags or export data into the map \nby detecting several objects or states

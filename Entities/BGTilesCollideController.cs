@@ -8,47 +8,45 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
-namespace ChroniaHelper.Entities
+namespace ChroniaHelper.Entities;
+
+[CustomEntity("ChroniaHelper/BGTileCollideController")]
+[Tracked(true)]
+public class BGTilesCollideController : Entity
 {
-    [CustomEntity("ChroniaHelper/BGTileCollideController")]
-    [Tracked(true)]
-    public class BGTilesCollideController : Entity
+    public BGTilesCollideController(EntityData data, Vector2 offset): base(data.Position + offset)
     {
-        public BGTilesCollideController(EntityData data, Vector2 offset): base(data.Position + offset)
-        {
-            flag = data.Attr("flag", "ChroniaHelper_PlayerCollidingBGTiles");
-            condition = data.Attr("conditionFlags");
-            setFlagOnCollide = data.Bool("indicatesColliding", true);
-            killPlayer = data.Bool("killPlayer", false);
-            killWhenNotColliding = data.Bool("killWhenNotColliding", true);
-        }
-        private string flag, condition;
-        private string[] conditions;
-        private bool setFlagOnCollide, killPlayer, killWhenNotColliding;
+        flag = data.Attr("flag", "ChroniaHelper_PlayerCollidingBGTiles");
+        condition = data.Attr("conditionFlags");
+        setFlagOnCollide = data.Bool("indicatesColliding", true);
+        killPlayer = data.Bool("killPlayer", false);
+        killWhenNotColliding = data.Bool("killWhenNotColliding", true);
+    }
+    private string flag, condition;
+    private string[] conditions;
+    private bool setFlagOnCollide, killPlayer, killWhenNotColliding;
+    
+    public override void Update()
+    {
+        base.Update();
         
-        public override void Update()
+        if (!condition.IsNullOrEmpty())
         {
-            base.Update();
+            if (!condition.ConfirmFlags()) { return; }
+        }
 
-            if (!condition.IsNullOrEmpty())
+        if (!PUt.getPlayer) { return; }
+
+        if (!flag.IsNullOrEmpty())
+        {
+            flag.SetFlag(PUt.player.CollideCheck(MaP.bgSolidTiles) == setFlagOnCollide);
+        }
+        
+        if (killPlayer)
+        {
+            if (killWhenNotColliding == !PUt.player.CollideCheck(MaP.bgSolidTiles))
             {
-                if (!condition.ConfirmFlags()) { return; }
-            }
-
-            if (!MaP.playerAlive) { return; }
-
-            if (!flag.IsNullOrEmpty())
-            {
-                flag.SetFlag(MaP.player.CollideCheck(MaP.bgSolidTiles) == setFlagOnCollide);
-            }
-
-            if (killPlayer)
-            {
-                if (killWhenNotColliding == !MaP.player.CollideCheck(MaP.bgSolidTiles))
-                {
-                    Player player = MaP.level.Tracker.GetEntity<Player>();
-                    if (player.IsNotNull()) { player.Die(player.Speed.SafeNormalize()); }
-                }
+                if (PUt.player.IsNotNull()) { PUt.player.Die(Vector2.Zero); }
             }
         }
     }

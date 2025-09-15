@@ -4,6 +4,7 @@ global using Md = ChroniaHelper.ChroniaHelperModule;
 global using Sav = ChroniaHelper.Modules.ChroniaHelperSaveData;
 global using Ses = ChroniaHelper.Modules.ChroniaHelperSession;
 global using Sh = ChroniaHelper.Utils.Shortcuts;
+global using PUt = ChroniaHelper.Utils.PlayerUtils;
 using System.Runtime.InteropServices.Marshalling;
 using ChroniaHelper.Utils.ChroniaSystem;
 
