@@ -116,6 +116,7 @@ se.fieldInformation = {
 					"change_tag,(normal or hud)",
 					"kill_on_collide,enable?",
 					"player_collider,width,height,(x),(y),(addOnCurrent?)",
+                    "repeat_times,commandIndex,times(-1 = always)",
 				}
 			},
 			editable = true,

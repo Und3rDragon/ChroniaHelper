@@ -34,7 +34,7 @@ public class SpriteEntity : Actor
         Disable_Movement, Kill_Player, Change_Tag,
         //done
         Holdable_Collider, Jump, Variable, Random, MoveTo_Node, Kill_On_Collide,
-        Player_Collider,
+        Player_Collider, Repeat_Times
         //undone
     }
     private Command execute = Command.None;
@@ -46,7 +46,7 @@ public class SpriteEntity : Actor
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
         Command.Hitbox, Command.Holdable_Collider, Command.Player_Collider, Command.Current_Frame, Command.Solid, Command.Speed,
         Command.Disable_Movement, Command.Kill_Player, Command.Variable, Command.Random,
-        Command.Change_Tag, Command.Kill_On_Collide,
+        Command.Change_Tag, Command.Kill_On_Collide, Command.Repeat_Times
     };
 
     public static void Load()
@@ -156,6 +156,8 @@ public class SpriteEntity : Actor
     // Holdable parameters
     private Vector2 Speed;
 
+    private Dictionary<int, int> repeatTimes = new();
+
     public IEnumerator Execution()
     {
         ignoreActivated = false;
@@ -218,6 +220,44 @@ public class SpriteEntity : Actor
                 else
                 {
                     index = newIndex - 1;
+                }
+            }
+
+            else if(execute == Command.Repeat_Times)
+            {
+                // valid syntax: "repeat_times, commandIndex, times"
+                if(segs < 3) { continue; }
+
+                int repeats = commandLine[2].ParseInt(-1),
+                    target = commandLine[1].ParseInt(0).GetAbs();
+                
+                if (repeatTimes.ContainsKey(index))
+                {
+                    if (repeatTimes[index] >= repeats)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        repeatTimes[index]++;
+                        index = target - 1;
+                    }
+                }
+                else
+                {
+                    if(repeats > 0)
+                    {
+                        repeatTimes.Enter(index, 1);
+                        index = target - 1;
+                    }
+                    else if(repeats == 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        index = target - 1;
+                    }
                 }
             }
 
@@ -388,22 +428,22 @@ public class SpriteEntity : Actor
                 Add(holdable);
             }
 
-            else if(execute == Command.Player_Collider)
+            else if (execute == Command.Player_Collider)
             {
                 // syntax: playercollider, width, height, x, y, add?
-                if(segs < 3) { continue; }
+                if (segs < 3) { continue; }
                 float w = 16, h = 16;
                 float.TryParse(commandLine[1], out w);
                 float.TryParse(commandLine[2], out h);
 
-                if(w <= 0f || h <= 0f) { continue; }
+                if (w <= 0f || h <= 0f) { continue; }
 
                 float x = 0, y = 0;
-                if(segs >= 4) { float.TryParse(commandLine[3], out x); }
-                if(segs >= 5) { float.TryParse(commandLine[4], out y); }
+                if (segs >= 4) { float.TryParse(commandLine[3], out x); }
+                if (segs >= 5) { float.TryParse(commandLine[4], out y); }
 
                 bool add = false;
-                if(segs >= 6)
+                if (segs >= 6)
                 {
                     bool.TryParse(commandLine[5], out add);
                 }
@@ -411,9 +451,9 @@ public class SpriteEntity : Actor
                 if (add) { playerColliderList.Add(new Hitbox(w, h, x, y)); }
                 else { playerColliderList = new(); playerColliderList.Add(new Hitbox(w, h, x, y)); }
 
-                foreach(var item in Components)
+                foreach (var item in Components)
                 {
-                    if(item is PlayerCollider)
+                    if (item is PlayerCollider)
                     {
                         Remove(item);
                     }
