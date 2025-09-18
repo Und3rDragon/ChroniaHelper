@@ -44,9 +44,9 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
 
         public Vector2 offset;
         public bool convex;
-        public readonly Vector2[] Points;
-        public readonly Vector2[] TriangulatedPoints;
-        public readonly int[] Indices;
+        public Vector2[] Points;
+        public Vector2[] TriangulatedPoints;
+        public int[] Indices;
 
         public Rectangle AABB; //Represents the AABB for the Polygon at the time of construction. To Update the Collider, you can effectively clone it.
         //Currently this is super slow but I intend to optimize it in the near future.

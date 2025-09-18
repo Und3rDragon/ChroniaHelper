@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
@@ -212,8 +213,7 @@ public class SeamlessSpinner : Entity
         //碰撞箱
         string inputHitbox = data.Attr("customHitbox").ToLower();
         string hitboxType = data.Attr("hitboxType");
-        string[] hitboxData = inputHitbox.Split(';', StringSplitOptions.TrimEntries);
-        SetColliderByHitboxTypeAndData(hitboxType, hitboxData);
+        SetColliderByHitboxTypeAndData(hitboxType, inputHitbox);
 
         Visible = false;
         Add(new PlayerCollider(OnPlayer));
@@ -285,7 +285,7 @@ public class SeamlessSpinner : Entity
         hotCoreModeTriggerSpritePath = data.Attr("hotCoreModeTriggerSpritePath");
     }
 
-    private void SetColliderByHitboxTypeAndData(string hitboxType, string[] hitboxData)
+    private void SetColliderByHitboxTypeAndData(string hitboxType, string hitboxData)
     {
         if (hitboxType == "loosened")
         {
@@ -301,78 +301,7 @@ public class SeamlessSpinner : Entity
         }
         else if (hitboxType == "custom")
         {
-            //对于每组数据
-            ColliderList CL = new ColliderList();
-            bool emptyCollider = true;
-            for (int i = 0; i < hitboxData.Length; i++)
-            {
-                //首先分割并去空
-                string[] hb = hitboxData[i].Split(",", StringSplitOptions.TrimEntries);
-                //淘汰length为0
-                if (hb.Length == 0)
-                {
-                    break;
-                }
-
-                //length !=0 , 检查第一位
-                if (hb[0] == "" || (hb[0] != "c" && hb[0] != "r"))
-                {
-                    break;
-                }
-
-                //第一位稳定，开始记录
-                float p1 = 0f, p2 = 0f, p3 = 0f, p4 = 0f;
-                if (hb.Length >= 2)
-                {
-                    p1 = hb[1].ParseFloat();
-                }
-
-                if (hb.Length >= 3)
-                {
-                    p2 = hb[2].ParseFloat();
-                }
-
-                if (hb.Length >= 4)
-                {
-                    p3 = hb[3].ParseFloat();
-                }
-
-                if (hb.Length >= 5)
-                {
-                    p4 = hb[4].ParseFloat();
-                }
-
-                if (hb[0] == "r")
-                {
-                    if (p1 <= 0)
-                    {
-                        break;
-                    }
-
-                    if (p2 <= 0)
-                    {
-                        break;
-                    }
-
-                    CL.Add(new Hitbox(p1, p2, p3, p4));
-                    emptyCollider = false;
-                }
-                else
-                {
-                    if (p1 <= 0)
-                    {
-                        break;
-                    }
-
-                    CL.Add(new Circle(p1, p2, p3));
-                    emptyCollider = false;
-                }
-            }
-
-            if (!emptyCollider)
-            {
-                Collider = CL;
-            }
+            Collider = hitboxData.ParseColliderList(this, true);
         }
         else
         {
