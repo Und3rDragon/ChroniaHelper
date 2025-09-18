@@ -45,8 +45,10 @@ public class CustomBooster : Booster
 
         // On.Celeste.Player.RefillDash += RefillD;
         // On.Celeste.Player.RefillStamina += RefillS;
+        
+        On.Celeste.Player.BoostUpdate += PlayerOnBoostUpdate;
     }
-
+    
     public static void Unload()
     {
         On.Celeste.Booster.PlayerReleased -= Booster_PlayerReleased;
@@ -69,6 +71,7 @@ public class CustomBooster : Booster
 
         // On.Celeste.Player.RefillDash -= RefillD;
         // On.Celeste.Player.RefillStamina -= RefillS;
+        On.Celeste.Player.BoostUpdate -= PlayerOnBoostUpdate;
     }
 
     private float appearTime, loopTime, insideTime, spinTime, popTime, tr;
@@ -90,6 +93,8 @@ public class CustomBooster : Booster
     private bool burstParticleColorOverride, appearParticleColorOverride;
     private float holdTime = 0.25f;
     public bool DisableFastBubble, allowDashout, onlyOnce;
+    
+    public bool playerFollow;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -188,6 +193,7 @@ public class CustomBooster : Booster
 
         holdTime = data.Float("holdTime", 0.25f);
         DisableFastBubble = data.Bool("disableFastBubble", false);
+        playerFollow = data.Bool("playerFollow", false);
     }
 
 
@@ -476,6 +482,12 @@ public class CustomBooster : Booster
         {
             orig(self);
         }
+    }
+    private static int PlayerOnBoostUpdate(On.Celeste.Player.orig_BoostUpdate orig, Player self)
+    {
+        if (self.CurrentBooster is CustomBooster { playerFollow: true } booster)
+            self.boostTarget = booster.Center;
+        return orig(self);
     }
 
     public override void Render()

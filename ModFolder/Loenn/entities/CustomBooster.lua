@@ -42,6 +42,7 @@ booster.placements={
 		disableFastBubble = false,
 		allowDashOutWhenBoosting = true,
 		onlyOnce = false,
+        playerFollow = false,
 	}
 }
 
