@@ -86,7 +86,7 @@ public class CustomBooster : Booster
 
     private float moveSpeed, outSpeed;
 
-    private bool setOutSpeed;
+    private bool setOutSpeed, rememberSpeed;
 
     private Color color;
     private ParticleType customBurstParticleType, customAppearParticleType;
@@ -194,6 +194,7 @@ public class CustomBooster : Booster
         holdTime = data.Float("holdTime", 0.25f);
         DisableFastBubble = data.Bool("disableFastBubble", false);
         playerFollow = data.Bool("playerFollow", false);
+        rememberSpeed = data.Bool("keepPlayerSpeed", false);
     }
 
 
@@ -340,6 +341,8 @@ public class CustomBooster : Booster
     public static Booster TempCurrentBooster = null;
     private static ILHook origBoostBeginHook;
 
+    public Vector2 recordedSpeed = Vector2.Zero;
+
     private static void Player_BoostBegin(ILContext il)
     {
         var cursor = new ILCursor(il);
@@ -365,6 +368,8 @@ public class CustomBooster : Booster
         {
             if (TempCurrentBooster is CustomBooster myBooster)
             {
+                myBooster.recordedSpeed = player.Speed;
+                
                 // Insert Stamina and Dashes logic here
                 if (myBooster.setDashes)
                 {
@@ -431,10 +436,6 @@ public class CustomBooster : Booster
             // angle calculation, left is 0, right is PI, topright +, bottomright -
             while ((player.StateMachine.State == 2 || player.StateMachine.State == 5) && myBooster.BoostingPlayer)
             {
-                // Modify move speed
-                //player.Speed *= myBooster.moveSpeed;
-
-
                 myBooster.sprite.RenderPosition = player.Center + playerOffset;
                 myBooster.loopingSfx.Position = myBooster.sprite.Position;
                 if (myBooster.Scene.OnInterval(0.02f))
@@ -448,7 +449,14 @@ public class CustomBooster : Booster
 
             myBooster.PlayerReleased();
 
-            player.Speed *= myBooster.outSpeed;
+            if (myBooster.rememberSpeed)
+            {
+                player.Speed = dir * myBooster.recordedSpeed.Length() * myBooster.outSpeed;
+            }
+            else
+            {
+                player.Speed *= myBooster.outSpeed;
+            }
 
             if (player.StateMachine.State == 4)
             {

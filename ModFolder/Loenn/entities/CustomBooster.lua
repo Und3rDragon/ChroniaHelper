@@ -43,6 +43,7 @@ booster.placements={
 		allowDashOutWhenBoosting = true,
 		onlyOnce = false,
         playerFollow = false,
+        keepPlayerSpeed = false,
 	}
 }
 

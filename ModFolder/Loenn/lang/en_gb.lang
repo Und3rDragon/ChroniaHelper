@@ -607,6 +607,7 @@ entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillStamina=I
 entities.ChroniaHelper/CustomBooster.attributes.description.XMLOverride=If enabled, the "directory" will work as the XML object tag\nAnd all the animation parameters in the options will be ignored
 entities.ChroniaHelper/CustomBooster.attributes.description.holdTime=The time that player stays inside before it activates and start moving
 entities.ChroniaHelper/CustomBooster.attributes.description.playerFollow=The player will move with the booster if the booster position is somehow changed while player's inside
+entities.ChroniaHelper/CustomBooster.attributes.description..keepPlayerSpeed=The booster will record player's speed when player gets in and keep it when it releases player. \nWill be affected by the out speed multiplier.
 
 # ================= Custom Glider
 
