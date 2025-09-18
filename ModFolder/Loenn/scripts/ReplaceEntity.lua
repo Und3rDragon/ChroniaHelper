@@ -1,4 +1,5 @@
 local entities = require("entities")
+local triggers = require("triggers")
 local utils = require("utils")
 
 local function tableContains(t, item)
@@ -20,9 +21,9 @@ local script = {
         allowPreserving = "If enabled, extra settings will be added to allow to leave some properties untouched on affected entities.\nUseful when only changing one property of entities in bulk."
     },
     parameters = {
-        type = "",
-        replaceWith = "",
-        allowPreserving = false,
+        type = "ChroniaHelper/FinalBoostTrigger",
+        replaceWith = "everest/flagTrigger",
+        allowPreserving = true,
     },
     fieldInformation = {
         type = {
@@ -45,14 +46,20 @@ local function getChangePropName(propName)
 end
 
 local function getPlacementData(args, handler)
-    local all = utils.callIfFunction(handler.placements)
+    local all = {}
+    if not defineAsEntity then
+        all = handler.placements
+    else
+        all = utils.callIfFunction(handler.placements) -- original
+    end
+    
     local _data = (all.default or all[1] or all).data
     local data =  utils.deepcopy(_data)
 
-    data.x = nil
-    data.y = nil
-    data.width = nil
-    data.height = nil
+    --data.x = nil
+    --data.y = nil
+    --data.width = nil
+    --data.height = nil
 
     if args.allowPreserving then
         for key, value in pairs(_data) do
@@ -80,14 +87,33 @@ end
 
 local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
     return function (room, args)
-        -- 获取新实体（replaceWith）的默认属性模板（不含 x/y/width/height）
+        -- 获取新实体（replaceWith）的默认属性模板（含 x/y/width/height）
         local defaultData = getPlacementData({allowPreserving = false}, handler)
-
-        for _, entity in ipairs(room.entities) do
+        
+        local scan = {}
+        for _, item in ipairs(room.entities) do
+            table.insert(scan, item)
+        end
+        for _, item in ipairs(room.triggers) do
+            table.insert(scan, item)
+        end
+        
+        for _, entity in ipairs(scan) do
             if entity._name == entityName then
                 -- 1. 修改实体类型
                 entity._name = replaceWith
-
+                
+                local ew = 0
+                local eh = 0
+                if not defineAsEntity then
+                    ew = entity.width
+                    eh = entity.height
+                end
+                
+                for key,value in pairs(entity) do
+                    print(key,value)
+                end
+                
                 -- 2. 收集旧实体的所有非敏感属性名（准备后续判断是否要保留）
                 local removeAttrs = {}
                 for key in pairs(entity) do
@@ -108,21 +134,21 @@ local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
                 -- 3. 决定每个属性是否保留 or 被替换
                 --    同时标记哪些属性不应被删除（即要保留）
                 local keepAttrs = {}  -- 记录不应删除的属性名
-
+                
                 -- 遍历新实体的所有默认属性（即可能要设置的属性）
                 for propName, defaultValue in pairs(defaultData) do
                     -- 检查旧实体是否已有该属性
                     local hadSameProp = entity[propName] ~= nil
-
+                    
                     if hadSameProp then
                         -- 判断是否应该用新值替换
                         local shouldReplace = true
-
-                        if args.allowPreserving then
-                            -- 如果开启了 preserve，则看用户是否勾选了 replace_propName
-                            shouldReplace = args[getChangePropName(propName)] ~= false
+                        
+                        if args[getChangePropName(propName)] ~= nil then
+                            -- 看用户是否勾选了 replace_propName
+                            shouldReplace = args[getChangePropName(propName)]
                         end
-
+                        
                         if shouldReplace then
                             -- 替换为新值（用户输入 or 默认值）
                             entity[propName] = args[propName]  -- 注意：这里依赖 args[propName] 已设置
@@ -146,10 +172,17 @@ local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
                         entity[key] = nil
                     end
                 end
+                
+                if not defineAsEntity then
+                    entity.width = ew
+                    entity.height = eh
+                end
             end
         end
     end
 end
+
+local defineAsEntity = false
 
 function script.prerun(args, layer, ctx)
     local entityName = args.type
@@ -158,7 +191,15 @@ function script.prerun(args, layer, ctx)
         replaceWith = entityName
     end
 
-    local entityHandler = entities.registeredEntities[replaceWith]
+    local entityHandler = {}
+    
+    if triggers.registeredTriggers[replaceWith].placements ~= nil then
+        entityHandler = triggers.registeredTriggers[replaceWith]
+        defineAsEntity = false
+    else
+        entityHandler = entities.registeredEntities[replaceWith]
+        defineAsEntity = true
+    end
 
     local placementData = getPlacementData(args, entityHandler)
     local fieldOrder = getFieldOrder(args, entityHandler)
