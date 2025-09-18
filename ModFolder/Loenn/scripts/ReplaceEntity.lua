@@ -21,9 +21,9 @@ local script = {
         allowPreserving = "If enabled, extra settings will be added to allow to leave some properties untouched on affected entities.\nUseful when only changing one property of entities in bulk."
     },
     parameters = {
-        type = "ChroniaHelper/FinalBoostTrigger",
-        replaceWith = "everest/flagTrigger",
-        allowPreserving = true,
+        type = "",
+        replaceWith = "",
+        allowPreserving = false,
     },
     fieldInformation = {
         type = {
