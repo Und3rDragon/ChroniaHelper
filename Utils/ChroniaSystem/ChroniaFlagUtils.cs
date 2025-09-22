@@ -199,5 +199,4 @@ public static class ChroniaFlagUtils
     {
         return invertIndicator? !MaP.session.GetFlag(name) : MaP.session.GetFlag(name);
     }
-
 }

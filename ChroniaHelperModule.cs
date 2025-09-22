@@ -98,7 +98,6 @@ public class ChroniaHelperModule : EverestModule
         BoosterZipper.Load();
         SpriteEntity.Load();
         PlatformLineController.Load();
-        ResetChangedRoomFlagsController.Load();
         AbstractInputController.Load();
         AdvancedSpikes.OnLoad();
 
@@ -179,7 +178,6 @@ public class ChroniaHelperModule : EverestModule
         BoosterZipper.Unload();
         SpriteEntity.Unload();
         PlatformLineController.Unload();
-        ResetChangedRoomFlagsController.Unload();
         AbstractInputController.Unload();
         AdvancedSpikes.OnUnload();
         PolygonCollider.Unload();

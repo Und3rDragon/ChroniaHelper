@@ -142,6 +142,5 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<string, HashSet<Vector4>> Geometry_FreeRectangles = new();
 
     // Changed Room Flag Controller
-    public HashSet<string> increasedFlags = new();
-    public HashSet<string> decreasedFlags = new();
+    public HashSet<string> flagsWhenEnter = new();
 }

@@ -16,6 +16,4 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
     public Dictionary<string, ChroniaFlag> ChroniaFlags = new();
     public Dictionary<string, ChroniaCounter> ChroniaCounters = new();
     public Dictionary<string, ChroniaSlider> ChroniaSliders = new();
-
-    public Dictionary<string, float> Floats = new();
 }
