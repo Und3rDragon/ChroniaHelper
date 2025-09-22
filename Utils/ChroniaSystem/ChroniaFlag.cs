@@ -55,7 +55,7 @@ public class ChroniaFlag
         {
             if (item.Value.Temporary)
             {
-                MaP.session.SetFlag(item.Key, item.Value.DefineResetState());
+                item.Key.SetFlag(item.Value.DefineResetState());
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -72,7 +72,7 @@ public class ChroniaFlag
         {
             if (item.Value.Temporary)
             {
-                self.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                item.Key.SetFlag(item.Value.DefineResetState());
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -82,7 +82,7 @@ public class ChroniaFlag
         {
             if (item.Value.Global)
             {
-                self.Session.SetFlag(item.Key, item.Value.Active);
+                item.Key.SetFlag(item.Value.Active);
             }
         }
     }
@@ -96,7 +96,7 @@ public class ChroniaFlag
         {
             if (item.Value.Temporary)
             {
-                self.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                item.Key.SetFlag(item.Value.DefineResetState());
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -106,7 +106,7 @@ public class ChroniaFlag
         {
             if (item.Value.Global && !item.Value.Temporary)
             {
-                self.Session.SetFlag(item.Key, item.Value.Active);
+                item.Key.SetFlag(item.Value.Active);
             }
         }
     }
@@ -126,14 +126,14 @@ public class ChroniaFlag
                 }
                 else if (item.Value.Timed == 0f)
                 {
-                    self.Session.SetFlag(item.Key, item.Value.DefineResetState());
+                    item.Key.SetFlag(item.Value.DefineResetState());
                     Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                 }
             }
 
             if (item.Value.Force)
             {
-                self.Session.SetFlag(item.Key, item.Value.Active);
+                item.Key.SetFlag(item.Value.Active);
             }
         }
     }
@@ -160,13 +160,13 @@ public class ChroniaFlag
                     }
                     else if (item.Value.Timed == 0f)
                     {
-                        MaP.session.SetFlag(item.Key, item.Value.DefineResetState());
+                        item.Key.SetFlag(item.Value.DefineResetState());
                         Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                     }
 
                     if (item.Value.Force)
                     {
-                        MaP.session.SetFlag(item.Key, item.Value.Active);
+                        item.Key.SetFlag(item.Value.Active);
                     }
                 }
 

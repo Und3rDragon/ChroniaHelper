@@ -73,8 +73,11 @@ public static class ChroniaFlagUtils
     /// <param name="slotName"></param>
     public static void PushFlag(this ChroniaFlag flag, string name)
     {
-        Md.SaveData.ChroniaFlags.Enter(name, flag);
-        MaP.session.SetFlag(name, flag.Active);
+        if (!flag.IsNormalFlag())
+        {
+            Md.SaveData.ChroniaFlags.Enter(name, flag);
+        }
+        name.SetFlag(flag.Active);
         FlagRefresh();
     }
 
@@ -91,39 +94,24 @@ public static class ChroniaFlagUtils
 
     public static void SetFlag(this string name, bool active)
     {
-        //ChroniaFlag flag = name.PullFlag();
-        //flag.Active = active;
-        //flag.PushFlag(name);
-        name.PullFlag().Active = active;
         MaP.session.SetFlag(name, active);
-
-        FlagRefresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global)
     {
-        //ChroniaFlag flag = name.PullFlag();
-        //flag.Global = global;
-        //flag.Active = active;
-        //flag.PushFlag(name);
         name.PullFlag().Active = active;
         name.PullFlag().Global = global;
-        MaP.session.SetFlag(name, active);
+        name.SetFlag(active);
 
         FlagRefresh();
     }
 
     public static void SetFlag(this string name, bool active, bool global, bool temporary)
     {
-        //ChroniaFlag flag = name.PullFlag();
-        //flag.Active = active;
-        //flag.Global = global;
-        //flag.Temporary = temporary;
-        //flag.PushFlag(name);
         name.PullFlag().Active = active;
         name.PullFlag().Global = global;
         name.PullFlag().Temporary = temporary;
-        MaP.session.SetFlag(name, active);
+        name.SetFlag(active);
 
         FlagRefresh();
     }
@@ -162,17 +150,11 @@ public static class ChroniaFlagUtils
 
     public static void SetTimedFlag(this string name, bool basicState, float timer, bool global = false, bool temporary = false)
     {
-        //ChroniaFlag flag = name.PullFlag();
-        //flag.Active = basicState;
-        //flag.Global = global;
-        //flag.Temporary = temporary;
-        //flag.Timed = timer;
-        //flag.PushFlag(name);
         name.PullFlag().Active = basicState;
         name.PullFlag().Global = global;
         name.PullFlag().Temporary = temporary;
         name.PullFlag().Timed = timer;
-        MaP.session.SetFlag(name, basicState);
+        name.SetFlag(basicState);
 
         FlagRefresh();
     }
