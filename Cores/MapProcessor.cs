@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using MonoMod.Utils;
@@ -114,8 +115,8 @@ public static class MapProcessor
             Collidable = true,
             Collider = bgSolidTilesGrid,
         };
-        level.Add(bgModeSolidTiles);
-        level.Add(bgSolidTiles);
+        //level.Add(bgModeSolidTiles);
+        //level.Add(bgSolidTiles);
         level.Session.SetFlag("bg_mode", bgMode);
         level.SolidTiles.Collidable = !bgMode;
     }

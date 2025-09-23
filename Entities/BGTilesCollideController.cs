@@ -25,6 +25,20 @@ public class BGTilesCollideController : Entity
     private string flag, condition;
     private string[] conditions;
     private bool setFlagOnCollide, killPlayer, killWhenNotColliding;
+
+    public override void Added(Scene scene)
+    {
+        MaP.level.Add(MaP.bgSolidTiles);
+        
+        base.Added(scene);
+    }
+
+    public override void Removed(Scene scene)
+    {
+        base.Removed(scene);
+        
+        MaP.level.Remove(MaP.bgSolidTiles);
+    }
     
     public override void Update()
     {
