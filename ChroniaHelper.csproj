@@ -28,6 +28,10 @@
 		<CelesteModReference Include="VivHelper" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<CelesteModReference Include="MaxHelpingHand" />
+	</ItemGroup>
+
     <!--Implement dependencies here in an ItemGroup-->
 
 

@@ -36,4 +36,9 @@ public static class BoolUtils
     {
         return basic = basic ? true : enter;
     }
+    
+    public static bool ParseBool(this string str, bool defaultValue = false)
+    {
+        return str.ToLower() == "true" ? true : (str.ToLower() == "false" ? false : defaultValue);
+    }
 }

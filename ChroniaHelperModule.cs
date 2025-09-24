@@ -47,8 +47,6 @@ public class ChroniaHelperModule : EverestModule
 
     public HookManager HookManager { get; private set; }
 
-    public static SpriteBank spriteBank;
-
     public string ModDirectory
     {
         get => Path.Combine(Path.GetDirectoryName(FakeAssembly.GetFakeEntryAssembly().Location), $"Mods\\{ChroniaHelperModule.Name}");
@@ -203,14 +201,6 @@ public class ChroniaHelperModule : EverestModule
         base.PrepareMapDataProcessors(context);
 
         context.Add<MaxHelpingHandMapDataProcessor>();
-    }
-
-    public override void LoadContent(bool firstLoad)
-    {
-        base.LoadContent(firstLoad);
-
-        //spriteBank = new SpriteBank(GFX.Game, "Graphics/ChroniaHelper/Sprites.xml");
-
     }
 
     // Create Custom ChroniaHelper Menu
