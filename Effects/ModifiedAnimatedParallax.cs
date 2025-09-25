@@ -9,15 +9,28 @@ using Celeste.Mod.MaxHelpingHand.Effects;
 using Celeste.Mod.Meta;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using VivHelper.Entities;
 
 namespace ChroniaHelper.Effects;
 
 [CustomBackdrop("ChroniaHelper/ModifiedAnimatedParallax")]
-public class ModifiedAnimatedParallax : Parallax
+public class ModifiedAnimatedParallax : Backdrop
 {
-    public ModifiedAnimatedParallax(BinaryPacker.Element child, MTexture texture) : base(texture)
+    public ModifiedAnimatedParallax(BinaryPacker.Element child) : base()
     {
+        // default setups
+        Position = new Vector2(child.AttrFloat("x", 0), child.AttrFloat("y", 0));
+        OnlyIn = child.Attr("only", "*").Split(',', StringSplitOptions.TrimEntries).ToHashSet();
+        ExcludeFrom = child.Attr("exclude").Split(',', StringSplitOptions.TrimEntries).ToHashSet();
+        OnlyIfFlag = child.Attr("flag");
+        OnlyIfNotFlag = child.Attr("notflag");
+        Tags = child.Attr("tag").Split(',', StringSplitOptions.TrimEntries).ToHashSet();
+        Scroll = new Vector2(child.AttrFloat("scrollx", 1f), child.AttrFloat("scrolly", 1f));
+        LoopX = child.AttrBool("loopX", false);
+        LoopY = child.AttrBool("loopY", false);
+
         // remove the frame number, much like decals do.
         string texturePath = Regex.Replace(child.Attr("texture"), "\\d+$", string.Empty);
 
@@ -47,37 +60,47 @@ public class ModifiedAnimatedParallax : Parallax
         {
             frameOrder = Calc.ReadCSVIntWithTricks(child.Attr("frames"));
         }
-        
-        texture = frames[frameOrder[0]];
+
+        Texture = frames[frameOrder[0]];
+        Name = Texture.AtlasPath;
         currentFrame = 0;
         currentFrameTimer = 1f / fps;
 
         triggerFlag = child.Attr("triggerFlag", "");
         playOnce = child.AttrBool("playOnce", false);
         resetFlag = child.Attr("resetFlag", "");
-        resetFrame = child.AttrInt("resetFrame", 0);
+        resetFrame = child.AttrInt("resetFrame", 0).GetAbs();
     }
     private List<MTexture> frames;
     private int[] frameOrder;
     private float fps;
     private int currentFrame;
     private float currentFrameTimer;
-
+    private MTexture Texture;
     private string triggerFlag, resetFlag;
     private int resetFrame = 0;
     private bool playOnce;
 
+    public Vector2 CameraOffset = Vector2.Zero;
+    public BlendState BlendState = BlendState.AlphaBlend;
+    public bool DoFadeIn;
+    public float Alpha = 1f;
+    public float fadeIn = 1f;
+
     public override void Update(Scene scene)
     {
         base.Update(scene);
-
+        CameraOffset = MaP.level?.CameraOffset ?? Vector2.Zero;
+        Position += Speed * Engine.DeltaTime;
+        Position += WindMultiplier * (scene as Level).Wind * Engine.DeltaTime;
+        
         if (IsVisible(scene as Level))
         {
             if (!resetFlag.IsNullOrEmpty())
             {
                 if (resetFlag.GetFlag())
                 {
-                    currentFrame = 0;
+                    currentFrame = resetFrame;
                     resetFlag.SetFlag(false);
                 }
             }
@@ -98,6 +121,150 @@ public class ModifiedAnimatedParallax : Parallax
                 }
                 currentFrame %= frameOrder.Length;
                 Texture = frames[frameOrder[currentFrame]];
+            }
+        }
+    }
+
+    // original parallax code
+    public override void Render(Scene scene)
+    {
+        if (Texture.IsPacked)
+        {
+            ParallaxRender(scene);
+            return;
+        }
+        
+        Vector2 vector = ((scene as Level).Camera.Position + CameraOffset).Floor();
+        Vector2 position = (Position - vector * Scroll).Floor();
+        float num = fadeIn * Alpha * FadeAlphaMultiplier;
+        if (FadeX != null)
+        {
+            num *= FadeX.Value(vector.X + 160f);
+        }
+
+        if (FadeY != null)
+        {
+            num *= FadeY.Value(vector.Y + 90f);
+        }
+
+        Color color = Color;
+        if (num < 1f)
+        {
+            color *= num;
+        }
+
+        if (color.A > 1)
+        {
+            if (LoopX)
+            {
+                position.X = (position.X % (float)Texture.Width - (float)Texture.Width) % (float)Texture.Width;
+            }
+
+            if (LoopY)
+            {
+                position.Y = (position.Y % (float)Texture.Height - (float)Texture.Height) % (float)Texture.Height;
+            }
+
+            SpriteEffects spriteEffects = SpriteEffects.None;
+            if (FlipX)
+            {
+                spriteEffects |= SpriteEffects.FlipHorizontally;
+            }
+
+            if (FlipY)
+            {
+                spriteEffects |= SpriteEffects.FlipVertically;
+            }
+
+            int num2 = (LoopX ? ((int)Math.Ceiling(320f - position.X)) : Texture.Width);
+            int num3 = (LoopY ? ((int)Math.Ceiling(180f - position.Y)) : Texture.Height);
+            Rectangle value = new Rectangle(FlipX ? (-num2) : 0, FlipY ? (-num3) : 0, num2, num3);
+            float scaleFix = Texture.ScaleFix;
+            Draw.SpriteBatch.Draw(Texture.Texture.Texture_Safe, position, value, color, 0f, -Texture.DrawOffset / scaleFix, scaleFix, spriteEffects, 0f);
+        }
+    }
+
+    // original parallax code
+    public void ParallaxRender(Scene scene)
+    {
+        Vector2 vector = ((scene as Level).Camera.Position + CameraOffset).Floor();
+        Vector2 vector2 = (Position - vector * Scroll).Floor();
+        float num = fadeIn * Alpha * FadeAlphaMultiplier;
+        if (FadeX != null)
+        {
+            num *= FadeX.Value(vector.X + 160f);
+        }
+
+        if (FadeY != null)
+        {
+            num *= FadeY.Value(vector.Y + 90f);
+        }
+
+        Color color = Color;
+        if (num < 1f)
+        {
+            color *= num;
+        }
+
+        if (color.A <= 1)
+        {
+            return;
+        }
+
+        if (LoopX)
+        {
+            while (vector2.X < 0f)
+            {
+                vector2.X += Texture.Width;
+            }
+
+            while (vector2.X > 0f)
+            {
+                vector2.X -= Texture.Width;
+            }
+        }
+
+        if (LoopY)
+        {
+            while (vector2.Y < 0f)
+            {
+                vector2.Y += Texture.Height;
+            }
+
+            while (vector2.Y > 0f)
+            {
+                vector2.Y -= Texture.Height;
+            }
+        }
+
+        SpriteEffects flip = SpriteEffects.None;
+        if (FlipX && FlipY)
+        {
+            flip = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+        }
+        else if (FlipX)
+        {
+            flip = SpriteEffects.FlipHorizontally;
+        }
+        else if (FlipY)
+        {
+            flip = SpriteEffects.FlipVertically;
+        }
+
+        for (float num2 = vector2.X; num2 < 320f; num2 += (float)Texture.Width)
+        {
+            for (float num3 = vector2.Y; num3 < 180f; num3 += (float)Texture.Height)
+            {
+                Texture.Draw(new Vector2(num2, num3), Vector2.Zero, color, 1f, 0f, flip);
+                if (!LoopY)
+                {
+                    break;
+                }
+            }
+
+            if (!LoopX)
+            {
+                break;
             }
         }
     }

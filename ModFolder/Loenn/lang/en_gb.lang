@@ -3,6 +3,7 @@ mods.ChroniaHelper.name=ChroniaHelper
 style.effects.ChroniaHelper/CustomRain.name=Custom Rain
 style.effects.ChroniaHelper/WindRainFG.name=Wind Rain
 style.effects.ChroniaHelper/WaterSurface.name=Water Surface
+style.effects.ChroniaHelper/ModifiedAnimatedParallax.name=Modified Animated Parallax
 
 # ================= WIPs
 

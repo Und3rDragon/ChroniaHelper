@@ -290,6 +290,31 @@ function vivUtilsMig.GetFilePathWithNoTrailingNumbers(AllowEmpty, atlasName)
     }
 end
 
+function vivUtilsMig.GetFilePathWithTrailingNumbers(AllowEmpty, atlasName)
+    local atlas = atlasName or "Gameplay"
+    return {
+        fieldType = "path",
+        allowEmpty = not not AllowEmpty,
+        allowFiles = true,
+        allowFolders = false,
+        filenameProcessor = function(filename, rawFilename, prefix)
+            local str = vivUtilsMig.trim(filename or "")
+            if str == "" then
+                return ""
+            end
+
+            -- Step 1: 移除路径前缀（如 Atlases/Gameplay/...）
+            local offset = 19 + #atlas
+            local path = str:sub(offset)
+
+            -- Step 2: 移除最后一个 .xxx 扩展名
+            local name = path:match("(.+)%.[^%.]+$") or path
+
+            return name
+        end
+    }
+end
+
 function vivUtilsMig.getDirectoryPathFromFile(AllowEmpty, atlasName)
     local atlas = altasName or "Gameplay"
     return {
