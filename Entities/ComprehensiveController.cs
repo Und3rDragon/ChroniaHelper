@@ -31,7 +31,7 @@ public class ComprehensiveController : Entity
         if (!PUt.getPlayer) { return; }
 
         // Colliding BG Tiles
-        collidingBGTiles.SetFlag(PUt.player.CollideCheck(MaP.bgSolidTiles));
+        collidingBGTiles.SetFlag(PUt.player.CollideCheck(MaP.bgSolidTiles(MaP.level)));
         // Colliding Triggers
         touchingTriggers.SetFlag(PUt.player.CollideCheck<Trigger>());
 

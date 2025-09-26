@@ -21,10 +21,16 @@ public class FinalBoostTrigger : BaseTrigger
         finalCh9Boost = data.Bool("finalCh9Boost", false);
         flash = data.Bool("flash", true);
     }
-    private bool endLevel, finalCh9Boost, flash;
+    private bool endLevel, finalCh9Boost, flash, triggered = false;
 
+    protected override void AddedExecute(Scene scene)
+    {
+        triggered = false;
+    }
     protected override IEnumerator OnEnterRoutine(Player player)
     {
+        triggered = true;
+        
         if (player.Holding != null)
         {
             player.Drop();
@@ -145,7 +151,7 @@ public class FinalBoostTrigger : BaseTrigger
     {
         base.Removed(scene);
 
-        if (endLevel)
+        if (endLevel && triggered)
         {
             level.RegisterAreaComplete();
             level.CompleteArea(true, false, false);

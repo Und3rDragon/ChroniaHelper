@@ -46,9 +46,19 @@ public static class MapProcessor
     public static Dictionary<string, Session.Slider> sliders = new();
 
     //BG Switch references
-    public static Grid bgSolidTilesGrid;
-    public static Solid bgModeSolidTiles;
-    public static Entity bgSolidTiles;
+    public static Grid bgSolidTilesGrid (Level level) => CreateBgtileGrid(level);
+    public static Solid bgModeSolidTiles(Level level) => new Solid(new Vector2((float)level.Bounds.Left, (float)level.Bounds.Top), 1f, 1f, true)
+    {
+        AllowStaticMovers = false,
+        Collidable = bgMode,
+        Collider = ((bgMode || BgEntityInLevel(level)) ? bgSolidTilesGrid(level) : null),
+        EnableAssistModeChecks = false,
+    };
+    public static Entity bgSolidTiles(Level level) => new Entity(new Vector2((float)level.Bounds.Left, (float)level.Bounds.Top))
+    {
+        Collidable = true,
+        Collider = bgSolidTilesGrid(level),
+    };
     public static bool bgMode = false;
     
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
@@ -101,22 +111,8 @@ public static class MapProcessor
         isRespawning = (intro != Player.IntroTypes.Transition);
         orig.Invoke(level, intro, isFromLoader);
         isRespawning = false;
-
-        bgSolidTilesGrid = CreateBgtileGrid(level);
-        bgModeSolidTiles = new Solid(new Vector2((float)level.Bounds.Left, (float)level.Bounds.Top), 1f, 1f, true)
-        {
-            AllowStaticMovers = false,
-            Collidable = bgMode,
-            Collider = ((bgMode || BgEntityInLevel(level)) ? bgSolidTilesGrid : null),
-            EnableAssistModeChecks = false
-        };
-        bgSolidTiles = new Entity(new Vector2((float)level.Bounds.Left, (float)level.Bounds.Top))
-        {
-            Collidable = true,
-            Collider = bgSolidTilesGrid,
-        };
-        //level.Add(bgModeSolidTiles);
-        //level.Add(bgSolidTiles);
+        
+        // level grid and bg switch
         level.Session.SetFlag("bg_mode", bgMode);
         level.SolidTiles.Collidable = !bgMode;
     }

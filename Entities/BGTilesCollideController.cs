@@ -28,16 +28,16 @@ public class BGTilesCollideController : Entity
 
     public override void Added(Scene scene)
     {
-        MaP.level.Add(MaP.bgSolidTiles);
-        
         base.Added(scene);
+        
+        MaP.level.Add(MaP.bgSolidTiles(MaP.level));
     }
 
     public override void Removed(Scene scene)
     {
         base.Removed(scene);
         
-        MaP.level.Remove(MaP.bgSolidTiles);
+        MaP.level.Remove(MaP.bgSolidTiles(MaP.level));
     }
     
     public override void Update()
@@ -53,12 +53,12 @@ public class BGTilesCollideController : Entity
 
         if (!flag.IsNullOrEmpty())
         {
-            flag.SetFlag(PUt.player.CollideCheck(MaP.bgSolidTiles) == setFlagOnCollide);
+            flag.SetFlag(PUt.player.CollideCheck(MaP.bgSolidTiles(MaP.level)) == setFlagOnCollide);
         }
         
         if (killPlayer)
         {
-            if (killWhenNotColliding == !PUt.player.CollideCheck(MaP.bgSolidTiles))
+            if (killWhenNotColliding == !PUt.player.CollideCheck(MaP.bgSolidTiles(MaP.level)))
             {
                 if (PUt.player.IsNotNull()) { PUt.player.Die(Vector2.Zero); }
             }
