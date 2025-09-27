@@ -62,6 +62,7 @@ public class ChroniaHelperModule : EverestModule
     public static bool FrostHelperLoaded;
     public static bool CommunalHelperLoaded { get; private set; }
     public static bool VivHelperLoaded;
+    public static bool MaddieLoaded;
     public static Assembly CommunalHelperAssembly { get; private set; }
     public static Assembly VivHelperAssembly { get; private set; }
 
@@ -98,7 +99,9 @@ public class ChroniaHelperModule : EverestModule
         PlatformLineController.Load();
         AbstractInputController.Load();
         AdvancedSpikes.OnLoad();
-
+        
+        ModifiedAnimatedParallax.Load();
+        
         MapProcessor.Load();
         ChroniaFlag.Onload();
         ChroniaCounter.Onload();
@@ -144,6 +147,14 @@ public class ChroniaHelperModule : EverestModule
             VivHelperAssembly = vivModule.GetType().Assembly;
         }
 
+        // Max Helping Hand judgement
+        EverestModuleMetadata maddieMetadata = new()
+        {
+            Name = "MaxHelpingHand",
+            Version = new Version("1.38.0"),
+        };
+        MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
+
         PolygonCollider.Load();
 
         // migrated FASF2025
@@ -179,6 +190,8 @@ public class ChroniaHelperModule : EverestModule
         AbstractInputController.Unload();
         AdvancedSpikes.OnUnload();
         PolygonCollider.Unload();
+        
+        ModifiedAnimatedParallax.Unload();
 
         MapProcessor.Unload();
         ChroniaFlag.Unload();
