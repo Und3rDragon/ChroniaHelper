@@ -54,7 +54,30 @@ public static class ChroniaSliderUtils
 
     public static void SetSlider(this string name, float value)
     {
-        name.PullSlider().Value = value;
-        name.PullSlider().SetSlider(name);
+        MaP.level.Session.SetSlider(name, value);
+    }
+
+    public static void SetSlider(this ICollection<string> source, float state)
+    {
+        foreach (var item in source)
+        {
+            item.SetSlider(state);
+        }
+    }
+
+    public static void SetSlider<Type>(this ICollection<Type> source, Func<Type, string> translator, float state)
+    {
+        foreach (var item in source)
+        {
+            translator(item).SetSlider(state);
+        }
+    }
+
+    public static void SetSlider<Type>(this ICollection<Type> source, Func<Type, string> createItem, Func<Type, float> getState)
+    {
+        foreach (var entry in source)
+        {
+            createItem(entry).SetSlider(getState(entry));
+        }
     }
 }

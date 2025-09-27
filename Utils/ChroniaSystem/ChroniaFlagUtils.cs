@@ -159,6 +159,30 @@ public static class ChroniaFlagUtils
         FlagRefresh();
     }
 
+    public static void SetFlag(this ICollection<string> source, bool state)
+    {
+        foreach (var item in source)
+        {
+            item.SetFlag(state);
+        }
+    }
+
+    public static void SetFlag<Type>(this ICollection<Type> source, Func<Type, string> translator, bool state)
+    {
+        foreach(var item in source)
+        {
+            translator(item).SetFlag(state);
+        }
+    }
+
+    public static void SetFlag<Type>(this ICollection<Type> source, Func<Type, string> createFlag, Func<Type, bool> getState)
+    {
+        foreach (var entry in source)
+        {
+            createFlag(entry).SetFlag(getState(entry));
+        }
+    }
+
     /// <summary>
     /// Get the state of the required flag
     /// </summary>

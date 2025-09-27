@@ -143,4 +143,9 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // Changed Room Flag Controller
     public HashSet<string> flagsWhenEnter = new();
+
+    // Room Tag
+    public List<string> rooms = new();
+    public List<string> roomTags = new();
+    public bool roomTagLoaded = false;
 }

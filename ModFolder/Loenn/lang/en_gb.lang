@@ -950,3 +950,9 @@ entities.ChroniaHelper/ComprehensiveController.attributes.description.Introducti
 # ================= Final Boost Trigger
 
 triggers.ChroniaHelper/FinalBoostTrigger.placements.name.FinalBoostTrigger=Final Boost Trigger
+
+entities.ChroniaHelper/RoomTagCreator.placements.name.Creator=Room Tag Creator
+entities.ChroniaHelper/RoomTagCreator.placements.description.Creator=Create a connection between level names and room tags, and the room tags can be used for something else
+entities.ChroniaHelper/RoomTagCreator.attributes.description.setRoomTag=A string represents how the tags should be created, \nwhen creating tags, the symbol & will be replaced by level room names \nand symbol # will be replaced by level room index
+
+entities.ChroniaHelper/RoomTagSessionController.placements.name.Controller=Room Tag Session Controller

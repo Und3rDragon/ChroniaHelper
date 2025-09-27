@@ -8,21 +8,32 @@ local depthOptions = require("mods").requireFromPlugin("consts.depthOptions")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/RoomTagController"
+controller.name = "ChroniaHelper/RoomTagSessionController"
 controller.placements = {
     name = "Controller",
     data = {
-        
+        createFlag  = true,
+        setCounter = "",
+        setSlider = "",
     },
 }
 
 controller.fieldInformation = {
-    
+    setCounter = {
+        options = {
+            ["default value"] = 0,
+        },
+    },
+    setSlider = {
+        options = {
+            ["default value"] = 0,
+        },
+    },
 }
 
 controller.sprite = function(room, entity)
 	local sprite = {}
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Flag", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/RoomTag", entity)
 
     table.insert(sprite, iconSprite)
     return sprite

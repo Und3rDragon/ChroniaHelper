@@ -17,7 +17,7 @@ public static class CollectiveUtils
     /// <param name="input"></param>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static bool IsIn<Type>(this string input, List<Type> list)
+    public static bool IsIn<Type>(this string input, ICollection<Type> list)
     {
         if (string.IsNullOrEmpty(input.ToString())) { return false; }
 
@@ -29,7 +29,7 @@ public static class CollectiveUtils
         return false;
     }
 
-    public static bool IsIn<Type>(this List<Type> list, string input)
+    public static bool IsIn<Type>(this ICollection<Type> list, string input)
     {
         if (string.IsNullOrEmpty(input.ToString())) { return false; }
 
@@ -187,6 +187,14 @@ public static class CollectiveUtils
             {
                 list.Add(items[i]);
             }
+        }
+    }
+    
+    public static void Enter<Type, TypeB>(this ICollection<Type> target, ICollection<TypeB> source, Func<TypeB, Type> translator)
+    {
+        foreach(var item in source)
+        {
+            target.Enter(translator(item));
         }
     }
 

@@ -55,7 +55,30 @@ public static class ChroniaCounterUtils
 
     public static void SetCounter(this string name, int value)
     {
-        name.PullCounter().Value = value;
-        name.PullCounter().SetCounter(name);
+        MaP.level.Session.SetCounter(name, value);
+    }
+
+    public static void SetCounter(this ICollection<string> source, int state)
+    {
+        foreach (var item in source)
+        {
+            item.SetCounter(state);
+        }
+    }
+
+    public static void SetCounter<Type>(this ICollection<Type> source, Func<Type, string> translator, int state)
+    {
+        foreach (var item in source)
+        {
+            translator(item).SetCounter(state);
+        }
+    }
+
+    public static void SetCounter<Type>(this ICollection<Type> source, Func<Type, string> createItem, Func<Type, int> getState)
+    {
+        foreach (var entry in source)
+        {
+            createItem(entry).SetCounter(getState(entry));
+        }
     }
 }
