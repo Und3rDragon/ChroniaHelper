@@ -171,8 +171,6 @@ public class SeamlessSpinner : Entity
 
     private string bgImagePath;
 
-    public int depth;
-
     private Color spriteColor, bgSpriteColor;
 
     private bool noBorder;
@@ -219,8 +217,8 @@ public class SeamlessSpinner : Entity
         Add(new PlayerCollider(OnPlayer));
         Add(new HoldableCollider(OnHoldable));
         Add(new LedgeBlocker());
-        depth = data.Int("depth", -8500);
-        Depth = depth;
+        
+        Depth = data.Int("depth", -8500);
         AttachToSolid = data.Bool("attachToSolid");
 
         // 新增变量
@@ -476,7 +474,9 @@ public class SeamlessSpinner : Entity
     private void TrySwitchCoreModeSprite()
     {
         if (!useCoreModeStyle)
+        {
             return;
+        }
 
         // spinner
         string path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeSpritePath : hotCoreModeSpritePath;
@@ -499,8 +499,10 @@ public class SeamlessSpinner : Entity
 
         // loadSprite
         // 因为如果play完了, currentAnimation就变成null, 所以这里也要判断一下
-        if (loadSprite == null || loadSprite.currentAnimation == null)
-            return;
+        if (loadSprite == null || loadSprite.currentAnimation == null){ 
+            return; 
+        }
+        
         path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeTriggerSpritePath : hotCoreModeTriggerSpritePath;
         loadSprite.Path = path;
         loadSprite.currentAnimation.Frames = loadSprite.GetFrames("");
@@ -677,31 +679,7 @@ public class SeamlessSpinner : Entity
             bgsprite.SetAnimationFrame(randomChoice);
         }
     }
-
-
-    private void ClearSprites()
-    {
-        foreach (Sprite item in Components.GetAll<Sprite>())
-        {
-            item.RemoveSelf();
-        }
-
-        if (filler != null)
-        {
-            filler.RemoveSelf();
-        }
-
-        filler = null;
-
-        if (border != null)
-        {
-            border.RemoveSelf();
-        }
-
-        border = null;
-
-        expanded = false;
-    }
+    
 
     private void OnShake(Vector2 pos)
     {
@@ -755,6 +733,8 @@ public class SeamlessSpinner : Entity
             border.RemoveSelf();
         }
 
+        RemoveSelf();
+        
         base.Removed(scene);
     }
 }
