@@ -87,7 +87,7 @@ public class CustomSummitCloud2 : Entity
         base.Added(scene);
 
         int count = 0;
-        foreach (var item in MapProcessor.entities[typeof(CustomSummitCloud2)])
+        foreach (var item in MaP.level.Tracker.GetEntities<CustomSummitCloud2>())
         {
             CustomSummitCloud2 cloud = item as CustomSummitCloud2;
             if (cloud.id == id)

@@ -65,6 +65,7 @@ public static class MapProcessor
     {
         MaP.level = level;
         MaP.session = level.Session;
+        entities = level.Tracker.Entities;
         camOffset = level.CameraOffset;
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
