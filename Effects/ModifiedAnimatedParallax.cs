@@ -13,6 +13,7 @@ using VivHelper.Entities;
 
 namespace ChroniaHelper.Effects;
 
+// The source code is modified from Maddie of Maddie's Helping Hand
 public class ModifiedAnimatedParallax : Parallax
 {
     public static void Load()
@@ -33,24 +34,8 @@ public class ModifiedAnimatedParallax : Parallax
             Logger.Log("ChroniaHelper Modification: MaxHelpingHand/AnimatedParallax", $"Handling animated parallaxes at {cursor.Index} in IL for MapData.ParseBackdrop");
 
             cursor.EmitDelegate<Func<Parallax, Parallax>>(orig => {
-                if (Md.MaddieLoaded)
-                {
-                    if (orig.Texture?.AtlasPath?.StartsWith("bgs/MaxHelpingHand/animatedParallax/") ?? false)
-                    {
-                        // nah, this is an ANIMATED parallax, mind you!
-                        return new AnimatedParallax(orig.Texture);
-                    }
-                    if (orig.Texture?.AtlasPath?.StartsWith("bgs/MaxHelpingHand/hdParallax/") ?? false)
-                    {
-                        // and this is an HD parallax.
-                        return new HdParallax(orig.Texture);
-                    }
-                    if (orig.Texture?.AtlasPath?.StartsWith("bgs/MaxHelpingHand/animatedHdParallax/") ?? false)
-                    {
-                        // ... why not both?
-                        return new AnimatedHdParallax(orig.Texture);
-                    }
-                }
+                // This part is for avoiding conflict with Maddie's Anim Parallax
+                // But the paths are now differentiated
                 if (orig.Texture?.AtlasPath?.StartsWith("bgs/ChroniaHelper/modifiedParallax/") ?? false)
                 {
                     // nah, this is an ANIMATED parallax, mind you!
@@ -69,14 +54,15 @@ public class ModifiedAnimatedParallax : Parallax
         public bool? PlayOnce { get; set; } = null;
         public string ResetFlag { get; set; } = null;
         public int? ResetFrame { get; set; } = null;
+        public string SpeedFlags { get; set; } = null;
     }
-    private string triggerFlag, resetFlag;
+    private string triggerFlag, resetFlag, speedFlags;
     private bool playOnce = false;
     private int resetFrame = 0;
 
-    private readonly List<MTexture> frames;
-    private readonly int[] frameOrder;
-    private readonly float fps;
+    private List<MTexture> frames;
+    private int[] frameOrder;
+    private float fps, orig_fps;
 
     private int currentFrame;
     private float currentFrameTimer;
@@ -104,12 +90,12 @@ public class ModifiedAnimatedParallax : Parallax
         if (fpsCount.Success)
         {
             // we found an FPS count! use it.
-            fps = float.Parse(fpsCount.Groups[1].Value);
+            orig_fps = fps = float.Parse(fpsCount.Groups[1].Value);
         }
         else
         {
             // use 12 FPS by default, like decals.
-            fps = 12f;
+            orig_fps = fps = 12f;
         }
 
         if (Everest.Content.Map.TryGetValue("Graphics/Atlases/Gameplay/" + texturePath + ".meta", out ModAsset metaYaml) && metaYaml.Type == typeof(AssetTypeYaml))
@@ -123,7 +109,7 @@ public class ModifiedAnimatedParallax : Parallax
 
             if (meta.FPS != null)
             {
-                fps = meta.FPS.Value;
+                orig_fps = fps = meta.FPS.Value;
             }
 
             if (meta.Frames != null)
@@ -150,12 +136,34 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 resetFrame = meta.ResetFrame.Value;
             }
+            
+            if(meta.SpeedFlags != null)
+            {
+                speedFlags = meta.SpeedFlags;
+            }
         }
 
         Texture = frames[frameOrder[0]];
         currentFrame = 0;
         currentFrameTimer = 1f / fps;
+
+        // For speed up flags, we set up a flag system for it
+        // Normally the speed-up flags should look like this in game:
+        // "parallaxSpeed_flagName"
+        // And look like this when setting up:
+        // "flagName,1;flagName,2;flagName,3"
+        if (!speedFlags.IsNullOrEmpty())
+        {
+            var _multipliers = speedFlags.ParseSquaredString();
+            for(int i = 0; i < _multipliers.GetLength(0); i++)
+            {
+                if (_multipliers[i].Length < 2) { continue; }
+
+                multipliers.Enter(_multipliers[i][0], _multipliers[i][1].ParseFloat(1f));
+            }
+        }
     }
+    private Dictionary<string, float> multipliers = new();
 
     public override void Update(Scene scene)
     {
@@ -167,7 +175,7 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 if (resetFlag.GetFlag())
                 {
-                    currentFrame = resetFrame;
+                    currentFrame = resetFrame - 1; // For calculation priority
                     resetFlag.SetFlag(false);
                 }
             }
@@ -178,6 +186,19 @@ public class ModifiedAnimatedParallax : Parallax
                     return;
                 }
             }
+            if(multipliers.Count > 0)
+            {
+                foreach(var entry in multipliers)
+                {
+                    if ($"parallaxSpeed_{entry.Key}".GetFlag())
+                    {
+                        fps = orig_fps * multipliers[entry.Key];
+                        currentFrameTimer *= multipliers[entry.Key];
+                        currentFrameTimer.Clamp(Engine.DeltaTime, 2592000f);
+                        $"parallaxSpeed_{entry.Key}".SetFlag(false);
+                    }
+                }
+            }
             currentFrameTimer -= Engine.DeltaTime;
             if (currentFrameTimer < 0f)
             {
@@ -186,6 +207,7 @@ public class ModifiedAnimatedParallax : Parallax
                 {
                     currentFrame++;
                 }
+                currentFrame = currentFrame < 0 ? 0 : currentFrame; // For frame index protection
                 currentFrame %= frameOrder.Length;
                 Texture = frames[frameOrder[currentFrame]];
             }

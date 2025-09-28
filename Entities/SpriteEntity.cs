@@ -11,6 +11,7 @@ using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
 using FMOD;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
+using Monocle;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using YamlDotNet.Core.Tokens;
@@ -34,7 +35,7 @@ public class SpriteEntity : Actor
         Disable_Movement, Kill_Player, Change_Tag,
         //done
         Holdable_Collider, Jump, Variable, Random, MoveTo_Node, Kill_On_Collide,
-        Player_Collider, Repeat_Times
+        Player_Collider, Repeat_Times, Set_Random
         //undone
     }
     private Command execute = Command.None;
@@ -157,6 +158,7 @@ public class SpriteEntity : Actor
     private Vector2 Speed;
 
     private Dictionary<int, int> repeatTimes = new();
+    private Dictionary<string, Vector2> randomNumber = new();
 
     public IEnumerator Execution()
     {
@@ -259,6 +261,18 @@ public class SpriteEntity : Actor
                         index = target - 1;
                     }
                 }
+            }
+
+            else if(execute == Command.Set_Random)
+            {
+                // valid syntax: "set_random, variableName, number1, number2"
+                if (segs < 4) { continue; }
+                string name = commandLine[1];
+                Vector2 range = new(Calc.Min(commandLine[2].ParseFloat(0f), commandLine[3].ParseFloat(1f)),
+                    Calc.Max(commandLine[2].ParseFloat(0f), commandLine[3].ParseFloat(1f)));
+
+                randomNumber.Enter(name, range);
+                Md.Session.se_Variables.Enter(name, Calc.Random.Range(range.X, range.Y));
             }
 
             else if (execute == Command.Play)
@@ -1743,9 +1757,11 @@ public class SpriteEntity : Actor
         else if (input.StartsWith("@"))
         {
             bool exist = ChroniaHelperModule.Session.se_Variables.ContainsKey(input.RemoveFirst("@"));
+            bool isRandom = randomNumber.ContainsKey(input.RemoveFirst("@"));
             if (exist)
             {
-                export = (float)ChroniaHelperModule.Session.se_Variables[input.RemoveFirst("@")];
+                export = isRandom? Calc.Random.Range(randomNumber[input.RemoveFirst("@")].X, randomNumber[input.RemoveFirst("@")].Y) :
+                    (float)ChroniaHelperModule.Session.se_Variables[input.RemoveFirst("@")];
             }
         }
         else

@@ -74,16 +74,6 @@ public static class StringUtils
         return (StringUtils.IsNullOrWhiteSpace(str)) ? defaultValue : str;
     }
 
-    public static int CountSubstring(this string str, string find)
-    {
-        int count = 0;
-        for (int i = 0; (i = str.IndexOf(find, i)) != -1; i++)
-        {
-            count++;
-        }
-        return count;
-    }
-
     public static string SubStringTilEnd(this string str, int start, int end)
     {
         return str.Substring(start, end - start);
@@ -119,7 +109,7 @@ public static class StringUtils
         return charArray;
     }
 
-    public static int Count(string str, string find)
+    public static int Count(this string str, string find)
     {
         int count = 0;
         for (int i = 0; (i = str.IndexOf(find, i)) != -1; i++)
@@ -371,5 +361,17 @@ public static class StringUtils
     {
         float n = 0;
         return float.TryParse(input, out n);
+    }
+    
+    public static string[][] ParseSquaredString(this string source, string firstSeparator = ";", string secondSeparator = ",", StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        string[] _s = source.Split(firstSeparator, split);
+        string[][] r = new string[_s.Length][];
+        for(int i = 0; i < _s.Length; i++)
+        {
+            r[i] = _s[i].Split(secondSeparator, split);
+        }
+        
+        return r;
     }
 }
