@@ -561,7 +561,7 @@ public class SpriteEntity : Actor
                 bool set = false;
                 bool.TryParse(commandLine[1], out set);
 
-                ChroniaHelperModule.Session.se_DisableControl = set;
+                Md.Session.se_DisableControl = set;
             }
 
             else if (execute == Command.Kill_Player)
@@ -603,9 +603,9 @@ public class SpriteEntity : Actor
                 }
                 else if (commandLine[2] == "remove")
                 {
-                    if (ChroniaHelperModule.Session.se_Variables.Keys.Contains(name))
+                    if (Md.Session.se_Variables.Keys.Contains(name))
                     {
-                        ChroniaHelperModule.Session.se_Variables.Remove(name);
+                        Md.Session.se_Variables.Remove(name);
                     }
                 }
             }
@@ -1718,7 +1718,7 @@ public class SpriteEntity : Actor
     #region variables
     private void SafeAddVariables(string name, object value)
     {
-        ChroniaHelperModule.Session.se_Variables.Enter(name, value);
+        Md.Session.se_Variables.Enter(name, value);
     }
 
     private void ConditionalParseInt(string input, int defaultValue, out int export)
@@ -1730,10 +1730,10 @@ public class SpriteEntity : Actor
         }
         else if (input.StartsWith("@"))
         {
-            bool exist = ChroniaHelperModule.Session.se_Variables.ContainsKey(input.RemoveFirst("@"));
+            bool exist = Md.Session.se_Variables.ContainsKey(input.RemoveFirst("@"));
             if (exist)
             {
-                export = (int)ChroniaHelperModule.Session.se_Variables[input.RemoveFirst("@")];
+                export = (int)Md.Session.se_Variables[input.RemoveFirst("@")];
             }
         }
         else
@@ -1756,12 +1756,12 @@ public class SpriteEntity : Actor
         }
         else if (input.StartsWith("@"))
         {
-            bool exist = ChroniaHelperModule.Session.se_Variables.ContainsKey(input.RemoveFirst("@"));
+            bool exist = Md.Session.se_Variables.ContainsKey(input.RemoveFirst("@"));
             bool isRandom = randomNumber.ContainsKey(input.RemoveFirst("@"));
             if (exist)
             {
                 export = isRandom? Calc.Random.Range(randomNumber[input.RemoveFirst("@")].X, randomNumber[input.RemoveFirst("@")].Y) :
-                    (float)ChroniaHelperModule.Session.se_Variables[input.RemoveFirst("@")];
+                    (float)Md.Session.se_Variables[input.RemoveFirst("@")];
             }
         }
         else
@@ -1886,7 +1886,7 @@ public class SpriteEntity : Actor
     #region Disable Control
     private static void breakTheControls(On.Celeste.Player.orig_Update orig, Player self)
     {
-        if (!ChroniaHelperModule.Session.se_DisableControl)
+        if (!Md.Session.se_DisableControl)
         {
             // we don't want to disable controls here!
             orig(self);
@@ -1901,25 +1901,25 @@ public class SpriteEntity : Actor
         int newMoveX = Input.MoveX.Value;
         int newMoveY = Input.MoveY.Value;
 
-        if (ChroniaHelperModule.Session.se_DisableControl)
+        if (Md.Session.se_DisableControl)
         {
             // Y cannot be negative
             newAim.Y = Math.Max(0, newAim.Y);
             newMoveY = Math.Max(0, newMoveY);
         }
-        if (ChroniaHelperModule.Session.se_DisableControl)
+        if (Md.Session.se_DisableControl)
         {
             // Y cannot be positive
             newAim.Y = Math.Min(0, newAim.Y);
             newMoveY = Math.Min(0, newMoveY);
         }
-        if (ChroniaHelperModule.Session.se_DisableControl)
+        if (Md.Session.se_DisableControl)
         {
             // X cannot be negative
             newAim.X = Math.Max(0, newAim.X);
             newMoveX = Math.Max(0, newMoveX);
         }
-        if (ChroniaHelperModule.Session.se_DisableControl)
+        if (Md.Session.se_DisableControl)
         {
             // X cannot be positive
             newAim.X = Math.Min(0, newAim.X);

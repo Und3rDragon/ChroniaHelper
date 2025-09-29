@@ -148,4 +148,7 @@ public class ChroniaHelperSession : EverestModuleSession
     public List<string> rooms = new();
     public List<string> roomTags = new();
     public bool roomTagLoaded = false;
+
+    // Backup Simplified Flag System (Unused)
+    //public HashSet<string> TemporaryFlags = new();
 }

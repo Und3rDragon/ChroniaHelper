@@ -68,7 +68,7 @@ public class ActiveTera : Entity
         {
             orig(self, position, spriteMode);
         }
-        if (ChroniaHelperModule.Session.ActiveTera)
+        if (Md.Session.ActiveTera)
         {
             self.InitTera();
         }
@@ -78,12 +78,12 @@ public class ActiveTera : Entity
         orig(self);
         if (Engine.Scene is not Level level)
             return;
-        if (ChroniaHelperModule.Session.ActiveTera)
+        if (Md.Session.ActiveTera)
         {
             var player = level.Tracker.GetEntity<Player>();
             if (player != null)
             {
-                ChroniaHelperModule.Session.StartTera = player.GetTera(true);
+                Md.Session.StartTera = player.GetTera(true);
             }
         }
     }

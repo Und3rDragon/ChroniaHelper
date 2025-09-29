@@ -77,11 +77,11 @@ public class HookManager
         {
             return;
         }
-        if (!ChroniaHelperModule.Session.HookData.ContainsKey(hookId))
+        if (!Md.Session.HookData.ContainsKey(hookId))
         {
-            ChroniaHelperModule.Session.HookData[hookId] = new HookData();
+            Md.Session.HookData[hookId] = new HookData();
         }
-        ChroniaHelperModule.Session.HookData[hookId].SetValue(value);
+        Md.Session.HookData[hookId].SetValue(value);
     }
 
     private void SetHookDataRoomValue<T>(HookId hookId, T value)
@@ -90,11 +90,11 @@ public class HookManager
         {
             return;
         }
-        if (!ChroniaHelperModule.Session.HookData.ContainsKey(hookId))
+        if (!Md.Session.HookData.ContainsKey(hookId))
         {
-            ChroniaHelperModule.Session.HookData[hookId] = new HookData(this.HookDataDefaultValue[hookId]);
+            Md.Session.HookData[hookId] = new HookData(this.HookDataDefaultValue[hookId]);
         }
-        ChroniaHelperModule.Session.HookData[hookId].roomValue = value;
+        Md.Session.HookData[hookId].roomValue = value;
     }
 
     public T GetHookDataValue<T>(HookId hookId)
@@ -103,7 +103,7 @@ public class HookManager
         {
             return default(T);
         }
-        if ((ObjectUtils.IsNotNull(ChroniaHelperModule.Session)) && (Engine.Scene is not Overworld) && (ChroniaHelperModule.Session.HookData.TryGetValue(hookId, out HookData hookData)))
+        if ((ObjectUtils.IsNotNull(ChroniaHelperModule.Session)) && (Engine.Scene is not Overworld) && (Md.Session.HookData.TryGetValue(hookId, out HookData hookData)))
         {
             if (ObjectUtils.IsNotNull(hookData.roomValue))
             {
@@ -119,13 +119,13 @@ public class HookManager
 
     public void ResetHookDataRoomValue()
     {
-        if (DictionaryUtils.IsNullOrEmpty(ChroniaHelperModule.Session.HookData))
+        if (DictionaryUtils.IsNullOrEmpty(Md.Session.HookData))
         {
             return;
         }
-        foreach (HookId hookId in ChroniaHelperModule.Session.HookData.Keys)
+        foreach (HookId hookId in Md.Session.HookData.Keys)
         {
-            ChroniaHelperModule.Session.HookData[hookId].roomValue = null;
+            Md.Session.HookData[hookId].roomValue = null;
         }
     }
 

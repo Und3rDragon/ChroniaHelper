@@ -16,4 +16,9 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
     public Dictionary<string, ChroniaFlag> ChroniaFlags = new();
     public Dictionary<string, ChroniaCounter> ChroniaCounters = new();
     public Dictionary<string, ChroniaSlider> ChroniaSliders = new();
+
+    // Backup Simplified Flag System (Unused)
+    //public HashSet<string> GlobalFlags = new();
+    //public HashSet<string> ForcedFlags = new();
+    //public Dictionary<string, float> FlagTimers = new();
 }

@@ -104,7 +104,7 @@ public static class MapProcessor
                     flagName = item.Values["flag"].ToString().Trim();
                     SwitchFlagSlot($"ChroniaButtonFlag-{flagName}-ButtonID-{item.ID}", false);
                     
-                    ChroniaHelperModule.Session.flagNames.Enter(flagName);
+                    Md.Session.flagNames.Enter(flagName);
                 }
             }
         }
@@ -153,9 +153,9 @@ public static class MapProcessor
         orig(self);
 
         // Flag Carousel Trigger State reset
-        foreach (var item in ChroniaHelperModule.Session.CarouselState.Keys)
+        foreach (var item in Md.Session.CarouselState.Keys)
         {
-            ChroniaHelperModule.Session.CarouselState[item] = false;
+            Md.Session.CarouselState[item] = false;
         }
     }
 
@@ -179,9 +179,9 @@ public static class MapProcessor
         entities = level.Tracker.Entities;
 
         // Flag Button Flag setup
-        if (ChroniaHelperModule.Session.flagNames != null)
+        if (Md.Session.flagNames != null)
         {
-            foreach (var item in ChroniaHelperModule.Session.flagNames)
+            foreach (var item in Md.Session.flagNames)
             {
                 if (IsSwitchFlagCompleted(item))
                 {
@@ -225,11 +225,11 @@ public static class MapProcessor
     {
         bool b = true;
         int count = 0;
-        foreach (string key in ChroniaHelperModule.Session.switchFlag.Keys)
+        foreach (string key in Md.Session.switchFlag.Keys)
         {
             if (key.StartsWith($"ChroniaButtonFlag-{flagIndex}-ButtonID-"))
             {
-                b = b ? ChroniaHelperModule.Session.switchFlag[key] : false;
+                b = b ? Md.Session.switchFlag[key] : false;
                 count++;
             }
         }
@@ -240,12 +240,12 @@ public static class MapProcessor
     // Creating slots for the flags
     public static void SwitchFlagSlot(string key, bool defaultValue)
     {
-        ChroniaHelperModule.Session.switchFlag.Enter(key, defaultValue);
+        Md.Session.switchFlag.Enter(key, defaultValue);
     }
 
     // Save or overwrite the existing values
     public static void SwitchFlagSave(string key, bool overwrite)
     {
-        ChroniaHelperModule.Session.switchFlag.Enter(key, overwrite);
+        Md.Session.switchFlag.Enter(key, overwrite);
     }
 }

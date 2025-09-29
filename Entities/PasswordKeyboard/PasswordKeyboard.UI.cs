@@ -148,16 +148,16 @@ partial class PasswordKeyboard
         {
             DrawOptionText(inputText, new Vector2(960f, 148f), new Vector2(0.5f, 0.0f), Vector2.One * 3f, false);
 
-            if (ChroniaHelperModule.Session.RemainingUses[config.entityID] > 0)
+            if (Md.Session.RemainingUses[config.entityID] > 0)
             {
-                DrawOptionText($"You have {ChroniaHelperModule.Session.RemainingUses[config.entityID]} chances left",
+                DrawOptionText($"You have {Md.Session.RemainingUses[config.entityID]} chances left",
                     new Vector2(368f, 110f),
                     new Vector2(0.5f, 0.5f),
                     Vector2.One,
                     false
                     );
             }
-            else if(ChroniaHelperModule.Session.RemainingUses[config.entityID] == 0)
+            else if(Md.Session.RemainingUses[config.entityID] == 0)
             {
                 DrawOptionText("Keyboard Lockdown!",
                     new Vector2(368f, 110f),

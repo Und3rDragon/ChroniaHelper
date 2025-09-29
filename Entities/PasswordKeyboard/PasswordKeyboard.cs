@@ -72,7 +72,7 @@ public sealed partial class PasswordKeyboard : Entity
         talkComponent.PlayerMustBeFacing = true;
 
         ui = new(config, OnExit, OnTry);
-        var dic = ChroniaHelperModule.Session.RemainingUses;
+        var dic = Md.Session.RemainingUses;
         if (!dic.ContainsKey(entityID))
             dic[entityID] = config.UseTimes;
 
@@ -100,7 +100,7 @@ public sealed partial class PasswordKeyboard : Entity
                 }
             }
         }
-        ChroniaHelperModule.Session.PasswordQueue.Enter(entityID, 0);
+        Md.Session.PasswordQueue.Enter(entityID, 0);
 
         base.Depth = data.Int("depth", 9000);
     }
@@ -110,7 +110,7 @@ public sealed partial class PasswordKeyboard : Entity
 
     private void OnTalk(Player player)
     {
-        if (ChroniaHelperModule.Session.RemainingUses[entityID] is 0)
+        if (Md.Session.RemainingUses[entityID] is 0)
         {
             talkComponent.Active = false;
             return;
@@ -123,16 +123,16 @@ public sealed partial class PasswordKeyboard : Entity
 
     private bool OnTry(string password)
     {
-        var dic = ChroniaHelperModule.Session.RemainingUses;
+        var dic = Md.Session.RemainingUses;
         bool feedback = true; // when feedback is true, the keyboard will exit after input
         switch (config.Mode)
         {
             case Mode.Exclusive:
-                ChroniaHelperModule.Session.Passwords.Enter(config.IDTag, password);
+                Md.Session.Passwords.Enter(config.IDTag, password);
 
                 feedback = true; break;
             case Mode.Normal:
-                int nextPassword = Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], passwordCount - 1);
+                int nextPassword = Math.Min(Md.Session.PasswordQueue[entityID], passwordCount - 1);
 
                 string passIn = config.CaseSensitive ? password : password.ToLower();
                 string passOut = config.CaseSensitive ? passwords[nextPassword] : passwords[nextPassword].ToLower();
@@ -142,7 +142,7 @@ public sealed partial class PasswordKeyboard : Entity
                     passOut = passwords[nextPassword];
                 }
 
-                string currentFlag = flagList[Math.Min(ChroniaHelperModule.Session.PasswordQueue[entityID], flagCount - 1)];
+                string currentFlag = flagList[Math.Min(Md.Session.PasswordQueue[entityID], flagCount - 1)];
                 if(passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
                 {
                     if (config.Toggle)
@@ -154,7 +154,7 @@ public sealed partial class PasswordKeyboard : Entity
                         ChroniaFlagUtils.SetFlag(currentFlag, true, config.Global);
                     }
 
-                    ChroniaHelperModule.Session.PasswordQueue[entityID]++;
+                    Md.Session.PasswordQueue[entityID]++;
                     feedback = true; break;
                 }
                 

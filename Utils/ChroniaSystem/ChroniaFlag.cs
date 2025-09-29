@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
@@ -55,7 +56,7 @@ public class ChroniaFlag
         {
             if (item.Value.Temporary)
             {
-                item.Key.SetFlag(item.Value.DefineResetState());
+                item.Key.SetFlag(item.Value.ResetTo);
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -72,7 +73,7 @@ public class ChroniaFlag
         {
             if (item.Value.Temporary)
             {
-                item.Key.SetFlag(item.Value.DefineResetState());
+                item.Key.SetFlag(item.Value.ResetTo);
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -96,7 +97,7 @@ public class ChroniaFlag
         {
             if (item.Value.Temporary)
             {
-                item.Key.SetFlag(item.Value.DefineResetState());
+                item.Key.SetFlag(item.Value.ResetTo);
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
         }
@@ -126,7 +127,7 @@ public class ChroniaFlag
                 }
                 else if (item.Value.Timed == 0f)
                 {
-                    item.Key.SetFlag(item.Value.DefineResetState());
+                    item.Key.SetFlag(item.Value.ResetTo);
                     Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                 }
             }
@@ -160,7 +161,7 @@ public class ChroniaFlag
                     }
                     else if (item.Value.Timed == 0f)
                     {
-                        item.Key.SetFlag(item.Value.DefineResetState());
+                        item.Key.SetFlag(item.Value.ResetTo);
                         Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
                     }
 
@@ -188,40 +189,16 @@ public class ChroniaFlag
     public List<Labels> PresetTags { get; set; } = new();
 
     public ChroniaFlag() { }
-
-    public ChroniaFlag(bool active = true, bool global = false, bool temporary = false,
-        float timed = -1f)
-    {
-        Active = active;
-        Global = global;
-        Temporary = temporary;
-        Timed = timed;
-    }
-
-    public bool IsNormalFlag()
-    {
-        return Tags.Count == 0 && PresetTags.Count == 0 && CustomData.Count == 0;
-    }
-
-    public bool IsCustomFlag()
-    {
-        return Global || Temporary || Force || Timed >= 0f;
-    }
-
-    public bool DefineResetState()
-    {
-        switch (DefaultResetState)
-        {
-            case ExpectedResetState.False:
-                return false;
-            case ExpectedResetState.True: 
-                return true;
-            case ExpectedResetState.ReversedActive:
-                return !Active;
-            default:
-                return false;
-        }
-    }
+    
+    public bool IsNormalFlag => Tags.Count == 0 && PresetTags.Count == 0 && CustomData.Count == 0;
+    public bool IsCustomFlag => Global || Temporary || Force || Timed >= 0f;
+    public bool ResetTo => DefaultResetState switch 
+    { 
+        ExpectedResetState.False => false,
+        ExpectedResetState.True => true,
+        ExpectedResetState.ReversedActive => !Active,
+        _ => false,
+    };
 
     public void ChroniaFlagDataCheck()
     {

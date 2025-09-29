@@ -259,8 +259,8 @@ public class ColoredCustomCoreMessage : Entity
         if (dialog.StartsWith("keyboardSync_"))
         {
             string tag = dialog.Remove(0, "keyboardSync_".Length);
-            bool valid = ChroniaHelperModule.Session.Passwords.ContainsKey(tag);
-            text = valid ? ChroniaHelperModule.Session.Passwords[tag] : string.Empty;
+            bool valid = Md.Session.Passwords.ContainsKey(tag);
+            text = valid ? Md.Session.Passwords[tag] : string.Empty;
         }
 
         Vector2 position = ((Level)base.Scene).Camera.Position;

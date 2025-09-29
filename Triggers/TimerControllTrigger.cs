@@ -161,7 +161,7 @@ public class TimerControlTrigger : Trigger
 
         if (recordTime)
         {
-            ChroniaHelperModule.Session.TimeRecords[recordID] = ChroniaHelperModule.Session.Time;
+            Md.Session.TimeRecords[recordID] = Md.Session.Time;
             var entities = Scene.Tracker.GetEntities<TimerRecordStuff>();
             foreach (var entity in entities)
                 if (entity is TimerRecordStuff recordEntity)

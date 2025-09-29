@@ -82,7 +82,7 @@ public class CustomTimer : Entity
 
     public override void Update()
     {
-        if (!ChroniaHelperModule.Session.TimerStarted || ChroniaHelperModule.Session.TimerCompleted)
+        if (!Md.Session.TimerStarted || Md.Session.TimerCompleted)
             return;
 
         if (checkIsValidRun && !isValidRun)
@@ -112,7 +112,7 @@ public class CustomTimer : Entity
         Vector2 vector = position + new Vector2(Width / 2f * 6f, Height * 6f - 12f);
         Vector2 vector2 = position + new Vector2(Width / 2f * 6f, 12f);
 
-        TimeSpan timeSpan = useRawTime ? TimeSpan.FromTicks(ChroniaHelperModule.Session.RawTime) : TimeSpan.FromTicks(ChroniaHelperModule.Session.Time);
+        TimeSpan timeSpan = useRawTime ? TimeSpan.FromTicks(Md.Session.RawTime) : TimeSpan.FromTicks(Md.Session.Time);
         string time = ConvertTimeToString(timeSpan, showMilliseconds, showUnits);
 
         //DrawTimer
@@ -138,13 +138,13 @@ public class CustomTimer : Entity
 
     private static void Level_UpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
     {
-        if (ChroniaHelperModule.Session.TimerCompleted || !ChroniaHelperModule.Session.TimerStarted)
+        if (Md.Session.TimerCompleted || !Md.Session.TimerStarted)
         {
             orig(self);
             return;
         }
 
-        if (self.InCredits || self.Session.Area.ID == 8 || ChroniaHelperModule.Session.TimerPauseed)
+        if (self.InCredits || self.Session.Area.ID == 8 || Md.Session.TimerPauseed)
         {
             orig(self);
             return;
@@ -152,11 +152,11 @@ public class CustomTimer : Entity
 
         orig(self);
 
-        if (!self.Completed && ChroniaHelperModule.Session.TimerStarted)
+        if (!self.Completed && Md.Session.TimerStarted)
         {
             long ticks = CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
-            ChroniaHelperModule.Session.RawTime += ticks;
-            ChroniaHelperModule.Session.Time += ticks;
+            Md.Session.RawTime += ticks;
+            Md.Session.Time += ticks;
         }
                     
         //Console.WriteLine($"{FFFFFFModule.Session.Time} {self.Session.Time} {FFFFFFModule.Session.Time == self.Session.Time} {self.Session.Area.GetSID()}");
@@ -212,7 +212,7 @@ public class CustomTimer : Entity
     private bool IsUnderTimeLimit()
     {
         Level obj = level;
-        return obj != null && ChroniaHelperModule.Session.Time < timeLimit;
+        return obj != null && Md.Session.Time < timeLimit;
     }
 
     private bool CheckIsValidRun()

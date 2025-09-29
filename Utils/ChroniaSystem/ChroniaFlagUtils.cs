@@ -59,8 +59,7 @@ public static class ChroniaFlagUtils
     {
         if (!name.CheckFlag())
         {
-            Md.SaveData.ChroniaFlags.Enter(name, new());
-            //return new();
+            return new();
         }
 
         return Md.SaveData.ChroniaFlags[name];
@@ -73,11 +72,12 @@ public static class ChroniaFlagUtils
     /// <param name="slotName"></param>
     public static void PushFlag(this ChroniaFlag flag, string name)
     {
-        if (!flag.IsNormalFlag())
+        if (!flag.IsNormalFlag || flag.IsCustomFlag)
         {
             Md.SaveData.ChroniaFlags.Enter(name, flag);
         }
         name.SetFlag(flag.Active);
+        
         FlagRefresh();
     }
 
@@ -85,7 +85,7 @@ public static class ChroniaFlagUtils
     {
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
-            if (!item.Value.IsCustomFlag() && item.Value.IsNormalFlag())
+            if (!item.Value.IsCustomFlag && item.Value.IsNormalFlag)
             {
                 Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
@@ -99,21 +99,19 @@ public static class ChroniaFlagUtils
 
     public static void SetFlag(this string name, bool active, bool global)
     {
-        name.PullFlag().Active = active;
-        name.PullFlag().Global = global;
-        name.SetFlag(active);
-
-        FlagRefresh();
+        var flag = name.PullFlag();
+        flag.Active = active;
+        flag.Global = global;
+        flag.PushFlag(name);
     }
 
     public static void SetFlag(this string name, bool active, bool global, bool temporary)
     {
-        name.PullFlag().Active = active;
-        name.PullFlag().Global = global;
-        name.PullFlag().Temporary = temporary;
-        name.SetFlag(active);
-
-        FlagRefresh();
+        var flag = name.PullFlag();
+        flag.Active = active;
+        flag.Global = global;
+        flag.Temporary = temporary;
+        flag.PushFlag(name);
     }
 
     public static void SetFlag(this string[] list, bool active)
@@ -150,13 +148,12 @@ public static class ChroniaFlagUtils
 
     public static void SetTimedFlag(this string name, bool basicState, float timer, bool global = false, bool temporary = false)
     {
-        name.PullFlag().Active = basicState;
-        name.PullFlag().Global = global;
-        name.PullFlag().Temporary = temporary;
-        name.PullFlag().Timed = timer;
-        name.SetFlag(basicState);
-
-        FlagRefresh();
+        var flag = name.PullFlag();
+        flag.Active = basicState;
+        flag.Global = global;
+        flag.Temporary = temporary;
+        flag.Timed = timer;
+        flag.PushFlag(name);
     }
 
     public static void SetFlag(this ICollection<string> source, bool state)
@@ -193,8 +190,7 @@ public static class ChroniaFlagUtils
     {
         if (checkRecordState)
         {
-            return name.CheckFlag() ?
-                Md.SaveData.ChroniaFlags[name].Active : false;
+            return name.PullFlag().Active;
         }
         else
         {

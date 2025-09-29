@@ -14,7 +14,7 @@ public class FlagCarouselManageTrigger : Trigger
 
     public static Dictionary<string, FlagCarouselTrigger> CarouselDictionary
     {
-        get => ChroniaHelperModule.Session.CarouselDictionary;
+        get => Md.Session.CarouselDictionary;
     }
 
     public enum CarouselMode

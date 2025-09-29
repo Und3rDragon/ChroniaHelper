@@ -34,13 +34,13 @@ public class MusicTrigger : BaseTrigger
 
     protected override void OnEnterExecute(Player player)
     {
-        ChroniaHelperModule.Session.musicReset = deathReset;
+        Md.Session.musicReset = deathReset;
         AudioState audioState = base.session.Audio;
 
-        ChroniaHelperModule.Session.oldMusic.musicTrack = audioState.Music.Event;
-        ChroniaHelperModule.Session.oldMusic.musicProgress = audioState.Music.Progress;
-        ChroniaHelperModule.Session.oldMusic.musicParameters = ObjectUtils.DeepCopyList<MEP>(audioState.Music.Parameters);
-        ChroniaHelperModule.Session.musicStored = true;
+        Md.Session.oldMusic.musicTrack = audioState.Music.Event;
+        Md.Session.oldMusic.musicProgress = audioState.Music.Progress;
+        Md.Session.oldMusic.musicParameters = ObjectUtils.DeepCopyList<MEP>(audioState.Music.Parameters);
+        Md.Session.musicStored = true;
 
         if(this.musicTrack != "current")
         {
@@ -61,22 +61,22 @@ public class MusicTrigger : BaseTrigger
     protected override void LeaveReset(Player player)
     {
         AudioState audioState = base.session.Audio;
-        audioState.Music.Event = SFX.EventnameByHandle(ChroniaHelperModule.Session.oldMusic.musicTrack);
-        audioState.Music.Progress = ChroniaHelperModule.Session.oldMusic.musicProgress;
-        audioState.Music.Parameters = ObjectUtils.DeepCopyList<MEP>(ChroniaHelperModule.Session.oldMusic.musicParameters);
+        audioState.Music.Event = SFX.EventnameByHandle(Md.Session.oldMusic.musicTrack);
+        audioState.Music.Progress = Md.Session.oldMusic.musicProgress;
+        audioState.Music.Parameters = ObjectUtils.DeepCopyList<MEP>(Md.Session.oldMusic.musicParameters);
         audioState.Apply();
     }
 
     protected override void AddedExecute(Scene scene)
     {
         AudioState audioState = base.session.Audio;
-        if (!ChroniaHelperModule.Session.musicStored || !ChroniaHelperModule.Session.musicReset)
+        if (!Md.Session.musicStored || !Md.Session.musicReset)
         {
             return;
         }
-        audioState.Music.Event = SFX.EventnameByHandle(ChroniaHelperModule.Session.oldMusic.musicTrack);
-        audioState.Music.Progress = ChroniaHelperModule.Session.oldMusic.musicProgress;
-        audioState.Music.Parameters = ObjectUtils.DeepCopyList<MEP>(ChroniaHelperModule.Session.oldMusic.musicParameters);
+        audioState.Music.Event = SFX.EventnameByHandle(Md.Session.oldMusic.musicTrack);
+        audioState.Music.Progress = Md.Session.oldMusic.musicProgress;
+        audioState.Music.Parameters = ObjectUtils.DeepCopyList<MEP>(Md.Session.oldMusic.musicParameters);
         audioState.Apply();
     }
 
