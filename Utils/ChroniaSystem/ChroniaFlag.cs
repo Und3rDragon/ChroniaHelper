@@ -66,32 +66,14 @@ public class ChroniaFlag
 
     public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
-        orig(self); // Once per reload, not on first enter
-
-        // Remove temporary flags
-        foreach (var item in Md.SaveData.ChroniaFlags)
-        {
-            if (item.Value.Temporary)
-            {
-                item.Key.SetFlag(item.Value.ResetTo);
-                Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
-            }
-        }
-
-        // Apply global flags
-        foreach (var item in Md.SaveData.ChroniaFlags)
-        {
-            if (item.Value.Global)
-            {
-                item.Key.SetFlag(item.Value.Active);
-            }
-        }
+        orig(self); // Once per reload, not on first enter, not on F5
+        // After LoadLevel
     }
 
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
         orig(self, intro, fromLoader); // Once per level load, also reload
-
+        
         // Remove temporary flags
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
@@ -115,21 +97,60 @@ public class ChroniaFlag
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
         orig(self);
+        
+        //foreach (var item in Md.SaveData.ChroniaFlags)
+        //{
+        //    // Non-global stuffs only
+        //    if (item.Value.Global) { continue; }
+            
+        //    if (item.Value.Timed > 0f)
+        //    {
+        //        item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
+        //    }
+        //    else if (item.Value.Timed == 0f)
+        //    {
+        //        item.Key.SetFlag(item.Value.ResetTo);
+        //        Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
+        //    }
+
+        //    if (item.Value.Force)
+        //    {
+        //        item.Key.SetFlag(item.Value.Active);
+        //    }
+        //}
+    }
+
+    public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
+    {
+        orig(self);
+        
+        if (Md.SaveData.IsNull()) { return; }
+
+        HashSet<string> toBeRemoved = new();
 
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
-            // Non-global stuffs only
-            if (!item.Value.Global)
+            // Refreshing
+            if(item.Value.IsNormalFlag && !item.Value.IsCustomFlag)
             {
-                if (item.Value.Timed > 0f)
-                {
-                    item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
-                }
-                else if (item.Value.Timed == 0f)
-                {
-                    item.Key.SetFlag(item.Value.ResetTo);
-                    Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
-                }
+                toBeRemoved.Enter(item.Key);
+                continue;
+            }
+            
+            // Security Check
+            item.Value.ChroniaFlagDataCheck();
+
+            // Global stuffs only
+            if (!item.Value.Global && !(self is Level)) { continue; }
+            
+            if (item.Value.Timed > 0f)
+            {
+                item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
+            }
+            else if (item.Value.Timed == 0f)
+            {
+                item.Key.SetFlag(item.Value.ResetTo);
+                Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
             }
 
             if (item.Value.Force)
@@ -137,43 +158,35 @@ public class ChroniaFlag
                 item.Key.SetFlag(item.Value.Active);
             }
         }
-    }
-
-    public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
-    {
-        orig(self);
-
-        if (Md.SaveData.IsNotNull())
+        
+        foreach(var item in toBeRemoved)
         {
-            ChroniaFlagUtils.FlagRefresh();
-
-            foreach (var item in Md.SaveData.ChroniaFlags)
-            {
-                // Security Check
-                item.Value.ChroniaFlagDataCheck();
-
-                // Global stuffs only
-                if (item.Value.Global)
-                {
-                    if (item.Value.Timed > 0f)
-                    {
-                        item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
-                    }
-                    else if (item.Value.Timed == 0f)
-                    {
-                        item.Key.SetFlag(item.Value.ResetTo);
-                        Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
-                    }
-
-                    if (item.Value.Force)
-                    {
-                        item.Key.SetFlag(item.Value.Active);
-                    }
-                }
-
-                //Log.Info(item.Key, item.Value.Active, item.Value.Global, item.Value.Temporary);
-            }
+            Md.SaveData.ChroniaFlags.SafeRemove(item);
         }
+
+        //foreach (var item in Md.SaveData.ChroniaFlags)
+        //{
+        //    // Security Check
+        //    item.Value.ChroniaFlagDataCheck();
+
+        //    // Global stuffs only
+        //    if (!item.Value.Global) { continue; }
+
+        //    if (item.Value.Timed > 0f)
+        //    {
+        //        item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
+        //    }
+        //    else if (item.Value.Timed == 0f)
+        //    {
+        //        item.Key.SetFlag(item.Value.ResetTo);
+        //        Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
+        //    }
+
+        //    if (item.Value.Force)
+        //    {
+        //        item.Key.SetFlag(item.Value.Active);
+        //    }
+        //}
     }
     
     public bool Active { get; set; } = false;
