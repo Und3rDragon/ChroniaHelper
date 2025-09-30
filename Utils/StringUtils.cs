@@ -374,4 +374,57 @@ public static class StringUtils
         
         return r;
     }
+    
+    public static Dictionary<string, string> SquareStringToDictionary(this string[][] enter, bool defaultBehaviour = true, int indexStringIndex = 0)
+    {
+        Dictionary<string, string> s = new();
+        
+        foreach(var item in enter)
+        {
+            if (defaultBehaviour)
+            {
+                if (item.Length < 1) { continue; }
+
+                if (item.Length == 1) { s.Enter(item[0], string.Empty); continue; }
+
+                s.Enter(item[0], item[1]);
+            }
+            else
+            {
+                if (item.Length < indexStringIndex + 1) { continue; }
+
+                string indexString, valueString;
+                indexString = item[0];
+
+                if (item.Length == indexStringIndex + 1)
+                {
+                    for(int i = 1; i < item.Length; i++)
+                    {
+                        indexString += item[i];
+                    }
+
+                    s.Enter(indexString, string.Empty);
+
+                    continue;
+                }
+
+                for (int i = 1; i <= indexStringIndex; i++)
+                {
+                    indexString += item[i];
+                }
+
+                valueString = item[indexStringIndex + 1];
+                
+                for(int i = indexStringIndex + 2; i < item.Length; i++)
+                {
+                    valueString += item[i];
+                }
+
+                s.Enter(indexString, valueString);
+            }
+        }
+
+        return s;
+    }
+
 }

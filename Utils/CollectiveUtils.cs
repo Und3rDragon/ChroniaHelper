@@ -341,6 +341,55 @@ public static class CollectiveUtils
     }
 
     /// <summary>
+    /// 将集合中的每个元素通过转换函数映射为新类型的元素，并返回结果集合。
+    /// </summary>
+    /// <typeparam name="T1">源元素类型</typeparam>
+    /// <typeparam name="T2">目标元素类型</typeparam>
+    /// <param name="source">源集合，不可为 null</param>
+    /// <param name="transform">转换函数，不可为 null</param>
+    /// <returns>包含转换后元素的新 List&lt;T2&gt;</returns>
+    /// <exception cref="ArgumentNullException">当 source 或 transform 为 null 时抛出</exception>
+    public static ICollection<T2> ReplaceCollectionElements<T1, T2>(
+        this ICollection<T1> source,
+        Func<T1, T2> transform)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (transform == null) throw new ArgumentNullException(nameof(transform));
+
+        var result = new List<T2>(source.Count); // 预分配容量，提升性能
+        foreach (var item in source)
+        {
+            result.Add(transform(item));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 使用指定的集合类型进行转换。
+    /// eg. hashSet = list.ReplaceCollection(x => x * 2, capacity => new HashSet<int>());
+    /// </summary>
+    public static TCollection ReplaceCollection<T1, T2, TCollection>(
+        this ICollection<T1> source,
+        Func<T1, T2> transform,
+        Func<int, TCollection> collectionFactory)
+        where TCollection : ICollection<T2>
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (transform == null) throw new ArgumentNullException(nameof(transform));
+        if (collectionFactory == null) throw new ArgumentNullException(nameof(collectionFactory));
+
+        var result = collectionFactory(source.Count);
+        foreach (var item in source)
+        {
+            result.Add(transform(item));
+        }
+
+        return result;
+    }
+    
+
+    /// <summary>
     /// 对集合中的每个元素执行指定操作，并传递索引
     /// </summary>
     /// <typeparam name="T">集合元素类型</typeparam>

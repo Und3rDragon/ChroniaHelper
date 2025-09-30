@@ -956,3 +956,7 @@ entities.ChroniaHelper/RoomTagCreator.placements.description.Creator=Create a co
 entities.ChroniaHelper/RoomTagCreator.attributes.description.setRoomTag=A string represents how the tags should be created, \nwhen creating tags, the symbol & will be replaced by level room names \nand symbol # will be replaced by level room index
 
 entities.ChroniaHelper/RoomTagSessionController.placements.name.Controller=Room Tag Session Controller
+
+# ================= Chronia Flag Trigger
+
+triggers.ChroniaHelper/ChroniaFlagTrigger.placements.name.FlagTrigger=Chronia Flag Trigger (Debug)

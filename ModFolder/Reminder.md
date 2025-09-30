@@ -4,5 +4,3 @@ WiP:
 ChroniaHelper/FinalBoostTrigger
 ChroniaHelper/ComprehensiveController
 ChroniaHelper/BGTileCollideController
-
-ChroniaHelper/ModifiedAnimatedParallax
