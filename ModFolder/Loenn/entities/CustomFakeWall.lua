@@ -22,10 +22,7 @@ fakeWall.placements = {
 fakeWall.sprite = fakeTilesHelper.getEntitySpriteFunction("tiletype", true, "tilesFg", {1.0, 1.0, 1.0, 0.7})
 fakeWall.fieldInformation = function(entity)
     local orig = fakeTilesHelper.getFieldInformation("tiletype")(entity)
-    orig["Depth"] ={
-        fieldType = "integer",
-        options = require("mods").requireFromPlugin("helpers.field_options").depths
-    }
+    orig["depth"] = require("mods").requireFromPlugin("helpers.field_options").depths
     orig['playReveal'] = {
         fieldType = "string",
         options = {"Never","NotOnTransition","Always"},
