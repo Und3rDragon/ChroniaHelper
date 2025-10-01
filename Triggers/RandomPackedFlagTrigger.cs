@@ -20,13 +20,10 @@ public class RandomPackedFlagTrigger : BaseTrigger
     {
         label = e.Attr("label");
         onlyOnce = e.Bool("onlyOnce", false);
-
-        randomSeed = e.ID;
     }
     private string label;
     private HashSet<string> targets;
     private string[] idle;
-    private int randomSeed;
 
     protected override void AddedExecute(Scene scene)
     {
@@ -48,8 +45,9 @@ public class RandomPackedFlagTrigger : BaseTrigger
 
     protected override void OnEnterExecute(Player player)
     {
-        randomSeed++;
-        Random random = new(randomSeed);
+        if (targets.IsNull() || targets.Count == 0) { return; }
+        
+        Random random = new(DateTime.Now.Day * 1000000 + DateTime.Now.Hour * 10000 + DateTime.Now.Minute * 100 + DateTime.Now.Second);
         
         idle = new string[targets.Count];
         int count = 0;

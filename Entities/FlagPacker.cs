@@ -30,44 +30,41 @@ public class FlagPacker : Entity
 
         foreach (var flag in flags)
         {
-            f = flag.PullFlag();
-
             if (flag.StartsWith('!'))
             {
                 // temporary flag
                 string name = flag.RemoveFirst("!");
+                f = name.PullFlag();
 
+                f.Global = false;
                 f.Temporary = true;
-                f.PresetTags.Enter(Labels.Packed);
+                f.PresetTags.Create(Labels.Packed);
                 f.CustomData.Enter("packed_label", label);
-                if (!f.CustomData.ContainsKey("packed_triggered"))
-                {
-                    f.CustomData.Add("packed_triggered", "false");
-                }
+                f.CustomData.Create("packed_triggered", "false");
                 f.PushFlag(name);
             }
             else if (flag.StartsWith('*'))
             {
                 // global flag
                 string name = flag.RemoveFirst("*");
+                f = name.PullFlag();
 
                 f.Global = true;
-                f.PresetTags.Enter(Labels.Packed);
+                f.Temporary = false;
+                f.PresetTags.Create(Labels.Packed);
                 f.CustomData.Enter("packed_label", label);
-                if (!f.CustomData.ContainsKey("packed_triggered"))
-                {
-                    f.CustomData.Add("packed_triggered", "false");
-                }
+                f.CustomData.Create("packed_triggered", "false");
                 f.PushFlag(name);
             }
             else
             {
-                f.PresetTags.Enter(Labels.Packed);
+                f = flag.PullFlag();
+                
+                f.Global = false;
+                f.Temporary = false;
+                f.PresetTags.Create(Labels.Packed);
                 f.CustomData.Enter("packed_label", label);
-                if (!f.CustomData.ContainsKey("packed_triggered"))
-                {
-                    f.CustomData.Add("packed_triggered", "false");
-                }
+                f.CustomData.Create("packed_triggered", "false");
                 f.PushFlag(flag);
             }
         }

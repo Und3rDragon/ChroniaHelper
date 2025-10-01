@@ -66,6 +66,52 @@ public static class ChroniaFlagUtils
         }
     }
 
+    public static void FlagRefresh()
+    {
+        HashSet<string> removing = new();
+
+        foreach (var item in Md.SaveData.ChroniaFlags)
+        {
+            if (!item.Value.HasCustomData && !item.Value.HasCustomState)
+            {
+                removing.Add(item.Key);
+            }
+            
+            if((item.Key.GetSensitivity() & Sens.AllowNoRegister) != 0)
+            {
+                removing.Add(item.Key);
+            }
+        }
+
+        removing.EachDo((i) =>
+        {
+            Md.SaveData.ChroniaFlags.SafeRemove(i);
+        });
+    }
+
+    public static void SetFlag(this string name, bool active)
+    {
+        if ((name.GetSensitivity() & Sens.AllowNoSetFlag) != 0) { return; }
+        MaP.session.SetFlag(name, active);
+    }
+
+    public static void SetFlag(this string name, bool active, bool global)
+    {
+        var flag = name.PullFlag();
+        flag.Active = active;
+        flag.Global = global;
+        flag.PushFlag(name);
+    }
+
+    public static void SetFlag(this string name, bool active, bool global, bool temporary)
+    {
+        var flag = name.PullFlag();
+        flag.Active = active;
+        flag.Global = global;
+        flag.ResetOnDeath = temporary;
+        flag.PushFlag(name);
+    }
+
     public static void SetFlag(this string[] list, bool active)
     {
         foreach(var item in list)

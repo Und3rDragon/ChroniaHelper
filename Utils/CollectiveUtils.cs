@@ -91,11 +91,19 @@ public static class CollectiveUtils
         return false;
     }
 
-    public static void Create<A, B>(this Dictionary<A,B> dic, A key, B value)
+    public static void Create<A, B>(this IDictionary<A,B> dic, A key, B value)
     {
         if (!dic.ContainsKey(key))
         {
             dic.Add(key, value);
+        }
+    }
+
+    public static void Create<T>(this ICollection<T> list, T value)
+    {
+        if (!list.Contains(value))
+        {
+            list.Add(value);
         }
     }
 
