@@ -1167,3 +1167,10 @@ triggers.ChroniaHelper/ConditionDelayTrigger.placements.name.trigger=Condition D
 # ================= Operation Codes Listener
 
 entities.ChroniaHelper/OperationCodesListener.placements.name.controller=Operation Codes Listener
+
+#================== SSC Random Packed Flag
+
+triggers.ChroniaHelper/RandomPackedFlagTrigger.placements.name.trigger=Random Packed Flag Trigger
+
+entities.ChroniaHelper/FlagPacker.placements.name.controller=Flag Packer
+entities.ChroniaHelper/FlagPacker.attributes.description.flags=Flags start with "!" are temporary flags, "*" are global flags

@@ -4,32 +4,32 @@ local drawableSprite = require("structs.drawable_sprite")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/BGTileCollideController"
+controller.name = "ChroniaHelper/FlagPacker"
 
 controller.placements = {
-    {
-        name = "controller",
-        data = {
-            conditionFlags = "",
-            flag = "ChroniaHelper_PlayerCollidingBGTiles",
-            indicatesColliding = true,
-            killPlayer = false,
-            killWhenNotColliding = true,
-        }
-    }
+    name = "controller",
+    data = {
+        flags = "flagA,!flagB,*flagC",
+        label = "pack",
+    },
+}
+
+controller.ignoredFields = {
+    "_x", "_y", "x", "y"
 }
 
 controller.fieldInformation = 
 {
-    flag = {
-        allowsEmpty = true,
+    flags = {
+        fieldType = "list",
+        minimumElements = 1,
     },
 }
 
 function controller.sprite(room, entity)
     local sprite = {}
     local rect = drawableRectangle.fromRectangle("fill", entity.x, entity.y, 16, 16, {0.0, 0.0, 0.0})
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/BGTilesCollideController", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/FlagPacker", entity)
 
     table.insert(sprite, iconSprite)
     return sprite

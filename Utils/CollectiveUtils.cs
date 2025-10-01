@@ -235,6 +235,21 @@ public static class CollectiveUtils
         }
     }
 
+    public static void Enter<TypeA, MidType, TypeB>(this IDictionary<TypeA, MidType> target, TypeA key, params TypeB[] items)
+        where MidType : ICollection<TypeB>, new()
+    {
+        if (key.IsNull() || items.IsNull() || items.Length == 0) { return; }
+        
+        if (target.ContainsKey(key))
+        {
+            target[key].Enter(items);
+        }
+        else
+        {;
+            target.Enter(key, new());
+        }
+    }
+
     public static bool ContainsKey<T>(
     this Dictionary<string, T> dic,
     string key,

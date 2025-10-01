@@ -126,4 +126,25 @@ public static class ChroniaFlagUtils
     {
         return invertIndicator? !MaP.level.Session.GetFlag(name) : MaP.level.Session.GetFlag(name);
     }
+    
+    public static void LogChroniaFlags()
+    {
+        Log.Error("=====================================");
+        foreach (var item in Md.SaveData.ChroniaFlags)
+        {
+            Log.Info($"==============flag: ", item.Key, "===================");
+            Log.Info($"active: {item.Value.Active}");
+            Log.Info($"global: {item.Value.Global}");
+            Log.Info($"temporary: {item.Value.Temporary}");
+            Log.Info($"force: {item.Value.Force}");
+            Log.Info($"timer: {item.Value.Timed}");
+            Log.Info($"resetTo: {item.Value.ResetTo}");
+            Log.Info("tags:");
+            Log.Each(item.Value.Tags);
+            Log.Info("custom data: ");
+            Log.Each(item.Value.CustomData);
+            Log.Info("preset tags: ");
+            Log.Each(item.Value.PresetTags);
+        }
+    }
 }
