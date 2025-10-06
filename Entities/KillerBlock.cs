@@ -2,6 +2,8 @@
 using System.Collections;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
+using VivHelper.Entities;
 
 namespace ChroniaHelper.Entities;
 
@@ -94,6 +96,9 @@ public class KillerBlock : BaseSolid
         dashReboundRefill = data.Bool("dashReboundRefill", false);
         OnDashCollide = OnDashed;
 
+        OnCollide = (dir) => OnTouch(dir);
+
+        Add(playerCollider = new PlayerCollider(PlayerCollide, new Hitbox(Width + 4f, Height + 4f, -2f, -2f)));
     }
 
     public KillerBlock(EntityData data, Vector2 offset) : this(data.Position + offset, data)
@@ -386,6 +391,14 @@ public class KillerBlock : BaseSolid
     {
         base.Update();
         base.TimedKill();
+
+        if(PUt.TryGetAlivePlayer(out Player player))
+        {
+            if (!playerCollider.Check(player))
+            {
+                onTouchEffective = false;
+            } 
+        }
     }
 
     public override void Render()

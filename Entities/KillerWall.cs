@@ -1,6 +1,7 @@
 ﻿using System;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
