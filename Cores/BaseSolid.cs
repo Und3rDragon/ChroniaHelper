@@ -257,8 +257,7 @@ public class BaseSolid : Solid
         player.Collider = collider;
         return true;
     }
-
-    public bool springBlockOverride;
+    
     public override void Update()
     {
         BeforeUpdate();

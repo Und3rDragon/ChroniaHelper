@@ -103,6 +103,7 @@ public class KillerBlock : BaseSolid
     {
     }
 
+    public bool springBlockOverride;
     // On dashed
     public DashCollisionResults OnDashed(Player player, Vector2 dir)
     {

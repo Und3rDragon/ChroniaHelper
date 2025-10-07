@@ -58,6 +58,7 @@ public class KillerWall : BaseSolid
     {
     }
 
+    public bool springBlockOverride;
     // On dashed
     public DashCollisionResults OnDashed(Player player, Vector2 dir)
     {
