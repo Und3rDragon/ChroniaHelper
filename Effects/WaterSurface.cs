@@ -53,7 +53,8 @@ public class WaterSurface : Backdrop
              child.AttrBool("hasFarLine", false), child.AttrBool("hasCloseLine", true),
              child.Attr("surfaceColor", "ffffff"), child.Attr("farLineColor", "ffffff"),
              child.Attr("nearLineColor", "ffffff"), child.AttrFloat("surfaceAlpha", 0.1f),
-             child.AttrFloat("farLineAlpha", 1f), child.AttrFloat("nearLineAlpha", 1f)
+             child.AttrFloat("farLineAlpha", 1f), child.AttrFloat("nearLineAlpha", 1f),
+             child.Attr("surfaceColorBack", "ffffff"), child.AttrFloat("surfaceBackAlpha", 0.1f)
              )
     { }
 
@@ -62,15 +63,16 @@ public class WaterSurface : Backdrop
 
     private bool farLine, closeLine;
 
-    private Color surfaceColor, farLineColor, nearLineColor;
-    private float surfaceAlpha, farLineAlpha, nearLineAlpha;
+    private Color surfaceColor, surfaceColorBack, farLineColor, nearLineColor;
+    private float surfaceAlpha, surfaceBackAlpha, farLineAlpha, nearLineAlpha;
     public WaterSurface(Vector2 scroll1, Vector2 scroll2, Vector2 pos1, Vector2 pos2, 
         int count, string colors, float alpha1, float alpha2,
         float particleScale1, float particleScale2,
         float waterspeed1, float waterspeed2, float extX, float extY,
         bool farLine, bool closeLine,
         string surfaceColor, string farLineColor, string nearLineColor,
-        float surfaceAlpha, float farLineAlpha, float nearLineAlpha
+        float surfaceAlpha, float farLineAlpha, float nearLineAlpha,
+        string surfaceColorBack, float surfaceBackAlpha
         )
     {
         //this.Scroll = Vector2.Zero;
@@ -87,11 +89,13 @@ public class WaterSurface : Backdrop
         this.alpha1 = alpha1; this.alpha2 = alpha2;
         ps1 = particleScale1; ps2 = particleScale2;
         this.surfaceAlpha = surfaceAlpha;
+        this.surfaceBackAlpha = surfaceBackAlpha;
         this.farLineAlpha = farLineAlpha;
         this.nearLineAlpha = nearLineAlpha;
         this.surfaceColor = Calc.HexToColor(surfaceColor);
         this.farLineColor = Calc.HexToColor(farLineColor);
         this.nearLineColor = Calc.HexToColor(nearLineColor);
+        this.surfaceColorBack = Calc.HexToColor(surfaceColorBack);
 
         // Setting up particles
         this.count = count;
@@ -155,7 +159,7 @@ public class WaterSurface : Backdrop
     {
         Draw.Rect(0f, Calc.Min(renderY1, renderY2),
                 320f + extX, (renderY1 - renderY2).GetAbs(),
-                surfaceColor * surfaceAlpha);
+                renderY1 > renderY2 ? surfaceColor * surfaceAlpha : surfaceColorBack * surfaceBackAlpha);
         if (farLine)
         {
             Draw.Line(0f, renderY1, 320f + extX, renderY1, farLineColor * farLineAlpha);
