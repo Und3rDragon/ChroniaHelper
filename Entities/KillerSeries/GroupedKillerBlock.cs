@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace ChroniaHelper.Entities;
 
 [Tracked(false)]
-[CustomEntity("ChroniaHelper/GroupedKillerBlock")]
+[CustomEntity("ChroniaHelper/GroupedKillerBlock", "ChroniaHelper/SpringBlockGrouped")]
 class GroupedKillerBlock : BaseSolid
 {
     public static ParticleType P_FallDustA = Celeste.FallingBlock.P_FallDustA;

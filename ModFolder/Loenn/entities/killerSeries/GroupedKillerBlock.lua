@@ -23,7 +23,7 @@ return {
             fallDelay = 0.4,
             dashRebound = false,
             dashReboundRefill = false,
-            springBlockOverride = false,
+            --springBlockOverride = false,
         }
     },
     fieldInformation =

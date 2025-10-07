@@ -6,7 +6,7 @@ using ChroniaHelper.Utils;
 namespace ChroniaHelper.Entities;
 
 [Tracked(false)]
-[CustomEntity("ChroniaHelper/KillerWall")]
+[CustomEntity("ChroniaHelper/KillerWall", "ChroniaHelper/SpringBlockWall")]
 public class KillerWall : BaseSolid
 {
     public enum Modes

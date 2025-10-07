@@ -21,10 +21,9 @@ return {
             standFall = true,
             canTrigger = true,
             fallDelay = 0.4,
-            --movement = "0, 130, 500, 160",
             dashRebound = false,
             dashReboundRefill = false,
-            springBlockOverride = false,
+            --springBlockOverride = false,
         }
     },
     fieldInformation =

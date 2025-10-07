@@ -2,10 +2,10 @@ local fakeTilesHelper = require("helpers.fake_tiles")
 local cons = require("mods").requireFromPlugin("utils.constants")
 
 return {
-    name = "ChroniaHelper/KillerWall",
+    name = "ChroniaHelper/SpringBlockWall",
     placements =
     {
-        name = "KillerWall",
+        name = "SpringBlockWall",
         data =
         {
             width = 8,
@@ -16,9 +16,9 @@ return {
             leftKillTimer = - 1,
             rightKillTimer = - 1,
             depth = -13000,
-            dashRebound = false,
-            dashReboundRefill = false,
-            --springBlockOverride = false,
+            --dashRebound = false,
+            --dashReboundRefill = false,
+            springBlockOverride = true,
         }
     },
     fieldInformation =

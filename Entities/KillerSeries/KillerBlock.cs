@@ -8,7 +8,7 @@ using VivHelper.Entities;
 namespace ChroniaHelper.Entities;
 
 [Tracked(false)]
-[CustomEntity("ChroniaHelper/KillerBlock")]
+[CustomEntity("ChroniaHelper/KillerBlock", "ChroniaHelper/SpringBlock")]
 public class KillerBlock : BaseSolid
 {
 
