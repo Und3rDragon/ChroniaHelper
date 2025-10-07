@@ -2,10 +2,10 @@ local fakeTilesHelper = require("helpers.fake_tiles")
 local cons = require("mods").requireFromPlugin("utils.constants")
 
 return {
-    name = "ChroniaHelper/KillerBlock",
+    name = "ChroniaHelper/GroupedKillerBlock",
     placements =
     {
-        name = "KillerBlock",
+        name = "GroupedKillerBlock",
         data =
         {
             width = 8,
@@ -21,9 +21,9 @@ return {
             standFall = true,
             canTrigger = true,
             fallDelay = 0.4,
-            --movement = "0, 130, 500, 160",
             dashRebound = false,
             dashReboundRefill = false,
+            springBlockOverride = false,
         }
     },
     fieldInformation =
@@ -69,16 +69,13 @@ return {
         "bottomKillTimer",
         "leftKillTimer",
         "rightKillTimer",
-        "behind",
         "fallDelay",
         -- bools
+        "behind",
         "finalBoss",
+        "canTrigger",
         "climbFall",
         "standFall",
-        "canTrigger",
-        "dashRebound",
-        "dashReboundRefill",
-
     },
     sprite = fakeTilesHelper.getEntitySpriteFunction("tiletype","behind"),
     depth = function(room,entity) return entity.depth or -9000 end

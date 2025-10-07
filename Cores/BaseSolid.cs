@@ -2,6 +2,7 @@
 using Celeste.Mod.Entities;
 using Celeste.Mod;
 using Monocle;
+using System.Xml.Serialization;
 
 
 namespace ChroniaHelper.Cores;
@@ -14,6 +15,7 @@ public class BaseSolid : Solid
         
     }
     public PlayerCollider playerCollider;
+    public int playerTouch;
 
     public override void Added(Scene scene)
     {
@@ -56,10 +58,10 @@ public class BaseSolid : Solid
 
     public void TimedKill()
     {
-        int touch = GetPlayerTouch();
-        if (touch > 0)
+        playerTouch = GetPlayerTouch();
+        if (playerTouch > 0)
         {
-            if (topKillTimer == 0 && touch == 1)
+            if (topKillTimer == 0 && playerTouch == 1)
             {
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player == null)
@@ -68,7 +70,7 @@ public class BaseSolid : Solid
                 }
                 player.Die((player.Position - Position).SafeNormalize());
             }
-            else if (bottomKillTimer == 0 && touch == 2)
+            else if (bottomKillTimer == 0 && playerTouch == 2)
             {
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player == null)
@@ -77,7 +79,7 @@ public class BaseSolid : Solid
                 }
                 player.Die((player.Position - Position).SafeNormalize());
             }
-            else if (leftKillTimer == 0 && touch == 3)
+            else if (leftKillTimer == 0 && playerTouch == 3)
             {
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player == null)
@@ -86,7 +88,7 @@ public class BaseSolid : Solid
                 }
                 player.Die((player.Position - Position).SafeNormalize());
             }
-            else if (rightKillTimer == 0 && touch == 4)
+            else if (rightKillTimer == 0 && playerTouch == 4)
             {
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player == null)
@@ -112,7 +114,7 @@ public class BaseSolid : Solid
                 }
                 else
                 {
-                    currentKillTimer = touch switch
+                    currentKillTimer = playerTouch switch
                     {
                         1 => topKillTimer,
                         2 => bottomKillTimer,
@@ -168,17 +170,13 @@ public class BaseSolid : Solid
             }
         }
     }
-    
-    public void PlayerCollide(Player player)
-    {
 
-    }
-
-    public bool onTouchEffective = false;
+    public float cooldown = 0.15f;
+    public float defaultCooldown = 0.15f;
     public void OnTouch(Vector2 dir)
     {
         // Up left is dir positive
-        if (onTouchEffective) { return; }
+        if(cooldown > 0) { return; }
 
         if (PUt.TryGetAlivePlayer(out Player player))
         {
@@ -203,9 +201,8 @@ public class BaseSolid : Solid
                 SideBounceY(player, -1, base.CenterX, base.Bottom);
             }
         }
-        else { return; }
 
-        onTouchEffective = true;
+        cooldown = defaultCooldown;
     }
 
     /// <summary>
@@ -260,4 +257,22 @@ public class BaseSolid : Solid
         player.Collider = collider;
         return true;
     }
+
+    public bool springBlockOverride;
+    public override void Update()
+    {
+        BeforeUpdate();
+
+        base.Update();
+
+        if (cooldown > 0)
+        {
+            cooldown -= Engine.DeltaTime;
+        }
+
+        AfterUpdate();
+    }
+    
+    public virtual void BeforeUpdate() { }
+    public virtual void AfterUpdate() { }
 }

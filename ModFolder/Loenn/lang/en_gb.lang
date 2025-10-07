@@ -70,14 +70,17 @@ entities.ChroniaHelper/KillerBlock.attributes.description.standFall=Whether the 
 entities.ChroniaHelper/KillerBlock.attributes.description.fallDelay=The shaking time before the block finally starts to fall
 entities.ChroniaHelper/KillerBlock.attributes.description.movement=Four parameters seperated by comma\nFirst number: The speed when the block is just starting to fall, default 0\nSecond number: The maximum speed, default 130\nThird number: Acceleration, default 500\nFourth number: The maximum speed under 'finalBoss' mode, default 160
 entities.ChroniaHelper/KillerBlock.attributes.description.canTrigger=Whether the block can be triggered to fall by entities like springs\nWIP: If disabled, this switch will cut off any interactions to this block, including standing, climbing and springs etc.
+entities.ChroniaHelper/KillerBlock.attributes.description.springBlockOverride=An override mode for the entity that will turn the entity into a Spring Block \nThe spring block will bounce player off like a spring each time the player touches it \nUnless the player is holding grab.
 
 entities.ChroniaHelper/GroupedKillerBlock.placements.name.GroupedKillerBlock=Grouped Killer Block
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.standFall=Whether the player standing on the block will cause the block to fall
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.fallDelay=The shaking time before the block finally starts to fall
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.movement=Four parameters seperated by comma\nFirst number: The speed when the block is just starting to fall, default 0\nSecond number: The maximum speed, default 130\nThird number: Acceleration, default 500\nFourth number: The maximum speed under 'finalBoss' mode, default 160
 entities.ChroniaHelper/GroupedKillerBlock.attributes.description.canTrigger=Whether the block can be triggered to fall by entities like springs\nWIP: If disabled, this switch will cut off any interactions to this block, including standing, climbing and springs etc.
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.springBlockOverride=An override mode for the entity that will turn the entity into a Spring Block \nThe spring block will bounce player off like a spring each time the player touches it \nUnless the player is holding grab.
 
 entities.ChroniaHelper/KillerWall.placements.name.KillerWall=Killer Wall
+entities.ChroniaHelper/KillerWall.attributes.description.springBlockOverride=An override mode for the entity that will turn the entity into a Spring Block \nThe spring block will bounce player off like a spring each time the player touches it \nUnless the player is holding grab.
 
 # ================= Spikes
 

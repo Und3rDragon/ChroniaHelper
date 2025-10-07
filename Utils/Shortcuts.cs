@@ -5,6 +5,8 @@ global using Sav = ChroniaHelper.Modules.ChroniaHelperSaveData;
 global using Ses = ChroniaHelper.Modules.ChroniaHelperSession;
 global using Sh = ChroniaHelper.Utils.Shortcuts;
 global using PUt = ChroniaHelper.Utils.PlayerUtils;
+global using Vc2 = Microsoft.Xna.Framework.Vector2;
+global using Vc3 = Microsoft.Xna.Framework.Vector3;
 using System.Runtime.InteropServices.Marshalling;
 using ChroniaHelper.Utils.ChroniaSystem;
 

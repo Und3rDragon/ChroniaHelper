@@ -78,6 +78,8 @@ class GroupedKillerBlock : BaseSolid
         dashRebound = data.Bool("dashRebound", false);
         dashReboundRefill = data.Bool("dashReboundRefill", false);
         OnDashCollide = OnDashed;
+
+        springBlockOverride = data.Bool("springBlockOverride", false);
     }
 
     public GroupedKillerBlock(EntityData data, Vector2 offset) : this(data.Position + offset, data)
@@ -87,7 +89,7 @@ class GroupedKillerBlock : BaseSolid
     // On dashed
     public DashCollisionResults OnDashed(Player player, Vector2 dir)
     {
-        if (dashRebound)
+        if (dashRebound && !springBlockOverride)
         {
             Vector2 scale = new Vector2(1f + Math.Abs(dir.Y) * 0.4f - Math.Abs(dir.X) * 0.4f, 1f + Math.Abs(dir.X) * 0.4f - Math.Abs(dir.Y) * 0.4f);
 
@@ -578,10 +580,39 @@ class GroupedKillerBlock : BaseSolid
     }
 
 
-    public override void Update()
+    public override void AfterUpdate()
     {
-        base.Update();
         base.TimedKill();
+
+        if (springBlockOverride)
+        {
+            playerTouch = GetPlayerTouch();
+
+            if (!Input.Grab.Check)
+            {
+                if (playerTouch == 1)
+                {
+                    OnTouch(Vc2.UnitY);
+                }
+                else if (playerTouch == 2)
+                {
+                    OnTouch(-Vc2.UnitY);
+                }
+                else if (playerTouch == 3)
+                {
+                    OnTouch(Vc2.UnitX);
+                }
+                else if (playerTouch == 4)
+                {
+                    OnTouch(-Vc2.UnitX);
+                }
+            }
+            
+            if(playerTouch != 0)
+            {
+                Triggered = true;
+            }
+        }
     }
 
     public override void Render()

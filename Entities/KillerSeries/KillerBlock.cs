@@ -96,9 +96,7 @@ public class KillerBlock : BaseSolid
         dashReboundRefill = data.Bool("dashReboundRefill", false);
         OnDashCollide = OnDashed;
 
-        OnCollide = (dir) => OnTouch(dir);
-
-        Add(playerCollider = new PlayerCollider(PlayerCollide, new Hitbox(Width + 4f, Height + 4f, -2f, -2f)));
+        springBlockOverride = data.Bool("springBlockOverride", false);
     }
 
     public KillerBlock(EntityData data, Vector2 offset) : this(data.Position + offset, data)
@@ -108,7 +106,7 @@ public class KillerBlock : BaseSolid
     // On dashed
     public DashCollisionResults OnDashed(Player player, Vector2 dir)
     {
-        if (dashRebound)
+        if (dashRebound && !springBlockOverride)
         {
             Vector2 scale = new Vector2(1f + Math.Abs(dir.Y) * 0.4f - Math.Abs(dir.X) * 0.4f, 1f + Math.Abs(dir.X) * 0.4f - Math.Abs(dir.Y) * 0.4f);
 
@@ -387,17 +385,38 @@ public class KillerBlock : BaseSolid
 
     
 
-    public override void Update()
+    public override void AfterUpdate()
     {
-        base.Update();
-        base.TimedKill();
+        TimedKill();
 
-        if(PUt.TryGetAlivePlayer(out Player player))
+        if (springBlockOverride)
         {
-            if (!playerCollider.Check(player))
+            playerTouch = GetPlayerTouch();
+
+            if (!Input.Grab.Check)
             {
-                onTouchEffective = false;
-            } 
+                if (playerTouch == 1)
+                {
+                    OnTouch(Vc2.UnitY);
+                }
+                else if (playerTouch == 2)
+                {
+                    OnTouch(-Vc2.UnitY);
+                }
+                else if (playerTouch == 3)
+                {
+                    OnTouch(Vc2.UnitX);
+                }
+                else if (playerTouch == 4)
+                {
+                    OnTouch(-Vc2.UnitX);
+                }
+            }
+
+            if (playerTouch != 0)
+            {
+                Triggered = true;
+            }
         }
     }
 
