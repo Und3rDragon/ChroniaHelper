@@ -24,6 +24,9 @@ return {
         surfaceColor = {
             fieldType = "color",
         },
+        surfaceColorBack = {
+            fieldType = "color",
+        },
         farLineColor = {
             fieldType = "color",
         },

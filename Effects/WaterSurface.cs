@@ -159,7 +159,7 @@ public class WaterSurface : Backdrop
     {
         Draw.Rect(0f, Calc.Min(renderY1, renderY2),
                 320f + extX, (renderY1 - renderY2).GetAbs(),
-                renderY1 > renderY2 ? surfaceColor * surfaceAlpha : surfaceColorBack * surfaceBackAlpha);
+                renderY1 < renderY2 ? surfaceColor * surfaceAlpha : surfaceColorBack * surfaceBackAlpha);
         if (farLine)
         {
             Draw.Line(0f, renderY1, 320f + extX, renderY1, farLineColor * farLineAlpha);
