@@ -980,3 +980,8 @@ entities.ChroniaHelper/RoomTagSessionController.placements.name.Controller=Room 
 # ================= Chronia Flag Trigger
 
 triggers.ChroniaHelper/ChroniaFlagTrigger.placements.name.FlagTrigger=Chronia Flag Trigger (Debug)
+
+# ================= Cornerboost Falling Dream Block
+
+entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.normal=Cornerboost Falling Dream Block (Normal)
+entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.chained=Cornerboost Falling Dream Block (Chained)

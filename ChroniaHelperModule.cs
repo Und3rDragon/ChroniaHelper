@@ -21,6 +21,7 @@ using YoctoHelper.Hooks;
 using FASF2025Helper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Triggers.PolygonSeries;
+using ChroniaHelper.Components;
 
 namespace ChroniaHelper;
 
@@ -108,6 +109,9 @@ public class ChroniaHelperModule : EverestModule
 
         // migrated from NeonHelper
         PufferBomb.Load();
+
+        // migrated from VivHelper
+        On.Celeste.GameLoader.Begin += LateInitialize;
 
         // API Imports
         typeof(FrostHelperImports).ModInterop();
@@ -202,6 +206,37 @@ public class ChroniaHelperModule : EverestModule
 
         // migrated FASF2025
         AttributeHelper.InvokeAll<UnLoadAttribute>();
+
+        // migrated from VivHelper
+        On.Celeste.GameLoader.Begin -= LateInitialize;
+    }
+
+    public static void LateInitialize(On.Celeste.GameLoader.orig_Begin orig, GameLoader self)
+    {
+        orig(self);
+        // Temporary.
+        SolidModifierComponent.player_WallJumpCheck_getNum = (player, dir) =>
+        {
+            int num = 3;
+            bool flag = player.DashAttacking && player.DashDir.X == 0f && player.DashDir.Y == -1f;
+            if (flag)
+            {
+                Spikes.Directions directions = ((dir <= 0) ? Spikes.Directions.Right : Spikes.Directions.Left);
+                foreach (Spikes entity in player.Scene.Tracker.GetEntities<Spikes>())
+                {
+                    if (entity.Direction == directions && player.CollideCheck(entity, player.Position + Vector2.UnitX * dir * 5f))
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            if (flag)
+            {
+                num = 5;
+            }
+            return num;
+        };
     }
 
     private static void LevelLoader_OnLoadingThread(Level level)
