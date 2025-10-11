@@ -468,7 +468,7 @@ public class FlagButton : Entity {
         }
         else
         {
-            Draw.HollowRect(X - 1, Y - 1, Width + 2, Height + 2, ColorUtils.ColorCopy(icon.Color, 0.7f));
+            Draw.HollowRect(X - 1, Y - 1, Width + 2, Height + 2, new ChroniaColor(icon.Color, 0.7f).Parsed());
             Draw.Rect(X + 1, Y + 1, Width - 2, Height - 2, Color.Lerp(icon.Color, Calc.HexToColor("0a0a0a"), 0.5f) * 0.3f);
         }
 

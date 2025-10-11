@@ -122,7 +122,7 @@ public class SpriteEntity : Actor
     private Vector2[] nodes; private int nodeCount;
     private bool killOnCollide = false;
     private ColliderList colliderList = new(), playerColliderList = new();
-    private ColorUtils.ChroniaColor spriteColor;
+    private ChroniaColor spriteColor;
     private PlayerCollider playerCollider = null;
 
     public void OnCollide(Player player)

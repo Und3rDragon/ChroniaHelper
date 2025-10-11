@@ -87,12 +87,12 @@ public static class FadeUtils
         if (lerp == ColorLerp.HSLLerp)
         {
             return LerpValue(source, clampA, clampB,
-                new ColorUtils.HSLColor(valueA), new ColorUtils.HSLColor(valueB), ease).ToColor();
+                new HSLColor(valueA), new HSLColor(valueB), ease).ToColor();
         }
         else if(lerp == ColorLerp.HSVLerp)
         {
             return LerpValue(source, clampA, clampB,
-                new ColorUtils.HSVColor(valueA), new ColorUtils.HSVColor(valueB), ease).ToColor();
+                new HSVColor(valueA), new HSVColor(valueB), ease).ToColor();
         }
         else
         {
@@ -101,7 +101,7 @@ public static class FadeUtils
 
     }
 
-    public static ColorUtils.HSLColor LerpValue(this float source, float clampA, float clampB, ColorUtils.HSLColor valueA, ColorUtils.HSLColor valueB, EaseMode ease = EaseMode.Linear)
+    public static HSLColor LerpValue(this float source, float clampA, float clampB, HSLColor valueA, HSLColor valueB, EaseMode ease = EaseMode.Linear)
     {
         float p = source.ClampProgress(clampA, clampB, ease);
 
@@ -110,10 +110,10 @@ public static class FadeUtils
         float l = source.LerpValue(clampA, clampB, valueA.L, valueB.L, ease);
         float a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
 
-        return new ColorUtils.HSLColor(h, s, l, a);
+        return new HSLColor(h, s, l, a);
     }
 
-    public static ColorUtils.HSVColor LerpValue(this float source, float clampA, float clampB, ColorUtils.HSVColor valueA, ColorUtils.HSVColor valueB, EaseMode ease = EaseMode.Linear)
+    public static HSVColor LerpValue(this float source, float clampA, float clampB, HSVColor valueA, HSVColor valueB, EaseMode ease = EaseMode.Linear)
     {
         float p = source.ClampProgress(clampA, clampB, ease);
 
@@ -122,6 +122,6 @@ public static class FadeUtils
         float v = source.LerpValue(clampA, clampB, valueA.V, valueB.V, ease);
         float a = source.LerpValue(clampA, clampB, valueA.A, valueB.A, ease);
 
-        return new ColorUtils.HSVColor(h, s, v, a);
+        return new HSVColor(h, s, v, a);
     }
 }

@@ -13,17 +13,17 @@ public static class ColorUtils
 
     public static string RgbaToHex(this Color color)
     {
-        return ColorUtils.RgbaToHex(color.R, color.G, color.B, color.A, false);
+        return RgbaToHex(color.R, color.G, color.B, color.A, false);
     }
 
     public static string RgbaToHex(this Color color, bool sign)
     {
-        return ColorUtils.RgbaToHex(color.R, color.G, color.B, color.A, sign);
+        return RgbaToHex(color.R, color.G, color.B, color.A, sign);
     }
 
     public static string RgbaToHex(int red, int green, int blue, int alpha)
     {
-        return ColorUtils.RgbaToHex(red, green, blue, alpha, false);
+        return RgbaToHex(red, green, blue, alpha, false);
     }
 
     public static string RgbaToHex(int red, int green, int blue, int alpha, bool sign)
@@ -50,6 +50,11 @@ public static class ColorUtils
         return Color.Transparent;
     }
 
+    /// <summary>
+    /// Parse separated colors by ","
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public static Color[] ParseColors(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
@@ -60,73 +65,12 @@ public static class ColorUtils
         List<Color> colors = new List<Color>();
         foreach (string str in split)
         {
-            colors.Add(ColorUtils.ParseColor(str));
+            colors.Add(ParseColor(str));
         }
         return colors.ToArray();
     }
-
-    public static Color GetRainbowHue(Scene scene, Vector2 position)
-    {
-        float num = 280f;
-        float num2 = (position.Length() + scene.TimeActive * 50f) % num / num;
-        return Calc.HsvToColor(0.4f + Calc.YoYo(num2) * 0.4f, 0.4f, 0.9f);
-    }
-
-    public static Color GetRainbowHue(Color[] colors, Scene scene, Vector2 position)
-    {
-        if (colors.Length == 1)
-        {
-            return colors[0];
-        }
-        float progress = position.Length() + scene.TimeActive * 50F;
-        while (progress < 0)
-        {
-            progress += 280F;
-        }
-        progress = progress % 280F / 280F;
-        progress = Calc.YoYo(progress);
-        if (progress == 1)
-        {
-            return colors[colors.Length - 1];
-        }
-        float globalProgress = (colors.Length - 1) * progress;
-        int colorIndex = (int) globalProgress;
-        float progressInIndex = globalProgress - colorIndex;
-        return Color.Lerp(colors[colorIndex], colors[colorIndex + 1], progressInIndex);
-    }
-
-    public static Dictionary<string, Color> colorHelper;
-
-    public static Color ColorCopy(Color color, int alpha)
-    {
-        return new Color(color.R, color.G, color.B, Calc.Clamp(alpha, 0, 255));
-    }
-
-    public static Color ColorCopy(Color color, float alpha)
-    {
-        return new Color(color.R, color.G, color.B, (byte)Calc.Clamp(255 * alpha, 0, 255));
-    }
-    public static Color ColorFix(string s)
-    {
-        /*
-        if (colorHelper.ContainsKey(s.ToLower()))
-            return colorHelper[s.ToLower()];
-        */
-        return AdvHexToColor(s);
-    }
-
-
-    public static Color ColorFix(string s, float alpha)
-    {
-        /*
-        if (colorHelper.ContainsKey(s.ToLower()))
-            return colorHelper[s.ToLower()];
-        */
-        return ColorCopy(AdvHexToColor(s), alpha);
-    }
-
-
-    public static Color AdvHexToColor(string hex, bool nullIfInvalid = false)
+    
+    public static Color ParseColor(string hex, bool nullIfInvalid = false)
     {
         string hexplus = hex.Trim('#');
         if (hexplus.StartsWith("0x"))
@@ -152,19 +96,7 @@ public static class ColorUtils
         result.PackedValue = hex;
         return result;
     }
-
-    private static readonly PropertyInfo[] namedColors = typeof(Color).GetProperties();
-
-    public static Color CopyColor(Color color, float alpha)
-    {
-        return new Color(color.R, color.G, color.B, (byte)alpha * 255);
-    }
-
-    public static Color CopyColor(Color color, int alpha)
-    {
-        return new Color(color.R, color.G, color.B, alpha);
-    }
-
+    
     public static Color ColorArrayLerp(float lerp, params Color[] colors)
     {
         float m = NumberUtils.Mod(lerp, colors.Length);
@@ -174,49 +106,7 @@ public static class ColorUtils
 
         return Color.Lerp(colors[fromIndex], colors[toIndex], clampedLerp);
     }
-
-    public static Color TryParseColor(string str, float alpha = 1f)
-    {
-        foreach (PropertyInfo prop in namedColors)
-        {
-            if (str.Equals(prop.Name))
-            {
-                return CopyColor((Color)prop.GetValue(null), alpha);
-            }
-        }
-        return CopyColor(Calc.HexToColor(str.Trim('#')), alpha);
-    }
-
-    public static Color HexToColorWithAlphaNonPremultiplied(string hex)
-    {
-        int num = 0;
-        if (hex.Length >= 1 && hex[0] == '#')
-        {
-            num = 1;
-        }
-
-        switch (hex.Length - num)
-        {
-            case 6:
-                {
-                    int r2 = Calc.HexToByte(hex[num++]) * 16 + Calc.HexToByte(hex[num++]);
-                    int g = Calc.HexToByte(hex[num++]) * 16 + Calc.HexToByte(hex[num++]);
-                    int b = Calc.HexToByte(hex[num++]) * 16 + Calc.HexToByte(hex[num++]);
-                    return new Color(r2, g, b);
-                }
-            case 8:
-                {
-                    int r = Calc.HexToByte(hex[num++]) * 16 + Calc.HexToByte(hex[num++]);
-                    int g = Calc.HexToByte(hex[num++]) * 16 + Calc.HexToByte(hex[num++]);
-                    int b = Calc.HexToByte(hex[num++]) * 16 + Calc.HexToByte(hex[num++]);
-                    int alpha = Calc.HexToByte(hex[num++]) * 16 + Calc.HexToByte(hex[num++]);
-                    return new Color(r, g, b) * (alpha / 255f); //don't set alpha, multiply the color, i really still don't understand this... :3c
-                }
-            default:
-                return Color.White;
-        }
-    }
-
+    
     public static Color[] ParseColorArray(string input)
     {
         if (StringUtils.IsNullOrWhiteSpace(input))
@@ -227,7 +117,7 @@ public static class ColorUtils
         Color[] colorArray = new Color[split.Length];
         for (int i = 0; i < split.Length; i++)
         {
-            colorArray[i] = ColorUtils.ParseColor(split[i]);
+            colorArray[i] = ParseColor(split[i]);
         }
         return colorArray;
     }

@@ -7,6 +7,11 @@ global using Sh = ChroniaHelper.Utils.Shortcuts;
 global using PUt = ChroniaHelper.Utils.PlayerUtils;
 global using Vc2 = Microsoft.Xna.Framework.Vector2;
 global using Vc3 = Microsoft.Xna.Framework.Vector3;
+global using HSL = ChroniaHelper.Utils.ColorUtils.HSLColor;
+global using HSV = ChroniaHelper.Utils.ColorUtils.HSVColor;
+global using HSLColor = ChroniaHelper.Utils.ColorUtils.HSLColor;
+global using HSVColor = ChroniaHelper.Utils.ColorUtils.HSVColor;
+global using ChroniaColor = ChroniaHelper.Utils.ColorUtils.ChroniaColor;
 using System.Runtime.InteropServices.Marshalling;
 using ChroniaHelper.Utils.ChroniaSystem;
 

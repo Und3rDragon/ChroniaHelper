@@ -16,7 +16,7 @@ namespace ChroniaHelper.Entities;
 public class CustomTorch : Entity
 {
     ParticleType P_OnLight2;
-    public Color color;
+    public ChroniaColor color;
     public float alpha;
     public int startFade, endFade;
     public string FlagName;
@@ -32,7 +32,7 @@ public class CustomTorch : Entity
     {
         startLit = data.Bool("startLit", false);
         unlightOnDeath = data.Bool("unlightOnDeath", false);
-        color = ColorUtils.ColorFix(data.Attr("Color", "Cyan"));
+        color = new(data.Attr("Color", "00ffff"));
         alpha = data.Float("Alpha", 1f);
         FlagName = "ChroniaHelperTorch_" + id.Key;
         if (alpha < 0 || alpha > 1) { alpha = 1f; }
@@ -41,14 +41,14 @@ public class CustomTorch : Entity
         Collider = new Circle(data.Float("RegisterRadius", 4f));
         sprite = GFX.SpriteBank.Create("CustomTorch");
         if (sprite == null) { throw new Exception("CustomTorch Sprite is missing!"); }
-        sprite.Color = ColorUtils.ColorFix(data.Attr("spriteColor", "White"));
+        sprite.Color = new ChroniaColor(data.Attr("spriteColor", "ffffff")).color;
         Add(sprite);
-        Add(light = new VertexLight(color, 1f, startFade, endFade));
+        Add(light = new VertexLight(color.color, 1f, startFade, endFade));
         Add(bloom = new BloomPoint(alpha / 2f, 8f));
         bloom.Visible = false;
         light.Visible = false;
         Add(new PlayerCollider(OnPlayer));
-        P_OnLight2 = new ParticleType(Torch.P_OnLight) { Color = color };
+        P_OnLight2 = new ParticleType(Torch.P_OnLight) { Color = color.color };
         base.Depth = 2000;
     }
 

@@ -58,7 +58,7 @@ public class CustomGlider : Actor
 
     private BirdTutorialGui tutorialGui;
 
-    private Color GlideC1, GlideC2, GlowC1, GlowC2;
+    private ChroniaColor GlideC1, GlideC2, GlowC1, GlowC2;
     private string GlidePath, GlowPath;
 
     
@@ -140,10 +140,10 @@ public class CustomGlider : Actor
         GlowPath = e.Attr("GlowPath", "");
         if (string.IsNullOrWhiteSpace(GlowPath))
             GlowPath = "";
-        GlideC1 = ColorUtils.ColorFix(e.Attr("GlideColor1", "4FFFF3"));
-        GlideC2 = ColorUtils.ColorFix(e.Attr("GlideColor2", "FFF899"));
-        GlowC1 = ColorUtils.ColorFix(e.Attr("GlowColor1", "B7F3FF"));
-        GlowC2 = ColorUtils.ColorFix(e.Attr("GlowColor2", "F4FDFF"));
+        GlideC1 = new(e.Attr("GlideColor1", "4FFFF3"));
+        GlideC2 = new(e.Attr("GlideColor2", "FFF899"));
+        GlowC1 = new(e.Attr("GlowColor1", "B7F3FF"));
+        GlowC2 = new(e.Attr("GlowColor2", "F4FDFF"));
 
         P_Glide = new ParticleType
         {
@@ -156,8 +156,8 @@ public class CustomGlider : Actor
             LifeMax = 1.2f,
             ColorMode = ParticleType.ColorModes.Blink,
             FadeMode = ParticleType.FadeModes.Late,
-            Color = GlideC1,
-            Color2 = GlideC2,
+            Color = GlideC1.color,
+            Color2 = GlideC2.color,
             Size = 0.5f,
             SizeRange = 0.2f,
             RotationMode = ParticleType.RotationModes.SameAsDirection
@@ -179,8 +179,8 @@ public class CustomGlider : Actor
             LifeMax = 0.8f,
             Size = 1f,
             FadeMode = ParticleType.FadeModes.Late,
-            Color = GlowC1,
-            Color2 = GlowC2,
+            Color = GlowC1.color,
+            Color2 = GlowC2.color,
             ColorMode = ParticleType.ColorModes.Blink
         };
         if (!string.IsNullOrWhiteSpace(GlowPath))

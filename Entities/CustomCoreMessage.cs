@@ -28,7 +28,7 @@ public class ColoredCustomCoreMessage : Entity
     private float RenderDistance, alphaMult;
     private Vector2 scale;
     private Ease.Easer EaseType;
-    private Color color, outlineColor;
+    private ChroniaColor color, outlineColor;
     private Vector2[] nodes;
     private bool CustomPositionRange;
     private float MoveSpeed;
@@ -75,13 +75,13 @@ public class ColoredCustomCoreMessage : Entity
 
         TextProcess();
 
-        outlineColor = ColorUtils.ColorFix(data.Attr("OutlineColor", "Black"), 1f);
-        outline = data.Has("outline") ? data.Bool("outline") : outlineColor != Color.Transparent;
+        outlineColor = new(data.Attr("OutlineColor", "000000"));
+        outline = data.Has("outline") ? data.Bool("outline") : outlineColor.Parsed() != Color.Transparent;
         pausetype = data.Enum<PauseRenderTypes>("PauseType", PauseRenderTypes.Hidden);
         scale = Vector2.One * data.Float("Scale", 1.25f);
         RenderDistance = data.Float("RenderDistance", 128f);
         EaseType = EaseUtils.EaseMatch[data.Enum<EaseMode>("EaseType", EaseMode.CubeInOut)];
-        color = ColorUtils.ColorFix(data.Attr("TextColor1", "White"), 1f);
+        color = new(data.Attr("TextColor1", "ffffff"));
         alwaysRender = data.Bool("AlwaysRender");
 
         lockPosition = data.Bool("LockPosition", false);
@@ -272,11 +272,11 @@ public class ColoredCustomCoreMessage : Entity
         }
         if (outline)
         {
-            ActiveFont.DrawOutline(text, position2, AlignUtils.AlignToJustify[align], scale, color * alpha, 2f, outlineColor * alpha);
+            ActiveFont.DrawOutline(text, position2, AlignUtils.AlignToJustify[align], scale, color.color * alpha, 2f, outlineColor.color * alpha);
         }
         else
         {
-            ActiveFont.Draw(text, position2, AlignUtils.AlignToJustify[align], scale, color * alpha);
+            ActiveFont.Draw(text, position2, AlignUtils.AlignToJustify[align], scale, color.color * alpha);
         }
     }
 
