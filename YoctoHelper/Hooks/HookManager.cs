@@ -24,7 +24,7 @@ public class HookManager
 
     private void Execute(Type moduleAttribute)
     {
-        Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+        Type[] types = Assembly.GetExecutingAssembly().GetTypesSafe();
         foreach (Type type in types)
         {
             if (type.Namespace != "YoctoHelper.Hooks")
