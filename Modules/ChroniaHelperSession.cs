@@ -9,6 +9,8 @@ using YoctoHelper.Hooks;
 using static ChroniaHelper.Entities.CustomBooster;
 using System.Runtime.InteropServices;
 using ChroniaHelper.Components;
+using System.Diagnostics;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Modules;
 
@@ -153,6 +155,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // Solid Modifier Component
     [YamlIgnore]
     public SolidModifierComponent currentActiveSolidModifier = null;
+
+    // Stopwatch
+    public Dictionary<string, Utils.Stopwatch> stopwatches = new();
 
     // Backup Simplified Flag System (Unused)
     //public HashSet<string> TemporaryFlags = new();
