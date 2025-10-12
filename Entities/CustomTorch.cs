@@ -41,14 +41,14 @@ public class CustomTorch : Entity
         Collider = new Circle(data.Float("RegisterRadius", 4f));
         sprite = GFX.SpriteBank.Create("CustomTorch");
         if (sprite == null) { throw new Exception("CustomTorch Sprite is missing!"); }
-        sprite.Color = new ChroniaColor(data.Attr("spriteColor", "ffffff")).color;
+        sprite.Color = new ChroniaColor(data.Attr("spriteColor", "ffffff")).Parsed();
         Add(sprite);
-        Add(light = new VertexLight(color.color, 1f, startFade, endFade));
+        Add(light = new VertexLight(color.Parsed(), 1f, startFade, endFade));
         Add(bloom = new BloomPoint(alpha / 2f, 8f));
         bloom.Visible = false;
         light.Visible = false;
         Add(new PlayerCollider(OnPlayer));
-        P_OnLight2 = new ParticleType(Torch.P_OnLight) { Color = color.color };
+        P_OnLight2 = new ParticleType(Torch.P_OnLight) { Color = color.Parsed() };
         base.Depth = 2000;
     }
 

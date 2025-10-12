@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using YoctoHelper.Cores;
 
@@ -328,7 +329,7 @@ public static class ColorUtils
         public Color color;
         public float alpha;
 
-        public ChroniaColor(Color color, float alpha)
+        public ChroniaColor(Color color, float alpha = 1f)
         {
             this.color = color;
             this.alpha = Math.Clamp(alpha, 0f, 1f);
@@ -373,4 +374,23 @@ public static class ColorUtils
         }
     }
 
+    public static ChroniaColor GetChroniaColor(this Color color, float alpha = 1f)
+    {
+        return new ChroniaColor(color, alpha);
+    }
+
+    public static ChroniaColor GetChroniaColor(this string hex)
+    {
+        return new ChroniaColor(hex);
+    }
+    
+    public static ChroniaColor GetChroniaColor(this EntityData data, string colorAttributeName, string defaultColor = "ffffff")
+    {
+        return new ChroniaColor(data.Attr(colorAttributeName, defaultColor));
+    }
+
+    public static ChroniaColor GetChroniaColor(this EntityData data, string colorAttributeName, Color defaultColor)
+    {
+        return data.GetChroniaColor(colorAttributeName, defaultColor.RgbaToHex());
+    }
 }

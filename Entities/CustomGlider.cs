@@ -156,8 +156,8 @@ public class CustomGlider : Actor
             LifeMax = 1.2f,
             ColorMode = ParticleType.ColorModes.Blink,
             FadeMode = ParticleType.FadeModes.Late,
-            Color = GlideC1.color,
-            Color2 = GlideC2.color,
+            Color = GlideC1.Parsed(),
+            Color2 = GlideC2.Parsed(),
             Size = 0.5f,
             SizeRange = 0.2f,
             RotationMode = ParticleType.RotationModes.SameAsDirection
@@ -179,8 +179,8 @@ public class CustomGlider : Actor
             LifeMax = 0.8f,
             Size = 1f,
             FadeMode = ParticleType.FadeModes.Late,
-            Color = GlowC1.color,
-            Color2 = GlowC2.color,
+            Color = GlowC1.Parsed(),
+            Color2 = GlowC2.Parsed(),
             ColorMode = ParticleType.ColorModes.Blink
         };
         if (!string.IsNullOrWhiteSpace(GlowPath))

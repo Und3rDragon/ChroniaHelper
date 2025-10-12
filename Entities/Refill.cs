@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
@@ -12,7 +13,7 @@ public class Refill : Entity
 
     private string spritePath;
 
-    private Color spriteColor;
+    private ChroniaColor spriteColor;
 
     private float respawnTime;
 
@@ -34,7 +35,7 @@ public class Refill : Entity
 
     private string respawnSound;
 
-    private Color outlineColor;
+    private ChroniaColor outlineColor;
 
     private int outlineWidth;
 
@@ -42,17 +43,17 @@ public class Refill : Entity
 
     private float bloomRadius;
 
-    private Color particleShatterColor1;
+    private ChroniaColor particleShatterColor1;
 
-    private Color particleShatterColor2;
+    private ChroniaColor particleShatterColor2;
 
-    private Color ParticleRegenColor1;
+    private ChroniaColor ParticleRegenColor1;
 
-    private Color particleRegenColor2;
+    private ChroniaColor particleRegenColor2;
 
-    private Color particleGlowColor1;
+    private ChroniaColor particleGlowColor1;
 
-    private Color particleGlowColor2;
+    private ChroniaColor particleGlowColor2;
 
     private float waveFrequency;
 
@@ -183,7 +184,7 @@ public class Refill : Entity
     {
         this.twoDashes = data.Bool("twoDashes", false);
         this.spritePath = data.Attr("sprite", null);
-        this.spriteColor = data.HexColor("spriteColor", Color.White);
+        this.spriteColor = data.GetChroniaColor("spriteColor");
         this.respawnTime = data.Float("respawnTime", 2.5F);
         if (this.respawnTime <= 0)
         {
@@ -206,16 +207,16 @@ public class Refill : Entity
         this.resetStamina = data.Float("resetStamina", 110F);
         this.touchSound = !string.IsNullOrWhiteSpace(data.Attr("touchSound", null)) ? data.Attr("touchSound") : (!this.twoDashes ? Refill.RefillTouchSoundEvent : Refill.RefillTwoTouchSoundEvent);
         this.respawnSound = !string.IsNullOrWhiteSpace(data.Attr("respawnSound", null)) ? data.Attr("respawnSound") : (!this.twoDashes ? Refill.RefillRespawnSoundEvent : Refill.RefillTwoRespawnSoundEvent);
-        this.outlineColor = data.HexColor("outlineColor", Color.Black);
+        this.outlineColor = data.GetChroniaColor("outlineColor", "000000");
         this.outlineWidth = data.Int("outlineWidth", 1);
         this.bloomAlpha = data.Float("bloomAlpha", 0.8F);
         this.bloomRadius = data.Float("bloomRadius", 16F);
-        this.particleShatterColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor1", null)) ? data.HexColor("particleShatterColor1") : (!this.twoDashes ? Refill.OneDashesParticleShatterColor : Refill.TwoDashesParticleShatterColor);
-        this.particleShatterColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor2", null)) ? data.HexColor("particleShatterColor2") : (!this.twoDashes ? Refill.OneDashesParticleShatterColor : Refill.TwoDashesParticleShatterColor);
-        this.ParticleRegenColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor1", null)) ? data.HexColor("particleRegenColor1") : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleShatterColor);
-        this.particleRegenColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor2", null)) ? data.HexColor("particleRegenColor2") : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleShatterColor);
-        this.particleGlowColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor1", null)) ? data.HexColor("particleGlowColor1") : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleShatterColor);
-        this.particleGlowColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor2", null)) ? data.HexColor("particleGlowColor2") : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleShatterColor);
+        this.particleShatterColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor1", null)) ? data.Attr("particleShatterColor1").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleShatterColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
+        this.particleShatterColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor2", null)) ? data.Attr("particleShatterColor2").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleShatterColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
+        this.ParticleRegenColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor1", null)) ? data.Attr("particleRegenColor1").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
+        this.particleRegenColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor2", null)) ? data.Attr("particleRegenColor2").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
+        this.particleGlowColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor1", null)) ? data.Attr("particleGlowColor1").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
+        this.particleGlowColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor2", null)) ? data.Attr("particleGlowColor2").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
         this.waveFrequency = data.Float("waveFrequency", 0.6F);
         this.waveRadius = data.Float("waveRadius", 2F);
         this.waveMode = data.Enum<WaveMode>("waveMode", WaveMode.Vertical);
@@ -243,18 +244,18 @@ public class Refill : Entity
         }
         this.particleShatter = new ParticleType(global::Celeste.Refill.P_Shatter)
         {
-            Color = this.particleShatterColor1,
-            Color2 = this.particleShatterColor2
+            Color = this.particleShatterColor1.Parsed(),
+            Color2 = this.particleShatterColor2.Parsed()
         };
         this.particleRegen = new ParticleType(global::Celeste.Refill.P_Regen)
         {
-            Color = this.ParticleRegenColor1,
-            Color2 = this.particleRegenColor2
+            Color = this.ParticleRegenColor1.Parsed(),
+            Color2 = this.particleRegenColor2.Parsed()
         };
         this.particleGlow = new ParticleType(global::Celeste.Refill.P_Glow)
         {
-            Color = this.particleGlowColor1,
-            Color2 = this.particleGlowColor2
+            Color = this.particleGlowColor1.Parsed(),
+            Color2 = this.particleGlowColor2.Parsed()
         };
         if (!(this.single = !this.spritePath.EndsWith("/")))
         {
@@ -264,7 +265,7 @@ public class Refill : Entity
             base.Add(this.idle = new Sprite(GFX.Game, spritePath + "idle"));
             this.idle.AddLoop("idle", "", this.idleDelay);
             this.idle.Play("idle", false, false);
-            this.idle.Color = this.spriteColor;
+            this.idle.Color = this.spriteColor.Parsed();
             this.idle.CenterOrigin();
             base.Add(this.flash = new Sprite(GFX.Game, spritePath + "flash"));
             this.flash.Add("flash", "", this.flashDelay);
@@ -281,7 +282,7 @@ public class Refill : Entity
             this.outline.CenterOrigin();
             this.outline.Visible = false;
             base.Add(this.singleSprite = new Image(GFX.Game[spritePath]));
-            this.singleSprite.Color = this.spriteColor;
+            this.singleSprite.Color = this.spriteColor.Parsed();
             this.singleSprite.CenterOrigin();
             this.rotateSpriteCenterOffset = this.singleSprite.Width / 2F + this.singleSprite.Width / 4F;
         }
@@ -422,11 +423,11 @@ public class Refill : Entity
     {
         if (!this.single && this.idle.Visible)
         {
-            this.idle.DrawOutline(this.outlineColor, this.outlineWidth);
+            this.idle.DrawOutline(this.outlineColor.Parsed(), this.outlineWidth);
         }
         if (this.single && this.singleSprite.Visible)
         {
-            this.singleSprite.DrawOutline(this.outlineColor, this.outlineWidth);
+            this.singleSprite.DrawOutline(this.outlineColor.Parsed(), this.outlineWidth);
         }
         base.Render();
         this.RenderAfter(this.respawnTimer);

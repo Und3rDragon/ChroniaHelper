@@ -16,8 +16,8 @@ torch.placements = {
     }
 }
 torch.fieldInformation = {
-    Color = {fieldType = "color", allowXNAColors = true },
-    spriteColor = {fieldType = "color", allowXNAColors = true },
+    Color = {fieldType = "color", allowXNAColors = true, useAlpha = true },
+    spriteColor = {fieldType = "color", allowXNAColors = true, useAlpha = true },
     Alpha = {fieldType = "number", minimumValue = 0.0, maximumValue = 1.0},
     startFade = {fieldType = "integer", minimumValue = 0, maximumValue = 120 },
     endFade = {fieldType = "integer", minimumValue = 0, maximumValue = 120 }, -- Fun fact, this is the actual limit for lights in celeste

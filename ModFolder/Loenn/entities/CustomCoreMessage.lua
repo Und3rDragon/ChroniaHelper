@@ -68,7 +68,7 @@ ccm.fieldInformation = {
         editable = true,
     },
     OutlineColor = {fieldType = "color", allowXNAColors=true, allowEmpty = true},
-    TextColor1 = {fieldType = "color", allowXNAColors=true, useAlpha = true},
+    TextColor1 = {fieldType = "color", allowXNAColors=true, useAlpha = false},
     Scale = {fieldType = "number", minimumValue = 0.125},
     EaseType = {
         options = {
@@ -110,7 +110,7 @@ ccm.fieldInformation = {
 }
 
 ccm.selection = function (room, entity)
-    return utils.rectangle(entity.x - 16, entity.y - 16, 32, 32)
+    return utils.rectangle(entity.x - 12, entity.y - 12, 24, 24)
 end
 
 ccm.sprite = function(room,entity)

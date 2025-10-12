@@ -10,10 +10,11 @@ local fieldTable = {
     spriteColor =
     {
         data = "ffffff",
-        info =
-        {
+        info = {
             fieldType = "color",
-            allowEmpty = false
+            allowXNAColors = true,
+            useAlpha = true,
+            allowEmpty = false,
         }
     },
     respawnTime =
@@ -134,6 +135,8 @@ local fieldTable = {
         info =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         }
     },
@@ -173,6 +176,8 @@ local fieldTable = {
         info =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         }
     },
@@ -182,6 +187,8 @@ local fieldTable = {
         info =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         }
     },
@@ -191,6 +198,8 @@ local fieldTable = {
         info =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         }
     },
@@ -200,6 +209,8 @@ local fieldTable = {
         info =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         }
     },
@@ -209,6 +220,8 @@ local fieldTable = {
         info =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         }
     },
@@ -218,6 +231,8 @@ local fieldTable = {
         info =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         }
     },
@@ -467,6 +482,8 @@ local refillWall = {
         borderColor =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         },
         borderAlpha =
@@ -478,6 +495,8 @@ local refillWall = {
         innerColor =
         {
             fieldType = "color",
+            allowXNAColors = true,
+            useAlpha = true,
             allowEmpty = true
         },
         innerAlpha =
