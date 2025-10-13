@@ -3,24 +3,57 @@
 namespace ChroniaHelper.Utils;
 public class Stopwatch
 {
-
     public static void Load()
     {
         On.Celeste.Level.UpdateTime += LevelUpdateTime;
+        On.Celeste.Level.LoadLevel += LoadingLevel;
     }
 
     public static void Unload()
     {
         On.Celeste.Level.UpdateTime -= LevelUpdateTime;
+        On.Celeste.Level.LoadLevel += LoadingLevel;
+    }
+    
+    public static void LoadingLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool loader)
+    {
+        orig(self, intro, loader);
+
+        Md.Session.stopwatches.Clear();
+        Stopwatch sw = new Stopwatch(true) { initialMinute = 1 };
+        Md.Session.stopwatches.Add("default", sw);
+        sw.Restart();
     }
 
     public static void LevelUpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
     {
         orig(self);
-        
-        foreach(var watches in Md.Session.stopwatches)
+
+        if (!self.Completed)
         {
-            watches.Value.UpdateTime();
+            long ticks = CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
+
+            foreach (var watches in Md.Session.stopwatches)
+            {
+                watches.Value.UpdateTime(ticks);
+
+                // Time Sync validated
+                //Log.Info(watches.Key, watches.Value.FormattedTime);
+            }
+        }
+
+        TimeSpan CalculateInterval(double value, int scale)
+        {
+            if (double.IsNaN(value))
+            {
+                throw new ArgumentException("TimeSpan does not accept floating point Not-a-Number values.");
+            }
+            double millis = value * (double)scale + ((value >= 0.0) ? 0.5 : (-0.5));
+            if (millis > 922337203685477.0 || millis < -922337203685477.0)
+            {
+                throw new OverflowException("TimeSpan overflowed because the duration is too long.");
+            }
+            return new TimeSpan((long)millis * 10000);
         }
     }
 
@@ -41,8 +74,8 @@ public class Stopwatch
     public int initialYear = 0;
     public int initialMonth = 0;
     public int initialDay = 0;
-    public int initialHour = 1; // 倒计时初始小时设为1
-    public int initialMinute = 0;
+    public int initialHour = 0; // 倒计时初始小时设为1
+    public int initialMinute = 5;
     public int initialSecond = 0;
     public int initialMillisecond = 0;
 
@@ -78,6 +111,12 @@ public class Stopwatch
     public void Stop()
     {
         running = false;
+    }
+    
+    public void Restart()
+    {
+        Reset();
+        Start();
     }
 
     /// <summary>
@@ -118,27 +157,25 @@ public class Stopwatch
     }
 
     /// <summary>
-    /// 更新时间 - 在 Celeste.Level.UpdateTime() 中调用
+    /// 更新时间 - 使用 ticks 同步
     /// </summary>
-    /// <summary>
-    /// 更新时间 - 在 Celeste.Level.UpdateTime() 中调用
-    /// </summary>
-    public void UpdateTime()
+    /// <param name="ticks">时间间隔的 ticks 数</param>
+    public void UpdateTime(long ticks)
     {
-        if (!running || completed)
-            return;
+        if (!running || completed) { return; }
 
-        // 直接计算本次更新应该增加/减少的毫秒数
-        float deltaMilliseconds = Engine.DeltaTime * 1000f;
+        // 将 ticks 转换为毫秒 (1 tick = 100 纳秒 = 0.0001 毫秒)
+        // 但根据您的 CalculateInterval 函数，ticks 已经是处理过的值
+        long deltaMilliseconds = ticks / 10000; // 10000 ticks = 1 毫秒
 
         if (countdown)
         {
-            // 倒计时逻辑 - 直接减少对应的毫秒数
+            // 倒计时逻辑 - 减少对应的毫秒数
             millisecond -= (int)deltaMilliseconds;
         }
         else
         {
-            // 正计时逻辑 - 直接增加对应的毫秒数
+            // 正计时逻辑 - 增加对应的毫秒数
             millisecond += (int)deltaMilliseconds;
         }
 
@@ -146,12 +183,19 @@ public class Stopwatch
         RefreshUnits();
 
         // 检查倒计时是否完成
-        if (countdown && IsTimeZero())
+        if (countdown && ZeroState)
         {
             completed = true;
+            
+            CompletionAction();
+            OnComplete();
+            
             running = false;
         }
     }
+
+    public Action CompletionAction;
+    public virtual void OnComplete() { }
 
     /// <summary>
     /// 刷新时间单位，处理进位和借位
@@ -323,26 +367,14 @@ public class Stopwatch
     /// <summary>
     /// 检查时间是否归零
     /// </summary>
-    private bool IsTimeZero()
-    {
-        return year == 0 && month == 0 && day == 0 &&
-               hour == 0 && minute == 0 && second == 0 && millisecond == 0;
-    }
+    public bool ZeroState => year == 0 && month == 0 && day == 0 && 
+        hour == 0 && minute == 0 && second == 0 && millisecond == 0;
 
     /// <summary>
     /// 获取格式化时间字符串
     /// </summary>
-    public string GetFormattedTime()
-    {
-        if (countdown)
-        {
-            return $"{year:000}年{month:00}月{day:00}天 {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
-        }
-        else
-        {
-            return $"{year:000}年{month:00}月{day:00}天 {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
-        }
-    }
+    public string FormattedTime => 
+        $"{year:000}年{month:00}月{day:00}天 {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
 
     /// <summary>
     /// 获取总毫秒数（近似值）

@@ -106,6 +106,8 @@ public class ChroniaHelperModule : EverestModule
         MapProcessor.Load();
         ChroniaFlag.Onload();
         ChroniaCounter.Onload();
+        ChroniaSlider.Onload();
+        Utils.Stopwatch.Load();
 
         // migrated from NeonHelper
         PufferBomb.Load();
@@ -200,6 +202,8 @@ public class ChroniaHelperModule : EverestModule
         MapProcessor.Unload();
         ChroniaFlag.Unload();
         ChroniaCounter.Unload();
+        ChroniaSlider.Unload();
+        Utils.Stopwatch.Unload();
 
         // migrated from NeonHelper
         PufferBomb.Unload();
