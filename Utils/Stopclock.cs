@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using YamlDotNet.Serialization;
 
 namespace ChroniaHelper.Utils;
 
@@ -116,8 +117,20 @@ public class Stopclock
             }
         }
     }
-
-    // 公共变量 - 保密性为 public 且可读写
+    
+    public static void Debug(string additionalTagInfo = "")
+    {
+        Md.Session.sessionStopwatches.EachDo((e) =>
+        {
+            Log.Info($"[{additionalTagInfo}] Session ({e.Key}): {e.Value.completed}, {e.Value.FormattedTime}");
+        });
+        Md.SaveData.globalStopwatches.EachDo((e) =>
+        {
+            Log.Info($"[{additionalTagInfo}] Global ({e.Key}): {e.Value.completed}, {e.Value.FormattedTime}");
+        });
+        Log.Error("_____________________________");
+    }
+    
     public int year = 0;
     public int month = 0;
     public int day = 0;
@@ -131,9 +144,8 @@ public class Stopclock
     public bool completed { get; private set; } = false;
     public bool removeWhenCompleted = true;
     public bool running { get; private set; } = false;
-    public bool isolatedUpdate = false; // 新增：是否独立更新
-
-    // 内部变量用于存储初始值（倒计时用）
+    public bool isolatedUpdate = false; 
+    
     public int initialYear = 0;
     public int initialMonth = 0;
     public int initialDay = 0;
@@ -142,12 +154,94 @@ public class Stopclock
     public int initialSecond = 0;
     public int initialMillisecond = 0;
 
-    // 用于时间累积
+    // 时间累积
     private long _accumulatedTicks;
     private DateTime _lastUpdateTime; // 用于独立更新的时间记录
 
-    public Stopclock(int year = 0, int month = 0, int day = 0, int hour = 0,
-        int minute = 0, int second = 0, int millisecond = 0, bool countdown = false, bool global = false,
+    // 信号系统
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onStart;
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onStop;
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onReset;
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onComplete;
+    public virtual void OnStart() { }
+    public virtual void OnStop() { }
+    public virtual void OnReset() { }
+    public virtual void OnComplete() { }
+    /// <summary>
+    /// 仅用于外部接收信号, 使用信号请调用UseSignal()
+    /// </summary>
+    public int signal { get; private set; } = 0;
+    /// <summary>
+    /// 调用信号
+    /// </summary>
+    public void UseSignal() { signal = -1; }
+    /// <summary>
+    /// 检查信号
+    /// </summary>
+    public bool HasSignal => signal > 0;
+    public enum Signal 
+    { 
+        Used = -1,
+        Initial = 0, 
+        Reset = 1, 
+        Start = 2, 
+        Stop = 3, 
+        Complete = 4,
+    }
+
+    /// <summary>
+    /// 如果是倒计时, 倒计时默认事件为5分钟
+    /// </summary>
+    public Stopclock()
+    {
+        this.countdown = false;
+        this.global = false;
+        this.removeWhenCompleted = true;
+        this.isolatedUpdate = false;
+        this._lastUpdateTime = DateTime.Now;
+        
+        Initialize();
+    }
+
+    /// <summary>
+    /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
+    /// </summary>
+    /// <param name="countdown"></param>
+    /// <param name="year"></param>
+    /// <param name="month"></param>
+    /// <param name="day"></param>
+    /// <param name="hour"></param>
+    /// <param name="minute"></param>
+    /// <param name="second"></param>
+    /// <param name="millisecond"></param>
+    /// <param name="global"></param>
+    /// <param name="initialYear"></param>
+    /// <param name="initialMonth"></param>
+    /// <param name="initialDay"></param>
+    /// <param name="initialHour"></param>
+    /// <param name="initialMinute"></param>
+    /// <param name="initialSecond"></param>
+    /// <param name="initialMillisecond"></param>
+    /// <param name="removeWhenCompleted"></param>
+    /// <param name="isolatedUpdate"></param>
+    public Stopclock(bool countdown, int year = 0, int month = 0, int day = 0, int hour = 0,
+        int minute = 0, int second = 0, int millisecond = 0, bool global = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
         int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
     {
@@ -171,7 +265,7 @@ public class Stopclock
         this.isolatedUpdate = isolatedUpdate;
         this._lastUpdateTime = DateTime.Now;
 
-        Reset();
+        Initialize();
     }
 
     public void Register(string name)
@@ -200,6 +294,8 @@ public class Stopclock
         }
     }
 
+    #region Operations
+    
     /// <summary>
     /// 开始计时
     /// </summary>
@@ -212,11 +308,11 @@ public class Stopclock
         _accumulatedTicks = 0;
         _lastUpdateTime = DateTime.Now; // 重置更新时间
 
+        signal = (int)Signal.Start;
+
         onStart?.Invoke();
         OnStart();
     }
-    public Action onStart;
-    public virtual void OnStart() { }
 
     /// <summary>
     /// 停止/暂停计时
@@ -225,12 +321,12 @@ public class Stopclock
     {
         running = false;
 
+        signal = (int)Signal.Stop;
+
         onStop?.Invoke();
         OnStop();
     }
-    public Action onStop;
-    public virtual void OnStop() { }
-
+    
     public void Restart()
     {
         Reset();
@@ -274,11 +370,20 @@ public class Stopclock
         // 重置后刷新单位
         RefreshUnits();
 
+        signal = (int)Signal.Reset;
+
         onReset?.Invoke();
         OnReset();
     }
-    public Action onReset;
-    public virtual void OnReset() { }
+    
+    public void Initialize()
+    {
+        Reset();
+
+        signal = (int)Signal.Initial;
+    }
+
+    #endregion
 
     /// <summary>
     /// 更新时间 - 使用 ticks 同步（非独立更新模式）
@@ -287,7 +392,7 @@ public class Stopclock
     public void UpdateTime(long ticks)
     {
         if (!running || completed || isolatedUpdate) { return; }
-
+        
         // 将 ticks 转换为毫秒 (1 tick = 100 纳秒 = 0.0001 毫秒)
         long deltaMilliseconds = ticks / 10000; // 10000 ticks = 1 毫秒
 
@@ -307,15 +412,14 @@ public class Stopclock
         // 更新后刷新时间单位
         RefreshUnits();
 
-        // 检查倒计时是否完成
+        // 再次检查倒计时是否完成
         if (countdown && ZeroState)
         {
             completed = true;
+            running = false;
 
             onComplete?.Invoke();
             OnComplete();
-
-            running = false;
         }
     }
 
@@ -325,7 +429,7 @@ public class Stopclock
     public void IsolatedUpdateTime()
     {
         if (!running || completed || !isolatedUpdate) { return; }
-
+        
         DateTime currentTime = DateTime.Now;
         TimeSpan elapsed = currentTime - _lastUpdateTime;
         _lastUpdateTime = currentTime;
@@ -349,20 +453,16 @@ public class Stopclock
         // 更新后刷新时间单位
         RefreshUnits();
 
-        // 检查倒计时是否完成
+        // 再次检查倒计时是否完成
         if (countdown && ZeroState)
         {
             completed = true;
+            running = false;
 
             onComplete?.Invoke();
             OnComplete();
-
-            running = false;
         }
     }
-
-    public Action onComplete;
-    public virtual void OnComplete() { }
     
     /// <summary>
     /// 刷新时间单位，处理进位和借位
@@ -479,11 +579,19 @@ public class Stopclock
     /// </summary>
     private void HandleNegativeTime()
     {
+        // 先检查是否已经归零，如果归零就直接返回
+        if (ZeroState)
+        {
+            return;
+        }
+
         // 处理毫秒负数
         while (millisecond < 0)
         {
             millisecond += 1000;
             second--;
+            // 检查是否归零，如果归零就返回
+            if (ZeroState) return;
         }
 
         // 处理秒负数
@@ -491,6 +599,8 @@ public class Stopclock
         {
             second += 60;
             minute--;
+            // 检查是否归零，如果归零就返回
+            if (ZeroState) return;
         }
 
         // 处理分负数
@@ -498,6 +608,8 @@ public class Stopclock
         {
             minute += 60;
             hour--;
+            // 检查是否归零，如果归零就返回
+            if (ZeroState) return;
         }
 
         // 处理时负数
@@ -505,6 +617,8 @@ public class Stopclock
         {
             hour += 24;
             day--;
+            // 检查是否归零，如果归零就返回
+            if (ZeroState) return;
         }
 
         // 处理天负数（每月按30天计算）
@@ -512,6 +626,8 @@ public class Stopclock
         {
             day += 30;
             month--;
+            // 检查是否归零，如果归零就返回
+            if (ZeroState) return;
         }
 
         // 处理月负数
@@ -519,16 +635,23 @@ public class Stopclock
         {
             month += 12;
             year--;
+            // 检查是否归零，如果归零就返回
+            if (ZeroState) return;
         }
 
         // 确保没有负数（倒计时到0就停止）
-        if (year < 0) year = 0;
-        if (month < 0) month = 0;
-        if (day < 0) day = 0;
-        if (hour < 0) hour = 0;
-        if (minute < 0) minute = 0;
-        if (second < 0) second = 0;
-        if (millisecond < 0) millisecond = 0;
+        // 这里应该只处理负数，不应该重置为0，因为借位逻辑已经处理了
+        if (year < 0 || month < 0 || day < 0 || hour < 0 || minute < 0 || second < 0 || millisecond < 0)
+        {
+            // 如果还有负数，说明时间已经归零但借位逻辑有问题
+            year = 0;
+            month = 0;
+            day = 0;
+            hour = 0;
+            minute = 0;
+            second = 0;
+            millisecond = 0;
+        }
     }
 
     /// <summary>
