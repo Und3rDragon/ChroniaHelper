@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace ChroniaHelper.Utils;
@@ -33,7 +34,7 @@ public class Stopclock
     public static void Unload()
     {
         On.Celeste.Level.UpdateTime -= LevelUpdateTime;
-        On.Celeste.Level.LoadLevel += LoadingLevel;
+        On.Celeste.Level.LoadLevel -= LoadingLevel;
         On.Monocle.Scene.Update -= GlobalUpdate;
     }
 
@@ -45,36 +46,44 @@ public class Stopclock
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
     {
         orig(self);
-        
-        if (Md.Session.IsNotNull())
+
+        if (Md.SaveData.IsNull()) { return; }
+
+        HashSet<string> toRemove = new();
+        foreach (var watches in Md.SaveData.globalStopwatches)
         {
-            HashSet<string> toRemove = new();
-            foreach (var watches in Md.SaveData.globalStopwatches)
+            // If not global, migrate the timer to session timers
+            if (!watches.Value.global)
             {
-                // If not global, migrate the timer to session timers
-                if (!watches.Value.global)
-                {
-                    toRemove.Add(watches.Key);
-                    watches.Value.Register(watches.Key);
-                    continue;
-                }
+                toRemove.Add(watches.Key);
+                watches.Value.Register(watches.Key);
+                continue;
+            }
 
+            if (!watches.Value.isolatedUpdate)
+            {
                 watches.Value.UpdateTime(TimeUtils.deltaTicks);
-
-                if (watches.Value.completed) { toRemove.Add(watches.Key); }
-
-                //Log.Info(watches.Key, watches.Value.FormattedTime);
             }
-            foreach(var item in toRemove)
+            else
             {
-                Md.SaveData.globalStopwatches.SafeRemove(item);
+                watches.Value.IsolatedUpdateTime();
             }
+
+            if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
+
+            //Log.Info(watches.Key, watches.Value.FormattedTime);
+        }
+        foreach (var item in toRemove)
+        {
+            Md.SaveData.globalStopwatches.SafeRemove(item);
         }
     }
 
     public static void LevelUpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
     {
         orig(self);
+
+        if (Md.Session.IsNull()) { return; }
 
         if (!self.Completed)
         {
@@ -87,14 +96,21 @@ public class Stopclock
                     watches.Value.Register(watches.Key);
                     continue;
                 }
-                
-                watches.Value.UpdateTime(TimeUtils.deltaTicks);
 
-                if (watches.Value.completed) { toRemove.Add(watches.Key); }
+                if (!watches.Value.isolatedUpdate)
+                {
+                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                }
+                else
+                {
+                    watches.Value.IsolatedUpdateTime();
+                }
+
+                if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
 
                 //Log.Info(watches.Key, watches.Value.FormattedTime);
             }
-            foreach(var item in toRemove)
+            foreach (var item in toRemove)
             {
                 Md.Session.sessionStopwatches.SafeRemove(item);
             }
@@ -113,24 +129,27 @@ public class Stopclock
     public bool countdown = false;
     public bool global = false;
     public bool completed { get; private set; } = false;
+    public bool removeWhenCompleted = true;
     public bool running { get; private set; } = false;
+    public bool isolatedUpdate = false; // 新增：是否独立更新
 
     // 内部变量用于存储初始值（倒计时用）
     public int initialYear = 0;
     public int initialMonth = 0;
     public int initialDay = 0;
-    public int initialHour = 0; // 倒计时初始小时设为1
+    public int initialHour = 0;
     public int initialMinute = 5;
     public int initialSecond = 0;
     public int initialMillisecond = 0;
 
     // 用于时间累积
     private long _accumulatedTicks;
+    private DateTime _lastUpdateTime; // 用于独立更新的时间记录
 
     public Stopclock(int year = 0, int month = 0, int day = 0, int hour = 0,
         int minute = 0, int second = 0, int millisecond = 0, bool countdown = false, bool global = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
-        int initialSecond = 0, int initialMillisecond = 0)
+        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
     {
         this.year = year;
         this.month = month;
@@ -148,10 +167,13 @@ public class Stopclock
         this.initialMinute = initialMinute;
         this.initialSecond = initialSecond;
         this.initialMillisecond = initialMillisecond;
-            
+        this.removeWhenCompleted = removeWhenCompleted;
+        this.isolatedUpdate = isolatedUpdate;
+        this._lastUpdateTime = DateTime.Now;
+
         Reset();
     }
-    
+
     public void Register(string name)
     {
         if (global)
@@ -167,7 +189,7 @@ public class Stopclock
     public void Register(string name, bool overrideGlobal)
     {
         global = overrideGlobal;
-        
+
         if (global)
         {
             Md.SaveData.globalStopwatches.Enter(name, this);
@@ -188,6 +210,7 @@ public class Stopclock
         running = true;
         completed = false;
         _accumulatedTicks = 0;
+        _lastUpdateTime = DateTime.Now; // 重置更新时间
 
         onStart?.Invoke();
         OnStart();
@@ -207,7 +230,7 @@ public class Stopclock
     }
     public Action onStop;
     public virtual void OnStop() { }
-    
+
     public void Restart()
     {
         Reset();
@@ -246,6 +269,7 @@ public class Stopclock
 
         completed = false;
         _accumulatedTicks = 0;
+        _lastUpdateTime = DateTime.Now;
 
         // 重置后刷新单位
         RefreshUnits();
@@ -257,15 +281,14 @@ public class Stopclock
     public virtual void OnReset() { }
 
     /// <summary>
-    /// 更新时间 - 使用 ticks 同步
+    /// 更新时间 - 使用 ticks 同步（非独立更新模式）
     /// </summary>
     /// <param name="ticks">时间间隔的 ticks 数</param>
     public void UpdateTime(long ticks)
     {
-        if (!running || completed) { return; }
+        if (!running || completed || isolatedUpdate) { return; }
 
         // 将 ticks 转换为毫秒 (1 tick = 100 纳秒 = 0.0001 毫秒)
-        // AppleSheep 的 CalculateInterval 函数已经处理过 tick 的值
         long deltaMilliseconds = ticks / 10000; // 10000 ticks = 1 毫秒
 
         _accumulatedTicks += deltaMilliseconds;
@@ -288,16 +311,59 @@ public class Stopclock
         if (countdown && ZeroState)
         {
             completed = true;
-            
+
             onComplete?.Invoke();
             OnComplete();
-            
+
             running = false;
         }
     }
+
+    /// <summary>
+    /// 独立更新时间 - 基于真实电脑时间（独立更新模式）
+    /// </summary>
+    public void IsolatedUpdateTime()
+    {
+        if (!running || completed || !isolatedUpdate) { return; }
+
+        DateTime currentTime = DateTime.Now;
+        TimeSpan elapsed = currentTime - _lastUpdateTime;
+        _lastUpdateTime = currentTime;
+
+        // 转换为毫秒
+        long deltaMilliseconds = (long)elapsed.TotalMilliseconds;
+
+        _accumulatedTicks += deltaMilliseconds;
+
+        if (countdown)
+        {
+            // 倒计时逻辑 - 减少对应的毫秒数
+            millisecond -= (int)deltaMilliseconds;
+        }
+        else
+        {
+            // 正计时逻辑 - 增加对应的毫秒数
+            millisecond += (int)deltaMilliseconds;
+        }
+
+        // 更新后刷新时间单位
+        RefreshUnits();
+
+        // 检查倒计时是否完成
+        if (countdown && ZeroState)
+        {
+            completed = true;
+
+            onComplete?.Invoke();
+            OnComplete();
+
+            running = false;
+        }
+    }
+
     public Action onComplete;
     public virtual void OnComplete() { }
-
+    
     /// <summary>
     /// 刷新时间单位，处理进位和借位
     /// </summary>
@@ -475,7 +541,7 @@ public class Stopclock
     /// 获取格式化时间字符串
     /// </summary>
     public string FormattedTime => 
-        $"{year:000}年{month:00}月{day:00}天 {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
+        $"{year:000}Years {month:00}Months {day:00}Days {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
 
     /// <summary>
     /// 获取总毫秒数（近似值）
