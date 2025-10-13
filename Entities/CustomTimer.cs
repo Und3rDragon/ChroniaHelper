@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -154,26 +155,9 @@ public class CustomTimer : Entity
 
         if (!self.Completed && Md.Session.TimerStarted)
         {
-            long ticks = CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
+            long ticks = TimeUtils.CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
             Md.Session.RawTime += ticks;
             Md.Session.Time += ticks;
-        }
-                    
-        //Console.WriteLine($"{FFFFFFModule.Session.Time} {self.Session.Time} {FFFFFFModule.Session.Time == self.Session.Time} {self.Session.Area.GetSID()}");
-
-
-        TimeSpan CalculateInterval(double value, int scale)
-        {
-            if (double.IsNaN(value))
-            {
-                throw new ArgumentException("TimeSpan does not accept floating point Not-a-Number values.");
-            }
-            double millis = value * (double)scale + ((value >= 0.0) ? 0.5 : (-0.5));
-            if (millis > 922337203685477.0 || millis < -922337203685477.0)
-            {
-                throw new OverflowException("TimeSpan overflowed because the duration is too long.");
-            }
-            return new TimeSpan((long)millis * 10000);
         }
     }
 

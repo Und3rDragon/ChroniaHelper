@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Triggers;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using YamlDotNet.Serialization;
 
@@ -16,6 +17,9 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
     public Dictionary<string, ChroniaFlag> ChroniaFlags = new();
     public Dictionary<string, ChroniaCounter> ChroniaCounters = new();
     public Dictionary<string, ChroniaSlider> ChroniaSliders = new();
+
+    // Stopwatch
+    public Dictionary<string, Stopclock> globalStopwatches = new();
 
     // Backup Simplified Flag System (Unused)
     //public HashSet<string> GlobalFlags = new();

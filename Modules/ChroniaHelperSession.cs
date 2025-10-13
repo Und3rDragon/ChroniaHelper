@@ -157,7 +157,7 @@ public class ChroniaHelperSession : EverestModuleSession
     public SolidModifierComponent currentActiveSolidModifier = null;
 
     // Stopwatch
-    public Dictionary<string, Utils.Stopwatch> stopwatches = new();
+    public Dictionary<string, Stopclock> sessionStopwatches = new();
 
     // Backup Simplified Flag System (Unused)
     //public HashSet<string> TemporaryFlags = new();

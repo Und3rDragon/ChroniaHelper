@@ -1,23 +1,75 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace ChroniaHelper.Utils;
-public class Stopwatch
+
+public static class TimeUtils
+{
+    public static long deltaTicks => CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
+    public static TimeSpan CalculateInterval(double value, int scale)
+    {
+        if (double.IsNaN(value))
+        {
+            throw new ArgumentException("TimeSpan does not accept floating point Not-a-Number values.");
+        }
+        double millis = value * (double)scale + ((value >= 0.0) ? 0.5 : (-0.5));
+        if (millis > 922337203685477.0 || millis < -922337203685477.0)
+        {
+            throw new OverflowException("TimeSpan overflowed because the duration is too long.");
+        }
+        return new TimeSpan((long)millis * 10000);
+    }
+}
+
+public class Stopclock
 {
     public static void Load()
     {
         On.Celeste.Level.UpdateTime += LevelUpdateTime;
         On.Celeste.Level.LoadLevel += LoadingLevel;
+        On.Monocle.Scene.Update += GlobalUpdate;
     }
 
     public static void Unload()
     {
         On.Celeste.Level.UpdateTime -= LevelUpdateTime;
         On.Celeste.Level.LoadLevel += LoadingLevel;
+        On.Monocle.Scene.Update -= GlobalUpdate;
     }
-    
+
     public static void LoadingLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool loader)
     {
         orig(self, intro, loader);
+    }
+
+    public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
+    {
+        orig(self);
+        
+        if (Md.Session.IsNotNull())
+        {
+            HashSet<string> toRemove = new();
+            foreach (var watches in Md.SaveData.globalStopwatches)
+            {
+                // If not global, migrate the timer to session timers
+                if (!watches.Value.global)
+                {
+                    toRemove.Add(watches.Key);
+                    watches.Value.Register(watches.Key);
+                    continue;
+                }
+
+                watches.Value.UpdateTime(TimeUtils.deltaTicks);
+
+                if (watches.Value.completed) { toRemove.Add(watches.Key); }
+
+                //Log.Info(watches.Key, watches.Value.FormattedTime);
+            }
+            foreach(var item in toRemove)
+            {
+                Md.SaveData.globalStopwatches.SafeRemove(item);
+            }
+        }
     }
 
     public static void LevelUpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
@@ -26,29 +78,26 @@ public class Stopwatch
 
         if (!self.Completed)
         {
-            long ticks = CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
-
-            foreach (var watches in Md.Session.stopwatches)
+            HashSet<string> toRemove = new();
+            foreach (var watches in Md.Session.sessionStopwatches)
             {
-                watches.Value.UpdateTime(ticks);
+                if (watches.Value.global)
+                {
+                    toRemove.Add(watches.Key);
+                    watches.Value.Register(watches.Key);
+                    continue;
+                }
+                
+                watches.Value.UpdateTime(TimeUtils.deltaTicks);
 
-                // Time Sync validated
+                if (watches.Value.completed) { toRemove.Add(watches.Key); }
+
                 //Log.Info(watches.Key, watches.Value.FormattedTime);
             }
-        }
-
-        TimeSpan CalculateInterval(double value, int scale)
-        {
-            if (double.IsNaN(value))
+            foreach(var item in toRemove)
             {
-                throw new ArgumentException("TimeSpan does not accept floating point Not-a-Number values.");
+                Md.Session.sessionStopwatches.SafeRemove(item);
             }
-            double millis = value * (double)scale + ((value >= 0.0) ? 0.5 : (-0.5));
-            if (millis > 922337203685477.0 || millis < -922337203685477.0)
-            {
-                throw new OverflowException("TimeSpan overflowed because the duration is too long.");
-            }
-            return new TimeSpan((long)millis * 10000);
         }
     }
 
@@ -62,6 +111,7 @@ public class Stopwatch
     public int millisecond = 0;
 
     public bool countdown = false;
+    public bool global = false;
     public bool completed { get; private set; } = false;
     public bool running { get; private set; } = false;
 
@@ -75,17 +125,57 @@ public class Stopwatch
     public int initialMillisecond = 0;
 
     // 用于时间累积
-    private float _accumulatedTime;
+    private long _accumulatedTicks;
 
-    public Stopwatch()
+    public Stopclock(int year = 0, int month = 0, int day = 0, int hour = 0,
+        int minute = 0, int second = 0, int millisecond = 0, bool countdown = false, bool global = false,
+        int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
+        int initialSecond = 0, int initialMillisecond = 0)
     {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+        this.millisecond = millisecond;
+        this.countdown = countdown;
+        this.global = global;
+        this.initialYear = initialYear;
+        this.initialMonth = initialMonth;
+        this.initialDay = initialDay;
+        this.initialHour = initialHour;
+        this.initialMinute = initialMinute;
+        this.initialSecond = initialSecond;
+        this.initialMillisecond = initialMillisecond;
+            
         Reset();
     }
-
-    public Stopwatch(bool countdown)
+    
+    public void Register(string name)
     {
-        this.countdown = countdown;
-        Reset();
+        if (global)
+        {
+            Md.SaveData.globalStopwatches.Enter(name, this);
+        }
+        else
+        {
+            Md.Session.sessionStopwatches.Enter(name, this);
+        }
+    }
+
+    public void Register(string name, bool overrideGlobal)
+    {
+        global = overrideGlobal;
+        
+        if (global)
+        {
+            Md.SaveData.globalStopwatches.Enter(name, this);
+        }
+        else
+        {
+            Md.Session.sessionStopwatches.Enter(name, this);
+        }
     }
 
     /// <summary>
@@ -97,9 +187,9 @@ public class Stopwatch
 
         running = true;
         completed = false;
-        _accumulatedTime = 0f;
+        _accumulatedTicks = 0;
 
-        onStart();
+        onStart?.Invoke();
         OnStart();
     }
     public Action onStart;
@@ -112,7 +202,7 @@ public class Stopwatch
     {
         running = false;
 
-        onStop();
+        onStop?.Invoke();
         OnStop();
     }
     public Action onStop;
@@ -155,12 +245,12 @@ public class Stopwatch
         }
 
         completed = false;
-        _accumulatedTime = 0f;
+        _accumulatedTicks = 0;
 
         // 重置后刷新单位
         RefreshUnits();
 
-        onReset();
+        onReset?.Invoke();
         OnReset();
     }
     public Action onReset;
@@ -175,8 +265,10 @@ public class Stopwatch
         if (!running || completed) { return; }
 
         // 将 ticks 转换为毫秒 (1 tick = 100 纳秒 = 0.0001 毫秒)
-        // 但根据您的 CalculateInterval 函数，ticks 已经是处理过的值
+        // AppleSheep 的 CalculateInterval 函数已经处理过 tick 的值
         long deltaMilliseconds = ticks / 10000; // 10000 ticks = 1 毫秒
+
+        _accumulatedTicks += deltaMilliseconds;
 
         if (countdown)
         {
@@ -197,7 +289,7 @@ public class Stopwatch
         {
             completed = true;
             
-            onComplete();
+            onComplete?.Invoke();
             OnComplete();
             
             running = false;
@@ -388,18 +480,7 @@ public class Stopwatch
     /// <summary>
     /// 获取总毫秒数（近似值）
     /// </summary>
-    public long GetTotalMilliseconds()
-    {
-        long total = millisecond;
-        total += second * 1000L;
-        total += minute * 60L * 1000L;
-        total += hour * 60L * 60L * 1000L;
-        total += day * 24L * 60L * 60L * 1000L;
-        total += month * 30L * 24L * 60L * 60L * 1000L; // 每月按30天估算
-        total += year * 12L * 30L * 24L * 60L * 60L * 1000L; // 每年按12个月估算
-
-        return total;
-    }
+    public long TotalMilliseconds => _accumulatedTicks;
 
     /// <summary>
     /// 获取简化的时间字符串（适合显示）
