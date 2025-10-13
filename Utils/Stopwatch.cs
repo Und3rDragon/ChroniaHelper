@@ -18,11 +18,6 @@ public class Stopwatch
     public static void LoadingLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool loader)
     {
         orig(self, intro, loader);
-
-        Md.Session.stopwatches.Clear();
-        Stopwatch sw = new Stopwatch(true) { initialMinute = 1 };
-        Md.Session.stopwatches.Add("default", sw);
-        sw.Restart();
     }
 
     public static void LevelUpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
@@ -103,7 +98,12 @@ public class Stopwatch
         running = true;
         completed = false;
         _accumulatedTime = 0f;
+
+        onStart();
+        OnStart();
     }
+    public Action onStart;
+    public virtual void OnStart() { }
 
     /// <summary>
     /// 停止/暂停计时
@@ -111,7 +111,12 @@ public class Stopwatch
     public void Stop()
     {
         running = false;
+
+        onStop();
+        OnStop();
     }
+    public Action onStop;
+    public virtual void OnStop() { }
     
     public void Restart()
     {
@@ -154,7 +159,12 @@ public class Stopwatch
 
         // 重置后刷新单位
         RefreshUnits();
+
+        onReset();
+        OnReset();
     }
+    public Action onReset;
+    public virtual void OnReset() { }
 
     /// <summary>
     /// 更新时间 - 使用 ticks 同步
@@ -187,14 +197,13 @@ public class Stopwatch
         {
             completed = true;
             
-            CompletionAction();
+            onComplete();
             OnComplete();
             
             running = false;
         }
     }
-
-    public Action CompletionAction;
+    public Action onComplete;
     public virtual void OnComplete() { }
 
     /// <summary>
