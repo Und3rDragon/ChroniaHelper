@@ -21,7 +21,7 @@ public class BezierCurve
     {
         this.points = new Vc2[points.Length];
         this.points = points;
-        this.lerp = lerp.Clamp(0f, 1f);
+        this.lerp = lerp.ClampWhole(0f, 1f);
         this.offset = new Vc2(offsetX, offsetY);
     }
 
@@ -53,9 +53,16 @@ public class BezierCurve
         return GetBezierPoint(dump, overrideLerp);
     }
 
-    public void Render(int resolution, Color lineColor, float thickness, Vc2 offset)
+    public void Render(int? resolution = null, Color? lineColor = null, float? thickness = null,
+        Vc2? offset = null, int? gaps = null)
+    {
+        Render(resolution?? 100, lineColor?? new CColor("663931").Parsed(), thickness?? 1f,
+            offset?? Vc2.Zero, gaps?? 0);
+    }
+    public void Render(int resolution, Color lineColor, float thickness, Vc2 offset, int gaps)
     {
         int res = resolution < 1 ? 1 : resolution;
+        int gap = gaps.GetAbs();
 
         Vc2[] points = new Vc2[res + 1];
         for (int i = 0; i < res + 1; i++)
@@ -63,8 +70,23 @@ public class BezierCurve
             points[i] = GetBezierPoint((float)i / res) + offset;
         }
         
+        int[] byPassIndexes = new int[points.Length];
+        if(gap != 0)
+        {
+            for (int i = 0, j = 0; i < points.Length; i++)
+            {
+                if(i % (gap * 2) >= gap)
+                {
+                    byPassIndexes[j] = i;
+                    j++;
+                }
+            }
+        }
+        
         for (int i = 0; i < points.Length - 1; i++)
         {
+            if (byPassIndexes.Contains(i)) { continue; }
+            
             Draw.Line(points[i], points[i + 1], lineColor, thickness);
         }
     }
@@ -84,6 +106,7 @@ public class BezierGroup
     public Color renderColor = Color.White;
     public float thickness = 1.2f;
     public Vc2 offset = Vc2.Zero;
+    public int lineGap = 0;
 
     public BezierCurve[] members = Array.Empty<BezierCurve>();
 
@@ -92,7 +115,7 @@ public class BezierGroup
         GenerateMembers();
     }
 
-    public BezierGroup(Vc2[] points, int divider = 2, int renderResolution = 20, float offsetX = 0, float offsetY = 0)
+    public BezierGroup(Vc2[] points, int divider = 2, int renderResolution = 20, float offsetX = 0, float offsetY = 0, int renderGaps = 0)
     {
         this.points = new Vc2[points.Length];
         this.points = points;
@@ -100,6 +123,7 @@ public class BezierGroup
         this.renderResolution = renderResolution.GetAbs() < 1 ? 1 : renderResolution.GetAbs();
 
         offset = new Vc2(offsetX, offsetY);
+        lineGap = renderGaps;
 
         GenerateMembers();
     }
@@ -126,7 +150,8 @@ public class BezierGroup
     {
         for (int i = 0; i < members.Length; i++)
         {
-            members[i].Render(renderResolution, renderColor, thickness, offset);
+            members[i].Render(resolution: renderResolution, 
+                lineColor: renderColor, thickness: thickness, offset: offset, gaps: lineGap);
         }
     }
 

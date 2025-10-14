@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using YoctoHelper.Hooks;
 
 namespace ChroniaHelper.Triggers;
@@ -67,7 +68,7 @@ public class BloomTrigger : BaseTrigger
             while (t >= 0f)
             {
                 t = Calc.Approach(t, -1f, Engine.DeltaTime);
-                float progress = Calc.Clamp((timer - t) / timer, 0f, 1f);
+                float progress = ((timer - t) / timer).ClampWhole(0f, 1f);
                 float bloomBase = Calc.ClampedMap(progress, 0f, 1f, this.oldBloom.bloomBase, this.bloomBase);
                 base.level.Bloom.Base = bloomBase;
                 base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;

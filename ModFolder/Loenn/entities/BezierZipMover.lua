@@ -13,7 +13,7 @@ local zip = {}
 --zip.associatedMods = { "CommunalHelper", "ChroniaHelper" }
 
 zip.name = "ChroniaHelper/BezierZipmover"
-zip.depth = 4999
+zip.depth = function(room,entity) return entity.depth or 4999 end
 zip.minimumSize = {16, 16}
 zip.nodeLimits = {1, -1}
 zip.nodeVisibility = "never"
@@ -33,6 +33,19 @@ zip.fieldInformation = {
         options = require("mods").requireFromPlugin("libraries.chroniaHelper").easers,
         editable = false,
     },
+    baseColor = {
+        fieldType = "color",
+        allowXNAColors = true,
+        useAlpha = true,
+    },
+    ropeColor = {
+        fieldType = "color",
+        allowXNAColors = true,
+        useAlpha = true,
+    },
+    renderGap = {
+        fieldType = "integer",
+    }
 }
 
 zip.fieldOrder = {
@@ -43,6 +56,7 @@ zip.placements = {
     name = "zipmover",
     placementType = "rectangle",
     data = {
+        depth = -9999,
         width = 16,
         height = 16,
         directory = "objects/zipmover/",
@@ -51,6 +65,9 @@ zip.placements = {
         returnTime = 2,
         moveEase = "sinein",
         returnEase = "sinein",
+        baseColor = "000000",
+        ropeColor = "663931",
+        renderGap = 0,
         drawBorder = true,
     }
 }
@@ -146,8 +163,7 @@ function zip.sprite(room, entity)
         table.insert(curvePoints, {centerNodeX, centerNodeY})
     end
     
-    CreateBezierCurve(sprites, curvePoints, 100, {-2, -2})
-    CreateBezierCurve(sprites, curvePoints, 100, {2, 2})
+    CreateBezierCurve(sprites, curvePoints, 100, {0, 0}, 2)
     
     addBlockSprites(sprites, entity, entity.directory .. "block", entity.directory .. "light01", x, y, width, height)
 
@@ -215,7 +231,7 @@ local function evalBezier(points, t)
 end
 
 -- 主函数：创建并绘制贝塞尔曲线
-function CreateBezierCurve(sprite, points, resolution, offset)
+function CreateBezierCurve(sprite, points, resolution, offset, thickness)
     if not points or #points == 0 then
         error("点集不能为空")
     end
@@ -240,7 +256,7 @@ function CreateBezierCurve(sprite, points, resolution, offset)
         local p1 = samples[i]
         local p2 = samples[i + 1]
         local p = {p1.x, p1.y, p2.x, p2.y}
-        local line = drawableLine.fromPoints(p, ropeColor, 1)
+        local line = drawableLine.fromPoints(p, ropeColor, thickness)
         
         for _, s in ipairs(line:getDrawableSprite()) do
             table.insert(sprite, s)

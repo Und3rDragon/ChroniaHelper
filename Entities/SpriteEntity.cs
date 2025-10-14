@@ -1079,7 +1079,7 @@ public class SpriteEntity : Actor
             if (segs <= 1) { yield break; }
 
             if (segs >= 2) { ConditionalParseFloat(commandLine[1], out spriteColor.alpha); }
-            spriteColor.alpha = float.Clamp(spriteColor.alpha, 0f, 1f);
+            spriteColor.alpha = spriteColor.alpha.ClampWhole(0f, 1f);
 
             float timer = 0.1f;
             if (segs >= 3) { ConditionalParseFloat(commandLine[2], out timer); }
@@ -1344,7 +1344,7 @@ public class SpriteEntity : Actor
             Color color = Color.White;
             float alpha = 0f, timer = 0f; int startFade = 32, endFade = 64; Ease.Easer ease = Ease.Linear;
             color = Calc.HexToColor(commandLine[1]);
-            ConditionalParseFloat(commandLine[2], out alpha); float.Clamp(alpha, 0f, 1f);
+            ConditionalParseFloat(commandLine[2], out alpha); alpha.ClampWhole(0f, 1f);
             ConditionalParseInt(commandLine[3], out startFade); startFade.MakeAbs();
             ConditionalParseInt(commandLine[4], out endFade); endFade.MakeAbs();
 
@@ -1389,7 +1389,7 @@ public class SpriteEntity : Actor
             }
 
             float alpha = 0f, r = 0f, timer = 0f; Ease.Easer ease = Ease.Linear;
-            ConditionalParseFloat(commandLine[1], out alpha); float.Clamp(alpha, 0f, 1f);
+            ConditionalParseFloat(commandLine[1], out alpha); alpha.ClampWhole(0f, 1f);
             ConditionalParseFloat(commandLine[2], out r); r.MakeAbs();
 
             if (segs >= 4)

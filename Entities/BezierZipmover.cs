@@ -91,8 +91,8 @@ public class BezierZipmover : Solid
             Vector2 vector2 = vector.Perpendicular() * 3f;
             Vector2 vector3 = -vector.Perpendicular() * 4f;
             float rotation = ZipMover.percent * MathF.PI * 2f;
-            Draw.Line(from + vector2 + offset, to + vector2 + offset, colorOverride.HasValue ? colorOverride.Value : ropeColor);
-            Draw.Line(from + vector3 + offset, to + vector3 + offset, colorOverride.HasValue ? colorOverride.Value : ropeColor);
+            Draw.Line(from + vector2 + offset, to + vector2 + offset, colorOverride.HasValue ? colorOverride.Value : ZipMover.ropeColor.Parsed());
+            Draw.Line(from + vector3 + offset, to + vector3 + offset, colorOverride.HasValue ? colorOverride.Value : ZipMover.ropeColor.Parsed());
             for (float num = 4f - ZipMover.percent * MathF.PI * 8f % 4f; num < (to - from).Length(); num += 4f)
             {
                 Vector2 vector4 = from + vector2 + vector.Perpendicular() + vector * num;
@@ -129,8 +129,6 @@ public class BezierZipmover : Solid
     
     public float percent;
     
-    public static Color ropeColor = Calc.HexToColor("663931");
-    
     public static Color ropeLightColor = Calc.HexToColor("9b6157");
     
     public SoundSource sfx = new SoundSource();
@@ -142,6 +140,8 @@ public class BezierZipmover : Solid
     public BezierCurve curve;
     public float moveTime = 0.5f, returnTime = 2f;
     public Ease.Easer moveEase = Ease.SineIn, returnEase = Ease.SineIn;
+    public CColor baseColor = new("000000"), ropeColor = new("663931");
+    public int renderGap = 0;
     public BezierZipmover(EntityData e, Vector2 p)
         : base(e.Position + p, e.Width, e.Height, safe: false)
     {
@@ -154,8 +154,11 @@ public class BezierZipmover : Solid
         returnTime = returnTime <= Engine.DeltaTime ? Engine.DeltaTime : returnTime;
         moveEase = EaseUtils.StringToEase(e.Attr("moveEase", "sinein"), Ease.SineIn);
         returnEase = EaseUtils.StringToEase(e.Attr("returnEase", "sinein"), Ease.SineIn);
+        baseColor = e.GetChroniaColor("baseColor", Color.Black);
+        ropeColor = e.GetChroniaColor("ropeColor", "663931");
+        renderGap = e.Int("renderGap", 0);
         
-        base.Depth = -9999;
+        base.Depth = e.Int("depth", -9999);
         start = Position;
         target = nodes[nodes.Length - 1];
         
@@ -187,6 +190,9 @@ public class BezierZipmover : Solid
         SurfaceSoundIndex = 7;
         sfx.Position = new Vector2(base.Width, base.Height) / 2f;
         Add(sfx);
+
+        // assistive
+        pathRenderer = new(this, nodes[0], nodes[nodes.Length - 1], folderPath + "cog");
     }
     
     public override void Added(Scene scene)
@@ -215,9 +221,17 @@ public class BezierZipmover : Solid
     public override void Render()
     {
         // Render Bezier Curve
-        curve.Render(100, Color.White, 1f, new Vc2(base.Width / 2 - 2, base.Height / 2 - 2));
-        curve.Render(100, Color.White, 1f, new Vc2(base.Width / 2 + 2, base.Height / 2 + 2));
-        
+        curve.Render(100, ropeColor.Parsed(0.3f), 5f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
+        curve.Render(100, ropeColor.Parsed(0.7f), 2f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
+        Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.Parsed(0.4f), 200);
+        Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 2f, ropeColor.Parsed(0.8f), 200);
+        Draw.Circle(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.Parsed(0.4f), 200);
+        Draw.Circle(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), 2f, ropeColor.Parsed(0.8f), 200);
+
+        // draw cogs only
+        pathRenderer.cog.DrawCentered(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), Color.White, 1f, percent * MathF.PI * 2f);
+        pathRenderer.cog.DrawCentered(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), Color.White, 1f, percent * MathF.PI * 2f);
+
         Vector2 position = Position;
         Position += base.Shake;
         Draw.Rect(base.X + 1f, base.Y + 1f, base.Width - 2f, base.Height - 2f, Color.Black);
@@ -393,10 +407,10 @@ public class BezierZipmover : Solid
                 percent = moveEase(at2);
                 Vector2 vector = curve.GetBezierPoint(percent);
                 ScrapeParticlesCheck(vector);
-                if (Scene.OnInterval(0.1f))
-                {
-                    pathRenderer?.CreateSparks();
-                }
+                //if (Scene.OnInterval(0.1f))
+                //{
+                //    pathRenderer?.CreateSparks();
+                //}
 
                 MoveTo(vector);
             }

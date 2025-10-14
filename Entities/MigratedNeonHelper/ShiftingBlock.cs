@@ -146,7 +146,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 					break;
 				}
 				yield return null;
-				at = MathHelper.Clamp(at + Engine.DeltaTime / moveTime, 0f, 1f);
+				at = (at + Engine.DeltaTime / moveTime).ClampWhole(0f, 1f);
 			}
 			//Audio.SetParameter(moveSfx, "end", 1f);
 			//Audio.Play("event:/game/05_mirror_temple/swapblock_return_end", base.Center);

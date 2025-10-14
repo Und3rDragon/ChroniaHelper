@@ -194,7 +194,7 @@ public class ModifiedAnimatedParallax : Parallax
                     {
                         fps = orig_fps * multipliers[entry.Key];
                         currentFrameTimer *= multipliers[entry.Key];
-                        currentFrameTimer.Clamp(Engine.DeltaTime, 2592000f); // Preventing overflow
+                        currentFrameTimer.ClampWhole(Engine.DeltaTime, 2592000f); // Preventing overflow
                         $"parallaxSpeed_{entry.Key}".SetFlag(false);
                     }
                 }

@@ -362,6 +362,47 @@ public static class NumberUtils
         return new(value.X.Clamp(value1.X, value2.X), value.Y.Clamp(value1.Y, value2.Y));
     }
 
+    public static int ClampWhole(this int value, int value1, int value2)
+    {
+        int min = value1 < value2 ? value1 : value2;
+        int max = value1 > value2 ? value1 : value2;
+
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    public static float ClampWhole(this float value, float value1, float value2)
+    {
+        float min = value1 < value2 ? value1 : value2;
+        float max = value1 > value2 ? value1 : value2;
+
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    public static Vector2 ClampWhole(this Vector2 value, Vector2 value1, Vector2 value2)
+    {
+        return new(value.X.ClampWhole(value1.X, value2.X), value.Y.ClampWhole(value1.Y, value2.Y));
+    }
+
+    public static int ClampMin(this int value, int n)
+    {
+        return value >= n ? value : n;
+    }
+
+    public static float ClampMin(this float value, float n)
+    {
+        return value >= n ? value : n;
+    }
+
+    public static int ClampMax(this int value, int n)
+    {
+        return value <= n ? value : n;
+    }
+
+    public static float ClampMax(this float value, float n)
+    {
+        return value <= n ? value : n;
+    }
+
     public enum Comparator
     {
         Equals = 0,

@@ -372,6 +372,11 @@ public static class ColorUtils
         {
             return color * alpha;
         }
+        
+        public Color Parsed(float overrideAlpha)
+        {
+            return color * overrideAlpha.ClampWhole(0f, 1f);
+        }
     }
 
     public static ChroniaColor GetChroniaColor(this Color color, float alpha = 1f)
