@@ -43,9 +43,21 @@ zip.fieldInformation = {
         allowXNAColors = true,
         useAlpha = true,
     },
+    ropeLightColor = {
+        fieldType = "color",
+        allowXNAColors = true,
+        useAlpha = true,
+    },
     renderGap = {
         fieldType = "integer",
-    }
+    },
+    renderStyle = {
+        options = {
+            ["Vanilla Style"] = 0,
+            ["Single Line"] = 1,
+        },
+        editable = false,
+    },
 }
 
 zip.fieldOrder = {
@@ -67,7 +79,9 @@ zip.placements = {
         returnEase = "sinein",
         baseColor = "000000",
         ropeColor = "663931",
+        ropeLightColor = "9b6157",
         renderGap = 0,
+        renderStyle = 0,
         drawBorder = true,
     }
 }

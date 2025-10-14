@@ -97,8 +97,8 @@ public class BezierZipmover : Solid
             {
                 Vector2 vector4 = from + vector2 + vector.Perpendicular() + vector * num;
                 Vector2 vector5 = to + vector3 - vector * num;
-                Draw.Line(vector4 + offset, vector4 + vector * 2f + offset, colorOverride.HasValue ? colorOverride.Value : ropeLightColor);
-                Draw.Line(vector5 + offset, vector5 - vector * 2f + offset, colorOverride.HasValue ? colorOverride.Value : ropeLightColor);
+                Draw.Line(vector4 + offset, vector4 + vector * 2f + offset, colorOverride.HasValue ? colorOverride.Value : ZipMover.ropeLightColor.Parsed());
+                Draw.Line(vector5 + offset, vector5 - vector * 2f + offset, colorOverride.HasValue ? colorOverride.Value : ZipMover.ropeLightColor.Parsed());
             }
 
             cog.DrawCentered(from + offset, colorOverride.HasValue ? colorOverride.Value : Color.White, 1f, rotation);
@@ -129,8 +129,6 @@ public class BezierZipmover : Solid
     
     public float percent;
     
-    public static Color ropeLightColor = Calc.HexToColor("9b6157");
-    
     public SoundSource sfx = new SoundSource();
 
     //更改参数
@@ -140,8 +138,10 @@ public class BezierZipmover : Solid
     public BezierCurve curve;
     public float moveTime = 0.5f, returnTime = 2f;
     public Ease.Easer moveEase = Ease.SineIn, returnEase = Ease.SineIn;
-    public CColor baseColor = new("000000"), ropeColor = new("663931");
+    public CColor baseColor = new("000000"), ropeColor = new("663931"), ropeLightColor = new("9b6157");
     public int renderGap = 0;
+    public enum RenderStyle { Vanilla = 0, Single = 1 };
+    public int renderStyle = 0;
     public BezierZipmover(EntityData e, Vector2 p)
         : base(e.Position + p, e.Width, e.Height, safe: false)
     {
@@ -157,6 +157,7 @@ public class BezierZipmover : Solid
         baseColor = e.GetChroniaColor("baseColor", Color.Black);
         ropeColor = e.GetChroniaColor("ropeColor", "663931");
         renderGap = e.Int("renderGap", 0);
+        renderStyle = e.Int("renderStyle", 0);
         
         base.Depth = e.Int("depth", -9999);
         start = Position;
@@ -218,9 +219,27 @@ public class BezierZipmover : Solid
         bloom.Y = streetlight.CurrentAnimationFrame * 3;
     }
     
-    public override void Render()
+    public void DrawSegment(Vc2 from, Vc2 to, float percent, Vc2? _offset = null)
     {
-        // Render Bezier Curve
+        Vc2 offset = _offset ?? Vc2.Zero;
+        
+        Vector2 vector = (to - from).SafeNormalize();
+        Vector2 vector2 = vector.Perpendicular() * 3f;
+        Vector2 vector3 = -vector.Perpendicular() * 4f;
+        float rotation = percent * MathF.PI * 2f;
+        Draw.Line(from + vector2 + offset, to + vector2 + offset, ropeColor.Parsed());
+        Draw.Line(from + vector3 + offset, to + vector3 + offset, ropeColor.Parsed());
+        for (float num = 4f - percent * MathF.PI * 8f % 4f; num < (to - from).Length(); num += 4f)
+        {
+            Vector2 vector4 = from + vector2 + vector.Perpendicular() + vector * num;
+            Vector2 vector5 = to + vector3 - vector * num;
+            Draw.Line(vector4 + offset, vector4 + vector * 2f + offset, ropeLightColor.Parsed());
+            Draw.Line(vector5 + offset, vector5 - vector * 2f + offset, ropeLightColor.Parsed());
+        }
+    }
+    
+    public void SingleRendering()
+    {
         curve.Render(100, ropeColor.Parsed(0.3f), 5f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
         curve.Render(100, ropeColor.Parsed(0.7f), 2f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
         Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.Parsed(0.4f), 200);
@@ -232,6 +251,33 @@ public class BezierZipmover : Solid
         pathRenderer.cog.DrawCentered(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), Color.White, 1f, percent * MathF.PI * 2f);
         pathRenderer.cog.DrawCentered(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), Color.White, 1f, percent * MathF.PI * 2f);
 
+    }
+
+    public override void Render()
+    {
+        // Render Bezier Curve
+        if(renderStyle == (int)RenderStyle.Single)
+        {
+            SingleRendering();
+        }
+        else
+        {
+            curve.OperateBezierPoints(50, (a, b, ai, bi) =>
+            {
+                if(renderGap != 0)
+                {
+                    if (ai % (renderGap * 2) >= renderGap)
+                    {
+                        return;
+                    }
+                }
+                DrawSegment(a, b, percent, new Vc2(base.Width / 2, base.Height / 2));
+            });
+
+            pathRenderer.cog.DrawCentered(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), Color.White, 1f, percent * MathF.PI * 2f);
+            pathRenderer.cog.DrawCentered(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), Color.White, 1f, percent * MathF.PI * 2f);
+        }
+        
         Vector2 position = Position;
         Position += base.Shake;
         Draw.Rect(base.X + 1f, base.Y + 1f, base.Width - 2f, base.Height - 2f, Color.Black);

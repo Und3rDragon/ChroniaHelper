@@ -52,6 +52,39 @@ public class BezierCurve
 
         return GetBezierPoint(dump, overrideLerp);
     }
+    
+    public Vc2[] GetBezierPoints(int resolution, Vc2? offsets = null)
+    {
+        int res = resolution.ClampMin(1);
+        
+        Vc2[] points = new Vc2[res + 1];
+        for (int i = 0; i < res + 1; i++)
+        {
+            points[i] = GetBezierPoint((float)i / res) + (offsets?? offset);
+        }
+
+        return points;
+    }
+    
+    public void OperateBezierPoints(int resolution, Action<Vc2, Vc2> operation, Vc2? pointOffset = null)
+    {
+        Vc2[] points = GetBezierPoints(resolution, pointOffset);
+        
+        for(int i = 0; i < points.Length - 1; i++)
+        {
+            operation(points[i], points[i + 1]);
+        }
+    }
+
+    public void OperateBezierPoints(int resolution, Action<Vc2, Vc2, int, int> operation, Vc2? pointOffset = null)
+    {
+        Vc2[] points = GetBezierPoints(resolution, pointOffset);
+
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            operation(points[i], points[i + 1], i, i + 1);
+        }
+    }
 
     public void Render(int? resolution = null, Color? lineColor = null, float? thickness = null,
         Vc2? offset = null, int? gaps = null)
@@ -70,15 +103,14 @@ public class BezierCurve
             points[i] = GetBezierPoint((float)i / res) + offset;
         }
         
-        int[] byPassIndexes = new int[points.Length];
+        HashSet<int> byPassIndexes = new();
         if(gap != 0)
         {
-            for (int i = 0, j = 0; i < points.Length; i++)
+            for (int i = 0; i < points.Length; i++)
             {
                 if(i % (gap * 2) >= gap)
                 {
-                    byPassIndexes[j] = i;
-                    j++;
+                    byPassIndexes.Add(i);
                 }
             }
         }
