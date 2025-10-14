@@ -985,3 +985,7 @@ triggers.ChroniaHelper/ChroniaFlagTrigger.placements.name.FlagTrigger=Chronia Fl
 
 entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.normal=Cornerboost Falling Dream Block (Normal)
 entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.chained=Cornerboost Falling Dream Block (Chained)
+
+# ================= Bezier Zip Mover
+
+entities.ChroniaHelper/BezierZipmover.placements.name.zipmover=Bezier Zip Mover

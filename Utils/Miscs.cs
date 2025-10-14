@@ -10,7 +10,7 @@ using YoctoHelper.Cores;
 namespace ChroniaHelper.Utils;
 
 // This class was moved from CommunalHelperModule, so let's keep the same namespace.
-public static class Util
+public static class Miscs
 {
 
     public static int ToBitFlag(params bool[] b)

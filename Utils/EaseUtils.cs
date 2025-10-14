@@ -144,7 +144,11 @@ public static class EaseUtils
         {Ease.BounceInOut,  EaseMode.BounceInOut }
     };
 
-    public static Ease.Easer StringToEase (string str)
+    public static Ease.Easer StringToEase(string str)
+    {
+        return StringToEase(str, Ease.Linear);
+    }
+    public static Ease.Easer StringToEase (string str, Ease.Easer defaultEase)
     {
         switch (str.ToLower())
         {
@@ -205,7 +209,7 @@ public static class EaseUtils
             case "bounceinout": 
                 return Ease.BounceInOut;
             default:
-                return Ease.Linear;
+                return defaultEase;
         }
     }
 

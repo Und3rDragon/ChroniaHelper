@@ -83,7 +83,7 @@ public class OmniZipSolid : ConnectedSolid
                 sparkDirEndA = angle + MathHelper.Pi - piOverEight;
                 sparkDirEndB = angle + MathHelper.Pi + piOverEight;
 
-                Rectangle b = Util.Rectangle(from, to);
+                Rectangle b = Miscs.Rectangle(from, to);
                 b.Inflate(10, 10);
 
                 Bounds = b;
@@ -163,8 +163,8 @@ public class OmniZipSolid : ConnectedSolid
                 Vector2 node = this.nodes[i + 1] = nodes[i + 1] + offset;
                 segments[i] = new(node, prev);
 
-                min = Util.Min(min, node);
-                max = Util.Max(max, node);
+                min = Miscs.Min(min, node);
+                max = Miscs.Max(max, node);
 
                 prev = node;
             }
@@ -482,7 +482,7 @@ public class OmniZipSolid : ConnectedSolid
 
         if (indicator)
         {
-            Util.RenderProgressRectangle(recPos, recWidth, recHeight, recProgress, indicatorColor, indicatorExpansion, false);
+            Miscs.RenderProgressRectangle(recPos, recWidth, recHeight, recProgress, indicatorColor, indicatorExpansion, false);
         }
         
     }
@@ -579,7 +579,7 @@ public class OmniZipSolid : ConnectedSolid
                     }
                     if (this.speedmult <= 0f) { this.speedmult = -speedmult; }
 
-                    at = Calc.Approach(at, 1f, Util.OZMTime(timeUnits, this.speedmult, false));
+                    at = Calc.Approach(at, 1f, Miscs.OZMTime(timeUnits, this.speedmult, false));
 
                     recProgress = at;
 
@@ -732,7 +732,7 @@ public class OmniZipSolid : ConnectedSolid
                     {
                         yield return null;
 
-                        at = Calc.Approach(at, 1f, Util.OZMTime(timeUnits, returnSpeed, true));// Return Speeds
+                        at = Calc.Approach(at, 1f, Miscs.OZMTime(timeUnits, returnSpeed, true));// Return Speeds
                         percent = 1f - EaseUtils.StringToEase(returnEase)(at); // Return Ease
 
                         recProgress = at;

@@ -62,7 +62,7 @@ public class OmniZipEntity : Entity
                 sparkDirEndA = angle + MathHelper.Pi - piOverEight;
                 sparkDirEndB = angle + MathHelper.Pi + piOverEight;
 
-                Rectangle b = Util.Rectangle(from, to);
+                Rectangle b = Miscs.Rectangle(from, to);
                 b.Inflate(10, 10);
 
                 Bounds = b;
@@ -142,8 +142,8 @@ public class OmniZipEntity : Entity
                 Vector2 node = this.nodes[i + 1] = nodes[i + 1] + offset;
                 segments[i] = new(node, prev);
 
-                min = Util.Min(min, node);
-                max = Util.Max(max, node);
+                min = Miscs.Min(min, node);
+                max = Miscs.Max(max, node);
 
                 prev = node;
             }
@@ -648,7 +648,7 @@ public class OmniZipEntity : Entity
                     }
                     if (this.speedmult <= 0f) { this.speedmult = -speedmult; }
 
-                    at = Calc.Approach(at, 1f, Util.OZMTime(timeUnits, this.speedmult, false));
+                    at = Calc.Approach(at, 1f, Miscs.OZMTime(timeUnits, this.speedmult, false));
 
                     // changing easer
                     string ease;
@@ -796,7 +796,7 @@ public class OmniZipEntity : Entity
                     while (at < 1f)
                     {
                         yield return null;
-                        at = Calc.Approach(at, 1f, Util.OZMTime(timeUnits, returnSpeed, true));// Return Speeds
+                        at = Calc.Approach(at, 1f, Miscs.OZMTime(timeUnits, returnSpeed, true));// Return Speeds
                         percent = 1f - EaseUtils.StringToEase(returnEase)(at); // Return Ease
 
                         Vector2 position = Vector2.Lerp(from, to, EaseUtils.StringToEase(returnEase)(at)); // Return Ease

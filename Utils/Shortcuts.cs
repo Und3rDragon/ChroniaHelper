@@ -11,6 +11,7 @@ global using HSL = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSV = ChroniaHelper.Utils.ColorUtils.HSVColor;
 global using HSLColor = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSVColor = ChroniaHelper.Utils.ColorUtils.HSVColor;
+global using CColor = ChroniaHelper.Utils.ColorUtils.ChroniaColor;
 global using ChroniaColor = ChroniaHelper.Utils.ColorUtils.ChroniaColor;
 using System.Runtime.InteropServices.Marshalling;
 using ChroniaHelper.Utils.ChroniaSystem;

@@ -69,7 +69,7 @@ public class OmniZipMover2 : Solid
                 sparkDirEndA = angle + MathHelper.Pi - piOverEight;
                 sparkDirEndB = angle + MathHelper.Pi + piOverEight;
 
-                Rectangle b = Util.Rectangle(from, to);
+                Rectangle b = Miscs.Rectangle(from, to);
                 b.Inflate(10, 10);
 
                 Bounds = b;
@@ -149,8 +149,8 @@ public class OmniZipMover2 : Solid
                 Vector2 node = this.nodes[i + 1] = nodes[i + 1] + offset;
                 segments[i] = new(node, prev);
 
-                min = Util.Min(min, node);
-                max = Util.Max(max, node);
+                min = Miscs.Min(min, node);
+                max = Miscs.Max(max, node);
 
                 prev = node;
             }

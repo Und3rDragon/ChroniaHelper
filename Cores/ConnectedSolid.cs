@@ -296,8 +296,8 @@ public class ConnectedSolid : Solid
             bool downright = tiles[x + 1, y + 1];
 
             image = AutoTileTexture(
-                (Sides)Util.ToBitFlag(up, down, left, right),
-                (Corners)Util.ToBitFlag(upleft, upright, downleft, downright),
+                (Sides)Miscs.ToBitFlag(up, down, left, right),
+                (Corners)Miscs.ToBitFlag(upleft, upright, downleft, downright),
                 edges, innerCorners, out tileData);
             autoTileData[(int)tilePos.X, (int)tilePos.Y] = tileData;
         }
