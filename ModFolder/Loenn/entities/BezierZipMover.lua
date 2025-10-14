@@ -58,6 +58,7 @@ zip.fieldInformation = {
         },
         editable = false,
     },
+    depth = require("mods").requireFromPlugin("helpers.field_options").depths,
 }
 
 zip.fieldOrder = {
