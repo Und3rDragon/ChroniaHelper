@@ -178,7 +178,9 @@ function zip.sprite(room, entity)
         table.insert(curvePoints, {centerNodeX, centerNodeY})
     end
     
-    CreateBezierCurve(sprites, curvePoints, 100, {0, 0}, 2)
+    --local curveLength = GetBezierCurveLength(curvePoints, 50)
+    --CreateBezierCurve(sprites, curvePoints, math.floor(curveLength / 8) + 1, {0, 0}, 2)
+    CreateBezierCurve(sprites, curvePoints, #nodes * 4 + 1, {0, 0}, 2)
     
     addBlockSprites(sprites, entity, entity.directory .. "block", entity.directory .. "light01", x, y, width, height)
 
@@ -277,6 +279,38 @@ function CreateBezierCurve(sprite, points, resolution, offset, thickness)
             table.insert(sprite, s)
         end
     end
+end
+
+-- 辅助：计算两点间距离
+local function distance(p1, p2)
+    local dx = p2.x - p1.x
+    local dy = p2.y - p1.y
+    return math.sqrt(dx * dx + dy * dy)
+end
+
+-- 获取贝塞尔曲线近似长度
+function GetBezierCurveLength(points, resolution)
+    if not points or #points == 0 then
+        return 0.0
+    end
+    if #points == 1 then
+        return 0.0
+    end
+
+    resolution = resolution or 100  -- 默认采样100段
+    if resolution < 1 then resolution = 1 end
+
+    local totalLength = 0.0
+    local prevPoint = evalBezier(points, 0)
+
+    for i = 1, resolution do
+        local t = i / resolution
+        local currPoint = evalBezier(points, t)
+        totalLength = totalLength + distance(prevPoint, currPoint)
+        prevPoint = currPoint
+    end
+
+    return totalLength
 end
 
 return zip

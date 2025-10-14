@@ -36,23 +36,53 @@ public class BezierCurve
     }
 
 
-    public Vc2 GetBezierPoint(Vc2[]points, float overrideLerp)
+    public Vc2 GetBezierPoint(Vc2[] points, float overrideLerp)
     {
-        if (points.IsNull()) { return Vc2.Zero; }
-        if (points.Length == 0) { return Vc2.Zero; }
-        if (points.Length == 1) { return points[0]; }
+        if (points == null || points.Length == 0) return Vc2.Zero;
+        if (points.Length == 1) return points[0];
+        if (points.Length == 2)
+            return overrideLerp.LerpValue(0f, 1f, points[0], points[1]);
 
-        Vc2[] dump = new Vc2[points.Length - 1];
-        for (int i = 0; i < points.Length - 1; i++)
+        float t = overrideLerp;
+        float u = 1 - t;
+
+        // 二次贝塞尔：3个点
+        if (points.Length == 3)
         {
-            Vc2 a = points[i], b = points[i + 1];
-
-            dump[i] = overrideLerp.LerpValue(0f, 1f, a, b);
+            float uu = u * u;
+            float tt = t * t;
+            return uu * points[0] + 2 * u * t * points[1] + tt * points[2];
         }
 
-        return GetBezierPoint(dump, overrideLerp);
+        // 三次贝塞尔：4个点
+        if (points.Length == 4)
+        {
+            float uu = u * u;
+            float uuu = uu * u;
+            float tt = t * t;
+            float ttt = tt * t;
+            return uuu * points[0]
+                 + 3 * uu * t * points[1]
+                 + 3 * u * tt * points[2]
+                 + ttt * points[3];
+        }
+
+        // 高阶：使用非递归迭代版 de Casteljau（避免递归 + new[]）
+        int n = points.Length;
+        Vc2[] temp = new Vc2[n];
+        Array.Copy(points, temp, n);
+
+        for (int i = 1; i < n; i++)
+        {
+            for (int j = 0; j < n - i; j++)
+            {
+                temp[j] = overrideLerp.LerpValue(0f, 1f, temp[j], temp[j + 1]);
+            }
+        }
+
+        return temp[0];
     }
-    
+
     public Vc2[] GetBezierPoints(int resolution, Vc2? offsets = null)
     {
         int res = resolution.ClampMin(1);
@@ -65,7 +95,33 @@ public class BezierCurve
 
         return points;
     }
+
+    public float GetBezierCurveLength(int resolution, Vc2? offset = null)
+    {
+        Vc2[] bezierPoints = GetBezierPoints(resolution, offset);
+
+        float length = 0f;
+        for (int i = 1; i < bezierPoints.Length; i++)
+        {
+            length += Vc2.Distance(bezierPoints[i - 1], bezierPoints[i]);
+        }
+
+        return length;
+    }
     
+    public float GetBezierCurveLength(int resolution, out Vc2[] bezierPoints, Vc2? offset = null)
+    {
+        bezierPoints = GetBezierPoints(resolution, offset);
+
+        float length = 0f;
+        for (int i = 1; i < bezierPoints.Length; i++)
+        {
+            length += Vc2.Distance(bezierPoints[i - 1], bezierPoints[i]);
+        }
+
+        return length;
+    }
+
     public void OperateBezierPoints(int resolution, Action<Vc2, Vc2> operation, Vc2? pointOffset = null)
     {
         Vc2[] points = GetBezierPoints(resolution, pointOffset);
@@ -83,6 +139,26 @@ public class BezierCurve
         for (int i = 0; i < points.Length - 1; i++)
         {
             operation(points[i], points[i + 1], i, i + 1);
+        }
+    }
+
+    public void OperateBezierPointsBasedOnLength(int resolution, Action<float, Vc2, Vc2> operation, Vc2? pointOffset = null)
+    {
+        float length = GetBezierCurveLength(resolution, out Vc2[] points, pointOffset);
+
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            operation(length, points[i], points[i + 1]);
+        }
+    }
+
+    public void OperateBezierPointsBasedOnLength(int resolution, Action<float, Vc2, Vc2, int, int> operation, Vc2? pointOffset = null)
+    {
+        float length = GetBezierCurveLength(resolution, out Vc2[] points, pointOffset);
+
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            operation(length, points[i], points[i + 1], i, i + 1);
         }
     }
 

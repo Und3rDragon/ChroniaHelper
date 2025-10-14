@@ -240,8 +240,8 @@ public class BezierZipmover : Solid
     
     public void SingleRendering()
     {
-        curve.Render(100, ropeColor.Parsed(0.3f), 5f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
-        curve.Render(100, ropeColor.Parsed(0.7f), 2f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
+        curve.Render(50, ropeColor.Parsed(0.3f), 5f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
+        curve.Render(50, ropeColor.Parsed(0.7f), 2f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
         Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.Parsed(0.4f), 200);
         Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 2f, ropeColor.Parsed(0.8f), 200);
         Draw.Circle(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.Parsed(0.4f), 200);
@@ -262,7 +262,7 @@ public class BezierZipmover : Solid
         }
         else
         {
-            curve.OperateBezierPoints(50, (a, b, ai, bi) =>
+            curve.OperateBezierPoints(nodes.Length * 4, (a, b, ai, bi) =>
             {
                 if(renderGap != 0)
                 {
