@@ -10,7 +10,7 @@ using static ChroniaHelper.Entities.CustomBooster;
 using System.Runtime.InteropServices;
 using ChroniaHelper.Components;
 using System.Diagnostics;
-using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.StopwatchSystem;
 
 namespace ChroniaHelper.Modules;
 

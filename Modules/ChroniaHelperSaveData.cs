@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Triggers;
-using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Utils.StopwatchSystem;
 using YamlDotNet.Serialization;
 
 namespace ChroniaHelper.Modules;

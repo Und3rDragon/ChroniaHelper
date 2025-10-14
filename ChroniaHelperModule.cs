@@ -22,6 +22,7 @@ using FASF2025Helper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Components;
+using ChroniaHelper.Utils.StopwatchSystem;
 
 namespace ChroniaHelper;
 
@@ -107,7 +108,7 @@ public class ChroniaHelperModule : EverestModule
         ChroniaFlag.Onload();
         ChroniaCounter.Onload();
         ChroniaSlider.Onload();
-        Utils.Stopclock.Load();
+        Stopclock.Load();
 
         // migrated from NeonHelper
         PufferBomb.Load();
@@ -203,7 +204,7 @@ public class ChroniaHelperModule : EverestModule
         ChroniaFlag.Unload();
         ChroniaCounter.Unload();
         ChroniaSlider.Unload();
-        Utils.Stopclock.Unload();
+        Stopclock.Unload();
 
         // migrated from NeonHelper
         PufferBomb.Unload();

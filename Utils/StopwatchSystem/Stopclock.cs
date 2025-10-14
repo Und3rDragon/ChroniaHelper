@@ -1,0 +1,303 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using YamlDotNet.Serialization;
+
+namespace ChroniaHelper.Utils.StopwatchSystem;
+
+public partial class Stopclock : IDisposable
+{
+    // 线程计数和限制
+    private static int activeIsolatedClocks = 0;
+    private static int maxIsolatedClocks = 5;
+    
+    public static void Load()
+    {
+        On.Celeste.Level.UpdateTime += LevelUpdateTime;
+        On.Celeste.Level.LoadLevel += LoadingLevel;
+        On.Monocle.Scene.Update += GlobalUpdate;
+    }
+
+    public static void Unload()
+    {
+        On.Celeste.Level.UpdateTime -= LevelUpdateTime;
+        On.Celeste.Level.LoadLevel -= LoadingLevel;
+        On.Monocle.Scene.Update -= GlobalUpdate;
+    }
+
+    public static void LoadingLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool loader)
+    {
+        orig(self, intro, loader);
+    }
+
+    public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
+    {
+        orig(self);
+
+        if (Md.SaveData.IsNull()) { return; }
+
+        HashSet<string> toRemove = new();
+        foreach (var watches in Md.SaveData.globalStopwatches)
+        {
+            // If not global, migrate the timer to session timers
+            if (!watches.Value.global)
+            {
+                toRemove.Add(watches.Key);
+                watches.Value.Register(watches.Key);
+                continue;
+            }
+
+            if (!watches.Value.isolatedUpdate)
+            {
+                watches.Value.UpdateTime(TimeUtils.deltaTicks);
+            }
+
+            if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
+
+            //Log.Info(watches.Key, watches.Value.FormattedTime);
+        }
+        foreach (var item in toRemove)
+        {
+            Md.SaveData.globalStopwatches.SafeRemove(item);
+        }
+    }
+
+    public static void LevelUpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
+    {
+        orig(self);
+
+        if (Md.Session.IsNull()) { return; }
+
+        if (!self.Completed)
+        {
+            HashSet<string> toRemove = new();
+            foreach (var watches in Md.Session.sessionStopwatches)
+            {
+                if (watches.Value.global)
+                {
+                    toRemove.Add(watches.Key);
+                    watches.Value.Register(watches.Key);
+                    continue;
+                }
+
+                if (!watches.Value.isolatedUpdate)
+                {
+                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                }
+
+                if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
+
+                //Log.Info(watches.Key, watches.Value.FormattedTime);
+            }
+            foreach (var item in toRemove)
+            {
+                Md.Session.sessionStopwatches.SafeRemove(item);
+            }
+        }
+    }
+    
+    public int year = 0;
+    public int month = 0;
+    public int day = 0;
+    public int hour = 0;
+    public int minute = 0;
+    public int second = 0;
+    public int millisecond = 0;
+
+    public bool countdown = false;
+    public bool global = false;
+    public bool completed { get; private set; } = false;
+    public bool removeWhenCompleted = true;
+    public bool running { get; private set; } = false;
+    public bool isolatedUpdate = false;
+    public bool registered { get; private set; } = false;
+    
+    public int initialYear = 0;
+    public int initialMonth = 0;
+    public int initialDay = 0;
+    public int initialHour = 0;
+    public int initialMinute = 5;
+    public int initialSecond = 0;
+    public int initialMillisecond = 0;
+
+    // 时间累积
+    private long _accumulatedTicks;
+    private DateTime _lastUpdateTime; // 用于独立更新的时间记录
+    private Timer _updateTimer = null;
+    private bool _disposed = false;
+    // 自动更新间隔（毫秒）
+    public int IsolateUpdateInterval { get; set; } = 50;
+    
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onStart;
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onStop;
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onReset;
+    /// <summary>
+    /// 注意: 该操作不会被保存到记录中
+    /// </summary>
+    [YamlIgnore]
+    public Action onComplete;
+    public virtual void OnStart() { }
+    public virtual void OnStop() { }
+    public virtual void OnReset() { }
+    public virtual void OnComplete() { }
+    
+    // 信号系统
+
+    /// <summary>
+    /// 信号状态, 使用信号请调用FetchSignal()
+    /// </summary>
+    public int signal { get; private set; } = 0;
+    public bool FetchSignal()
+    {
+        bool state = signal > 0;
+        if (state) { signal = -1; }
+        return state;
+    }
+    public bool FetchSignal(int specificSignal)
+    {
+        bool state = signal == specificSignal;
+        if (state) { signal = -1; }
+        return state;
+    }
+    public bool FetchSignal(Signal specificSignal)
+    {
+        bool state = signal == (int)specificSignal;
+        if (state) { signal = -1; }
+        return state;
+    }
+    public enum Signal 
+    { 
+        Used = -1,
+        Initial = 0, 
+        Reset = 1, 
+        Start = 2, 
+        Stop = 3, 
+        Complete = 4,
+    }
+    
+    /// <summary>
+    /// 如果是倒计时, 倒计时默认事件为5分钟
+    /// </summary>
+    public Stopclock()
+    {
+        countdown = false;
+        global = false;
+        removeWhenCompleted = true;
+        isolatedUpdate = false;
+        _lastUpdateTime = DateTime.Now;
+
+        registered = false;
+        
+        Initialize();
+    }
+
+    /// <summary>
+    /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
+    /// </summary>
+    public Stopclock(bool countdown, int year = 0, int month = 0, int day = 0, int hour = 0,
+        int minute = 0, int second = 0, int millisecond = 0, bool global = false,
+        int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
+        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
+    {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+        this.millisecond = millisecond;
+        this.countdown = countdown;
+        this.global = global;
+        this.initialYear = initialYear;
+        this.initialMonth = initialMonth;
+        this.initialDay = initialDay;
+        this.initialHour = initialHour;
+        this.initialMinute = initialMinute;
+        this.initialSecond = initialSecond;
+        this.initialMillisecond = initialMillisecond;
+        this.removeWhenCompleted = removeWhenCompleted;
+        this.isolatedUpdate = isolatedUpdate;
+        _lastUpdateTime = DateTime.Now;
+
+        registered = false;
+
+        Initialize();
+    }
+
+    /// <summary>
+    /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
+    /// </summary>
+    public Stopclock(string regName, bool countdown = false, int year = 0, int month = 0, int day = 0, int hour = 0,
+        int minute = 0, int second = 0, int millisecond = 0, bool global = false,
+        int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
+        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
+    {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+        this.millisecond = millisecond;
+        this.countdown = countdown;
+        this.global = global;
+        this.initialYear = initialYear;
+        this.initialMonth = initialMonth;
+        this.initialDay = initialDay;
+        this.initialHour = initialHour;
+        this.initialMinute = initialMinute;
+        this.initialSecond = initialSecond;
+        this.initialMillisecond = initialMillisecond;
+        this.removeWhenCompleted = removeWhenCompleted;
+        this.isolatedUpdate = isolatedUpdate;
+        _lastUpdateTime = DateTime.Now;
+
+        registered = false;
+
+        Register(regName);
+
+        Initialize();
+    }
+
+    public void Register(string name)
+    {
+        if (global)
+        {
+            Md.SaveData.globalStopwatches.Enter(name, this);
+        }
+        else
+        {
+            Md.Session.sessionStopwatches.Enter(name, this);
+        }
+
+        registered = true;
+    }
+
+    public void Register(string name, bool overrideGlobal)
+    {
+        global = overrideGlobal;
+
+        if (global)
+        {
+            Md.SaveData.globalStopwatches.Enter(name, this);
+        }
+        else
+        {
+            Md.Session.sessionStopwatches.Enter(name, this);
+        }
+
+        registered = true;
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.StopwatchSystem;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
