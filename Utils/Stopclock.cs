@@ -23,8 +23,14 @@ public static class TimeUtils
     }
 }
 
-public class Stopclock
+public class Stopclock : IDisposable
 {
+    // 线程计数和限制
+    private static int activeIsolatedClocks = 0;
+    private static int maxIsolatedClocks = 5;
+
+    #region Hooks
+    
     public static void Load()
     {
         On.Celeste.Level.UpdateTime += LevelUpdateTime;
@@ -65,10 +71,6 @@ public class Stopclock
             {
                 watches.Value.UpdateTime(TimeUtils.deltaTicks);
             }
-            else
-            {
-                watches.Value.IsolatedUpdateTime();
-            }
 
             if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
 
@@ -102,10 +104,6 @@ public class Stopclock
                 {
                     watches.Value.UpdateTime(TimeUtils.deltaTicks);
                 }
-                else
-                {
-                    watches.Value.IsolatedUpdateTime();
-                }
 
                 if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
 
@@ -131,6 +129,14 @@ public class Stopclock
         Log.Error("_____________________________");
     }
     
+    public void SelfDebug()
+    {
+        // 添加实例标识
+        Log.Info($"[Instance {GetHashCode()}] {FormattedTime}");
+    }
+
+    #endregion
+
     public int year = 0;
     public int month = 0;
     public int day = 0;
@@ -157,8 +163,13 @@ public class Stopclock
     // 时间累积
     private long _accumulatedTicks;
     private DateTime _lastUpdateTime; // 用于独立更新的时间记录
+    private Timer _updateTimer = null;
+    private bool _disposed = false;
+    // 自动更新间隔（毫秒）
+    public int IsolateUpdateInterval { get; set; } = 50;
 
-    // 信号系统
+    #region Subclass Ports
+
     /// <summary>
     /// 注意: 该操作不会被保存到记录中
     /// </summary>
@@ -183,18 +194,34 @@ public class Stopclock
     public virtual void OnStop() { }
     public virtual void OnReset() { }
     public virtual void OnComplete() { }
+
+    #endregion
+
+    #region Signal System
+    // 信号系统
+
     /// <summary>
-    /// 仅用于外部接收信号, 使用信号请调用UseSignal()
+    /// 信号状态, 使用信号请调用FetchSignal()
     /// </summary>
     public int signal { get; private set; } = 0;
-    /// <summary>
-    /// 调用信号
-    /// </summary>
-    public void UseSignal() { signal = -1; }
-    /// <summary>
-    /// 检查信号
-    /// </summary>
-    public bool HasSignal => signal > 0;
+    public bool FetchSignal()
+    {
+        bool state = signal > 0;
+        if (state) { signal = -1; }
+        return state;
+    }
+    public bool FetchSignal(int specificSignal)
+    {
+        bool state = signal == specificSignal;
+        if (state) { signal = -1; }
+        return state;
+    }
+    public bool FetchSignal(Signal specificSignal)
+    {
+        bool state = signal == (int)specificSignal;
+        if (state) { signal = -1; }
+        return state;
+    }
     public enum Signal 
     { 
         Used = -1,
@@ -204,6 +231,8 @@ public class Stopclock
         Stop = 3, 
         Complete = 4,
     }
+
+    #endregion
 
     /// <summary>
     /// 如果是倒计时, 倒计时默认事件为5分钟
@@ -222,24 +251,6 @@ public class Stopclock
     /// <summary>
     /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
     /// </summary>
-    /// <param name="countdown"></param>
-    /// <param name="year"></param>
-    /// <param name="month"></param>
-    /// <param name="day"></param>
-    /// <param name="hour"></param>
-    /// <param name="minute"></param>
-    /// <param name="second"></param>
-    /// <param name="millisecond"></param>
-    /// <param name="global"></param>
-    /// <param name="initialYear"></param>
-    /// <param name="initialMonth"></param>
-    /// <param name="initialDay"></param>
-    /// <param name="initialHour"></param>
-    /// <param name="initialMinute"></param>
-    /// <param name="initialSecond"></param>
-    /// <param name="initialMillisecond"></param>
-    /// <param name="removeWhenCompleted"></param>
-    /// <param name="isolatedUpdate"></param>
     public Stopclock(bool countdown, int year = 0, int month = 0, int day = 0, int hour = 0,
         int minute = 0, int second = 0, int millisecond = 0, bool global = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
@@ -264,6 +275,39 @@ public class Stopclock
         this.removeWhenCompleted = removeWhenCompleted;
         this.isolatedUpdate = isolatedUpdate;
         this._lastUpdateTime = DateTime.Now;
+
+        Initialize();
+    }
+
+    /// <summary>
+    /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
+    /// </summary>
+    public Stopclock(string regName, bool countdown = false, int year = 0, int month = 0, int day = 0, int hour = 0,
+        int minute = 0, int second = 0, int millisecond = 0, bool global = false,
+        int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
+        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
+    {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+        this.millisecond = millisecond;
+        this.countdown = countdown;
+        this.global = global;
+        this.initialYear = initialYear;
+        this.initialMonth = initialMonth;
+        this.initialDay = initialDay;
+        this.initialHour = initialHour;
+        this.initialMinute = initialMinute;
+        this.initialSecond = initialSecond;
+        this.initialMillisecond = initialMillisecond;
+        this.removeWhenCompleted = removeWhenCompleted;
+        this.isolatedUpdate = isolatedUpdate;
+        this._lastUpdateTime = DateTime.Now;
+
+        Register(regName);
 
         Initialize();
     }
@@ -295,7 +339,7 @@ public class Stopclock
     }
 
     #region Operations
-    
+
     /// <summary>
     /// 开始计时
     /// </summary>
@@ -306,7 +350,24 @@ public class Stopclock
         running = true;
         completed = false;
         _accumulatedTicks = 0;
-        _lastUpdateTime = DateTime.Now; // 重置更新时间
+        _lastUpdateTime = DateTime.Now;
+
+        // 运行前检查
+        if (isolatedUpdate)
+        {
+            if(maxIsolatedClocks <= activeIsolatedClocks)
+            {
+                activeIsolatedClocks++;
+                Dispose();
+            }
+        }
+
+        // 确保定时器运行
+        if (isolatedUpdate && _updateTimer == null)
+        {
+            StartAutoUpdate();
+            activeIsolatedClocks++;
+        }
 
         signal = (int)Signal.Start;
 
@@ -385,6 +446,8 @@ public class Stopclock
 
     #endregion
 
+    #region Mechanics
+
     /// <summary>
     /// 更新时间 - 使用 ticks 同步（非独立更新模式）
     /// </summary>
@@ -418,52 +481,92 @@ public class Stopclock
             completed = true;
             running = false;
 
+            signal = (int)Signal.Complete;
+
             onComplete?.Invoke();
             OnComplete();
         }
     }
 
     /// <summary>
-    /// 独立更新时间 - 基于真实电脑时间（独立更新模式）
+    /// 启动自动更新定时器
     /// </summary>
-    public void IsolatedUpdateTime()
+    private void StartAutoUpdate()
     {
-        if (!running || completed || !isolatedUpdate) { return; }
-        
+        if (_updateTimer != null) return;
+
+        _lastUpdateTime = DateTime.Now;
+        _updateTimer = new Timer(_ =>
+        {
+            if (!_disposed && running && !completed)
+            {
+                IsolatedUpdateTime();
+            }
+        }, null, 0, IsolateUpdateInterval);
+    }
+
+    /// <summary>
+    /// 停止自动更新
+    /// </summary>
+    private void StopAutoUpdate()
+    {
+        if (_updateTimer != null)
+        {
+            _updateTimer.Dispose();
+            _updateTimer = null;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+            StopAutoUpdate();
+
+            activeIsolatedClocks--;
+            activeIsolatedClocks = activeIsolatedClocks >= 0 ? activeIsolatedClocks : 0;
+        }
+    }
+
+    /// <summary>
+    /// 独立更新时间
+    /// </summary>
+    private void IsolatedUpdateTime()
+    {
         DateTime currentTime = DateTime.Now;
         TimeSpan elapsed = currentTime - _lastUpdateTime;
         _lastUpdateTime = currentTime;
 
-        // 转换为毫秒
         long deltaMilliseconds = (long)elapsed.TotalMilliseconds;
-
         _accumulatedTicks += deltaMilliseconds;
 
         if (countdown)
         {
-            // 倒计时逻辑 - 减少对应的毫秒数
             millisecond -= (int)deltaMilliseconds;
         }
         else
         {
-            // 正计时逻辑 - 增加对应的毫秒数
             millisecond += (int)deltaMilliseconds;
         }
 
-        // 更新后刷新时间单位
         RefreshUnits();
 
-        // 再次检查倒计时是否完成
         if (countdown && ZeroState)
         {
             completed = true;
             running = false;
 
+            signal = (int)Signal.Complete;
+            
             onComplete?.Invoke();
             OnComplete();
+
+            // 完成后停止定时器以节省资源
+            StopAutoUpdate();
         }
     }
-    
+
     /// <summary>
     /// 刷新时间单位，处理进位和借位
     /// </summary>
@@ -654,6 +757,9 @@ public class Stopclock
         }
     }
 
+    #endregion
+
+    #region Exports
     /// <summary>
     /// 检查时间是否归零
     /// </summary>
@@ -687,4 +793,6 @@ public class Stopclock
         else
             return $"{minute:00}:{second:00}.{millisecond:000}";
     }
+
+    #endregion
 }
