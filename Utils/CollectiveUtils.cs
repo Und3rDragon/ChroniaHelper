@@ -540,14 +540,21 @@ public static class CollectiveUtils
         return;
     }
     
-    public static void ApplyTo<T, Target>(this ICollection<T> source, ref Target target)
+    /// <summary>
+    /// 将一个列表初始化后复制成另一个列表
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="Target"></typeparam>
+    /// <param name="source">被复制的列表</param>
+    /// <param name="target">目标列表（会被清空并初始化）</param>
+    public static void ApplyTo<T, Target>(this ICollection<T> source, out Target target)
         where Target : ICollection<T>, new()
     {
-        target = new();
+        target = new Target();
         source.AddAllTo(ref target);
     }
 
-    public static void ApplyTo<T>(this ICollection<T> source, ref T[] target)
+    public static void ApplyTo<T>(this ICollection<T> source, out T[] target)
     {
         int c = source.Count;
         target = new T[c];
