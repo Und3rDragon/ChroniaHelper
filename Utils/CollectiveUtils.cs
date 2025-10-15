@@ -539,4 +539,18 @@ public static class CollectiveUtils
         uniqueInSource = os; uniqueInTarget = ot;
         return;
     }
+    
+    public static void ApplyTo<T, Target>(this ICollection<T> source, ref Target target)
+        where Target : ICollection<T>, new()
+    {
+        target = new();
+        source.AddAllTo(ref target);
+    }
+
+    public static void ApplyTo<T>(this ICollection<T> source, ref T[] target)
+    {
+        int c = source.Count;
+        target = new T[c];
+        source.CopyTo(target, 0);
+    }
 }
