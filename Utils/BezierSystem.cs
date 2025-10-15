@@ -19,7 +19,7 @@ public class BezierCurve
 
     public BezierCurve(Vector2[] points, float lerp = 0f, float offsetX = 0f, float offsetY = 0f)
     {
-        this.points = new Vc2[points.Length];
+        this.points = new Vc2[points.Length]; 
         this.points = points;
         this.lerp = lerp.ClampWhole(0f, 1f);
         this.offset = new Vc2(offsetX, offsetY);
@@ -160,6 +160,91 @@ public class BezierCurve
         {
             operation(length, points[i], points[i + 1], i, i + 1);
         }
+    }
+
+    /// <summary>
+    /// 获取曲线上距离起点为 lerp * 总长度 的点（等弧长采样）
+    /// </summary>
+    /// <param name="points">贝塞尔控制点</param>
+    /// <param name="lerp">归一化弧长比例 [0,1]</param>
+    /// <param name="resolution">采样分辨率（越高越准，默认 100）</param>
+    /// <returns>对应位置的点</returns>
+    public Vc2 GetEqualDistancePoint(float lerp)
+    {
+        return GetEqualDistancePoint(points, lerp);
+    }
+
+    public Vc2 GetEqualDistancePoint()
+    {
+        return GetEqualDistancePoint(points, lerp);
+    }
+    
+    public Vc2 GetEqualDistancePoint(Vc2[] points, float lerp, int resolution = 100)
+    {
+        if (points == null || points.Length == 0) return Vc2.Zero;
+        if (points.Length == 1) return points[0];
+        if (resolution < 1) resolution = 1;
+
+        lerp = lerp.ClampWhole(0f, 1f);
+
+        // 特殊情况：线性贝塞尔（两点）
+        if (points.Length == 2)
+        {
+            return lerp.LerpValue(0f, 1f, points[0], points[1]);
+        }
+
+        // 1. 高分辨率采样，计算累积弧长
+        int numSegments = resolution;
+        Vc2[] samples = new Vc2[numSegments + 1];
+        float[] cumulativeLengths = new float[numSegments + 1];
+
+        samples[0] = points[0];
+        cumulativeLengths[0] = 0f;
+
+        float totalLength = 0f;
+        for (int i = 1; i <= numSegments; i++)
+        {
+            float t = (float)i / numSegments;
+            samples[i] = GetBezierPoint(points, t);
+            float segmentLength = Vc2.Distance(samples[i - 1], samples[i]);
+            totalLength += segmentLength;
+            cumulativeLengths[i] = totalLength;
+        }
+
+        if (totalLength <= 0f)
+            return points[0];
+
+        // 2. 目标弧长
+        float targetLength = lerp * totalLength;
+
+        // 3. 在 cumulativeLengths 中查找区间 [i-1, i] 使得:
+        //    cumulativeLengths[i-1] <= targetLength <= cumulativeLengths[i]
+        int index = 0;
+        for (int i = 1; i <= numSegments; i++)
+        {
+            if (cumulativeLengths[i] >= targetLength)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        // 边界处理
+        if (index == 0) return samples[0];
+        if (index >= numSegments) return samples[numSegments];
+
+        // 4. 线性插值估算精确的 t
+        float prevLen = cumulativeLengths[index - 1];
+        float nextLen = cumulativeLengths[index];
+        float segmentRatio = (targetLength - prevLen) / (nextLen - prevLen);
+        segmentRatio = segmentRatio.ClampWhole(0f, 1f);
+
+        float t0 = (float)(index - 1) / numSegments;
+        float t1 = (float)index / numSegments;
+        float interpolatedT = t0 + segmentRatio * (t1 - t0);
+
+        // 5. 用精确的 t 计算点（可选：再用 de Casteljau 精确计算）
+        return GetBezierPoint(points, interpolatedT);
     }
 
     public void Render(int? resolution = null, Color? lineColor = null, float? thickness = null,

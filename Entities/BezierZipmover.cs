@@ -146,6 +146,8 @@ public class BezierZipmover : Solid
     public string triggerFlag;
     public bool hasTriggerFlag = false;
     public bool adventureHelperSupport = false;
+    public float terminalWait = 0.5f;
+    public bool permanent = false, uniformity = false;
     public BezierZipmover(EntityData e, Vector2 p)
         : base(e.Position + p, e.Width, e.Height, safe: false)
     {
@@ -166,6 +168,9 @@ public class BezierZipmover : Solid
         hasTriggerFlag = !triggerFlag.IsNullOrEmpty();
         if (hasTriggerFlag) { argFlags.Add(triggerFlag); }
         adventureHelperSupport = e.Bool("syncWithAdventureHelperZipmovers", false);
+        terminalWait = e.Float("terminalWaitTime", 0.5f).ClampMin(Engine.DeltaTime);
+        permanent = e.Bool("permanent", false);
+        uniformity = e.Bool("uniformity", false);
         
         base.Depth = e.Int("depth", -9999);
         start = Position;
@@ -203,6 +208,8 @@ public class BezierZipmover : Solid
         // assistive
         pathRenderer = new(this, nodes[0], nodes[nodes.Length - 1], folderPath + "cog");
     }
+
+    public bool permanentSeal = false;
     
     public override void Added(Scene scene)
     {
@@ -211,6 +218,8 @@ public class BezierZipmover : Solid
         //{
         //    scene.Add(pathRenderer = new PathRenderer(this, nodes[i], nodes[i + 1]));
         //}
+
+        permanentSeal = false;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -460,7 +469,7 @@ public class BezierZipmover : Solid
         while (true)
         {
             // 启动序列条件检查
-            if (!SequenceStartArg())
+            if (!SequenceStartArg() || permanentSeal)
             {
                 yield return null;
                 continue;
@@ -498,7 +507,7 @@ public class BezierZipmover : Solid
                 yield return null;
                 at2 = Calc.Approach(at2, 1f, 1 / moveTime * Engine.DeltaTime);
                 percent = moveEase(at2);
-                Vector2 vector = curve.GetBezierPoint(percent);
+                Vector2 vector = uniformity? curve.GetEqualDistancePoint(percent) : curve.GetBezierPoint(percent);
                 ScrapeParticlesCheck(vector);
                 //if (Scene.OnInterval(0.1f))
                 //{
@@ -512,24 +521,36 @@ public class BezierZipmover : Solid
             Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
             SceneAs<Level>().Shake();
             StopPlayerRunIntoAnimation = true;
-            yield return 0.5f;
-            StopPlayerRunIntoAnimation = false;
-            streetlight.SetAnimationFrame(2);
-            
-            at2 = 0f;
-            while (at2 < 1f)
-            {
-                yield return null;
-                at2 = Calc.Approach(at2, 1f, 1 / returnTime * Engine.DeltaTime);
-                percent = 1f - returnEase(at2);
-                Vector2 position = curve.GetBezierPoint(percent);
-                MoveTo(position);
-            }
+            yield return terminalWait;
 
-            StopPlayerRunIntoAnimation = true;
-            StartShaking(0.2f);
-            streetlight.SetAnimationFrame(1);
-            yield return 0.5f;
+            if (!permanent)
+            {
+                StopPlayerRunIntoAnimation = false;
+                streetlight.SetAnimationFrame(2);
+
+                at2 = 0f;
+                while (at2 < 1f)
+                {
+                    yield return null;
+                    at2 = Calc.Approach(at2, 1f, 1 / returnTime * Engine.DeltaTime);
+                    percent = 1f - returnEase(at2);
+                    Vector2 position = uniformity ? curve.GetEqualDistancePoint(percent) : curve.GetBezierPoint(percent);
+                    MoveTo(position);
+                }
+
+                StopPlayerRunIntoAnimation = true;
+                StartShaking(0.2f);
+                streetlight.SetAnimationFrame(1);
+                yield return 0.5f;
+            }
+            else
+            {
+                StopPlayerRunIntoAnimation = true;
+                StartShaking(0.2f);
+                streetlight.SetAnimationFrame(1);
+                permanentSeal = true;
+                yield return 0.5f;
+            }
         }
     }
     

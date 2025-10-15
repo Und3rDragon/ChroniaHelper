@@ -53,12 +53,13 @@ namespace ChroniaHelper.Effects {
         public CustomRain(BinaryPacker.Element child)
             :this(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), 
                  child.AttrFloat("angle", 270f), child.AttrFloat("angleDiff", 3f), child.AttrFloat("speedMult", 1f), 
-                 child.AttrInt("Amount", 240), child.Attr("Colors", "161933"), child.AttrFloat("alpha"),
-                 child.AttrFloat("extendedBorderX", 0f), child.AttrFloat("extendedBorderY", 0f)
+                 child.AttrInt("Amount", 240), child.Attr("Colors", "161933"), child.AttrFloat("alpha", 1f),
+                 child.AttrFloat("extendedBorderX", 0f), child.AttrFloat("extendedBorderY", 0f),
+                 child.Attr("fadingX"), child.Attr("fadingY")
                  )
         { }
         public CustomRain(Vector2 scroll, float angle, float angleDiff, float speedMult, int count, string colors, float alpha,
-            float extX, float extY
+            float extX, float extY, string fadeX, string fadeY
             ) 
         {
             this.Scroll = scroll;
@@ -93,6 +94,32 @@ namespace ChroniaHelper.Effects {
 
             this.extX = extX;
             this.extY = extY;
+
+            if (!fadeX.IsNullOrEmpty())
+            {
+                FadeX = new();
+                string[] x = fadeX.Split(';', StringSplitOptions.TrimEntries);
+                for(int i = 0; i < x.Length; i++)
+                {
+                    string[] s = x[i].Split(',', StringSplitOptions.TrimEntries);
+                    if (s.Length < 4) { continue; }
+
+                    FadeX.Add(s[0].ParseFloat(0f), s[1].ParseFloat(0f), s[2].ParseFloat(1f).Clamp(0f,1f), s[3].ParseFloat(1f).Clamp(0f, 1f));
+                }
+            }
+
+            if (!fadeY.IsNullOrEmpty())
+            {
+                FadeY = new();
+                string[] y = fadeY.Split(';', StringSplitOptions.TrimEntries);
+                for (int i = 0; i < y.Length; i++)
+                {
+                    string[] s = y[i].Split(',', StringSplitOptions.TrimEntries);
+                    if (s.Length < 4) { continue; }
+
+                    FadeY.Add(s[0].ParseFloat(0f), s[1].ParseFloat(0f), s[2].ParseFloat(1f).Clamp(0f, 1f), s[3].ParseFloat(1f).Clamp(0f, 1f));
+                }
+            }
         }
 
 #pragma warning restore CS0612
@@ -101,7 +128,12 @@ namespace ChroniaHelper.Effects {
             bool flag = ((scene as Level).Raining = IsVisible(scene as Level));
             visibleFade = Calc.Approach(visibleFade, flag ? 1 : 0, Engine.DeltaTime * (flag ? 10f : 0.25f));
             if (FadeX != null) {
-                linearFade = FadeX.Value((scene as Level).Camera.X + 160f + extX / 2f);
+                linearFade = FadeX.Value(PUt.player?.Position.X ?? 0);
+            }
+            if (FadeY.IsNotNull())
+            {
+                float v = FadeY.Value(PUt.player?.Position.Y ?? 0);
+                linearFade = linearFade.Clamp(0f, v);
             }
             for (int i = 0; i < count; i++) {
                 particles[i].Position += particles[i].Speed * Engine.DeltaTime;

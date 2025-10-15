@@ -84,7 +84,10 @@ zip.placements = {
         renderGap = 0,
         renderStyle = 0,
         triggerFlag = "",
+        terminalWaitTime = 0.5,
         syncWithAdventureHelperZipmovers = false,
+        uniformity = false,
+        permanent = false,
         --drawBorder = true,
     }
 }

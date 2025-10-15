@@ -60,11 +60,11 @@ namespace ChroniaHelper.Effects {
         public WindRainFG(BinaryPacker.Element child)
             : this(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), 
                   child.Attr("Colors", "ffffff"), child.AttrFloat("windStrength"), child.AttrInt("Amount", 240), 
-                  child.AttrFloat("alpha", 1f), child.AttrFloat("extendedBorderX" , 0f), child.AttrFloat("extendedBorderY", 0f)
-                  
+                  child.AttrFloat("alpha", 1f), child.AttrFloat("extendedBorderX" , 0f), child.AttrFloat("extendedBorderY", 0f),
+                  child.Attr("fadingX"), child.Attr("fadingY")
                   ) { }
         public WindRainFG(Vector2 scroll, string colors, float windStrength, int amount, float alpha,
-            float extX, float extY
+            float extX, float extY, string fadeX, string fadeY
             ) 
         {
             this.Scroll = scroll;
@@ -101,6 +101,32 @@ namespace ChroniaHelper.Effects {
 
             this.extX = extX;
             this.extY = extY;
+
+            if (!fadeX.IsNullOrEmpty())
+            {
+                FadeX = new();
+                string[] x = fadeX.Split(';', StringSplitOptions.TrimEntries);
+                for (int i = 0; i < x.Length; i++)
+                {
+                    string[] s = x[i].Split(',', StringSplitOptions.TrimEntries);
+                    if (s.Length < 4) { continue; }
+
+                    FadeX.Add(s[0].ParseFloat(0f), s[1].ParseFloat(0f), s[2].ParseFloat(1f).Clamp(0f, 1f), s[3].ParseFloat(1f).Clamp(0f, 1f));
+                }
+            }
+
+            if (!fadeY.IsNullOrEmpty())
+            {
+                FadeY = new();
+                string[] y = fadeY.Split(';', StringSplitOptions.TrimEntries);
+                for (int i = 0; i < y.Length; i++)
+                {
+                    string[] s = y[i].Split(',', StringSplitOptions.TrimEntries);
+                    if (s.Length < 4) { continue; }
+
+                    FadeY.Add(s[0].ParseFloat(0f), s[1].ParseFloat(0f), s[2].ParseFloat(1f).Clamp(0f, 1f), s[3].ParseFloat(1f).Clamp(0f, 1f));
+                }
+            }
         }
 
 #pragma warning restore CS0612
@@ -108,8 +134,14 @@ namespace ChroniaHelper.Effects {
             base.Update(scene);
             bool flag = (scene as Level).Raining = IsVisible(scene as Level);
             visibleFade = Calc.Approach(visibleFade, flag ? 1 : 0, Engine.DeltaTime * (flag ? 10f : 0.25f));
-            if (FadeX != null) {
-                linearFade = FadeX.Value((scene as Level).Camera.X + 160f + extX / 2f);
+            if (FadeX != null)
+            {
+                linearFade = FadeX.Value(PUt.player?.Position.X ?? 0);
+            }
+            if (FadeY.IsNotNull())
+            {
+                float v = FadeY.Value(PUt.player?.Position.Y ?? 0);
+                linearFade = linearFade.Clamp(0f, v);
             }
             for (int i = 0; i < particles.Length; i++) {
 
