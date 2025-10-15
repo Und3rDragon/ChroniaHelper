@@ -989,3 +989,8 @@ entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.chained=Corn
 # ================= Bezier Zip Mover
 
 entities.ChroniaHelper/BezierZipmover.placements.name.zipmover=Bezier Zip Mover
+entities.ChroniaHelper/BezierZipmover.attributes.description.directory=The folder path of the sprites, ends with "/" \nFollowing animations are needed: block, light, cog, innercog \nThe "light" animation must have exactly 4 frames just as the vanilla
+entities.ChroniaHelper/BezierZipmover.attributes.description.renderGap=If renderGap is 0, the zipmover path will be rendered as a continuous sprite \nIf above 0, the zipmover path will be rendered as dotted lines
+entities.ChroniaHelper/BezierZipmover.attributes.description.renderStyle=There are 2 preset styles for you to choose
+entities.ChroniaHelper/BezierZipmover.attributes.description.triggerFlag=If not empty, the flag will cause the zipmover start moving no matter if there is player on it
+entities.ChroniaHelper/BezierZipmover.attributes.description.syncWithAdventureHelperZipmovers=If enabled, the zipmover will listen and release AdventureHelper Synced Zipmover signals

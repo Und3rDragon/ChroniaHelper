@@ -18,7 +18,7 @@ zip.minimumSize = {16, 16}
 zip.nodeLimits = {1, -1}
 zip.nodeVisibility = "never"
 zip.fieldInformation = {
-    sound = {
+    sfx = {
         options = {
             ["Default"] = "event:/game/01_forsaken_city/zip_mover",
             ["Moon"] = "event:/new_content/game/10_farewell/zip_mover",
@@ -83,7 +83,9 @@ zip.placements = {
         ropeLightColor = "9b6157",
         renderGap = 0,
         renderStyle = 0,
-        drawBorder = true,
+        triggerFlag = "",
+        syncWithAdventureHelperZipmovers = false,
+        --drawBorder = true,
     }
 }
 

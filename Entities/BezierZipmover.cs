@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities;
 
@@ -142,6 +143,9 @@ public class BezierZipmover : Solid
     public int renderGap = 0;
     public enum RenderStyle { Vanilla = 0, Single = 1 };
     public int renderStyle = 0;
+    public string triggerFlag;
+    public bool hasTriggerFlag = false;
+    public bool adventureHelperSupport = false;
     public BezierZipmover(EntityData e, Vector2 p)
         : base(e.Position + p, e.Width, e.Height, safe: false)
     {
@@ -158,6 +162,10 @@ public class BezierZipmover : Solid
         ropeColor = e.GetChroniaColor("ropeColor", "663931");
         renderGap = e.Int("renderGap", 0);
         renderStyle = e.Int("renderStyle", 0);
+        triggerFlag = e.Attr("triggerFlag");
+        hasTriggerFlag = !triggerFlag.IsNullOrEmpty();
+        if (hasTriggerFlag) { argFlags.Add(triggerFlag); }
+        adventureHelperSupport = e.Bool("syncWithAdventureHelperZipmovers", false);
         
         base.Depth = e.Int("depth", -9999);
         start = Position;
@@ -425,16 +433,50 @@ public class BezierZipmover : Solid
             }
         }
     }
+
+    public HashSet<string> argFlags = new();
+    public bool SequenceStartArg()
+    {
+        bool c1 = hasTriggerFlag && triggerFlag.GetFlag();
+        bool c2 = HasPlayerRider();
+        bool c3 = false;
+        if (adventureHelperSupport)
+        {
+            string colorCode = ropeColor.Parsed().RgbaToHex();
+            if(colorCode.Length > 6)
+            {
+                colorCode = colorCode.Remove(6);
+            }
+
+            c3 = $"ZipMoverSync:{colorCode}".GetFlag();
+        }
+
+        return c1 || c2 || c3;
+    }
     
     public IEnumerator Sequence()
     {
         Vector2 start = Position;
         while (true)
         {
-            if (!HasPlayerRider())
+            // 启动序列条件检查
+            if (!SequenceStartArg())
             {
                 yield return null;
                 continue;
+            }
+
+            if (adventureHelperSupport)
+            {
+                string colorCode = ropeColor.Parsed().RgbaToHex();
+                if (colorCode.Length > 6)
+                {
+                    colorCode = colorCode.Remove(6);
+                }
+
+                $"ZipMoverSync:{colorCode}".SetFlag(true);
+
+                argFlags.Add($"ZipMoverSync:{colorCode}");
             }
 
             sfx.Play(sound);
@@ -443,7 +485,12 @@ public class BezierZipmover : Solid
             yield return 0.1f;
             streetlight.SetAnimationFrame(3);
             StopPlayerRunIntoAnimation = false;
-            
+
+            foreach (var flag in argFlags)
+            {
+                flag.SetFlag(false);
+            }
+
             // Start Moving
             float at2 = 0f;
             while (at2 < 1f)

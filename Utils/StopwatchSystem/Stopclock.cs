@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
 namespace ChroniaHelper.Utils.StopwatchSystem;
@@ -49,7 +50,10 @@ public partial class Stopclock : IDisposable
 
             if (!watches.Value.isolatedUpdate)
             {
-                watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                if(!watches.Value.followPause || !self.Paused)
+                {
+                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                }
             }
 
             if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
@@ -82,7 +86,10 @@ public partial class Stopclock : IDisposable
 
                 if (!watches.Value.isolatedUpdate)
                 {
-                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                    if (!watches.Value.followPause || !self.Paused)
+                    {
+                        watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                    }
                 }
 
                 if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
@@ -111,6 +118,10 @@ public partial class Stopclock : IDisposable
     public bool running { get; private set; } = false;
     public bool isolatedUpdate = false;
     public bool registered { get; private set; } = false;
+    /// <summary>
+    /// 是否随游戏内暂停而暂停
+    /// </summary>
+    public bool followPause = false;
     
     public int initialYear = 0;
     public int initialMonth = 0;
@@ -194,6 +205,7 @@ public partial class Stopclock : IDisposable
     {
         countdown = false;
         global = false;
+        followPause = false;
         removeWhenCompleted = true;
         isolatedUpdate = false;
         _lastUpdateTime = DateTime.Now;
@@ -207,7 +219,7 @@ public partial class Stopclock : IDisposable
     /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
     /// </summary>
     public Stopclock(bool countdown, int year = 0, int month = 0, int day = 0, int hour = 0,
-        int minute = 0, int second = 0, int millisecond = 0, bool global = false,
+        int minute = 0, int second = 0, int millisecond = 0, bool global = false, bool followPause = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
         int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
     {
@@ -220,6 +232,7 @@ public partial class Stopclock : IDisposable
         this.millisecond = millisecond;
         this.countdown = countdown;
         this.global = global;
+        this.followPause = followPause;
         this.initialYear = initialYear;
         this.initialMonth = initialMonth;
         this.initialDay = initialDay;
@@ -237,10 +250,10 @@ public partial class Stopclock : IDisposable
     }
 
     /// <summary>
-    /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
+    /// 创建时自带Register, 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
     /// </summary>
     public Stopclock(string regName, bool countdown = false, int year = 0, int month = 0, int day = 0, int hour = 0,
-        int minute = 0, int second = 0, int millisecond = 0, bool global = false,
+        int minute = 0, int second = 0, int millisecond = 0, bool global = false, bool followPause = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
         int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
     {
@@ -253,6 +266,7 @@ public partial class Stopclock : IDisposable
         this.millisecond = millisecond;
         this.countdown = countdown;
         this.global = global;
+        this.followPause = followPause;
         this.initialYear = initialYear;
         this.initialMonth = initialMonth;
         this.initialDay = initialDay;
