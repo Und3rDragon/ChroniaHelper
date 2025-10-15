@@ -9,7 +9,7 @@ using Celeste.Mod;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ChroniaHelper.Triggers.PolygonSeries {
+namespace ChroniaHelper.Cores {
     public class PolygonCollider : Collider {
         public static void Load() {
             On.Monocle.Collider.Collide_Collider += Collider_Collide_Collider;
@@ -42,10 +42,10 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
             }
         }
 
-        public Vector2 offset;
+        public Vc2 offset;
         public bool convex;
-        public Vector2[] Points;
-        public Vector2[] TriangulatedPoints;
+        public Vc2[] Points;
+        public Vc2[] TriangulatedPoints;
         public int[] Indices;
 
         public Rectangle AABB; //Represents the AABB for the Polygon at the time of construction. To Update the Collider, you can effectively clone it.
@@ -58,12 +58,12 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
         public override float Left { get => AABB.Left - Entity.Position.X; set => throw new NotImplementedException(); }
         public override float Right { get => AABB.Right - Entity.Position.X; set => throw new NotImplementedException(); }
 
-        private Vector2 _center;
+        private Vc2 _center;
 
-        public new Vector2 Center { get => _center; set => throw new NotImplementedException(); }
+        public new Vc2 Center { get => _center; set => throw new NotImplementedException(); }
 
 
-        internal PolygonCollider(Vector2[] points, Vector2[] triangulatedpoints, int[] indices) {
+        internal PolygonCollider(Vc2[] points, Vc2[] triangulatedpoints, int[] indices) {
             Array.Copy(points, Points, points.Length);
             Array.Copy(triangulatedpoints, TriangulatedPoints, triangulatedpoints.Length);
             Array.Copy(indices, Indices, indices.Length);
@@ -74,7 +74,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
         /// </summary>
         /// <param name="vectors">Put in the Vector2 of nodes, with the offset of the room in here</param>
         /// <param name="startPos">Put in the Entity</param>
-        public PolygonCollider(Vector2[] vectors, Entity owner, bool setPositionAsCenter) {
+        public PolygonCollider(Vc2[] vectors, Entity owner, bool setPositionAsCenter) {
             /// Defines the "center point" as the centroid of the given polygon. Currently, there is 0 check for centroid outside the convex hull which for sure means that the polygon is noncomplex.
             /// I believe the exact limit uses some definition for a concave hull, if someone wants to math this out and let me know go for it
             if (vectors.Length < 3)
@@ -92,7 +92,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
             Triangulator.Triangulator.Triangulate(vectors, Triangulator.WindingOrder.Clockwise, out TriangulatedPoints, out Indices);
         }
 
-        public PolygonCollider(Vector2[] vectors)
+        public PolygonCollider(Vc2[] vectors)
         {
             /// Defines the "center point" as the centroid of the given polygon. Currently, there is 0 check for centroid outside the convex hull which for sure means that the polygon is noncomplex.
             /// I believe the exact limit uses some definition for a concave hull, if someone wants to math this out and let me know go for it
@@ -109,7 +109,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
             Triangulator.Triangulator.Triangulate(vectors, Triangulator.WindingOrder.Clockwise, out TriangulatedPoints, out Indices);
         }
 
-        internal static bool GetConvexity(Vector2[] _vertices, ref float[] z) {
+        internal static bool GetConvexity(Vc2[] _vertices, ref float[] z) {
             bool escape = _vertices.Length == 4;
             bool sign = false;
             int n = _vertices.Length;
@@ -119,7 +119,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
             z[2] = float.MaxValue;
             z[3] = float.MinValue;
             for (int i = 0; i < n; i++) {
-                Vector2 v = _vertices[i];
+                Vc2 v = _vertices[i];
                 if (v.X < z[0])
                     z[0] = v.X;
                 else if (v.X > z[1])
@@ -129,8 +129,8 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
                 else if (v.Y > z[3])
                     z[3] = v.Y;
                 if (!escape) {
-                    Vector2 d1 = _vertices[(i + 2) % n] - _vertices[(i + 1) % n];
-                    Vector2 d2 = v - _vertices[(i + 1) % n];
+                    Vc2 d1 = _vertices[(i + 2) % n] - _vertices[(i + 1) % n];
+                    Vc2 d2 = v - _vertices[(i + 1) % n];
                     float zcrossproduct = d1.X * d2.Y - d1.Y * d2.X;
 
                     if (i == 0)
@@ -148,10 +148,10 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
         }
 
         public override void Render(Camera camera, Color color) {
-            Vector2[] q = Points;
+            Vc2[] q = Points;
             for (int i = 0; i < q.Length; i++) {
-                Vector2 a = q[i];
-                Vector2 b = q[(i + 1) % q.Length];
+                Vc2 a = q[i];
+                Vc2 b = q[(i + 1) % q.Length];
                 if (Monocle.Collide.RectToLine(camera.Left, camera.Top, 320 * camera.Zoom, 180 * camera.Zoom, a, b))
                     Draw.Line(a, b, color);
             }
@@ -159,25 +159,25 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
 
         #region Collision Mechanisms
 
-        public override bool Collide(Vector2 point) => Monocle.Collide.RectToPoint(AABB, point - Entity.Position) && PolygonPoint(point);
+        public override bool Collide(Vc2 point) => Monocle.Collide.RectToPoint(AABB, point - Entity.Position) && PolygonPoint(point);
 
         public override bool Collide(Rectangle rect) {
-            Vector2 v0;
-            Vector2 v1;
-            Vector2[] q = convex ? Points : TriangulatedPoints;
+            Vc2 v0;
+            Vc2 v1;
+            Vc2[] q = convex ? Points : TriangulatedPoints;
             for (int i = 0; i < q.Length; i++) {
                 v0 = q[i];
                 v1 = q[i == q.Length - 1 ? 0 : i + 1];
                 if (Monocle.Collide.RectToLine(rect.Left, rect.Top, rect.Width, rect.Height, v0, v1))
                     return true;
             }
-            return PolygonPoint(new Vector2(rect.X + rect.Width / 2f, rect.Y + rect.Height / 2f));
+            return PolygonPoint(new Vc2(rect.X + rect.Width / 2f, rect.Y + rect.Height / 2f));
         }
 
-        public override bool Collide(Vector2 from, Vector2 to) {
-            Vector2 v0;
-            Vector2 v1;
-            Vector2[] q = convex ? Points : TriangulatedPoints;
+        public override bool Collide(Vc2 from, Vc2 to) {
+            Vc2 v0;
+            Vc2 v1;
+            Vc2[] q = convex ? Points : TriangulatedPoints;
 
             for (int i = 0; i < q.Length; i++) {
                 v0 = q[i];
@@ -213,9 +213,9 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
         }
 
         public override bool Collide(Circle circle) {
-            Vector2 v0;
-            Vector2 v1;
-            Vector2[] q = convex ? Points : TriangulatedPoints;
+            Vc2 v0;
+            Vc2 v1;
+            Vc2[] q = convex ? Points : TriangulatedPoints;
             for (int i = 0; i < q.Length; i++) {
                 v0 = Entity.Position + offset + q[i];
                 v1 = Entity.Position + offset + q[i == q.Length - 1 ? 0 : i + 1];
@@ -232,7 +232,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
             return false;
         }
 
-        public bool PolygonPoint(Vector2 point) {
+        public bool PolygonPoint(Vc2 point) {
             if (TriangulatedPoints.Length == 3)
                 return PointInsideTriangle(Points[0], Points[1], Points[2], point);
             if (convex) {
@@ -254,7 +254,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
                 return false;
             }
         }
-        public static bool PointInsideTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 pt) {
+        public static bool PointInsideTriangle(Vc2 v1, Vc2 v2, Vc2 v3, Vc2 pt) {
             float areaOrig = Math.Abs((v2.X - v1.X) * (v3.Y - v1.Y) - (v3.X - v1.X) * (v2.Y - v1.Y));
 
             // get the area of 3 triangles made between the point
@@ -276,15 +276,15 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
         #endregion
 
 
-        public static Vector2 GetCentroidOfNonComplexPolygon(Vector2[] pts) {
-            var points = new List<Vector2>(pts);
-            Vector2 first = pts[0];
-            Vector2 last = pts[pts.Length - 1];
+        public static Vc2 GetCentroidOfNonComplexPolygon(Vc2[] pts) {
+            var points = new List<Vc2>(pts);
+            Vc2 first = pts[0];
+            Vc2 last = pts[pts.Length - 1];
             if (first != last) {
                 points.Add(first);
             }
             float twicearea = 0;
-            Vector2 v = Vector2.Zero;
+            Vc2 v = Vc2.Zero;
             int nPts = points.Count;
             int i = 0;
             int j = nPts - 1;
@@ -298,7 +298,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries {
                 j = i++;
             }
             f = 0.33333f / twicearea;
-            Vector2 ret = (v * f + first).Round();
+            Vc2 ret = (v * f + first).Round();
             return ret;
         }
     }

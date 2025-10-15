@@ -1,6 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 using System.Runtime.Serialization;
-using ChroniaHelper.Triggers.PolygonSeries;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Utils;
 

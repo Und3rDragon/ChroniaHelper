@@ -10,6 +10,7 @@ using Celeste;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Triggers.TriggerExtension;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Triggers.PolygonSeries
 {

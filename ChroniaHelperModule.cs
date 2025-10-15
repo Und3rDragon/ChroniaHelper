@@ -20,7 +20,6 @@ using MonoMod.ModInterop;
 using YoctoHelper.Hooks;
 using FASF2025Helper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
-using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Components;
 using ChroniaHelper.Utils.StopwatchSystem;
 

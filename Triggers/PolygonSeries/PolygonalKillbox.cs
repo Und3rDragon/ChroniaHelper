@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Celeste;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Triggers.PolygonSeries {
     [Tracked(true)]
