@@ -80,8 +80,9 @@ public class AlternatePolygonCollider : Collider
             area += points[i].X * points[j].Y;
             area -= points[j].X * points[i].Y;
         }
-        // In Y-up system: area > 0 => counter-clockwise
-        return area < 0; // true if clockwise
+        // 在 Y 轴向下的屏幕坐标系中：
+        // area > 0 表示点序为顺时针（从屏幕视角）
+        return area > 0;
     }
 
     // --- Compute centroid (not strictly needed for collision, but kept for consistency) ---
