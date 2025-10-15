@@ -3,7 +3,7 @@ local drawableLine = require("structs.drawable_line")
 local drawableNinePatch = require("structs.drawable_nine_patch")
 local drawableRectangle = require("structs.drawable_rectangle")
 local utils = require("utils")
-local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local teraEnum = require("mods").requireFromPlugin("helpers.enum")
 
 local teraZipMover = {}
 

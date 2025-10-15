@@ -1,6 +1,6 @@
 local drawableNinePatch = require("structs.drawable_nine_patch")
 local drawableSprite = require("structs.drawable_sprite")
-local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local teraEnum = require("mods").requireFromPlugin("helpers.enum")
 
 local teraCoreBlock = {}
 

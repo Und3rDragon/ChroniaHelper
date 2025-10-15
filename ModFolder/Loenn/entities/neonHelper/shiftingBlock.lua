@@ -31,7 +31,7 @@ shiftingBlock.fieldInformation = {
             editable = false
         },
     easing = {
-        options = require("mods").requireFromPlugin("libraries.chroniaHelper").easers,
+        options = require("mods").requireFromPlugin("helpers.chroniaHelper").easers,
         editable = false,
     }
 }

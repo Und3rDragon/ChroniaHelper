@@ -1,4 +1,4 @@
-local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local teraEnum = require("mods").requireFromPlugin("helpers.enum")
 local activeTera = {}
 
 activeTera.name = "ChroniaHelper/activeTera"

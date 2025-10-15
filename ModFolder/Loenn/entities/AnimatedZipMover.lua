@@ -19,7 +19,7 @@ customZipMover.fieldInformation = {
     ropeLightColor = {
         fieldType = "color",
     },
-    spritePath = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+    spritePath = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
 }
 
 customZipMover.placements = {

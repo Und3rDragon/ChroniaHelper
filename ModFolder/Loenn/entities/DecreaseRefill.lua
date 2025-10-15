@@ -21,7 +21,7 @@ entity.fieldInformation = {
     dashes ={
         fieldType="integer",
     },
-    sprites = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+    sprites = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
 }
 entity.fieldOrder={
     "sprites",

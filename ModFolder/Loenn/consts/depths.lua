@@ -1,5 +1,5 @@
 --[[
-local depthOptions = require("mods").requireFromPlugin("consts.depthOptions")
+local depthOptions = require("mods").requireFromPlugin("consts.depths")
 ]]
 
 return {

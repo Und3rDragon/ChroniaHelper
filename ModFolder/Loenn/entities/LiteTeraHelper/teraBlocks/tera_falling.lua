@@ -1,6 +1,6 @@
 local fakeTilesHelper = require("helpers.fake_tiles")
 local drawableSprite = require("structs.drawable_sprite")
-local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local teraEnum = require("mods").requireFromPlugin("helpers.enum")
 
 local teraFallingBlock = {}
 

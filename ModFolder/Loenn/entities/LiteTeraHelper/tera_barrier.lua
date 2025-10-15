@@ -1,6 +1,6 @@
 local drawableSprite = require("structs.drawable_sprite")
 local drawableRectangle = require("structs.drawable_rectangle")
-local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local teraEnum = require("mods").requireFromPlugin("helpers.enum")
 local teraBarrier = {}
 
 teraBarrier.name = "ChroniaHelper/teraBarrier"

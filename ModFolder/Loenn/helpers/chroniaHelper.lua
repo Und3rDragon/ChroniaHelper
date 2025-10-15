@@ -8,7 +8,7 @@ local connectedEntities = require("helpers.connected_entities")
 local chroniaHelper = {}
 
 --[[
-local ch = require("mods").requireFromPlugin("libraries.chroniaHelper")
+local ch = require("mods").requireFromPlugin("helpers.chroniaHelper")
 ]]
 
 -- utils

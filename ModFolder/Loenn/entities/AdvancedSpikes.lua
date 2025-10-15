@@ -3,7 +3,7 @@ local core = require("mods").requireFromPlugin("utils.core")
 local string = require("mods").requireFromPlugin("utils.string")
 local array = require("mods").requireFromPlugin("utils.array")
 local drawableSprite = require("structs.drawable_sprite")
-local depthOptions = require("mods").requireFromPlugin("consts.depthOptions")
+local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local fieldTable = {
     depth = {
@@ -35,7 +35,7 @@ local fieldTable = {
     sprite =
     {
         data = "",
-        info = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+        info = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     },
     spriteColor =
     {

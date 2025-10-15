@@ -1,5 +1,5 @@
 local drawableSprite = require("structs.drawable_sprite")
-local depthOptions = require("mods").requireFromPlugin("consts.depthOptions")
+local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local spikeTypeOptions =
 {
@@ -129,7 +129,7 @@ local upSpikes = {
     {
         depth = {options = depthOptions, editable = true, fieldType = "integer",},
         spikeType = spikeTypeOptions,
-        sprite = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+        sprite = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     },
     fieldOrder = fieldOrder("horizontal"),
     sprite = function(room, entity, viewport)
@@ -168,7 +168,7 @@ local downSpikes = {
     {
         depth = {options = depthOptions, editable = true, fieldType = "integer",},
         spikeType = spikeTypeOptions,
-        sprite = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+        sprite = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     },
     fieldOrder = fieldOrder("horizontal"),
     sprite = function(room, entity, viewport)
@@ -207,7 +207,7 @@ local leftSpikes = {
     {
         depth = {options = depthOptions, editable = true, fieldType = "integer",},
         spikeType = spikeTypeOptions,
-        sprite = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+        sprite = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     },
     fieldOrder = fieldOrder("vertical"),
     sprite = function(room, entity, viewport)
@@ -246,7 +246,7 @@ local rightSpikes = {
     {
         depth = {options = depthOptions, editable = true, fieldType = "integer",},
         spikeType = spikeTypeOptions,
-        sprite = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+        sprite = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     },
     fieldOrder = fieldOrder("vertical"),
     sprite = function(room, entity, viewport)

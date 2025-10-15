@@ -39,7 +39,7 @@ entity.fieldInformation = {
     },
     depth = {
         fieldType = "integer",
-        options = require("mods").requireFromPlugin("consts.depthOptions"),
+        options = require("mods").requireFromPlugin("consts.depths"),
         editable = true
     },
     zoneColor = {

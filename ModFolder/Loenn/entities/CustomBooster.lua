@@ -1,6 +1,6 @@
 local utils = require('utils')
 local vivUtilsMig = require('mods').requireFromPlugin('libraries.vivUtilsMig')
-local frostUtils = require("mods").requireFromPlugin("libraries.frostUtils")
+local frostUtils = require("mods").requireFromPlugin("helpers.frostUtils")
 local drawableSprite = require("structs.drawable_sprite")
 local drawableLine = require("structs.drawable_line")
 local drawing = require("utils.drawing")

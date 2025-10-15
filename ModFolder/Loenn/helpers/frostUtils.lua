@@ -6,7 +6,7 @@ local utils = require("utils")
 local xnaColors = require("consts.xna_colors")
 
 --[[
-local frostUtils = require("mods").requireFromPlugin("libraries.frostUtils")
+local frostUtils = require("mods").requireFromPlugin("helpers.frostUtils")
 ]]
 
 local celesteDepths = --require("consts.object_depths")

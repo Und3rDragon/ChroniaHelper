@@ -2,7 +2,7 @@ local utils = require("utils")
 local drawableSprite = require("structs.drawable_sprite")
 local drawableRectangle = require("structs.drawable_rectangle")
 local connectedEntities = require("helpers.connected_entities")
-local frostUtils = require("mods").requireFromPlugin("libraries.frostUtils")
+local frostUtils = require("mods").requireFromPlugin("helpers.frostUtils")
 
 local playbackBillboard = {}
 
@@ -25,8 +25,8 @@ playbackBillboard.fieldInformation = {
         fieldType = "color",
         allowEmpty = false,
     },
-    borderTexture = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
-    noiseTexture = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+    borderTexture = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
+    noiseTexture = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
 }
 
 

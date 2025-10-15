@@ -5,7 +5,7 @@ local fieldTable = {
     sprite =
     {
         data = "",
-        info = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+        info = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     },
     spriteColor =
     {
@@ -278,7 +278,7 @@ local fieldTable = {
     depth = {
         data = -100,
         info = {
-            options = require("mods").requireFromPlugin("consts.depthOptions"),
+            options = require("mods").requireFromPlugin("consts.depths"),
             editable = true,
         }
     },

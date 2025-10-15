@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Monocle;
 using Celeste;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Cores;
 
@@ -26,11 +27,11 @@ public class AlternatePolygonCollider : Collider
         Offset = offset;
 
         // Normalize winding to clockwise for triangulation
-        Vector2[] normalizedPoints = NormalizeWindingToClockwise(RelativePoints);
+        Vector2[] normalizedPoints = GeometryUtils.NormalizeWindingToClockwise(RelativePoints);
 
         // Compute bounds and convexity
         float[] bounds = new float[4]; // minX, maxX, minY, maxY
-        _isConvex = IsConvexAndComputeBounds(normalizedPoints, bounds);
+        _isConvex = GeometryUtils.IsConvexAndComputeBounds(normalizedPoints, bounds);
 
         // Build AABB in local space: (RelativePoints + Offset) defines the shape relative to (Entity.Position + Position)
         int left = (int)Math.Floor(bounds[0] + Offset.X);
@@ -50,101 +51,7 @@ public class AlternatePolygonCollider : Collider
         RelativePoints = normalizedPoints; // store normalized version
     }
 
-    // --- Normalize winding to clockwise using signed area ---
-    private static Vector2[] NormalizeWindingToClockwise(Vector2[] points)
-    {
-        if (IsClockwise(points))
-        { 
-            return points; 
-        }
-        else
-        {
-            Vc2[] reverse = new Vc2[points.Length];
-            for(int i = 0; i < points.Length; i++)
-            {
-                reverse[i] = points[points.Length - 1 - i];
-            }
-
-            return reverse;
-        }
-    }
-
-    // --- Determine winding using signed polygon area (Y-up coordinate system) ---
-    private static bool IsClockwise(Vector2[] points)
-    {
-        float area = 0;
-        int n = points.Length;
-        for (int i = 0; i < n; i++)
-        {
-            int j = (i + 1) % n;
-            area += points[i].X * points[j].Y;
-            area -= points[j].X * points[i].Y;
-        }
-        // 在 Y 轴向下的屏幕坐标系中：
-        // area > 0 表示点序为顺时针（从屏幕视角）
-        return area > 0;
-    }
-
-    // --- Compute centroid (not strictly needed for collision, but kept for consistency) ---
-    private static Vector2 ComputeCentroid(Vector2[] points)
-    {
-        var pts = points.ToList();
-        if (pts.Count > 0 && pts[0] != pts[pts.Count - 1])
-            pts.Add(pts[0]);
-
-        float cx = 0, cy = 0, area = 0;
-        int n = pts.Count - 1;
-
-        for (int i = 0; i < n; i++)
-        {
-            float cross = pts[i].X * pts[i + 1].Y - pts[i + 1].X * pts[i].Y;
-            area += cross;
-            cx += (pts[i].X + pts[i + 1].X) * cross;
-            cy += (pts[i].Y + pts[i + 1].Y) * cross;
-        }
-
-        area *= 0.5f;
-        if (Math.Abs(area) < 1e-6f) return pts[0];
-        cx /= (6 * area);
-        cy /= (6 * area);
-        return new Vector2(cx, cy);
-    }
-
-    // --- Convexity test + AABB bounds ---
-    private static bool IsConvexAndComputeBounds(Vector2[] points, float[] bounds)
-    {
-        int n = points.Length;
-        bounds[0] = bounds[2] = float.MaxValue;
-        bounds[1] = bounds[3] = float.MinValue;
-
-        bool isConvex = true;
-        bool? firstSign = null;
-
-        for (int i = 0; i < n; i++)
-        {
-            Vector2 p = points[i];
-            if (p.X < bounds[0]) bounds[0] = p.X;
-            if (p.X > bounds[1]) bounds[1] = p.X;
-            if (p.Y < bounds[2]) bounds[2] = p.Y;
-            if (p.Y > bounds[3]) bounds[3] = p.Y;
-
-            Vector2 v1 = points[(i + 1) % n] - p;
-            Vector2 v2 = points[(i + 2) % n] - points[(i + 1) % n];
-            float cross = v1.X * v2.Y - v1.Y * v2.X;
-
-            bool currentSign = cross > 0;
-            if (firstSign == null)
-            {
-                firstSign = currentSign;
-            }
-            else if (firstSign != currentSign)
-            {
-                isConvex = false;
-            }
-        }
-
-        return isConvex;
-    }
+    
 
     // --- Helper: get absolute world points ---
     private Vector2[] GetAbsolutePoints()
@@ -225,20 +132,11 @@ public class AlternatePolygonCollider : Collider
                 Vector2 a = origin + _triangulatedPoints[_indices[i]];
                 Vector2 b = origin + _triangulatedPoints[_indices[i + 1]];
                 Vector2 c = origin + _triangulatedPoints[_indices[i + 2]];
-                if (PointInTriangle(a, b, c, worldPoint))
+                if (GeometryUtils.IsPointInTriangle(worldPoint, a, b, c))
                     return true;
             }
             return false;
         }
-    }
-
-    private static bool PointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 p)
-    {
-        float area = Math.Abs((b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y));
-        float a1 = Math.Abs((a.X - p.X) * (b.Y - p.Y) - (b.X - p.X) * (a.Y - p.Y));
-        float a2 = Math.Abs((b.X - p.X) * (c.Y - p.Y) - (c.X - p.X) * (b.Y - p.Y));
-        float a3 = Math.Abs((c.X - p.X) * (a.Y - p.Y) - (a.X - p.X) * (c.Y - p.Y));
-        return Math.Abs(a1 + a2 + a3 - area) < 0.001f;
     }
 
     // --- Collision implementations ---

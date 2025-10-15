@@ -1,5 +1,5 @@
 local drawableSprite = require("structs.drawable_sprite")
-local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local teraEnum = require("mods").requireFromPlugin("helpers.enum")
 local goomy = {}
 
 goomy.name = "ChroniaHelper/goomy"

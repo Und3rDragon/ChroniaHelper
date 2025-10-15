@@ -3,7 +3,7 @@ local drawableRectangle = require("structs.drawable_rectangle")
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
 local connectedEntities = require("helpers.connected_entities")
-local ChroniaHelper = require("mods").requireFromPlugin("libraries.chroniaHelper")
+local ChroniaHelper = require("mods").requireFromPlugin("helpers.chroniaHelper")
 local fo = require("mods").requireFromPlugin("helpers.field_options")
 local drawableText = require("structs.drawable_text")
 
@@ -78,7 +78,7 @@ OmniZipMover.fieldInformation = {
         options = {"event:/CommunalHelperEvents/game/zipMover/normal/finish"},
         editable = true,
     },
-    customSkin = require("mods").requireFromPlugin("libraries.vivUtilsMig").getDirectoryPathFromFile(true),
+    customSkin = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     delays = {
         fieldType = "list",
     },

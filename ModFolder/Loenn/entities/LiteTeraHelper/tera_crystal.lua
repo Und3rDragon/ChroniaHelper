@@ -1,6 +1,6 @@
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require('utils')
-local teraEnum = require("mods").requireFromPlugin("libraries.enum")
+local teraEnum = require("mods").requireFromPlugin("helpers.enum")
 local teraCrystal = {}
 
 teraCrystal.name = "ChroniaHelper/teraCrystal"

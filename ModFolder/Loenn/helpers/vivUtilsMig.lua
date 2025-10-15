@@ -10,7 +10,7 @@ local vivUtilsMig = {}
 local ___p = 2^32
 
 --[[
-local vivUtils = require("mods").requireFromPlugin("libraries.vivUtilsMig")
+local vivUtils = require("mods").requireFromPlugin("helpers.vivUtilsMig")
 ]]
 
 function vivUtilsMig.rshift(x, s_amount)

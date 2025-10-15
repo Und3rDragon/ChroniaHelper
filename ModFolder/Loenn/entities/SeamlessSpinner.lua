@@ -1,7 +1,7 @@
-local vivUtils = require("mods").requireFromPlugin("libraries.vivUtilsMig")
+local vivUtils = require("mods").requireFromPlugin("helpers.vivUtilsMig")
 local fo = require("mods").requireFromPlugin("helpers.field_options")
 local drawableSprite = require("structs.drawable_sprite")
-local frostUtils = require("mods").requireFromPlugin("libraries.frostUtils")
+local frostUtils = require("mods").requireFromPlugin("helpers.frostUtils")
 local seamlessSpinner = {}
 
 seamlessSpinner.name = "ChroniaHelper/SeamlessSpinner"

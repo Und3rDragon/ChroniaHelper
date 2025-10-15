@@ -1,6 +1,6 @@
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
-local vivUtils = require("mods").requireFromPlugin("libraries.vivUtilsMig")
+local vivUtils = require("mods").requireFromPlugin("helpers.vivUtilsMig")
 
 local touchSwitch = {}
 

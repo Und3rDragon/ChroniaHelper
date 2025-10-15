@@ -3,7 +3,7 @@ local vivUtilsMig = require('mods').requireFromPlugin('libraries.vivUtilsMig')
 local drawableSprite = require("structs.drawable_sprite")
 local drawableLine = require("structs.drawable_line")
 local drawing = require("utils.drawing")
-local depthOptions = require("mods").requireFromPlugin("consts.depthOptions")
+local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local lantern = {}
 
