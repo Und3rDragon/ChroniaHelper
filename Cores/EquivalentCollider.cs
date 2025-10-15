@@ -136,10 +136,10 @@ public class EquivalentCollider : Collider
             _hasValidCollision = true;
 
             // 计算所有碰撞 collider 的绝对边界极值
-            _cachedTop = collidedColliders.Min(c => c.AbsoluteTop);
-            _cachedBottom = collidedColliders.Max(c => c.AbsoluteBottom);
-            _cachedLeft = collidedColliders.Max(c => c.AbsoluteLeft);
-            _cachedRight = collidedColliders.Min(c => c.AbsoluteRight);
+            _cachedTop = collidedColliders.Max(c => c.AbsoluteTop);
+            _cachedBottom = collidedColliders.Min(c => c.AbsoluteBottom);
+            _cachedLeft = collidedColliders.Min(c => c.AbsoluteLeft);
+            _cachedRight = collidedColliders.Max(c => c.AbsoluteRight);
         }
     }
 
