@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace YoctoHelper.Cores;
@@ -337,6 +338,7 @@ public static class NumberUtils
     {
         value = decimal.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
     }
+    
 
     public static void Increment(this ref int value, int increase = 1)
     {
