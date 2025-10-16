@@ -32,6 +32,11 @@ public static class StringUtils
     {
         return (StringUtils.IsNull(str)) || (str.Length <= 0);
     }
+    
+    public static bool IsNotNullOrEmpty(this string str)
+    {
+        return !IsNullOrEmpty(str);
+    }
 
     public static bool IsNullOrWhiteSpace(this string str)
     {

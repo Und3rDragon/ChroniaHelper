@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -111,6 +112,55 @@ public partial class Stopclock
         Reset();
 
         signal = (int)Signal.Initial;
+    }
+    
+    /// <summary>
+    /// 将xxx:xxx:xxx形式的字符串转换为时间
+    /// </summary>
+    /// <param name="timeFormat"></param>
+    public void SetTime(string timeFormat, bool initial = false, bool reset = true)
+    {
+        timeFormat.Split(':', StringSplitOptions.TrimEntries).ApplyTo(out string[] t);
+        
+        for(int i = 0, n = 0; i < t.Length; i++)
+        {
+            n = t.Length - 1 - i;
+            t[n].ParseInt(out int m);
+            m = m.ClampMin(0);
+            
+            switch (i)
+            {
+                case 0:
+                    m.AssignTo(initial, out initialMillisecond, out millisecond);
+                    break;
+                case 1:
+                    m.AssignTo(initial, out initialSecond, out second);
+                    break;
+                case 2:
+                    m.AssignTo(initial, out initialMinute, out minute);
+                    break;
+                case 3:
+                    m.AssignTo(initial, out initialHour, out hour);
+                    break;
+                case 4:
+                    m.AssignTo(initial, out initialDay, out day);
+                    break;
+                case 5:
+                    m.AssignTo(initial, out initialMonth, out month);
+                    break;
+                case 6:
+                    m.AssignTo(initial, out initialYear, out year);
+                    break;
+                default:
+                    m.AssignTo(initial, out initialMillisecond, out millisecond);
+                    break;
+            }
+        }
+
+        if (reset)
+        {
+            Initialize();
+        }
     }
 
 }

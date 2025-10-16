@@ -165,5 +165,24 @@ public static class ObjectUtils
     {
         return (!ObjectUtils.IsValueType(obj));
     }
+    
+    public static void AssignTo<T>(this T source, bool arg, out T ifTrue, out T ifFalse)
+    {
+        if (arg)
+        {
+            ifTrue = source;
+            ifFalse = default;
+        }
+        else
+        {
+            ifFalse = source;
+            ifTrue = default;
+        }
+    }
+
+    public static void AssignToWhen<T>(this T source, bool arg, T otherwise, out T to)
+    {
+        to = arg ? source : otherwise;
+    }
 
 }
