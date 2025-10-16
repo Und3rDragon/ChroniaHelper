@@ -83,6 +83,13 @@ public partial class Stopclock : IDisposable
                     watches.Value.Register(watches.Key);
                     continue;
                 }
+                
+                if (Md.SaveData.globalStopwatches.ContainsKey(watches.Key))
+                {
+                    toRemove.Add(watches.Key);
+                    watches.Value.Stop();
+                    continue;
+                }
 
                 if (!watches.Value.isolatedUpdate)
                 {
@@ -112,7 +119,7 @@ public partial class Stopclock : IDisposable
     public int millisecond = 0;
 
     public bool countdown = false;
-    public bool global = false;
+    public bool global { get; private set; } = false;
     public bool completed { get; private set; } = false;
     public bool removeWhenCompleted = true;
     public bool running { get; private set; } = false;
@@ -313,5 +320,74 @@ public partial class Stopclock : IDisposable
         }
 
         registered = true;
+    }
+    
+    public bool Registered()
+    {
+        CheckRegistry(out bool registered, out string registeredAs, out bool globally);
+        return registered;
+    }
+
+    public string RegisteredAs()
+    {
+        CheckRegistry(out bool registered, out string registeredAs, out bool globally);
+        return registeredAs;
+    }
+    
+    public bool RegisteredGlobally()
+    {
+        CheckRegistry(out bool registered, out string registeredAs, out bool globally);
+        return globally;
+    }
+    
+    public void CheckRegistry(out bool registered, out string registeredAs, out bool globally)
+    {
+        registered = Md.Session.sessionStopwatches.ContainsValue(this)
+            || Md.SaveData.globalStopwatches.ContainsValue(this);
+        this.registered = registered;
+        globally = Md.SaveData.globalStopwatches.ContainsValue(this);
+        registeredAs = "";
+        if (globally)
+        {
+            foreach(var item in Md.SaveData.globalStopwatches)
+            {
+                if(item.Value == this)
+                {
+                    registeredAs = item.Key;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            foreach(var item in Md.Session.sessionStopwatches)
+            {
+                if(item.Value == this)
+                {
+                    registeredAs = item.Key;
+                    break;
+                }
+            }
+        }
+    }
+    
+    public void SetGlobal(bool value)
+    {
+        CheckRegistry(out bool registered, out string registeredAs, out bool globally);
+        
+        if (registered && value != globally)
+        {
+            Register(registeredAs, value);
+            if (globally)
+            {
+                Md.SaveData.globalStopwatches.SafeRemove(registeredAs);
+            }
+            else
+            {
+                Md.Session.sessionStopwatches.SafeRemove(registeredAs);
+            }
+        }
+
+        global = value;
     }
 }

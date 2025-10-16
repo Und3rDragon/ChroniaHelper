@@ -20,6 +20,30 @@ public partial class Stopclock
     /// </summary>
     public string FormattedTime =>
         $"{year:000}Years {month:00}Months {day:00}Days {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
+    
+    public string DigitalTime =>
+        $"{year:000}:{month:00}:{day:00}:{hour:00}:{minute:00}:{second:00}:{millisecond:000}";
+    
+    public string Digitals =>
+        $"{year:000}{month:00}{day:00}{hour:00}{minute:00}{second:00}{millisecond:000}";
+
+    /// <summary>
+    /// 将计时器数字输出成整数组
+    /// </summary>
+    /// <param name="digitals">输出整数组</param>
+    /// <param name="trim">是否去除多余的前置0</param>
+    /// <param name="reverse">从ms的最后一位开始逆序排列</param>
+    public void GetDigitals(out int[] digitals, bool trim = false, bool reverse = true)
+    {
+        string d = Digitals;
+        if (trim) { d = d.TrimStart('0'); }
+
+        digitals = new int[d.Length];
+        for(int i = 0; i < d.Length; i++)
+        {
+            $"{(reverse ? d[d.Length - 1 - i] : d[i])}".ParseInt(out digitals[i], 0);
+        }
+    }
 
     /// <summary>
     /// 获取总毫秒数（近似值）
