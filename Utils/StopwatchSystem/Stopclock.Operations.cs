@@ -163,4 +163,46 @@ public partial class Stopclock
         }
     }
 
+    public void SetTime(int[] time, bool initial = false, bool reset = true)
+    {
+        for (int i = 0, n = 0; i < time.Length; i++)
+        {
+            n = time.Length - 1 - i;
+            int m = time[n].ClampMin(0);
+
+            switch (i)
+            {
+                case 0:
+                    m.AssignTo(initial, out initialMillisecond, out millisecond);
+                    break;
+                case 1:
+                    m.AssignTo(initial, out initialSecond, out second);
+                    break;
+                case 2:
+                    m.AssignTo(initial, out initialMinute, out minute);
+                    break;
+                case 3:
+                    m.AssignTo(initial, out initialHour, out hour);
+                    break;
+                case 4:
+                    m.AssignTo(initial, out initialDay, out day);
+                    break;
+                case 5:
+                    m.AssignTo(initial, out initialMonth, out month);
+                    break;
+                case 6:
+                    m.AssignTo(initial, out initialYear, out year);
+                    break;
+                default:
+                    m.AssignTo(initial, out initialMillisecond, out millisecond);
+                    break;
+            }
+        }
+
+        if (reset)
+        {
+            Initialize();
+        }
+    }
+
 }

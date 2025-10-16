@@ -13,6 +13,7 @@ return {
             enterDelay = 0,
             leaveMode = "Any",
             leaveDelay = 0,
+            clearGlobal = false,
             onlyOnce = false,
             leaveReset = false
         }

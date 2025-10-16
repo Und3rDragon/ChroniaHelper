@@ -56,7 +56,17 @@ public partial class Stopclock : IDisposable
                 }
             }
 
-            if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
+            if (watches.Value.completed && watches.Value.removeWhenCompleted) 
+            {
+                if (!watches.Value.removeRequireSignalUsed)
+                {
+                    toRemove.Add(watches.Key);
+                }
+                else
+                {
+                    if (!watches.Value.HasValidSignal) { toRemove.Add(watches.Key); }
+                }
+            }
 
             //Log.Info(watches.Key, watches.Value.FormattedTime);
         }
@@ -99,7 +109,17 @@ public partial class Stopclock : IDisposable
                     }
                 }
 
-                if (watches.Value.completed && watches.Value.removeWhenCompleted) { toRemove.Add(watches.Key); }
+                if (watches.Value.completed && watches.Value.removeWhenCompleted)
+                {
+                    if (!watches.Value.removeRequireSignalUsed)
+                    {
+                        toRemove.Add(watches.Key);
+                    }
+                    else
+                    {
+                        if (!watches.Value.HasValidSignal) { toRemove.Add(watches.Key); }
+                    }
+                }
 
                 //Log.Info(watches.Key, watches.Value.FormattedTime);
             }
@@ -122,6 +142,7 @@ public partial class Stopclock : IDisposable
     public bool global { get; private set; } = false;
     public bool completed { get; private set; } = false;
     public bool removeWhenCompleted = true;
+    public bool removeRequireSignalUsed = true;
     public bool running { get; private set; } = false;
     public bool isolatedUpdate = false;
     public bool registered { get; private set; } = false;
@@ -177,6 +198,7 @@ public partial class Stopclock : IDisposable
     /// 信号状态, 使用信号请调用FetchSignal()
     /// </summary>
     public int signal { get; private set; } = 0;
+    public bool HasValidSignal => signal > 0;
     public bool FetchSignal()
     {
         bool state = signal > 0;
@@ -228,7 +250,8 @@ public partial class Stopclock : IDisposable
     public Stopclock(bool countdown, int year = 0, int month = 0, int day = 0, int hour = 0,
         int minute = 0, int second = 0, int millisecond = 0, bool global = false, bool followPause = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
-        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
+        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false,
+        bool removeRequireSignalUsed = true)
     {
         this.year = year;
         this.month = month;
@@ -249,6 +272,7 @@ public partial class Stopclock : IDisposable
         this.initialMillisecond = initialMillisecond;
         this.removeWhenCompleted = removeWhenCompleted;
         this.isolatedUpdate = isolatedUpdate;
+        this.removeRequireSignalUsed = removeRequireSignalUsed;
         _lastUpdateTime = DateTime.Now;
 
         registered = false;
@@ -262,7 +286,8 @@ public partial class Stopclock : IDisposable
     public Stopclock(string regName, bool countdown = false, int year = 0, int month = 0, int day = 0, int hour = 0,
         int minute = 0, int second = 0, int millisecond = 0, bool global = false, bool followPause = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
-        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false)
+        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false,
+        bool removeRequireSignalUsed = true)
     {
         this.year = year;
         this.month = month;
@@ -283,11 +308,139 @@ public partial class Stopclock : IDisposable
         this.initialMillisecond = initialMillisecond;
         this.removeWhenCompleted = removeWhenCompleted;
         this.isolatedUpdate = isolatedUpdate;
+        this.removeRequireSignalUsed = removeRequireSignalUsed;
         _lastUpdateTime = DateTime.Now;
 
         registered = false;
 
         Register(regName);
+
+        Initialize();
+    }
+
+    /// <summary>
+    /// 用xxx:xxx:xxx的字符串创建时间
+    /// </summary>
+    /// <param name="countdown"></param>
+    /// <param name="time"></param>
+    /// <param name="global"></param>
+    /// <param name="followPause"></param>
+    /// <param name="removeWhenCompleted"></param>
+    /// <param name="isolatedUpdate"></param>
+    public Stopclock(bool countdown, string time, bool global = false, bool followPause = false,
+        bool removeWhenCompleted = true, bool isolatedUpdate = false, bool removeRequireSignalUsed = true)
+    {
+        time.Split(':', StringSplitOptions.TrimEntries).ApplyTo(out string[] t);
+
+        for (int i = 0, n = 0; i < t.Length; i++)
+        {
+            n = t.Length - 1 - i;
+            t[n].ParseInt(out int m);
+            m = m.ClampMin(0);
+
+            switch (i)
+            {
+                case 0:
+                    m.AssignTo(countdown, out initialMillisecond, out millisecond);
+                    break;
+                case 1:
+                    m.AssignTo(countdown, out initialSecond, out second);
+                    break;
+                case 2:
+                    m.AssignTo(countdown, out initialMinute, out minute);
+                    break;
+                case 3:
+                    m.AssignTo(countdown, out initialHour, out hour);
+                    break;
+                case 4:
+                    m.AssignTo(countdown, out initialDay, out day);
+                    break;
+                case 5:
+                    m.AssignTo(countdown, out initialMonth, out month);
+                    break;
+                case 6:
+                    m.AssignTo(countdown, out initialYear, out year);
+                    break;
+                default:
+                    m.AssignTo(countdown, out initialMillisecond, out millisecond);
+                    break;
+            }
+        }
+        
+        this.countdown = countdown;
+        this.global = global;
+        this.followPause = followPause;
+        this.removeWhenCompleted = removeWhenCompleted;
+        this.isolatedUpdate = isolatedUpdate;
+        this.removeRequireSignalUsed = removeRequireSignalUsed;
+        _lastUpdateTime = DateTime.Now;
+
+        registered = false;
+
+        Initialize();
+    }
+
+    /// <summary>
+    /// 用xxx:xxx:xxx的字符串创建时间, 但是需要带注册名
+    /// </summary>
+    /// <param name="regsiterName"></param>
+    /// <param name="countdown"></param>
+    /// <param name="time"></param>
+    /// <param name="global"></param>
+    /// <param name="followPause"></param>
+    /// <param name="removeWhenCompleted"></param>
+    /// <param name="isolatedUpdate"></param>
+    public Stopclock(string regsiterName, bool countdown, string time, bool global = false, bool followPause = false,
+        bool removeWhenCompleted = true, bool isolatedUpdate = false, bool removeRequireSignalUsed = true)
+    {
+        time.Split(':', StringSplitOptions.TrimEntries).ApplyTo(out string[] t);
+
+        for (int i = 0, n = 0; i < t.Length; i++)
+        {
+            n = t.Length - 1 - i;
+            t[n].ParseInt(out int m);
+            m = m.ClampMin(0);
+
+            switch (i)
+            {
+                case 0:
+                    m.AssignTo(countdown, out initialMillisecond, out millisecond);
+                    break;
+                case 1:
+                    m.AssignTo(countdown, out initialSecond, out second);
+                    break;
+                case 2:
+                    m.AssignTo(countdown, out initialMinute, out minute);
+                    break;
+                case 3:
+                    m.AssignTo(countdown, out initialHour, out hour);
+                    break;
+                case 4:
+                    m.AssignTo(countdown, out initialDay, out day);
+                    break;
+                case 5:
+                    m.AssignTo(countdown, out initialMonth, out month);
+                    break;
+                case 6:
+                    m.AssignTo(countdown, out initialYear, out year);
+                    break;
+                default:
+                    m.AssignTo(countdown, out initialMillisecond, out millisecond);
+                    break;
+            }
+        }
+
+        this.countdown = countdown;
+        this.global = global;
+        this.followPause = followPause;
+        this.removeWhenCompleted = removeWhenCompleted;
+        this.isolatedUpdate = isolatedUpdate;
+        this.removeRequireSignalUsed = removeRequireSignalUsed;
+        _lastUpdateTime = DateTime.Now;
+
+        registered = false;
+
+        Register(regsiterName);
 
         Initialize();
     }

@@ -14,7 +14,8 @@ public class StopclockFlagController : Entity
     public StopclockFlagController(EntityData d, Vc2 o) : base(d.Position + o)
     {
         tags = d.Attr("stopclockTags").Split(',',StringSplitOptions.TrimEntries);
-
+        global = d.Bool("global", false);
+        
         Initialize();
     }
     private string[] tags;
@@ -40,9 +41,9 @@ public class StopclockFlagController : Entity
             {
                 for (int j = 0; j <= 9; j++)
                 {
-                    $"{prefix}{tag}_{i}_{j}".SetFlag(false);
+                    $"{prefix}{tag}_{i}_{j}".SetFlag(false, global);
                 }
-                $"{prefix}{tag}_{i}_{digitals[i]}".SetFlag(true);
+                $"{prefix}{tag}_{i}_{digitals[i]}".SetFlag(true, global);
             }
         }
     }
