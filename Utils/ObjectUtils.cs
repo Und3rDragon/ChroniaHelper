@@ -168,21 +168,45 @@ public static class ObjectUtils
     
     public static void AssignTo<T>(this T source, bool arg, out T ifTrue, out T ifFalse)
     {
+        ifTrue = default;
+        ifFalse = default;
         if (arg)
         {
             ifTrue = source;
-            ifFalse = default;
         }
         else
         {
             ifFalse = source;
-            ifTrue = default;
+        }
+    }
+
+    public static void AssignTo<T>(this T source, bool primaryArg, bool argIfPrimaryFalse, out T ifPrimaryTrue, out T ifSecondaryTrue, out T ifSecondaryFalse)
+    {
+        ifPrimaryTrue = default;
+        ifSecondaryTrue = default;
+        ifSecondaryFalse = default;
+        if (primaryArg)
+        {
+            ifPrimaryTrue = source;
+        }
+        else if (argIfPrimaryFalse)
+        {
+            ifSecondaryTrue = source;
+        }
+        else
+        {
+            ifSecondaryFalse = source;
         }
     }
 
     public static void AssignToWhen<T>(this T source, bool arg, T otherwise, out T to)
     {
         to = arg ? source : otherwise;
+    }
+
+    public static void AssignToWhen<T>(this T source, bool firstArg, bool secondArg, T firstNotSatisfied, T secondNotSatisfied, T noneSatisfied, out T to)
+    {
+        to = firstArg ? (secondArg ? source : secondNotSatisfied) : (secondArg ? firstNotSatisfied : noneSatisfied);
     }
 
 }
