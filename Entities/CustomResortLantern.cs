@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
-using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
