@@ -17,6 +17,7 @@ public class StopclockRenderer : Entity
     public StopclockRenderer(EntityData d, Vc2 o) : base(d.Position + o)
     {
         Position = d.Position;
+        Depth = d.Int("depth", -10000000);
         
         source = d.Attr("sourcePath", "ChroniaHelper/StopclockFonts/font");
         textures = GFX.Game.GetAtlasSubtextures(source);
@@ -27,6 +28,7 @@ public class StopclockRenderer : Entity
         segmentDistance = d.Float("segmentDistance", 8f);
         clockTag = d.Attr("stopclockTag", "stopclock");
         parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
+        staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
 
         baseLining = AlignUtils.AlignToJustify[(AlignUtils.Aligns)baseAlign];
         segmentLining = AlignUtils.AlignToJustify[(AlignUtils.Aligns)segmentAlign];
@@ -41,6 +43,7 @@ public class StopclockRenderer : Entity
     private float segmentDistance;
     private string clockTag;
     private Vc2 parallax, basePosition, renderPosition;
+    private Vc2 staticScreen;
 
     public override void Render()
     {
@@ -49,7 +52,7 @@ public class StopclockRenderer : Entity
         if (!clockTag.GetStopclock(out Stopclock clock)) { return; }
 
         clock.GetTrimmedTimeString(out string renderTarget);
-
+        
         // Calculate Sizing
         float cal = 0;
         List<float> segmentX = new();
@@ -103,16 +106,24 @@ public class StopclockRenderer : Entity
         renderPosition = -size * baseLining;
 
         // Logging result: Position correct
-        Log.Each(segmentX);
-        Log.Warn($"size: {size}, topleft: {topleft}, downright: {downright}");
-        Log.Warn($"renderPosition: {renderPosition}");
-        Log.Warn($"entityPosition: {Position}");
-        Log.Warn($"basePosition: {basePosition}");
-        Log.Error("_______________________________");
+        //Log.Each(segmentX);
+        //Log.Warn($"size: {size}, topleft: {topleft}, downright: {downright}");
+        //Log.Warn($"renderPosition: {renderPosition}");
+        //Log.Warn($"entityPosition: {Position}");
+        //Log.Warn($"basePosition: {basePosition}");
+        //Log.Error("_______________________________");
+
+        Vc2 levelPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
+        Vc2 camCenter = MaP.level.Camera.Position + staticScreen; // Definitive
+        //basePosition = camCenter + (Position - camCenter) * parallax; // Relative
+        basePosition = camCenter + ((Position + levelPos) - camCenter) * parallax; // Definitive
         
         renderTarget.EachDoWithIndexAndLength((c, n, L) =>
         {
-            textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Draw(basePosition + renderPosition + new Vc2(segmentX[n], 0), 
+            Vc2 r = basePosition + renderPosition + new Vc2(segmentX[n], 0);
+            
+            // Texture draw at world coordinates?
+            textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Draw(r,
                 segmentLining, Color.White, 1f, 0f);
         });
     }
@@ -120,8 +131,5 @@ public class StopclockRenderer : Entity
     public override void Update()
     {
         base.Update();
-
-        Vc2 camCenter = MaP.level.Camera.Position + new Vc2(160f, 90f);
-        basePosition = camCenter + (Position - camCenter) * parallax;
     }
 }
