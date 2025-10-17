@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils.StopwatchSystem;
 
 namespace ChroniaHelper.Triggers;
 
+[Tracked(true)]
+[CustomEntity("ChroniaHelper/StopclockTrigger")]
 public class StopclockTrigger :BaseTrigger
 {
     public StopclockTrigger(EntityData d, Vc2 o) : base(d, o)

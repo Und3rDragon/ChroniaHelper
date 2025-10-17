@@ -198,15 +198,54 @@ public static class ObjectUtils
             ifSecondaryFalse = source;
         }
     }
-
-    public static void AssignToWhen<T>(this T source, bool arg, T otherwise, out T to)
+    
+    public static void DoUnless(this Action action, bool interfere)
     {
-        to = arg ? source : otherwise;
+        if (action == null) throw new ArgumentNullException(nameof(action));
+        
+        if (!interfere)
+        {
+            action();
+        }
     }
 
-    public static void AssignToWhen<T>(this T source, bool firstArg, bool secondArg, T firstNotSatisfied, T secondNotSatisfied, T noneSatisfied, out T to)
+    public static void DoUnless(this Action action, bool interfere, Action doOtherwise)
     {
-        to = firstArg ? (secondArg ? source : secondNotSatisfied) : (secondArg ? firstNotSatisfied : noneSatisfied);
+        if (action == null) throw new ArgumentNullException(nameof(action));
+        if (doOtherwise == null) throw new ArgumentNullException(nameof(doOtherwise));
+        
+        if (!interfere)
+        {
+            action();
+        }
+        else
+        {
+            doOtherwise();
+        }
     }
 
+    public static void DoUnless<T>(this T source, Action<T> action, bool interfere)
+    {
+        if (action == null) throw new ArgumentNullException(nameof(action));
+        
+        if (!interfere)
+        {
+            action(source);
+        }
+    }
+
+    public static void DoUnless<T>(this T source, Action<T> action, bool interfere, Action<T> doOtherwise)
+    {
+        if (action == null) throw new ArgumentNullException(nameof(action));
+        if (doOtherwise == null) throw new ArgumentNullException(nameof(doOtherwise));
+        
+        if (!interfere)
+        {
+            action(source);
+        }
+        else
+        {
+            doOtherwise(source);
+        }
+    }
 }

@@ -999,3 +999,15 @@ entities.ChroniaHelper/BezierZipmover.attributes.description.renderStyle=There a
 entities.ChroniaHelper/BezierZipmover.attributes.description.triggerFlag=If not empty, the flag will cause the zipmover start moving no matter if there is player on it
 entities.ChroniaHelper/BezierZipmover.attributes.description.syncWithAdventureHelperZipmovers=If enabled, the zipmover will listen and release AdventureHelper Synced Zipmover signals
 entities.ChroniaHelper/BezierZipmover.attributes.description.uniformity=Bezier calculations are complicated, so the curve isn't as smooth as it seems \nSimply explanation is, when the lerp point is 50%, it's not necessarily equal to the middle point of the curve \nWhich is why this option enables the linear interpolation of the curve using distance instead of lerp points \nBy using this method, the movements will be linear as expected \nBUT THE PERFORMANCE COULD BE LAGGY DUE TO TWICE OF INTERPOLATION
+
+# ================= Stopclock Flag Controller
+
+entities.ChroniaHelper/StopclockFlagController.placements.name.controller=Stopclock Flag Controller
+
+# ================= Stopclock Trigger
+
+triggers.ChroniaHelper/StopclockTrigger.placements.name.trigger=Stopclock Trigger
+
+# ================= Stopclock Renderer
+
+entities.ChroniaHelper/StopclockRenderer.placements.name.renderer=Stopclock Renderer

@@ -7,16 +7,14 @@ local controller = {}
 controller.name = "ChroniaHelper/ComprehensiveController"
 
 controller.placements = {
-    {
-        name = "controller",
-        data = {
-            Introduction = "",
-            PlayerCollidingBGTiles = "ChroniaHelper_PlayerCollidingBGTiles",
-            PlayerTouchingTriggers = "ChroniaHelper_PlayerTouchingTriggers",
-            PlayerCollidingEntitiesWithSameDepth = "ChroniaHelper_PlayerCollidingEntitiesWithSameDepth",
-            PlayerCollidingEntitiesAbove = "ChroniaHelper_PlayerCollidingEntitiesAbove",
-            PlayerCollidingEntitiesBelow = "ChroniaHelper_PlayerCollidingEntitiesBelow",
-        }
+    name = "controller",
+    data = {
+        Introduction = "",
+        PlayerCollidingBGTiles = "ChroniaHelper_PlayerCollidingBGTiles",
+        PlayerTouchingTriggers = "ChroniaHelper_PlayerTouchingTriggers",
+        PlayerCollidingEntitiesWithSameDepth = "ChroniaHelper_PlayerCollidingEntitiesWithSameDepth",
+        PlayerCollidingEntitiesAbove = "ChroniaHelper_PlayerCollidingEntitiesAbove",
+        PlayerCollidingEntitiesBelow = "ChroniaHelper_PlayerCollidingEntitiesBelow",
     }
 }
 

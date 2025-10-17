@@ -53,18 +53,27 @@ public partial class Stopclock
     /// <summary>
     /// 获取简化的时间字符串（适合显示）
     /// </summary>
-    public string GetSimpleTimeString()
+    public string GetTrimmedTimeString()
     {
         if (year > 0)
-            return $"{year}年{month}月{day}天 {hour:00}:{minute:00}:{second:00}";
+            return $"{year}:{month}:{day}:{hour:00}:{minute:00}:{second:00}";
         else if (month > 0)
-            return $"{month}月{day}天 {hour:00}:{minute:00}:{second:00}";
+            return $"{month}:{day}:{hour:00}:{minute:00}:{second:00}";
         else if (day > 0)
-            return $"{day}天 {hour:00}:{minute:00}:{second:00}";
+            return $"{day}:{hour:00}:{minute:00}:{second:00}";
         else if (hour > 0)
             return $"{hour:00}:{minute:00}:{second:00}";
+        else if (minute > 0)
+            return $"{minute:00}:{second:00}:{millisecond:000}";
+        else if(second > 0)
+            return $"{second:00}:{millisecond:000}";
         else
-            return $"{minute:00}:{second:00}.{millisecond:000}";
+            return $"{millisecond}";
+    }
+    
+    public void GetTrimmedTimeString(out string str)
+    {
+        str = GetTrimmedTimeString();
     }
 
 }

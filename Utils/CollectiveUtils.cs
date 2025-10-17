@@ -341,6 +341,66 @@ public static class CollectiveUtils
     }
 
     /// <summary>
+    /// 对集合中的每个元素执行操作并返回结果集合
+    /// </summary>
+    /// <typeparam name="TSource">源元素类型</typeparam>
+    /// <typeparam name="TResult">结果类型</typeparam>
+    /// <param name="source">源集合</param>
+    /// <param name="selector">转换函数</param>
+    /// <returns>转换后的结果集合</returns>
+    public static ResultList EachDo<SourceList, ResultList, TSource, TResult>(
+        this SourceList source,
+        Func<TSource, TResult> selector)
+        where ResultList : ICollection<TResult>, new()
+        where SourceList : ICollection<TSource>
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (selector == null) throw new ArgumentNullException(nameof(selector));
+
+        var s = source.Select(selector);
+        ResultList r = new();
+        foreach (var item in s)
+        {
+            if (!r.Contains(item))
+            {
+                r.Add(item);
+            }
+        }
+        return r;
+    }
+    
+    /// <summary>
+    /// 对集合中的每个元素执行指定操作, 除非干扰条件满足
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="action"></param>
+    /// <param name="unless"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void EachDoUnless<T>(this IEnumerable<T> source, Action<T> action, bool unless)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (action == null) throw new ArgumentNullException(nameof(action));
+
+        foreach (var item in source)
+        {
+            item.DoUnless(action, unless);
+        }
+    }
+
+    public static void EachDoUnless<T>(this IEnumerable<T> source, Action<T> action, bool unless, Action<T> doOtherwise)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (action == null) throw new ArgumentNullException(nameof(action));
+        if (doOtherwise == null) throw new ArgumentNullException(nameof(doOtherwise));
+
+        foreach (var item in source)
+        {
+            item.DoUnless(action, unless, doOtherwise);
+        }
+    }
+
+    /// <summary>
     /// 将集合中的每个元素通过转换函数映射为新类型的元素，并返回结果集合。
     /// </summary>
     /// <typeparam name="T1">源元素类型</typeparam>
@@ -408,32 +468,22 @@ public static class CollectiveUtils
     }
 
     /// <summary>
-    /// 对集合中的每个元素执行操作并返回结果集合
+    /// 对集合中的每个元素执行指定操作，并传递索引
     /// </summary>
-    /// <typeparam name="TSource">源元素类型</typeparam>
-    /// <typeparam name="TResult">结果类型</typeparam>
+    /// <typeparam name="T">集合元素类型</typeparam>
     /// <param name="source">源集合</param>
-    /// <param name="selector">转换函数</param>
-    /// <returns>转换后的结果集合</returns>
-    public static ResultList EachDo<SourceList, ResultList, TSource, TResult>(
-        this SourceList source,
-        Func<TSource, TResult> selector)
-        where ResultList : ICollection<TResult>, new()
-        where SourceList : ICollection<TSource>
+    /// <param name="action">要执行的操作（包含元素、索引、总计数）</param>
+    public static void EachDoWithIndexAndLength<T>(this IEnumerable<T> source, Action<T, int, int> action)
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
-        if (selector == null) throw new ArgumentNullException(nameof(selector));
+        if (action == null) throw new ArgumentNullException(nameof(action));
 
-        var s = source.Select(selector);
-        ResultList r = new();
-        foreach (var item in s)
+        int index = 0;
+        int L = source.Count();
+        foreach (var item in source)
         {
-            if(!r.Contains(item))
-            {
-                r.Add(item);
-            }
+            action(item, index++, L);
         }
-        return r;
     }
 
     /// <summary>
