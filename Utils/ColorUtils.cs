@@ -373,9 +373,36 @@ public static class ColorUtils
             return color * alpha;
         }
         
-        public Color Parsed(float overrideAlpha)
+        public Color Parsed(float additionalAlpha)
+        {
+            return color * alpha * additionalAlpha;
+        }
+        
+        public Color OverrideParse(float overrideAlpha)
         {
             return color * overrideAlpha.ClampWhole(0f, 1f);
+        }
+
+        public Color ParseMultiplied(params float[] parameters)
+        {
+            if(parameters.Length == 0 || parameters.IsNull()) { return Parsed(); }
+
+            float a = 1f;
+            parameters.EachDo((n) => a *= n);
+            a.ClampWhole(0f, 1f, out a);
+            
+            return color * alpha * a;
+        }
+
+        public Color OverrideParseMultiplied(params float[] parameters)
+        {
+            if (parameters.Length == 0 || parameters.IsNull()) { return Parsed(); }
+
+            float a = 1f;
+            parameters.EachDo((n) => a *= n);
+            a.ClampWhole(0f, 1f, out a);
+
+            return color * a;
         }
     }
 

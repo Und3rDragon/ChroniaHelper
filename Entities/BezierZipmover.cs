@@ -257,12 +257,12 @@ public class BezierZipmover : Solid
     
     public void SingleRendering()
     {
-        curve.Render(50, ropeColor.Parsed(0.3f), 5f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
-        curve.Render(50, ropeColor.Parsed(0.7f), 2f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
-        Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.Parsed(0.4f), 200);
-        Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 2f, ropeColor.Parsed(0.8f), 200);
-        Draw.Circle(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.Parsed(0.4f), 200);
-        Draw.Circle(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), 2f, ropeColor.Parsed(0.8f), 200);
+        curve.Render(50, ropeColor.OverrideParse(0.3f), 5f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
+        curve.Render(50, ropeColor.OverrideParse(0.7f), 2f, new Vc2(base.Width / 2, base.Height / 2), renderGap);
+        Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.OverrideParse(0.4f), 200);
+        Draw.Circle(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), 2f, ropeColor.OverrideParse(0.8f), 200);
+        Draw.Circle(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), 3f, ropeColor.OverrideParse(0.4f), 200);
+        Draw.Circle(nodes[nodes.Length - 1] + new Vc2(base.Width / 2, base.Height / 2), 2f, ropeColor.OverrideParse(0.8f), 200);
 
         // draw cogs only
         pathRenderer.cog.DrawCentered(nodes[0] + new Vc2(base.Width / 2, base.Height / 2), Color.White, 1f, percent * MathF.PI * 2f);

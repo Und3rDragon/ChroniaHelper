@@ -708,6 +708,65 @@ public static class NumberUtils
         return value <= n ? value : n;
     }
 
+    // out as
+    public static void Clamp(this int value, int value1, int value2, out int to)
+    {
+        int min = value1 <= value2 ? value1 : value2, max = value2 >= value1 ? value2 : value1;
+        to = int.Clamp(value, min, max);
+    }
+
+    public static void Clamp(this float value, float value1, float value2, out float to)
+    {
+        float min = value1 <= value2 ? value1 : value2, max = value2 >= value1 ? value2 : value1;
+        to = float.Clamp(value, min, max);
+    }
+
+    public static void Clamp(this Vector2 value, Vector2 value1, Vector2 value2, out Vc2 to)
+    {
+        to = new(value.X.Clamp(value1.X, value2.X), value.Y.Clamp(value1.Y, value2.Y));
+    }
+
+    public static void ClampWhole(this int value, int value1, int value2, out int to)
+    {
+        int min = value1 < value2 ? value1 : value2;
+        int max = value1 > value2 ? value1 : value2;
+
+        to = value < min ? min : (value > max ? max : value);
+    }
+
+    public static void ClampWhole(this float value, float value1, float value2, out float to)
+    {
+        float min = value1 < value2 ? value1 : value2;
+        float max = value1 > value2 ? value1 : value2;
+
+        to = value < min ? min : (value > max ? max : value);
+    }
+
+    public static void ClampWhole(this Vector2 value, Vector2 value1, Vector2 value2, Vc2 to)
+    {
+        to = new(value.X.ClampWhole(value1.X, value2.X), value.Y.ClampWhole(value1.Y, value2.Y));
+    }
+
+    public static void ClampMin(this int value, int n, out int to)
+    {
+        to = value >= n ? value : n;
+    }
+
+    public static void ClampMin(this float value, float n, out float to)
+    {
+        to = value >= n ? value : n;
+    }
+
+    public static void ClampMax(this int value, int n, out int to)
+    {
+        to = value <= n ? value : n;
+    }
+
+    public static void ClampMax(this float value, float n, out float to)
+    {
+        to = value <= n ? value : n;
+    }
+
     public enum Comparator
     {
         Equals = 0,
@@ -749,6 +808,7 @@ public static class NumberUtils
         Comparator.WithinRange => source >= Math.Min(target, anotherRange) && source <= Math.Max(target, anotherRange),
         _ => false,
     };
+    
     public static T Max<T>(this IEnumerable<T> source) where T : IComparable<T>
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
