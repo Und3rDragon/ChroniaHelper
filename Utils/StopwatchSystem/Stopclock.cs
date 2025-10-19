@@ -201,7 +201,7 @@ public partial class Stopclock : IDisposable
     public bool HasValidSignal => signal > 0;
     public bool FetchSignal()
     {
-        bool state = signal > 0;
+        bool state = signal == 4;
         if (state) { signal = -1; }
         return state;
     }

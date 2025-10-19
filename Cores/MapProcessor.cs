@@ -203,8 +203,11 @@ public static class MapProcessor
         orig(self);
     }
 
+    public static Scene scene;
+    public static Level sLevel => scene as Level;
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)
     {
+        scene = self;
         orig(self);
 
         if (Md.SaveData.IsNotNull())

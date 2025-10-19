@@ -20,30 +20,35 @@ public class StopclockRenderer : Entity
         Depth = d.Int("depth", -10000000);
         
         source = d.Attr("sourcePath", "ChroniaHelper/StopclockFonts/font");
-        textures = GFX.Game.GetAtlasSubtextures(source);
+        image = new SerialImage(GFX.Game.GetAtlasSubtextures(source));
 
-        renderMode = d.Int("renderMode", 0);
-        baseAlign = d.Int("positionAlign", 5);
-        segmentAlign = d.Int("segmentAlign", 5);
-        segmentDistance = d.Float("segmentDistance", 8f);
+        image.renderMode = d.Int("renderMode", 0);
+        image.origin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("positionAlign", 5)];
+        image.segmentOrigin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("segmentAlign", 5)];
+        image.distance = d.Float("segmentDistance", 4f);
+        image.color = d.GetChroniaColor("rendererColor", Color.White);
+        maxAlpha = image.color.alpha;
+        overrideAlpha = 0f;
+        image.color.alpha = overrideAlpha;
+        
         clockTag = d.Attr("stopclockTag", "stopclock");
         parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
         staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
 
-        baseLining = AlignUtils.AlignToJustify[(AlignUtils.Aligns)baseAlign];
-        segmentLining = AlignUtils.AlignToJustify[(AlignUtils.Aligns)segmentAlign];
-        
+        maxUnit = d.Int("maximumUnit", 3);
+        minUnit = d.Int("minimumUnit", 0);
+
+        trimZeros = d.Bool("trimZeros", true);
     }
+    private SerialImage image;
     private string source;
-    private List<MTexture> textures;
-    private enum RenderMode { Compact, EqualDistance}
-    private int renderMode = 0;
-    private int baseAlign = 5, segmentAlign = 5;
-    private Vc2 baseLining, segmentLining;
-    private float segmentDistance;
     private string clockTag;
     private Vc2 parallax, basePosition, renderPosition;
     private Vc2 staticScreen;
+    private float overrideAlpha, maxAlpha;
+    private enum Units { Year = 6, Month = 5, Day = 4, Hour = 3, Minute = 2, Second = 1, Millisecond = 0 }
+    private int maxUnit, minUnit;
+    private bool trimZeros;
 
     public override void Render()
     {
@@ -51,85 +56,46 @@ public class StopclockRenderer : Entity
 
         if (!clockTag.GetStopclock(out Stopclock clock)) { return; }
 
-        clock.GetTrimmedTimeString(out string renderTarget);
-        
-        // Calculate Sizing
-        float cal = 0;
-        List<float> segmentX = new();
-        Vc2 topleft = Vc2.Zero, downright = Vc2.Zero;
-        renderTarget.EachDoWithIndexAndLength((c, n, L) =>
+        clock.GetTimeData(out int[] data, minUnit, maxUnit);
+
+        string renderTarget = "";
+        for (int i = 0; i < data.Length; i++)
         {
-            if (renderMode == (int)RenderMode.EqualDistance)
+            if (i == 0)
             {
-                if (n == 0)
-                {
-                    topleft = Vc2.Zero - new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * segmentLining;
-                    downright = Vc2.Zero + new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * (Vc2.One - segmentLining);
-                }
-                Vc2 basic = new Vc2(segmentDistance * n, 0);
-                Vc2 newtopleft = basic - new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * segmentLining,
-                newdownright = basic + new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * (Vc2.One - segmentLining);
-
-                topleft.Y = newtopleft.Y < topleft.Y ? newtopleft.Y : topleft.Y;
-                downright.X = newdownright.X > downright.X ? newdownright.X : downright.X;
-                downright.Y = newdownright.Y > downright.Y ? newdownright.Y : downright.Y;
-
-                segmentX.Add(segmentDistance * n);
+                renderTarget = $":{data[i]:000}";
+                continue;
             }
-            else
+            if (i != data.Length - 1)
             {
-                if (n == 0)
-                {
-                    topleft = Vc2.Zero - new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * segmentLining;
-                    downright = Vc2.Zero + new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * (Vc2.One - segmentLining);
-
-                    segmentX.Add(cal);
-                    return;
-                }
-
-                cal = cal + textures[$"{renderTarget[n - 1]}".ParseInt(c == ':' ? 10 : 0)].Width * (1f - segmentLining.X) + segmentDistance + textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width * segmentLining.X;
-
-                Vc2 basic = new Vc2(cal, 0);
-                Vc2 newtopleft = basic - new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * segmentLining,
-                newdownright = basic + new Vc2(textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Width, textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Height) * (Vc2.One - segmentLining);
-
-                topleft.Y = newtopleft.Y < topleft.Y ? newtopleft.Y : topleft.Y;
-                downright.X = newdownright.X > downright.X ? newdownright.X : downright.X;
-                downright.Y = newdownright.Y > downright.Y ? newdownright.Y : downright.Y;
-
-                segmentX.Add(cal);
+                renderTarget = $":{data[i]:00}" + renderTarget;
+                continue;
             }
-        });
-
-        Vc2 size = downright - topleft;
-
-        renderPosition = -size * baseLining;
-
-        // Logging result: Position correct
-        //Log.Each(segmentX);
-        //Log.Warn($"size: {size}, topleft: {topleft}, downright: {downright}");
-        //Log.Warn($"renderPosition: {renderPosition}");
-        //Log.Warn($"entityPosition: {Position}");
-        //Log.Warn($"basePosition: {basePosition}");
-        //Log.Error("_______________________________");
+            renderTarget = $"{data[i]}" + renderTarget;
+        }
+        
+        if (trimZeros)
+        {
+            renderTarget = renderTarget.TrimStart('0').TrimStart(':').RemoveAll("00:");
+        }
 
         Vc2 levelPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
         Vc2 camCenter = MaP.level.Camera.Position + staticScreen; // Definitive
         //basePosition = camCenter + (Position - camCenter) * parallax; // Relative
         basePosition = camCenter + ((Position + levelPos) - camCenter) * parallax; // Definitive
-        
-        renderTarget.EachDoWithIndexAndLength((c, n, L) =>
+
+        image.Render(renderTarget, (c) =>
         {
-            Vc2 r = basePosition + renderPosition + new Vc2(segmentX[n], 0);
-            
-            // Texture draw at world coordinates?
-            textures[$"{c}".ParseInt(c == ':' ? 10 : 0)].Draw(r,
-                segmentLining, Color.White, 1f, 0f);
-        });
+            return $"{c}".ParseInt(c == ':' ? 10 : 0);
+        }, basePosition);
     }
 
     public override void Update()
     {
         base.Update();
+
+        if (!clockTag.GetStopclock(out Stopclock clock)) { return; }
+
+        image.color.alpha = overrideAlpha = Calc.Approach(overrideAlpha, clock.completed? 0f: maxAlpha, 2 * Engine.DeltaTime);
     }
 }

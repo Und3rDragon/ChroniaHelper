@@ -23,13 +23,29 @@ renderer.placements = {
         renderMode = 0,
         positionAlign = 0,
         segmentAlign = 0,
-        segmentDistance = 8,
+        segmentDistance = 1,
+        rendererColor = "ffffff",
+        maximumUnit = 3,
+        minimumUnit = 0,
+        trimZeros = true,
     }, 
     --nodeLimits = {0,2}
 }
 
 renderer.fieldInformation = {
+    segmentDistance = {
+        fieldType = "integer",
+    },
+    sourcePath = {
+        options = {
+            "ChroniaHelper/StopclockFonts/font",
+            "ChroniaHelper/StopclockFonts/fontB",
+            ["(Different Sized Test Sprite)"] = "ChroniaHelper/StopclockFonts/differentSized/font",
+        },
+        editable = true,
+    },
     positionAlign = {
+        fieldType = "integer",
         options = {
             ["center"] = 5,
             ["top left"] = 1,
@@ -44,6 +60,7 @@ renderer.fieldInformation = {
         editable = false,
     },
     segmentAlign = {
+        fieldType = "integer",
         options = {
             ["center"] = 5,
             ["top left"] = 1,
@@ -58,12 +75,27 @@ renderer.fieldInformation = {
         editable = false,
     },
     renderMode = {
+        fieldType = "integer",
         options = {
             ["Compact"] = 0,
             ["Equal Distance"] = 1,
         },
         editable = false,
-    }
+    },
+    rendererColor = {
+        fieldType = "color",
+        useAlpha = true,
+    },
+    maximumUnit = {
+        fieldType = "integer",
+        options = { ["Year"] = 6, ["Month"] = 5, ["Day"] = 4, ["Hour"] = 3, ["Minute"] = 2, ["Second"] = 1, ["Millisecond"] = 0 },
+        editable = false,
+    },
+    minimumUnit = {
+        fieldType = "integer",
+        options = { ["Year"] = 6, ["Month"] = 5, ["Day"] = 4, ["Hour"] = 3, ["Minute"] = 2, ["Second"] = 1, ["Millisecond"] = 0 },
+        editable = false,
+    },
 }
 
 renderer.selection = function (room, entity)

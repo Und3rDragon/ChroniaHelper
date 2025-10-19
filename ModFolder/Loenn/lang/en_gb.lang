@@ -1004,6 +1004,10 @@ entities.ChroniaHelper/BezierZipmover.attributes.description.uniformity=Bezier c
 
 entities.ChroniaHelper/StopclockFlagController.placements.name.controller=Stopclock Flag Controller
 
+# ================= Stopclock Action Controller
+
+entities.ChroniaHelper/StopclockActionController.placements.name.controller=Stopclock Action Controller
+
 # ================= Stopclock Trigger
 
 triggers.ChroniaHelper/StopclockTrigger.placements.name.trigger=Stopclock Trigger

@@ -44,6 +44,52 @@ public partial class Stopclock
             $"{(reverse ? d[d.Length - 1 - i] : d[i])}".ParseInt(out digitals[i], 0);
         }
     }
+    
+    public void GetTimeData(out int[] digitals)
+    {
+        digitals = new int[7] { millisecond, second, minute, hour, day, month, year };
+    }
+
+    public void GetTimeData(out int[] digitals, int minUnit = 0, int maxUnit = 6)
+    {
+        minUnit.ClampWhole(0, 6, out int min);
+        maxUnit.ClampWhole(min, 6, out int max);
+
+        digitals = new int[max - min + 1];
+        
+        GetTimeData(out int[] n);
+        
+        for(int i = 0, j = min; j <= max; i++, j++)
+        {
+            digitals[i] = n[j];
+        }
+        
+        switch (max)
+        {
+            case 0:
+                digitals[max] += (((((year * 12 + month) * 30 + day) * 24 + hour) * 60 + minute) * 60 + second) * 1000;
+                break;
+            case 1:
+                digitals[max] += ((((year * 12 + month) * 30 + day) * 24 + hour) * 60 + minute) * 60;
+                break;
+            case 2:
+                digitals[max] += (((year * 12 + month) * 30 + day) * 24 + hour) * 60;
+                break;
+            case 3:
+                digitals[max] += ((year * 12 + month) * 30 + day) * 24;
+                break;
+            case 4:
+                digitals[max] += (year * 12 + month) * 30;
+                break;
+            case 5:
+                digitals[max] += year * 12;
+                break;
+            case 6:
+                break;
+            default:
+                break;
+        }
+    }
 
     /// <summary>
     /// 获取总毫秒数（近似值）

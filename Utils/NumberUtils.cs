@@ -742,7 +742,7 @@ public static class NumberUtils
         to = value < min ? min : (value > max ? max : value);
     }
 
-    public static void ClampWhole(this Vector2 value, Vector2 value1, Vector2 value2, Vc2 to)
+    public static void ClampWhole(this Vector2 value, Vector2 value1, Vector2 value2, out Vc2 to)
     {
         to = new(value.X.ClampWhole(value1.X, value2.X), value.Y.ClampWhole(value1.Y, value2.Y));
     }
