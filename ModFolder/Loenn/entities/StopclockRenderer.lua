@@ -27,6 +27,7 @@ renderer.placements = {
         rendererColor = "ffffff",
         maximumUnit = 3,
         minimumUnit = 0,
+        segmentOffset = "0,0,0;1,0,0",
         trimZeros = true,
     }, 
     --nodeLimits = {0,2}

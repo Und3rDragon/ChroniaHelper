@@ -21,6 +21,8 @@ public class SerialImage
     public CColor color = new CColor(Color.White, 1f);
     public float scale = 1f;
     public float rotation = 0f;
+    public Vc2 overallOffset = Vc2.Zero;
+    public Dictionary<int, Vc2> segmentOffset = new();
     
     public SerialImage(List<MTexture> source)
     {
@@ -94,10 +96,12 @@ public class SerialImage
         {
             MTexture texture = textures[selector(source[i])];
             Vc2 dPos = shift + segmentStart + segmentPosition[i];
-            
+
+            bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
             // The original "origin" in texture.Draw is somehow unavailable
             // So we made a replacement by adding offset on the graphics
-            texture.Draw(worldPosition + dPos, Vc2.Zero, color.Parsed(), scale, rotation.ToRad());
+            texture.Draw(worldPosition + dPos + overallOffset + (hasSegOffset? segOffset : Vc2.Zero), 
+                Vc2.Zero, color.Parsed(), scale, rotation.ToRad());
         }
     }
     

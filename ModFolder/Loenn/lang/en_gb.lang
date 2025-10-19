@@ -1003,6 +1003,7 @@ entities.ChroniaHelper/BezierZipmover.attributes.description.uniformity=Bezier c
 # ================= Stopclock Flag Controller
 
 entities.ChroniaHelper/StopclockFlagController.placements.name.controller=Stopclock Flag Controller
+entities.ChroniaHelper/StopclockFlagController.placements.description.controller=A controller that will split several Stopclocks data into separated flags
 
 # ================= Stopclock Action Controller
 

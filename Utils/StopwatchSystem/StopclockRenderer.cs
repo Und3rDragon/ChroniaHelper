@@ -30,6 +30,19 @@ public class StopclockRenderer : Entity
         maxAlpha = image.color.alpha;
         overrideAlpha = 0f;
         image.color.alpha = overrideAlpha;
+        d.Attr("segmentOffset").Split(';', StringSplitOptions.TrimEntries).ApplyTo(out string[] _segOffset);
+        foreach(var s in _segOffset)
+        {
+            s.Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] seg);
+            if (seg.Length < 1) { continue; }
+            int index = seg[0].ParseInt(0);
+            Vc2 offset = Vc2.Zero;
+            if (seg.Length < 2) { image.segmentOffset.Enter(index, offset); continue; }
+            offset = new Vc2(seg[1].ParseInt(0), 0);
+            if (seg.Length < 3) { image.segmentOffset.Enter(index, offset); continue; }
+            offset = new Vc2(seg[1].ParseInt(0), seg[2].ParseInt(0));
+            image.segmentOffset.Enter(index, offset);
+        }
         
         clockTag = d.Attr("stopclockTag", "stopclock");
         parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
