@@ -125,6 +125,31 @@ public static class CollectiveUtils
         }
     }
 
+    public static TValue SafeGet<TKey, TValue>(
+    this ICollection<KeyValuePair<TKey, TValue>> collection,
+    TKey key, TValue defaultValue)
+    {
+        foreach(var item in collection)
+        {
+            if(item.Key.Equals(key))
+            {
+                return item.Value;
+            }
+        }
+
+        return defaultValue;
+    }
+
+    public static TypeA SafeGet<TypeA>(this ICollection<TypeA> list, TypeA key, TypeA ifNotExist)
+    {
+        if (list.Contains(key))
+        {
+            return key;
+        }
+
+        return ifNotExist;
+    }
+
     public static void Replace<T>(this ICollection<T> dic, T find, T replaceWith)
     {
         foreach (var i in dic)

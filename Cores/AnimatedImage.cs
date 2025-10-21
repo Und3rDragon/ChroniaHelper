@@ -19,7 +19,7 @@ public class AnimatedImage
     public CColor color = new(Color.White);
     public float scale = 1f;
     public float rotation = 0f;
-    public bool loop = true;
+    public Dictionary<string,bool> loop = new();
     public bool reversed = false;
     public Dictionary<string, List<int>> frameSet = new();
     public bool playing = true;
@@ -29,18 +29,12 @@ public class AnimatedImage
         this.textures.Enter(id, textures);
     }
     
-    public void NormalizeData()
-    {
-        currentFrame.ClampMin(0, out currentFrame);
-        interval.ClampMin(Engine.DeltaTime, out interval);
-    }
-    
     public void Render(Vc2 worldPosition)
     {
         if (!textures.ContainsKey(currentAnimation)) { return; }
-        NormalizeData();
+        if (textures[currentAnimation].Count == 0 || textures[currentAnimation].IsNull()) { return; }
 
-        MTexture asset = textures[currentAnimation][currentFrame];
+        MTexture asset = textures[currentAnimation][currentFrame.ClampWhole(0, textures[currentAnimation].Count - 1)];
         Vc2 dPos = - new Vc2(asset.Width, asset.Height) * origin;
         asset.Draw(worldPosition + dPos, Vc2.Zero, color.Parsed(), scale, rotation.ToRad());
     }
@@ -52,21 +46,25 @@ public class AnimatedImage
 
         if (!textures.ContainsKey(currentAnimation)) { return; }
 
-        if (MaP.scene?.OnInterval(interval)?? false)
+        if (MaP.scene?.OnInterval(interval.ClampMin(Engine.DeltaTime))?? false)
         {
             if (!frameSet.ContainsKey(currentAnimation))
             {
                 currentFrame += reversed ? -1 : 1;
                 
-                if (currentFrame < 0) { currentFrame = loop? textures[currentAnimation].Count - 1 : 0; }
-                if (currentFrame > textures[currentAnimation].Count - 1) { currentFrame = loop? 0 : textures[currentAnimation].Count - 1; }
+                if (currentFrame < 0) { currentFrame = loop.SafeGet(currentAnimation, true)? 
+                        textures[currentAnimation].Count - 1 : 0; }
+                if (currentFrame > textures[currentAnimation].Count - 1) { currentFrame = loop.SafeGet(currentAnimation, true) ? 
+                        0 : textures[currentAnimation].Count - 1; }
             }
             else
             {
                 frameSetIndex += reversed ? -1 : 1;
 
-                if (frameSetIndex < 0) { frameSetIndex = loop ? frameSet[currentAnimation].Count - 1 : 0; }
-                if (frameSetIndex > frameSet[currentAnimation].Count - 1) { frameSetIndex = loop ? 0 : frameSet[currentAnimation].Count - 1; }
+                if (frameSetIndex < 0) { frameSetIndex = loop.SafeGet(currentAnimation, true) ? 
+                        frameSet[currentAnimation].Count - 1 : 0; }
+                if (frameSetIndex > frameSet[currentAnimation].Count - 1) { frameSetIndex = loop.SafeGet(currentAnimation, true) ? 
+                        0 : frameSet[currentAnimation].Count - 1; }
 
                 currentFrame = frameSet[currentAnimation][frameSetIndex];
             }
