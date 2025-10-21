@@ -635,4 +635,46 @@ public static class CollectiveUtils
         target = new T[c];
         source.CopyTo(target, 0);
     }
+
+    /// <summary>
+    /// 将字典拆分为键集合和值集合
+    /// </summary>
+    public static void SplitDictionary<TKey, TValue>(
+        this IDictionary<TKey, TValue> dic,
+        out ICollection<TKey> keys,
+        out ICollection<TValue> values)
+    {
+        if (dic == null)
+            throw new ArgumentNullException(nameof(dic));
+
+        keys = new List<TKey>(dic.Keys);      // 或 dic.Select(kvp => kvp.Key).ToList()
+        values = new List<TValue>(dic.Values); // 或 dic.Select(kvp => kvp.Value).ToList()
+    }
+
+    public static bool CombineDictionary<TKey, TValue>(
+        this IList<TKey> keys,
+        IList<TValue> values,
+        out IDictionary<TKey, TValue> dic,
+        bool allowDuplicateKeys = false)
+    {
+        dic = null;
+
+        if (keys == null || values == null || keys.Count != values.Count || keys.Count == 0)
+            return false;
+
+        dic = new Dictionary<TKey, TValue>();
+
+        for (int i = 0; i < keys.Count; i++)
+        {
+            if (dic.ContainsKey(keys[i]))
+            {
+                if (!allowDuplicateKeys)
+                    return false; // 或抛异常
+                continue;
+            }
+            dic[keys[i]] = values[i];
+        }
+
+        return true;
+    }
 }
