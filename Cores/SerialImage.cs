@@ -86,7 +86,11 @@ public class SerialImage
         Measure(source.ToArray(), selector);
     }
 
-    public void Render<T>(IList<T> source, Func<T, int> selector, Vc2 worldPosition)
+    /// <param name="renderPosition">
+    /// If the class using it is standalone, the position should be the world position
+    /// If it's an entity using it, it should be the entity Position
+    /// </param>
+    public void Render<T>(IList<T> source, Func<T, int> selector, Vc2 renderPosition)
     {
         Measure(source, selector);
 
@@ -100,7 +104,7 @@ public class SerialImage
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
             // The original "origin" in texture.Draw is somehow unavailable
             // So we made a replacement by adding offset on the graphics
-            texture.Draw(worldPosition + dPos + overallOffset + (hasSegOffset? segOffset : Vc2.Zero), 
+            texture.Draw(renderPosition + dPos + overallOffset + (hasSegOffset? segOffset : Vc2.Zero), 
                 Vc2.Zero, color.Parsed(), scale, rotation.ToRad());
         }
     }

@@ -22,9 +22,14 @@ public class BoolMode
 
 public static class BoolUtils
 {
-    public static int ToInt(bool b)
+    public static int ToInt(this bool b)
     {
         return b ? 1 : 0;
+    }
+    
+    public static bool ToBool(this int i)
+    {
+        return i != 0 ? true : false;
     }
 
     public static bool TryNegative(ref this bool basic, bool enter)

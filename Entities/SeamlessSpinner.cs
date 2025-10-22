@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Utils;
 
@@ -30,76 +31,7 @@ public class SeamlessSpinner : Entity
             preCoreMode = level.CoreMode;
         }
     }
-
-    private class Border : Entity
-    {
-        private Entity[] drawing = new Entity[2];
-
-        public Border(Entity parent, Entity filler)
-        {
-            drawing[0] = parent;
-            drawing[1] = filler;
-            // Border Depth, unknown use, bugfix in CH 1.19.17
-            Depth = parent.Depth + 10;
-        }
-
-        public override void Render()
-        {
-            if (drawing[0].Visible)
-            {
-                DrawBorder(drawing[0]);
-                DrawBorder(drawing[1]);
-            }
-        }
-
-        private void DrawBorder(Entity entity)
-        {
-            if (entity == null)
-            {
-                return;
-            }
-
-            foreach (Component component in entity.Components)
-            {
-                if (component is Image image)
-                {
-                    Color color = image.Color;
-                    Vector2 position = image.Position;
-                    image.Color = Color.Black;
-                    image.Position = position + new Vector2(0f, -1f);
-                    image.Render();
-                    image.Position = position + new Vector2(0f, 1f);
-                    image.Render();
-                    image.Position = position + new Vector2(-1f, 0f);
-                    image.Render();
-                    image.Position = position + new Vector2(1f, 0f);
-                    image.Render();
-                    image.Color = color;
-                    image.Position = position;
-                }
-            }
-        }
-    }
-
-    private class Inner : Entity
-    {
-        private Entity main;
-
-        public Inner(Entity parent)
-        {
-            main = parent;
-
-            Depth = parent.Depth + 5;
-        }
-
-        public override void Render()
-        {
-            base.Render();
-            Position = main.Position;
-            Visible = main.Visible;
-        }
-    }
-
+    
     public static ParticleType P_Move;
 
     public Dictionary<string, CrystalColor> checkColor = new Dictionary<string, CrystalColor>
@@ -153,10 +85,6 @@ public class SeamlessSpinner : Entity
 
 
     public bool AttachToSolid;
-
-    private Inner filler;
-
-    private Border border;
 
     private float offset;
 
@@ -369,7 +297,7 @@ public class SeamlessSpinner : Entity
 
             if (timer <= triggerAnimTime)
             {
-                loadSprite.Rate = 1f;
+                loadSprite.Play();
             }
 
             if (timer <= 0f)
@@ -377,11 +305,11 @@ public class SeamlessSpinner : Entity
                 killPlayer = true;
                 timerActive = false;
 
-                if (loadSprite.CurrentAnimationFrame == loadSprite.GetFrames("").Length - 1)
+                if (loadSprite.currentFrame == loadSprite.CurrentAnimationLength() - 1)
                 {
-                    loadSprite.Visible = false;
+                    loadSprite.color.alpha = 0f;
 
-                    sprite.Visible = true;
+                    sprite.color.alpha = 1f;
                 }
             }
         }
@@ -425,36 +353,24 @@ public class SeamlessSpinner : Entity
                     Collidable = Math.Abs(entity.X - X) < 128f && Math.Abs(entity.Y - Y) < 128f;
                 }
             }
-        }
 
-        if (filler != null)
-        {
-            filler.Position = Position;
-            filler.Visible = Visible;
+            bgSprites.EachDo((image) =>
+            {
+                image.Update();
+            });
+
+            loadSprite?.Update();
+            sprite.Update();
         }
     }
 
     private void UpdateRainbowHue()
     {
-        foreach (Component component in Components)
+        sprite.color.color = spinner.GetHue(Position);
+        loadSprite.color.color = spinner.GetHue(Position);
+        foreach(var sprite in bgSprites)
         {
-            if (component is Sprite sprite)
-            {
-                sprite.Color = spinner.GetHue(Position + sprite.Position);
-            }
-        }
-
-        if (filler == null)
-        {
-            return;
-        }
-
-        foreach (Component component2 in filler.Components)
-        {
-            if (component2 is Sprite sprite2)
-            {
-                sprite2.Color = spinner.GetHue(Position + sprite2.Position);
-            }
+            sprite.color.color = spinner.GetHue(Position);
         }
     }
 
@@ -469,7 +385,7 @@ public class SeamlessSpinner : Entity
         return false;
     }
 
-    private Sprite sprite, loadSprite;
+    private AnimatedImage sprite, loadSprite;
 
     private void TrySwitchCoreModeSprite()
     {
@@ -480,21 +396,21 @@ public class SeamlessSpinner : Entity
 
         // spinner
         string path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeSpritePath : hotCoreModeSpritePath;
-        sprite.Reset(GFX.Game, path);
-        sprite.AddLoop("idle", "", fgAnim);
+        sprite.textures.Enter("idle", GFX.Game.GetAtlasSubtextures(path));
+        sprite.interval.Enter("idle", fgAnim);
         sprite.Play("idle");
 
-        int totalFrames = sprite.GetFrames("").Length;
+        int totalFrames = sprite.CurrentAnimationLength();
         int randomChoice = Calc.Random.Range(0, totalFrames);
-        sprite.SetAnimationFrame(randomChoice);
+        sprite.currentFrame = randomChoice;
 
         // bg
-        foreach (Sprite bgSprite in bgSprites)
+        foreach (AnimatedImage bgSprite in bgSprites)
         {
             path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeBGSpritePath : hotCoreModeBGSpritePath;
-            bgSprite.Reset(GFX.Game, path);
-            bgSprite.AddLoop("idle", "", fgAnim);
-            bgSprite.SetFrame(bgSprite.animations["idle"].Frames[bgSprite.CurrentAnimationFrame]);
+            bgSprite.textures.Enter("idle", GFX.Game.GetAtlasSubtextures(path));
+            bgSprite.interval.Enter("idle", fgAnim);
+            bgSprite.Play("idle");
         }
 
         // loadSprite
@@ -504,16 +420,15 @@ public class SeamlessSpinner : Entity
         }
         
         path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeTriggerSpritePath : hotCoreModeTriggerSpritePath;
-        loadSprite.Path = path;
-        loadSprite.currentAnimation.Frames = loadSprite.GetFrames("");
-        // 重置一下当前帧
-        loadSprite.SetFrame(loadSprite.animations["load"].Frames[loadSprite.CurrentAnimationFrame]);
+        loadSprite.textures.Enter("load", GFX.Game.GetAtlasSubtextures(path));
+        loadSprite.currentAnimation = "load";
+        loadSprite.currentFrame.ClampWhole(0, loadSprite.textures[loadSprite.currentAnimation].Count - 1, out loadSprite.currentFrame);
+        loadSprite.Play();
     }
 
     private void CreateSprites()
     {
         // Create FG spinner
-
         if (expanded)
         {
             return;
@@ -521,88 +436,56 @@ public class SeamlessSpinner : Entity
 
         Calc.PushRandom(randomSeed);
 
-        sprite = new Sprite(GFX.Game, imagePath);
-
-        sprite.AddLoop("idle", "", fgAnim);
-
-        Add(sprite);
-        sprite.Justify = Vector2.One / 2;
-        sprite.Color = spriteColor;
+        sprite = new AnimatedImage("idle", GFX.Game.GetAtlasSubtextures(imagePath));
+        sprite.loop.Enter("idle", true);
+        sprite.interval.Enter("idle", fgAnim);
+        
+        sprite.color = new(spriteColor);
         if (rainbow)
         {
-            sprite.Color = spinner.GetHue(Position);
+            sprite.color.color = spinner.GetHue(Position);
         }
 
-        sprite.Play("idle");
-
-        Vector2 scale = Vector2.One;
-        if (flipX == Flip.flipped)
-        {
-            scale.X = -1;
-        }
-        else if (flipX == Flip.random)
-        {
-            scale.X = Calc.Random.Choose(1f, -1f);
-        }
-
-        if (flipY == Flip.flipped)
-        {
-            scale.Y = -1;
-        }
-        else if (flipY == Flip.random)
-        {
-            scale.Y = Calc.Random.Choose(1f, -1f);
-        }
-
-        sprite.Scale = scale;
+        sprite.currentAnimation = "idle";
+        sprite.origin = Vc2.One * 0.5f;
+        sprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0,2).ToBool() : ((int)flipX == 1 ? true : false);
+        sprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
 
         if (!dynamic)
         {
-            int totalFrames = sprite.GetFrames("").Length;
+            int totalFrames = sprite.CurrentAnimationLength();
             int randomChoice = Calc.Random.Range(0, totalFrames);
-            sprite.Rate = 0f;
-            sprite.SetAnimationFrame(randomChoice);
+            sprite.currentFrame = randomChoice;
+        }
+        else
+        {
+            sprite.Play();
         }
 
         if (trigger)
         {
-            sprite.Visible = false;
+            sprite.color.alpha = 0f;
 
-            loadSprite = new Sprite(GFX.Game, $"{imagePath}_base");
-            loadSprite.Add("load", "", triggerAnimDelay);
-            triggerAnimTime = triggerAnimDelay * loadSprite.GetFrames("").Length;
-            loadSprite.Justify = Vector2.One / 2;
-            loadSprite.Color = spriteColor;
+            loadSprite = new AnimatedImage("load", GFX.Game.GetAtlasSubtextures($"{imagePath}_base"));
+            loadSprite.interval.Enter("load", triggerAnimDelay);
+            loadSprite.loop.Enter("load", false);
+            loadSprite.currentAnimation = "load";
+            triggerAnimTime = triggerAnimDelay * loadSprite.CurrentAnimationLength();
+
+            loadSprite.color.color = spriteColor;
             if (rainbow)
             {
-                loadSprite.Color = spinner.GetHue(Position);
+                loadSprite.color.color = spinner.GetHue(Position);
             }
 
-            Vector2 loadScale = Vector2.One;
-            if (flipX == Flip.flipped)
-            {
-                loadScale.X = -1;
-            }
-            else if (flipX == Flip.random)
-            {
-                loadScale.X = Calc.Random.Choose(1f, -1f);
-            }
+            loadSprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipX == 1 ? true : false);
+            loadSprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
 
-            if (flipY == Flip.flipped)
-            {
-                loadScale.Y = -1;
-            }
-            else if (flipY == Flip.random)
-            {
-                loadScale.Y = Calc.Random.Choose(1f, -1f);
-            }
+            loadSprite.origin = Vc2.One * 0.5f;
 
-            loadSprite.Scale = loadScale;
-
-            Add(loadSprite);
-            loadSprite.Play("load");
-            loadSprite.SetAnimationFrame(0);
-            loadSprite.Rate = 0f;
+            loadSprite.currentFrame = 0;
+            loadSprite.ResetAnimation();
+            loadSprite.Stop();
         }
 
         foreach (SeamlessSpinner entity in Scene.Tracker.GetEntities<SeamlessSpinner>())
@@ -612,71 +495,43 @@ public class SeamlessSpinner : Entity
                 AddSprite((Position + entity.Position) / 2f - Position);
             }
         }
-
-        if (!noBorder)
-        {
-            Scene.Add(border = new Border(this, filler));
-        }
-
+        
         expanded = true;
         Calc.PopRandom();
     }
 
-    private List<Sprite> bgSprites = new();
+    private List<AnimatedImage> bgSprites = new();
 
     private void AddSprite(Vector2 offset)
     {
-        if (filler == null)
-        {
-            Scene.Add(filler = new Inner(this));
-        }
-
         // Create BG Spinner
-        Sprite bgsprite = new Sprite(GFX.Game, bgImagePath);
+        AnimatedImage bgsprite = new AnimatedImage("idle", GFX.Game.GetAtlasSubtextures(bgImagePath));
         bgSprites.Add(bgsprite);
 
-        bgsprite.AddLoop("idle", "", bgAnim);
+        bgsprite.interval.Enter("idle", bgAnim);
+        bgsprite.origin = Vc2.One * 0.5f;
+        bgsprite.offset = offset;
 
-        filler.Add(bgsprite);
-
-        bgsprite.Justify = Vector2.One / 2;
-        bgsprite.Position = offset;
-
-        bgsprite.Color = bgSpriteColor;
+        bgsprite.color.color = bgSpriteColor;
         if (rainbow)
         {
-            bgsprite.Color = spinner.GetHue(Position + offset);
+            bgsprite.color.color = spinner.GetHue(Position + offset);
         }
 
-        bgsprite.Play("idle");
+        bgsprite.currentAnimation = "idle";
 
-        Vector2 scale = Vector2.One;
-        if (bgFlipX == Flip.flipped)
-        {
-            scale.X = -1;
-        }
-        else if (bgFlipX == Flip.random)
-        {
-            scale.X = Calc.Random.Choose(1f, -1f);
-        }
-
-        if (bgFlipY == Flip.flipped)
-        {
-            scale.Y = -1;
-        }
-        else if (bgFlipY == Flip.random)
-        {
-            scale.Y = Calc.Random.Choose(1f, -1f);
-        }
-
-        bgsprite.Scale = scale;
+        bgsprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipX == 1 ? true : false);
+        bgsprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
 
         if (!dynamic)
         {
-            int totalFrames = bgsprite.GetFrames("").Length;
+            int totalFrames = bgsprite.CurrentAnimationLength();
             int randomChoice = Calc.Random.Range(0, totalFrames);
-            bgsprite.Rate = 0f;
-            bgsprite.SetAnimationFrame(randomChoice);
+            bgsprite.currentFrame = randomChoice;
+        }
+        else
+        {
+            bgsprite.Play();
         }
     }
     
@@ -699,20 +554,6 @@ public class SeamlessSpinner : Entity
 
     private void WhenDestroy()
     {
-        if (filler != null)
-        {
-            filler.RemoveSelf();
-        }
-
-        filler = null;
-
-        if (border != null)
-        {
-            border.RemoveSelf();
-        }
-
-        border = null;
-
         RemoveSelf();
     }
 
@@ -723,18 +564,25 @@ public class SeamlessSpinner : Entity
 
     public override void Removed(Scene scene)
     {
-        if (filler != null && filler.Scene == scene)
-        {
-            filler.RemoveSelf();
-        }
-
-        if (border != null && border.Scene == scene)
-        {
-            border.RemoveSelf();
-        }
-
+        
         RemoveSelf();
         
         base.Removed(scene);
+    }
+
+    public override void Render()
+    {
+        base.Render();
+
+        Vc2 levelPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
+
+        bgSprites.EachDo((image) =>
+        {
+            image.Render(Position);
+        });
+        
+        loadSprite?.Render(Position);
+        sprite.Render(Position);
+        
     }
 }

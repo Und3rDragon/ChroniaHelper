@@ -14,29 +14,50 @@ public class AnimatedImage
     public Dictionary<string, List<MTexture>> textures = new();
     public string currentAnimation = "";
     public int currentFrame = 0;
-    public float interval = 0.1f;
+    public Dictionary<string, float> interval = new();
+    public Vc2 position = Vc2.Zero;
     public Vc2 origin = Vc2.Zero;
+    public Vc2 offset = Vc2.Zero;
     public CColor color = new(Color.White);
     public float scale = 1f;
     public float rotation = 0f;
     public Dictionary<string,bool> loop = new();
     public bool reversed = false;
     public Dictionary<string, List<int>> frameSet = new();
-    public bool playing = true;
+    public bool playing = false;
+    public bool flipX = false;
+    public bool flipY = false;
+    public SpriteEffects GetSpriteEffect()
+    {
+        SpriteEffects result = SpriteEffects.None;
+        if (flipX) result |= SpriteEffects.FlipHorizontally;
+        if (flipY) result |= SpriteEffects.FlipVertically;
+        return result;
+    }
+    
     public AnimatedImage() { }
     public AnimatedImage(string id, List<MTexture> textures)
     {
         this.textures.Enter(id, textures);
     }
     
-    public void Render(Vc2 worldPosition)
+    public void Render()
+    {
+        Render(position);
+    }
+    
+    /// <param name="renderPosition">
+    /// If the class using it is standalone, the position should be the world position
+    /// If it's an entity using it, it should be the entity Position
+    /// </param>
+    public void Render(Vc2 renderPosition)
     {
         if (!textures.ContainsKey(currentAnimation)) { return; }
         if (textures[currentAnimation].Count == 0 || textures[currentAnimation].IsNull()) { return; }
 
         MTexture asset = textures[currentAnimation][currentFrame.ClampWhole(0, textures[currentAnimation].Count - 1)];
         Vc2 dPos = - new Vc2(asset.Width, asset.Height) * origin;
-        asset.Draw(worldPosition + dPos, Vc2.Zero, color.Parsed(), scale, rotation.ToRad());
+        asset.Draw(renderPosition + dPos + offset, Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
     }
 
     private int frameSetIndex = 0;
@@ -46,7 +67,9 @@ public class AnimatedImage
 
         if (!textures.ContainsKey(currentAnimation)) { return; }
 
-        if (MaP.scene?.OnInterval(interval.ClampMin(Engine.DeltaTime))?? false)
+        float dt = interval.ContainsKey(currentAnimation) ? interval[currentAnimation].ClampMin(Engine.DeltaTime) : 0.1f;
+
+        if (MaP.scene?.OnInterval(dt)?? false)
         {
             if (!frameSet.ContainsKey(currentAnimation))
             {
@@ -84,6 +107,8 @@ public class AnimatedImage
 
     public void Play(string animationID)
     {
+        ResetAnimation();
+        
         currentAnimation = animationID;
         
         playing = true;
