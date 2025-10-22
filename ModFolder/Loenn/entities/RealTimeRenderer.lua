@@ -5,7 +5,7 @@ local drawableLine = require("structs.drawable_line")
 local drawing = require("utils.drawing")
 
 local renderer = {
-    name = "ChroniaHelper/StopclockRenderer"
+    name = "ChroniaHelper/RealTimeRenderer"
 }
 
 renderer.depth = -10000000
@@ -15,20 +15,17 @@ renderer.placements = {
     data = {
         depth = -10000000,
         sourcePath = "ChroniaHelper/StopclockFonts/font",
-        stopclockTag = "stopclock",
         parallaxX = 1,
         parallaxY = 1,
         screenX = 160,
         screenY = 90,
         renderMode = 0,
-        positionAlign = 5,
-        segmentAlign = 5,
+        positionAlign = 0,
+        segmentAlign = 0,
         segmentDistance = 1,
         rendererColor = "ffffff",
-        maximumUnit = 3,
-        minimumUnit = 0,
         segmentOffset = "0,0,0;1,0,0",
-        trimZeros = true,
+        showMilliseconds = false,
     }, 
     --nodeLimits = {0,2}
 }

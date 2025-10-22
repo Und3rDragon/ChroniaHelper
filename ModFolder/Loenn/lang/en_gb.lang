@@ -1016,3 +1016,8 @@ triggers.ChroniaHelper/StopclockTrigger.placements.name.trigger=Stopclock Trigge
 # ================= Stopclock Renderer
 
 entities.ChroniaHelper/StopclockRenderer.placements.name.renderer=Stopclock Renderer
+
+# ================= Real Time Renderer
+
+entities.ChroniaHelper/RealTimeRenderer.placements.name.renderer=Real Time Renderer
+
