@@ -13,6 +13,7 @@ namespace ChroniaHelper.Cores;
 public class SerialImage
 {
     public List<MTexture> textures = new();
+    public Vc2 position = Vc2.Zero;
     public Vc2 segmentOrigin = Vc2.One * 0.5f;
     public Vc2 origin = Vc2.Zero;
     public enum RenderMode { Compact = 0, EqualDistance = 1}
@@ -86,6 +87,10 @@ public class SerialImage
         Measure(source.ToArray(), selector);
     }
 
+    public void Render<T>(IList<T> source, Func<T, int> selector)
+    {
+        Render(source, selector, position);
+    }
     /// <param name="renderPosition">
     /// If the class using it is standalone, the position should be the world position
     /// If it's an entity using it, it should be the entity Position
