@@ -93,4 +93,12 @@ public class AnimatedImage
     {
         playing = false;
     }
+
+    public int CurrentAnimationLength()
+    {
+        if (!textures.ContainsKey(currentAnimation)) { return 0; }
+        if (textures[currentAnimation].IsNull()) { return 0; }
+
+        return textures[currentAnimation].Count;
+    }
 }
