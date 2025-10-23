@@ -89,9 +89,10 @@ public class StopclockRenderer : SerialImageRenderer
         }
 
         Vc2 levelPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
-        Vc2 camCenter = MaP.level.Camera.Position + staticScreen; // Definitive
-        //basePosition = camCenter + (Position - camCenter) * parallax; // Relative
-        Vc2 basePosition = camCenter + ((Position + levelPos) - camCenter) * parallax; // Definitive
+        Vc2 c = MaP.level.Camera.Position + new Vc2(160f, 90f);
+        Vc2 _basePosition = c + (Position - c) * parallax + levelPos;
+        Vc2 basePosition = new Vc2(parallax.X == 0 ? MaP.level.Camera.Position.X + staticScreen.X : _basePosition.X,
+            parallax.Y == 0 ? MaP.level.Camera.Position.Y + staticScreen.Y : _basePosition.Y);
 
         image.Render(renderTarget, (c) =>
         {
