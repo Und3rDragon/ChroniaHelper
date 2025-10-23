@@ -8,10 +8,10 @@ namespace ChroniaHelper.Cores;
 // ========================================
 // IList2<T1, T2> -> .A, .B
 // ========================================
-public readonly struct List2Item<T1, T2>
+public struct List2Item<T1, T2>
 {
-    public T1 A { get; }
-    public T2 B { get; }
+    public T1 A { get; set; }
+    public T2 B { get; set; }
 
     public List2Item(T1 a, T2 b) => (A, B) = (a, b);
 
@@ -50,11 +50,11 @@ public class IList2<T1, T2> : IEnumerable<List2Item<T1, T2>>
 // ========================================
 // IList3<T1, T2, T3> -> .A, .B, .C
 // ========================================
-public readonly struct List3Item<T1, T2, T3>
+public struct List3Item<T1, T2, T3>
 {
-    public T1 A { get; }
-    public T2 B { get; }
-    public T3 C { get; }
+    public T1 A { get; set; }
+    public T2 B { get; set; }
+    public T3 C { get; set; }
 
     public List3Item(T1 a, T2 b, T3 c) => (A, B, C) = (a, b, c);
 
@@ -94,12 +94,12 @@ public class IList3<T1, T2, T3> : IEnumerable<List3Item<T1, T2, T3>>
 // ========================================
 // IList4<T1, T2, T3, T4> -> .A, .B, .C, .D
 // ========================================
-public readonly struct List4Item<T1, T2, T3, T4>
+public struct List4Item<T1, T2, T3, T4>
 {
-    public T1 A { get; }
-    public T2 B { get; }
-    public T3 C { get; }
-    public T4 D { get; }
+    public T1 A { get; set; }
+    public T2 B { get; set; }
+    public T3 C { get; set; }
+    public T4 D { get; set; }
 
     public List4Item(T1 a, T2 b, T3 c, T4 d) => (A, B, C, D) = (a, b, c, d);
 
@@ -140,10 +140,10 @@ public class IList4<T1, T2, T3, T4> : IEnumerable<List4Item<T1, T2, T3, T4>>
 // ========================================
 // IDictionary2<TKey, T1, T2> -> .X, .Y
 // ========================================
-public readonly struct Dict2Item<T1, T2>
+public struct Dict2Item<T1, T2>
 {
-    public T1 X { get; }
-    public T2 Y { get; }
+    public T1 X { get; set; }
+    public T2 Y { get; set; }
 
     public Dict2Item(T1 x, T2 y) => (X, Y) = (x, y);
 
@@ -191,11 +191,11 @@ public class IDictionary2<TKey, T1, T2> : IEnumerable<(TKey Key, Dict2Item<T1, T
 // ========================================
 // IDictionary3<TKey, T1, T2, T3> -> .X, .Y, .Z
 // ========================================
-public readonly struct Dict3Item<T1, T2, T3>
+public struct Dict3Item<T1, T2, T3>
 {
-    public T1 X { get; }
-    public T2 Y { get; }
-    public T3 Z { get; }
+    public T1 X { get; set; }
+    public T2 Y { get; set; }
+    public T3 Z { get; set; }
 
     public Dict3Item(T1 x, T2 y, T3 z) => (X, Y, Z) = (x, y, z);
 
@@ -244,12 +244,12 @@ public class IDictionary3<TKey, T1, T2, T3> : IEnumerable<(TKey Key, Dict3Item<T
 // ========================================
 // IDictionary4<TKey, T1, T2, T3, T4> -> .X, .Y, .Z, .W
 // ========================================
-public readonly struct Dict4Item<T1, T2, T3, T4>
+public struct Dict4Item<T1, T2, T3, T4>
 {
-    public T1 X { get; }
-    public T2 Y { get; }
-    public T3 Z { get; }
-    public T4 W { get; }
+    public T1 X { get; set; }
+    public T2 Y { get; set; }
+    public T3 Z { get; set; }
+    public T4 W { get; set; }
 
     public Dict4Item(T1 x, T2 y, T3 z, T4 w) => (X, Y, Z, W) = (x, y, z, w);
 

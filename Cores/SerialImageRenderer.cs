@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Celeste;
 using Celeste.Mod.Entities;
-using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.StopwatchSystem;
-using VivHelper.Entities;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.Cores;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/RealTimeRenderer")]
-public class RealTimeRenderer : SerialImageRenderer
+[CustomEntity("ChroniaHelper/SerialImageRenderer")]
+public class SerialImageRenderer : Entity
 {
-    public RealTimeRenderer(EntityData d, Vc2 o) : base(d, o)
+    public SerialImageRenderer(EntityData d, Vc2 o) : base(d.Position + o)
     {
         Position = d.Position;
         Depth = d.Int("depth", -10000000);
@@ -25,10 +22,11 @@ public class RealTimeRenderer : SerialImageRenderer
         image = new SerialImage(GFX.Game.GetAtlasSubtextures(source));
 
         image.renderMode = d.Int("renderMode", 0);
-        image.origin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("positionAlign", 5)];
-        image.segmentOrigin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("segmentAlign", 5)];
-        image.distance = d.Float("segmentDistance", 4f);
+        image.origin = new Vc2(d.Float("originX", 0.5f), d.Float("originY", 0.5f));
+        image.segmentOrigin = new Vc2(d.Float("segmentOriginX", 0.5f), d.Float("segmentOriginY", 0.5f));
+        image.distance = d.Float("segmentDistance", 1f);
         image.color = d.GetChroniaColor("rendererColor", Color.White);
+        
         d.Attr("segmentOffset").Split(';', StringSplitOptions.TrimEntries).ApplyTo(out string[] _segOffset);
         foreach (var s in _segOffset)
         {
@@ -45,17 +43,22 @@ public class RealTimeRenderer : SerialImageRenderer
 
         parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
         staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
-
-        showMilliseconds = d.Bool("showMilliseconds", false);
     }
-    private bool showMilliseconds = false;
+    public SerialImage image;
+    public string source;
+    public Vc2 parallax;
+    public Vc2 staticScreen;
 
+    public virtual string ParseRenderTarget()
+    {
+        return "";
+    }
+    
     public override void Render()
     {
         base.Render();
 
-        string format = showMilliseconds ? "HH:mm:ss:fff" : "HH:mm:ss";
-        string renderTarget = DateTime.Now.ToString(format);
+        string renderTarget = ParseRenderTarget();
         
         Vc2 levelPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
         Vc2 camCenter = MaP.level.Camera.Position + staticScreen; // Definitive

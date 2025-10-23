@@ -12,9 +12,9 @@ namespace ChroniaHelper.Utils.StopwatchSystem;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/StopclockRenderer")]
-public class StopclockRenderer : Entity
+public class StopclockRenderer : SerialImageRenderer
 {
-    public StopclockRenderer(EntityData d, Vc2 o) : base(d.Position + o)
+    public StopclockRenderer(EntityData d, Vc2 o) : base(d, o)
     {
         Position = d.Position;
         Depth = d.Int("depth", -10000000);
@@ -53,11 +53,7 @@ public class StopclockRenderer : Entity
 
         trimZeros = d.Bool("trimZeros", true);
     }
-    private SerialImage image;
-    private string source;
     private string clockTag;
-    private Vc2 parallax, basePosition, renderPosition;
-    private Vc2 staticScreen;
     private float overrideAlpha, maxAlpha;
     private enum Units { Year = 6, Month = 5, Day = 4, Hour = 3, Minute = 2, Second = 1, Millisecond = 0 }
     private int maxUnit, minUnit;
@@ -95,7 +91,7 @@ public class StopclockRenderer : Entity
         Vc2 levelPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
         Vc2 camCenter = MaP.level.Camera.Position + staticScreen; // Definitive
         //basePosition = camCenter + (Position - camCenter) * parallax; // Relative
-        basePosition = camCenter + ((Position + levelPos) - camCenter) * parallax; // Definitive
+        Vc2 basePosition = camCenter + ((Position + levelPos) - camCenter) * parallax; // Definitive
 
         image.Render(renderTarget, (c) =>
         {

@@ -56,8 +56,9 @@ public class AnimatedImage
         if (textures[currentAnimation].Count == 0 || textures[currentAnimation].IsNull()) { return; }
 
         MTexture asset = textures[currentAnimation][currentFrame.ClampWhole(0, textures[currentAnimation].Count - 1)];
-        Vc2 dPos = - new Vc2(asset.Width, asset.Height) * origin;
-        asset.Draw(renderPosition + dPos + offset, Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
+        
+        asset.Draw(renderPosition + offset, origin * new Vc2(asset.Width, asset.Height), 
+            color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
     }
 
     private int frameSetIndex = 0;

@@ -24,7 +24,17 @@ public class SerialImage
     public float rotation = 0f;
     public Vc2 overallOffset = Vc2.Zero;
     public Dictionary<int, Vc2> segmentOffset = new();
-    
+    public bool flipX = false;
+    public bool flipY = false;
+    public SpriteEffects GetSpriteEffect()
+    {
+        SpriteEffects result = SpriteEffects.None;
+        if (flipX) result |= SpriteEffects.FlipHorizontally;
+        if (flipY) result |= SpriteEffects.FlipVertically;
+        return result;
+    }
+
+
     public SerialImage(List<MTexture> source)
     {
         source.ApplyTo(out textures);
@@ -44,18 +54,18 @@ public class SerialImage
         
         for(int i = 0; i < source.Count; i++)
         {
-            if(i == 0)
-            {
-                MTexture texture = textures[selector(source[i])];
 
-                p1 = new Vector2(-texture.Width, -texture.Height) * segmentOrigin;
-                p2 = new Vector2(texture.Width, texture.Height) * (Vc2.One - segmentOrigin);
-                segmentPosition.Add(p1);
+            MTexture asset = textures[selector(source[i])];
+            
+            if (i == 0)
+            {
+                p1 = new Vector2(-asset.Width, -asset.Height) * segmentOrigin;
+                p2 = new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin);
+                segmentPosition.Add(cal);
                 
                 continue;
             }
-
-            MTexture asset = textures[selector(source[i])];
+            
             MTexture lastAsset = textures[selector(source[i - 1])];
 
             if(renderMode == (int)RenderMode.EqualDistance)
@@ -70,7 +80,7 @@ public class SerialImage
             Vc2 _p1 = cal + new Vector2(-asset.Width, -asset.Height) * segmentOrigin;
             Vc2 _p2 = cal + new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin);
 
-            segmentPosition.Add(_p1);
+            segmentPosition.Add(cal);
 
             p1.X = _p1.X < p1.X ? _p1.X : p1.X;
             p1.Y = _p1.Y < p1.Y ? _p1.Y : p1.Y;
@@ -100,6 +110,8 @@ public class SerialImage
         Measure(source, selector);
 
         Vc2 shift = -overallSize * origin;
+
+        //Draw.HollowRect(renderPosition + shift, overallSize.X, overallSize.Y, Color.Orange);
         
         for(int i = 0; i < source.Count; i++)
         {
@@ -107,10 +119,12 @@ public class SerialImage
             Vc2 dPos = shift + segmentStart + segmentPosition[i];
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
-            // The original "origin" in texture.Draw is somehow unavailable
-            // So we made a replacement by adding offset on the graphics
+            
             texture.Draw(renderPosition + dPos + overallOffset + (hasSegOffset? segOffset : Vc2.Zero), 
-                Vc2.Zero, color.Parsed(), scale, rotation.ToRad());
+                segmentOrigin * new Vc2(texture.Width, texture.Height), color.Parsed(), scale, rotation.ToRad(),
+                GetSpriteEffect());
+            //Draw.HollowRect(renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero) - segmentOrigin * new Vc2(texture.Width, texture.Height),
+            //    texture.Width, texture.Height, Color.Red);
         }
     }
     
