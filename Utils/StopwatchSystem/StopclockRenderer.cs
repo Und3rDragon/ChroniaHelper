@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AsmResolver.DotNet.Serialized;
 using Celeste.Mod.Entities;
@@ -85,19 +86,13 @@ public class StopclockRenderer : SerialImageRenderer
         
         if (trimZeros)
         {
-            renderTarget = renderTarget.TrimStart('0').TrimStart(':').RemoveAll("00:");
+            renderTarget = Regex.Replace(renderTarget, "^[0:]*:", "");
         }
-
-        Vc2 levelPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
-        Vc2 c = MaP.level.Camera.Position + new Vc2(160f, 90f);
-        Vc2 _basePosition = c + (Position - c) * parallax + levelPos;
-        Vc2 basePosition = new Vc2(parallax.X == 0 ? MaP.level.Camera.Position.X + staticScreen.X : _basePosition.X,
-            parallax.Y == 0 ? MaP.level.Camera.Position.Y + staticScreen.Y : _basePosition.Y);
-
+        
         image.Render(renderTarget, (c) =>
         {
             return $"{c}".ParseInt(c == ':' ? 10 : 0);
-        }, basePosition + new Vc2(4f, 4f));
+        }, Position.InGlobalParallax(parallax));
     }
 
     public override void Update()

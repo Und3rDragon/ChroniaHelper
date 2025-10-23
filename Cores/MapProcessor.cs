@@ -173,6 +173,31 @@ public static class MapProcessor
         orig(index);
     }
 
+    public static Vc2 cameraPos => level?.Camera.Position ?? Vc2.Zero;
+    public static Vc2 cameraCenter => cameraPos + new Vc2(160f, 90f);
+    public static Vc2 levelPos => new Vc2(level?.Bounds.Left ?? 0, level?.Bounds.Top ?? 0);
+    public static Vc2 InParallax(this Vc2 position, Vc2 parallax)
+    {
+        return cameraCenter + (position - cameraCenter) * parallax;
+    }
+    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax)
+    {
+        return position.InParallax(parallax) + levelPos;
+    }
+    public static Vc2 InParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
+    {
+        Vc2 inparallax = position.InParallax(parallax);
+        float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inparallax.X;
+        float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inparallax.Y;
+        return new Vc2(X, Y);
+    }
+    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
+    {
+        Vc2 inglobalparallax = position.InGlobalParallax(parallax);
+        float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inglobalparallax.X;
+        float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inglobalparallax.Y;
+        return new Vc2(X, Y);
+    }
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
         level = self;

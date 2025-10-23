@@ -1804,11 +1804,8 @@ public class SpriteEntity : Actor
                 accelerations[i - 1] += accelerations[i] * Engine.DeltaTime;
             }
         }
-
-        Vector2 camPos = MapProcessor.level.Camera.Position + MapProcessor.level.CameraOffset;
-        Vector2 center = camPos.Floor() + new Vector2(camX, camY); // by default should be (160, 90) in pixel or (960, 540) in HD
-        Vector2 calculated = center + (Position - center) * parallax;
-        sprite.RenderPosition = calculated.Floor();
+        
+        sprite.RenderPosition = Position.InParallax(Vc2.One * parallax, new Vector2(camX, camY));
 
         solid.MoveTo(Position + solidPos);
     }

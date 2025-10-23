@@ -19,16 +19,6 @@ public class CustomSummitCloud : Entity
 
     public float diff;
 
-    public Vector2 RenderPosition()
-    {
-        Vector2 camCenter = (base.Scene as Level).Camera.Position + new Vector2(screenX, screenY);
-        
-        return camCenter + (Position - camCenter) * diff;// parallax
-
-        // Known paramaters : Position and camCenter
-        
-    }
-
     private enum Aligns
     {
         PositionTopLeft, PositionTopCenter, PositionTopRight,
@@ -176,7 +166,7 @@ public class CustomSummitCloud : Entity
     public override void Render()
     {
         Vector2 position = Position;
-        Position = RenderPosition();
+        Position = position.InParallax(Vc2.One * diff, new Vc2(screenX, screenY));
         base.Render();
         Position = position;
     }

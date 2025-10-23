@@ -19,15 +19,6 @@ public class CustomSummitCloud2 : Entity
     public Image image;
 
     public float camParallax;
-
-    public Vector2 RenderPosition()
-    {
-        Vector2 camCenter = (base.Scene as Level).Camera.Position + new Vector2(screenX, screenY);
-        
-        return camCenter + (Position - camCenter) * camParallax;// parallax
-
-        // Known paramaters : Position and camCenter
-    }
     
     private float freq, r_freq, parallax, screenX, screenY, amp;
     private string path;
@@ -101,7 +92,7 @@ public class CustomSummitCloud2 : Entity
     public override void Render()
     {
         Vector2 position = Position;
-        Position = RenderPosition();
+        Position = Position.InParallax(Vc2.One * camParallax, new Vc2(screenX, screenY));
         base.Render();
         Position = position;
     }
