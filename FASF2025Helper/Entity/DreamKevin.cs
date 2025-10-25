@@ -8,6 +8,7 @@ using MonoMod.Utils;
 using MonoMod.RuntimeDetour;
 using System.Reflection;
 using FASF2025Helper.Utils;
+using ChroniaHelper.Cores;
 using static Celeste.CrushBlock;
 using System.Collections;
 using Celeste.Mod.CommunalHelper.Entities;
@@ -141,7 +142,7 @@ public class DreamKevin : Solid
 
     }
 
-    [Load]
+    [LoadHook]
     public static void Load()
     {
         if (Md.CommunalHelperLoaded)
@@ -159,7 +160,7 @@ public class DreamKevin : Solid
             Logger.Error("FASF2025/DelegateHelper", "Failed to create field getter for CommunalHelper.DashStates.DreamTunnelDash.dreamTunnelDashAttacking");
     }
 
-    [UnLoad]
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.DreamBlock.FootstepRipple -= DreamBlock_FootstepRipple;

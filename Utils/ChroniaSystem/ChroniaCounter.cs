@@ -11,6 +11,7 @@ namespace ChroniaHelper.Utils.ChroniaSystem;
 
 public class ChroniaCounter
 {
+    [LoadHook]
     public static void Onload()
     {
         On.Celeste.Level.Reload += OnLevelReload;
@@ -19,7 +20,7 @@ public class ChroniaCounter
         On.Monocle.Scene.Update += GlobalUpdate;
         On.Celeste.Level.TransitionRoutine += OnLevelTransition;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.Reload -= OnLevelReload;

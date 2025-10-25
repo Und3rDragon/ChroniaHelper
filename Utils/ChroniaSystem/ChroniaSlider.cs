@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Utils.ChroniaSystem;
 
 public class ChroniaSlider
 {
+    [LoadHook]
     public static void Onload()
     {
         On.Celeste.Level.Reload += OnLevelReload;
@@ -17,7 +19,7 @@ public class ChroniaSlider
         On.Monocle.Scene.Update += GlobalUpdate;
         On.Celeste.Level.TransitionRoutine += OnLevelTransition;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.Reload -= OnLevelReload;

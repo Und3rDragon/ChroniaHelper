@@ -1,11 +1,12 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.Utils;
-using System;
 
 namespace ChroniaHelper.Entities
 {
@@ -31,12 +32,14 @@ namespace ChroniaHelper.Entities
             image.Position = new Vector2(Width / 2, Height / 2) + shake;
             image.Render();
         }
+        [LoadHook]
         public static void OnLoad()
         {
             IL.Celeste.Player.DreamDashCheck += TeraDreamCheck;
             IL.Celeste.Player.DreamDashUpdate += TeraDreamUpdate;
             On.Celeste.Player.DreamDashUpdate += TeraDreamUpdateSpeed;
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             IL.Celeste.Player.DreamDashCheck -= TeraDreamCheck;

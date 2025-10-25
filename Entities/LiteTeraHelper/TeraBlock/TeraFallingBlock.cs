@@ -1,4 +1,7 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using System.Reflection;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -6,8 +9,6 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System;
-using System.Reflection;
 
 namespace ChroniaHelper.Entities
 {
@@ -60,6 +61,7 @@ namespace ChroniaHelper.Entities
             lastEffect = TeraEffect.Normal;
             return;
         }
+        [LoadHook]
         public static void OnLoad()
         {
             IL.Celeste.FallingBlock.PlayerFallCheck += TeraFallCheck;
@@ -72,6 +74,7 @@ namespace ChroniaHelper.Entities
 
             crushSequenceHook = new ILHook(typeof(CrushBlock).GetMethod("AttackSequence", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), TeraCrushSequence);
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             IL.Celeste.FallingBlock.PlayerFallCheck -= TeraFallCheck;

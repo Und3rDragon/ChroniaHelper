@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -175,11 +176,12 @@ public class AdvancedSpikes : Entity
 
     public static ILHook PlayerOrigUpdateHook;
 
+    [LoadHook]
     public static void OnLoad()
     {
         PlayerOrigUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update", BindingFlags.Instance | BindingFlags.Public), PlayerOnOrigUpdate);
     }
-
+    [UnloadHook]
     public static void OnUnload()
     {
         PlayerOrigUpdateHook?.Dispose();

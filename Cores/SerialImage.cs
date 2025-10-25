@@ -15,7 +15,7 @@ public class SerialImage
     public List<MTexture> textures = new();
     public Vc2 position = Vc2.Zero;
     public Vc2 segmentOrigin = Vc2.One * 0.5f;
-    public Vc2 origin = Vc2.Zero;
+    public Vc2 origin = Vc2.One * 0.5f;
     public enum RenderMode { Compact = 0, EqualDistance = 1}
     public int renderMode = 0;
     public float distance = 4f;

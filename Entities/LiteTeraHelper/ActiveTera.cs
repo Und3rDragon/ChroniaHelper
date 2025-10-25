@@ -1,8 +1,10 @@
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
+using ChroniaHelper.Utils;
+using FASF2025Helper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
-using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
@@ -52,11 +54,13 @@ public class ActiveTera : Entity
         }
         
     }
+    [LoadHook]
     public static void OnLoad()
     {
         On.Celeste.Player.ctor += CreatePlayerTera;
         On.Celeste.Session.UpdateLevelStartDashes += UpdateLevelTera;
     }
+    [UnloadHook]
     public static void OnUnload()
     {
         On.Celeste.Player.ctor -= CreatePlayerTera;

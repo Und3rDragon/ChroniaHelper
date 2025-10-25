@@ -1,4 +1,7 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using System.Reflection;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -6,8 +9,6 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System;
-using System.Reflection;
 using static Celeste.TrackSpinner;
 
 namespace ChroniaHelper.Entities
@@ -39,10 +40,12 @@ namespace ChroniaHelper.Entities
             image.Render();
         }
 
+        [LoadHook]
         public static void OnLoad()
         {
             On.Celeste.SwapBlock.OnDash += OnTeraDash;
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             On.Celeste.SwapBlock.OnDash -= OnTeraDash;

@@ -1,14 +1,15 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using System.Collections;
+using System.Data.Common;
+using System.Reflection;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using System;
-using System.Collections;
-using System.Data.Common;
-using System.Reflection;
-using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
@@ -139,7 +140,8 @@ public class PatientBooster : Booster
 
 	private static ILHook origBoostBeginHook;
 
-	public static void Load()
+    [LoadHook]
+    public static void Load()
 	{
 		On.Celeste.Player.Boost += Player_Boost;
 		On.Celeste.Player.RedBoost += Player_RedBoost;
@@ -149,8 +151,8 @@ public class PatientBooster : Booster
 
 		origBoostBeginHook = new ILHook(typeof(Player).GetMethod("orig_BoostBegin", BindingFlags.NonPublic | BindingFlags.Instance), Player_BoostBegin);
 	}
-
-	public static void Unload()
+	[UnloadHook]
+    public static void Unload()
 	{
 		On.Celeste.Player.Boost -= Player_Boost;
 		On.Celeste.Player.RedBoost -= Player_RedBoost;

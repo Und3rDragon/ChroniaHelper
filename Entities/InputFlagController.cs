@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.CommunalHelper;
 using Celeste.Mod.CommunalHelper.Entities;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using MonoMod.Cil;
@@ -283,11 +284,12 @@ public abstract class AbstractInputController : Entity
 
     public abstract void FrozenUpdate();
 
+    [LoadHook]
     internal static void Load()
     {
         IL.Monocle.Engine.Update += Engine_Update;
     }
-
+    [UnloadHook]
     internal static void Unload()
     {
         IL.Monocle.Engine.Update -= Engine_Update;

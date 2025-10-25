@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Celeste.Mod.Backdrops;
 using Celeste.Mod.MaxHelpingHand.Effects;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using MonoMod.Cil;
@@ -16,11 +17,12 @@ namespace ChroniaHelper.Effects;
 // The source code is modified from Maddie of Maddie's Helping Hand
 public class ModifiedAnimatedParallax : Parallax
 {
+    [LoadHook]
     public static void Load()
     {
         IL.Celeste.MapData.ParseBackdrop += onParseBackdrop;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         IL.Celeste.MapData.ParseBackdrop -= onParseBackdrop;

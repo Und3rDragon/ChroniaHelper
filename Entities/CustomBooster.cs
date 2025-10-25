@@ -22,6 +22,7 @@ public class CustomBooster : Booster
 {
     private static ILHook dashCoroutineHook;
 
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.Booster.PlayerReleased += Booster_PlayerReleased;
@@ -48,7 +49,8 @@ public class CustomBooster : Booster
         
         On.Celeste.Player.BoostUpdate += PlayerOnBoostUpdate;
     }
-    
+
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Booster.PlayerReleased -= Booster_PlayerReleased;

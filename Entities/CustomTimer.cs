@@ -1,12 +1,13 @@
-﻿using Celeste.Mod.Entities;
-using ChroniaHelper.Utils;
-using ChroniaHelper.Utils.StopwatchSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.StopwatchSystem;
 using YamlDotNet.Core.Tokens;
 
 namespace ChroniaHelper.Entities;
@@ -127,12 +128,12 @@ public class CustomTimer : Entity
 
         base.Render();
     }
-
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.Level.UpdateTime += Level_UpdateTime;
     }
-
+    [UnloadHook]
     public static void UnLoad()
     {
         On.Celeste.Level.UpdateTime -= Level_UpdateTime;

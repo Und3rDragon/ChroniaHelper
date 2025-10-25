@@ -9,6 +9,7 @@ namespace ChroniaHelper.Cores;
 
 public static class MapProcessor
 {
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.Level.LoadLevel += OnLevelLoadLevel;
@@ -20,6 +21,7 @@ public static class MapProcessor
         On.Monocle.Scene.Update += GlobalUpdate;
     }
 
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.LoadLevel -= OnLevelLoadLevel;

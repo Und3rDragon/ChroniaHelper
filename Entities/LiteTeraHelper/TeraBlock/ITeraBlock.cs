@@ -1,4 +1,10 @@
-﻿using ChroniaHelper.Cores.LiteTeraHelper;
+﻿using System.Reflection;
+using Celeste;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.LiteTeraHelper;
+using ChroniaHelper.Entities;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -6,11 +12,6 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System.Reflection;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Utils;
-using Celeste.Mod.Entities;
-using Celeste;
 
 namespace ChroniaHelper.Entities
 {
@@ -27,6 +28,7 @@ namespace ChroniaHelper.Entities
         private static Hook liftSpeedHook;
         private static ILHook liftBoostHook;
         public const float LiftBoostMultipler = 4f;
+        [LoadHook]
         public static void OnLoad()
         {
             On.Celeste.CrystalStaticSpinner.OnPlayer += SpinnerCheck;
@@ -48,6 +50,7 @@ namespace ChroniaHelper.Entities
             IL.Celeste.Solid.MoveVExact += OnSolidMoveV;
             liftBoostHook = new ILHook(typeof(Player).GetMethod("get_LiftBoost", BindingFlags.NonPublic | BindingFlags.Instance), ModifyLiftBoost);
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             On.Celeste.CrystalStaticSpinner.OnPlayer -= SpinnerCheck;

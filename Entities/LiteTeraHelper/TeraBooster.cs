@@ -1,4 +1,5 @@
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Monocle;
@@ -28,10 +29,12 @@ public class TeraBooster : Booster
         base.Render();
         image.Position = position;
     }
+    [LoadHook]
     public static void OnLoad()
     {
         On.Celeste.Player.Render += PlayerRenderInTeraBooster;
     }
+    [UnloadHook]
     public static void OnUnload()
     {
         On.Celeste.Player.Render -= PlayerRenderInTeraBooster;

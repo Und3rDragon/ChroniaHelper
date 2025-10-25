@@ -16,3 +16,9 @@ wiki_UnderDragon=制图引导 (Bilibili, by 底龙)
 wiki_prismatic=Prismatic Helper
 wiki_maddie=Maddie的常用工具网站
 wiki_adam=Adam's Add-Ons
+
+modoptions_ChroniaHelper_staminaMeterMenu=体力条
+modoptions_ChroniaHelper_enableStaminaMeter=启用体力条
+modoptions_ChroniaHelper_displayPosition=显示基准
+modoptions_ChroniaHelper_displayPosition_PlayerBased=玩家
+modoptions_ChroniaHelper_displayPosition_StaticScreen=屏幕

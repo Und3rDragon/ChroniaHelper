@@ -1,10 +1,11 @@
-using MonoMod.Cil;
+using System;
+using System.Collections;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Monocle;
-using System;
-using System.Collections;
+using MonoMod.Cil;
 
 namespace ChroniaHelper.Entities;
 
@@ -62,11 +63,13 @@ public class TeraCrystal : Actor
             Speed = speed;
         };
     }
+    [LoadHook]
     public static void OnLoad()
     {
         On.Celeste.Actor.MoveHExact += TeraMoveHExact;
         On.Celeste.Actor.MoveVExact += TeraMoveVExact;
     }
+    [UnloadHook]
     public static void OnUnload()
     {
         On.Celeste.Actor.MoveHExact -= TeraMoveHExact;

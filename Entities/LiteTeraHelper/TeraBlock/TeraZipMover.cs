@@ -1,4 +1,7 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using System.Reflection;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -6,8 +9,6 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System;
-using System.Reflection;
 
 namespace ChroniaHelper.Entities
 {
@@ -31,10 +32,12 @@ namespace ChroniaHelper.Entities
             var bloom = Get<BloomPoint>();
             bloom.Alpha = 0.3f;
         }
+        [LoadHook]
         public static void OnLoad()
         {
             sequenceHook = new ILHook(typeof(ZipMover).GetMethod("Sequence", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), TeraSequence);
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             sequenceHook?.Dispose();

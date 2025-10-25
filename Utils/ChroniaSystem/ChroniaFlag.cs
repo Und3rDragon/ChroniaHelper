@@ -31,6 +31,7 @@ public enum Labels
 
 public class ChroniaFlag
 {
+    [LoadHook]
     public static void Onload()
     {
         On.Celeste.Level.Reload += OnLevelReload;
@@ -40,7 +41,7 @@ public class ChroniaFlag
         On.Celeste.Level.TransitionRoutine += OnLevelTransition;
         On.Celeste.Level.Begin += OnLevelBegin;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.Reload -= OnLevelReload;

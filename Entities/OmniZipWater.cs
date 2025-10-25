@@ -1,9 +1,10 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using ChroniaHelper.Utils;
 using System.Runtime.CompilerServices;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using static On.Celeste.Player;
 using Line = ChroniaHelper.Utils.GeometryUtils.Line;
@@ -562,6 +563,7 @@ public class OmniZipWater : OmniZipEntity
     }
 
     #region Water funcs
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.Player.SwimCheck += Player_SwimCheck;
@@ -570,7 +572,7 @@ public class OmniZipWater : OmniZipEntity
         On.Celeste.Player.SwimRiseCheck += Player_SwimRiseCheck;
         On.Celeste.Player.UnderwaterMusicCheck += Player_UnderwaterMusicCheck;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Player.SwimCheck -= Player_SwimCheck;

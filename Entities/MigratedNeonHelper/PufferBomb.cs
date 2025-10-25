@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using Celeste;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using IL.MonoMod;
 using Microsoft.Xna.Framework;
 using Monocle;
-using System.Reflection;
 using MonoMod.Utils;
-using Celeste;
-using ChroniaHelper.Utils;
 
 // The source code of this entity is migrated from NeonHelper, which is integrated in City of Broken Dreams
 // The original author is ricky06, code modified by UnderDragon
@@ -172,11 +172,12 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 
 		private static MethodInfo springBounceAnimate = typeof(Spring).GetMethod("BounceAnimate", BindingFlags.Instance | BindingFlags.NonPublic);
 
-		public static void Load()
+        [LoadHook]
+        public static void Load()
 		{
 			On.Celeste.Spring.ctor_Vector2_Orientations_bool += springOrientHook;
 		}
-
+		[UnloadHook]
 		public static void Unload()
 		{
 			On.Celeste.Spring.ctor_Vector2_Orientations_bool -= springOrientHook;

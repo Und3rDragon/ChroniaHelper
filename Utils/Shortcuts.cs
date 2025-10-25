@@ -3,6 +3,7 @@ global using MaP = ChroniaHelper.Cores.MapProcessor;
 global using Md = ChroniaHelper.ChroniaHelperModule;
 global using Sav = ChroniaHelper.Modules.ChroniaHelperSaveData;
 global using Ses = ChroniaHelper.Modules.ChroniaHelperSession;
+global using Sts = ChroniaHelper.Modules.ChroniaHelperSettings;
 global using Sh = ChroniaHelper.Utils.Shortcuts;
 global using PUt = ChroniaHelper.Utils.PlayerUtils;
 global using Vc2 = Microsoft.Xna.Framework.Vector2;

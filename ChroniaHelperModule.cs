@@ -22,6 +22,8 @@ using FASF2025Helper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Components;
 using ChroniaHelper.Utils.StopwatchSystem;
+using ChroniaHelper.Settings;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ChroniaHelper;
 
@@ -74,43 +76,10 @@ public class ChroniaHelperModule : EverestModule
         this.ChroniaHelperHandle = new ChroniaHelperHandle();
         this.HookManager = new HookManager();
         ChroniaHelperModule.Instance.ChroniaHelperHandle.LoadHandle();
-
-        ActiveTera.OnLoad();
-        TeraBlock.OnLoad();
-        TeraZipMover.OnLoad();
-        TeraFallingBlock.OnLoad();
-        TeraBooster.OnLoad();
-        TeraDashBlock.OnLoad();
-        TeraDreamBlock.OnLoad();
-        TeraMoveBlock.OnLoad();
-        TeraBarrier.OnLoad();
-        TeraSwapBlock.OnLoad();
-        TeraCrushBlock.OnLoad();
-        TeraBounceBlock.OnLoad();
-        TeraCrystal.OnLoad();
-        BubblePushField.Load();
-        CustomTimer.Load();
+        
+        LoadingManager.Load();
+        
         Everest.Events.LevelLoader.OnLoadingThread += LevelLoader_OnLoadingThread;
-        CustomBooster.Load();
-        OmniZipWater.Load();
-        EntityChangingInterfaces.Load();
-        PatientBooster.Load();
-        BoosterZipper.Load();
-        SpriteEntity.Load();
-        PlatformLineController.Load();
-        AbstractInputController.Load();
-        AdvancedSpikes.OnLoad();
-        
-        ModifiedAnimatedParallax.Load();
-        
-        MapProcessor.Load();
-        ChroniaFlag.Onload();
-        ChroniaCounter.Onload();
-        ChroniaSlider.Onload();
-        Stopclock.Load();
-
-        // migrated from NeonHelper
-        PufferBomb.Load();
 
         // migrated from VivHelper
         On.Celeste.GameLoader.Begin += LateInitialize;
@@ -162,55 +131,16 @@ public class ChroniaHelperModule : EverestModule
         MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
 
         PolygonCollider.Load();
-
-        // migrated FASF2025
-        AttributeHelper.InvokeAll<LoadAttribute>();
     }
 
     public override void Unload()
     {
         ChroniaHelperModule.Instance.ChroniaHelperHandle.UnloadHandle();
-
-        ActiveTera.OnUnload();
-        TeraBlock.OnUnload();
-        TeraZipMover.OnUnload();
-        TeraFallingBlock.OnUnload();
-        TeraBooster.OnUnload();
-        TeraDashBlock.OnUnload();
-        TeraDreamBlock.OnUnload();
-        TeraMoveBlock.OnUnload();
-        TeraBarrier.OnUnload();
-        TeraSwapBlock.OnUnload();
-        TeraCrushBlock.OnUnload();
-        TeraBounceBlock.OnUnload();
-        TeraCrystal.OnUnload();
-        CustomTimer.UnLoad();
-        Everest.Events.LevelLoader.OnLoadingThread -= LevelLoader_OnLoadingThread;
-        CustomBooster.Unload();
-        OmniZipWater.Unload();
-        EntityChangingInterfaces.Unload();
-        PatientBooster.Unload();
-        BoosterZipper.Unload();
-        SpriteEntity.Unload();
-        PlatformLineController.Unload();
-        AbstractInputController.Unload();
-        AdvancedSpikes.OnUnload();
-        PolygonCollider.Unload();
         
-        ModifiedAnimatedParallax.Unload();
-
-        MapProcessor.Unload();
-        ChroniaFlag.Unload();
-        ChroniaCounter.Unload();
-        ChroniaSlider.Unload();
-        Stopclock.Unload();
-
-        // migrated from NeonHelper
-        PufferBomb.Unload();
-
-        // migrated FASF2025
-        AttributeHelper.InvokeAll<UnLoadAttribute>();
-
+        LoadingManager.Unload();
+        
+        Everest.Events.LevelLoader.OnLoadingThread -= LevelLoader_OnLoadingThread;
+        
         // migrated from VivHelper
         On.Celeste.GameLoader.Begin -= LateInitialize;
     }
@@ -256,9 +186,9 @@ public class ChroniaHelperModule : EverestModule
     }
 
     // Create Custom ChroniaHelper Menu
-    protected override void CreateModMenuSectionHeader(TextMenu menu, bool inGame, EventInstance snapshot)
+    public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot)
     {
-        base.CreateModMenuSectionHeader(menu, inGame, snapshot);
+        base.CreateModMenuSection(menu, inGame, snapshot);
 
         TextMenu.Item wiki_mapalong = new TextMenu.Button(Extensions.DialogClean("wiki_mapalong"))
         {
@@ -396,11 +326,11 @@ public class ChroniaHelperModule : EverestModule
 
         TextMenuExt.SubMenu submenu = new(Extensions.DialogClean("ChroniaHelper_wikiSet"), false);
 
-        foreach(var item in menuOrder)
+        foreach (var item in menuOrder)
         {
             submenu.Add(item);
         }
         menu.Add(submenu);
+        
     }
-    
 }

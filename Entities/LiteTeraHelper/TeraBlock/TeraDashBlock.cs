@@ -1,11 +1,12 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using System.Runtime.InteropServices.ComTypes;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
-using System.Runtime.InteropServices.ComTypes;
-using System;
-using ChroniaHelper.Cores.LiteTeraHelper;
 
 namespace ChroniaHelper.Entities
 {
@@ -28,12 +29,14 @@ namespace ChroniaHelper.Entities
             image.CenterOrigin();
             image.Position = new Vector2(Width / 2, Height / 2);
         }
+        [LoadHook]
         public static void OnLoad()
         {
             On.Celeste.DashBlock.OnDashed += OnTeraDashed;
             IL.Celeste.Platform.MoveHExactCollideSolids += SolidCheckH;
             IL.Celeste.Platform.MoveVExactCollideSolids += SolidCheckV;
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             On.Celeste.DashBlock.OnDashed -= OnTeraDashed;

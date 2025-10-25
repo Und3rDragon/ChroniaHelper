@@ -1,11 +1,12 @@
+using System.Collections.Generic;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using System.Collections.Generic;
 
 namespace ChroniaHelper.Entities;
 
@@ -37,10 +38,12 @@ public class TeraBarrier : Solid
         : this(data.Position + offset, data.Width, data.Height, data.Enum("tera", TeraType.Normal))
     {
     }
+    [LoadHook]
     public static void OnLoad()
     {
         playerUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), UpdateTeraBarrier);
     }
+    [UnloadHook]
     public static void OnUnload()
     {
         playerUpdateHook?.Dispose();

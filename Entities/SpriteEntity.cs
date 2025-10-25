@@ -50,12 +50,13 @@ public class SpriteEntity : Actor
         Command.Change_Tag, Command.Kill_On_Collide, Command.Repeat_Times
     };
 
+    [LoadHook]
     public static void Load()
     {
         // break directions
         On.Celeste.Player.Update += breakTheControls;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Player.Update -= breakTheControls;

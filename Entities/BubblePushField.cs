@@ -1,10 +1,11 @@
-﻿using Celeste.Mod.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Entities;
 
@@ -204,7 +205,7 @@ public class BubblePushField : Entity
             }
         }
     }
-
+    [LoadHook]
     public static void Load()
     {
         playerWindTimeout = typeof(Player).GetField("windTimeout", BindingFlags.NonPublic | BindingFlags.Instance);

@@ -21,11 +21,12 @@ namespace ChroniaHelper.Cores
 
     public static class EntityChangingInterfaces
     {
-
+        [LoadHook]
         public static void Load()
         {
             IL.Monocle.EntityList.UpdateLists += EntityList_UpdateLists;
         }
+        [UnloadHook]
         public static void Unload()
         {
             IL.Monocle.EntityList.UpdateLists -= EntityList_UpdateLists;

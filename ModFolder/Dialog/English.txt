@@ -16,3 +16,9 @@ wiki_UnderDragon=Mapping Introduction (Bilibili, by UnderDragon)
 wiki_prismatic=Prismatic Helper
 wiki_maddie=Maddie's Random Stuffs
 wiki_adam=Adam's Add-Ons
+
+modoptions_ChroniaHelper_staminaMeterMenu=Stamina Meter
+modoptions_ChroniaHelper_enableStaminaMeter=Enabled
+modoptions_ChroniaHelper_displayPosition=Rendering Basis
+modoptions_ChroniaHelper_displayPosition_PlayerBased=Player Position
+modoptions_ChroniaHelper_displayPosition_StaticScreen=Screen Coordinates

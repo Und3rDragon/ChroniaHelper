@@ -1,4 +1,7 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using System.Reflection;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -6,8 +9,6 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System;
-using System.Reflection;
 
 namespace ChroniaHelper.Entities
 {
@@ -27,10 +28,12 @@ namespace ChroniaHelper.Entities
             image.CenterOrigin();
             image.Position = new Vector2(data.Width / 2, data.Height / 2);
         }
+        [LoadHook]
         public static void OnLoad()
         {
             IL.Celeste.BounceBlock.Update += TeraBounceUpdate;
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             IL.Celeste.BounceBlock.Update -= TeraBounceUpdate;

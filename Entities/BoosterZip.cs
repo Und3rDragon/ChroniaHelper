@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using Microsoft.Xna.Framework;
 using Monocle;
 
@@ -43,6 +44,7 @@ namespace ChroniaHelper.Entities
         }
         private Color ropeColor, ropeLightColor;
 
+        [LoadHook]
         public static void Load()
         {
             On.Celeste.Player.BoostCoroutine += Player_BoostCoroutine;
@@ -52,7 +54,7 @@ namespace ChroniaHelper.Entities
             On.Celeste.Booster.OnPlayer += Booster_OnPlayer;
             On.Celeste.Booster.Respawn += Booster_Respawn;
         }
-
+        [UnloadHook]
         public static void Unload()
         {
             On.Celeste.Player.BoostCoroutine -= Player_BoostCoroutine;

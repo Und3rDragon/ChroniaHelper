@@ -1,4 +1,7 @@
-﻿using Celeste.Mod.Entities;
+﻿using System;
+using System.Reflection;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -6,8 +9,6 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System;
-using System.Reflection;
 
 namespace ChroniaHelper.Entities
 {
@@ -29,11 +30,13 @@ namespace ChroniaHelper.Entities
             image.CenterOrigin();
             image.Position = new Vector2(data.Width / 2, data.Height / 2 - 12);
         }
+        [LoadHook]
         public static void OnLoad()
         {
             On.Celeste.CrushBlock.CanActivate += TeraCanActivate;
             sequenceHook = new ILHook(typeof(CrushBlock).GetMethod("AttackSequence", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), TeraSequence);
         }
+        [UnloadHook]
         public static void OnUnload()
         {
             On.Celeste.CrushBlock.CanActivate -= TeraCanActivate;

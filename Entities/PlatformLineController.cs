@@ -13,6 +13,7 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/PlatformLineController")]
 public class PlatformLineController : Entity
 {
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.MovingPlatformLine.Added += MP_Added_Modify;
@@ -20,7 +21,7 @@ public class PlatformLineController : Entity
         On.Celeste.SinkingPlatformLine.Added += SP_Added_Modify;
         On.Celeste.SinkingPlatformLine.Render += SP_Render_Modify;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.MovingPlatformLine.Added -= MP_Added_Modify;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ChroniaHelper.Cores;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
@@ -11,14 +12,15 @@ public partial class Stopclock : IDisposable
     // 线程计数和限制
     private static int activeIsolatedClocks = 0;
     private static int maxIsolatedClocks = 5;
-    
+
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.Level.UpdateTime += LevelUpdateTime;
         On.Celeste.Level.LoadLevel += LoadingLevel;
         On.Monocle.Scene.Update += GlobalUpdate;
     }
-
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.UpdateTime -= LevelUpdateTime;
