@@ -122,7 +122,16 @@ public class SerialImage
             Vc2 dPos = shift + segmentStart + segmentPosition[i];
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
-            
+
+            //Log.Info($"Source: {source[i]} => {selector(source[i])}");
+            //Log.Info($"Position: {position}");
+            //Log.Info($"origin: {origin}");
+            //Log.Info($"segmentOrigin: {segmentOrigin}");
+            //Log.Info($"renderMode: {renderMode}");
+            //Log.Info($"distance: {distance}");
+            //Log.Info($"texturePath: {texture.AtlasPath}");
+            //Log.Error("_____________________________");
+
             texture.Draw(renderPosition + dPos + overallOffset + (hasSegOffset? segOffset : Vc2.Zero), 
                 segmentOrigin * new Vc2(texture.Width, texture.Height), color.Parsed(), scale, rotation.ToRad(),
                 GetSpriteEffect());

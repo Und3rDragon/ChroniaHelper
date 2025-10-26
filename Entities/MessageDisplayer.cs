@@ -56,7 +56,7 @@ public class MessageDisplayer : Entity
 
     public int Reflection(char c)
     {
-        return reference.Contains(c) ? reference.IndexOf(c) : reference.Length - 1;
+        return reference.Contains(c) ? reference.IndexOf(c) : reference.IndexOf(" ");
     }
 
     public override void Render()
