@@ -1021,3 +1021,7 @@ entities.ChroniaHelper/StopclockRenderer.placements.name.renderer=Stopclock Rend
 
 entities.ChroniaHelper/RealTimeRenderer.placements.name.renderer=Real Time Renderer
 
+# ================= Real Time Renderer
+
+entities.ChroniaHelper/MessageDisplayer.placements.name.renderer=Message Displayer
+

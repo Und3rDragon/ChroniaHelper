@@ -17,17 +17,18 @@ public class SerialImageRenderer : Entity
     {
         Position = d.Position;
         Depth = d.Int("depth", -10000000);
-
-        source = d.Attr("sourcePath", "ChroniaHelper/StopclockFonts/font");
-        image = new SerialImage(GFX.Game.GetAtlasSubtextures(source));
-
-        image.renderMode = d.Int("renderMode", 0);
-        image.origin = new Vc2(d.Float("originX", 0.5f), d.Float("originY", 0.5f));
-        image.segmentOrigin = new Vc2(d.Float("segmentOriginX", 0.5f), d.Float("segmentOriginY", 0.5f));
-        image.distance = d.Float("segmentDistance", 1f);
-        image.color = d.GetChroniaColor("rendererColor", Color.White);
-        
-        d.Attr("segmentOffset").Split(';', StringSplitOptions.TrimEntries).ApplyTo(out string[] _segOffset);
+    }
+    public SerialImage image = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
+    public string source = "ChroniaHelper/DisplayFonts/font";
+    public Vc2 parallax = new Vc2(1f, 1f);
+    public Vc2 staticScreen = new Vc2(160f, 90f);
+    
+    /// <summary>
+    /// index,x,y => segment offset
+    /// </summary>
+    public void ParseSegmentOffset(string str)
+    {
+        str.Split(';', StringSplitOptions.TrimEntries).ApplyTo(out string[] _segOffset);
         foreach (var s in _segOffset)
         {
             s.Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] seg);
@@ -40,18 +41,16 @@ public class SerialImageRenderer : Entity
             offset = new Vc2(seg[1].ParseInt(0), seg[2].ParseInt(0));
             image.segmentOffset.Enter(index, offset);
         }
-
-        parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
-        staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
     }
-    public SerialImage image;
-    public string source;
-    public Vc2 parallax;
-    public Vc2 staticScreen;
 
     public virtual string ParseRenderTarget()
     {
         return "";
+    }
+    
+    public virtual int Reflection(char c)
+    {
+        return $"{c}".ParseInt(c == ':' ? 10 : 0);
     }
     
     public override void Render()
@@ -60,10 +59,7 @@ public class SerialImageRenderer : Entity
 
         string renderTarget = ParseRenderTarget();
 
-        image.Render(renderTarget, (c) =>
-        {
-            return $"{c}".ParseInt(c == ':' ? 10 : 0);
-        }, Position.InGlobalParallax(parallax));
+        image.Render(renderTarget, (c) => Reflection(c), Position.InGlobalParallax(parallax));
     }
 
     public override void Update()

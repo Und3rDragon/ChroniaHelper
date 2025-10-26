@@ -34,7 +34,10 @@ public class SerialImage
         return result;
     }
 
-
+    public SerialImage(string path)
+    {
+        GFX.Game.GetAtlasSubtextures(path).ApplyTo(out textures);
+    }
     public SerialImage(List<MTexture> source)
     {
         source.ApplyTo(out textures);

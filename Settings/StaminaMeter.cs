@@ -51,7 +51,7 @@ public class StaminaMeter
         
         if(mode == Sts.StaminaDisplayer.DisplayPosition.PlayerBased)
         {
-            return player.Center + setup;
+            return new Vc2((int)player.Center.X, (int)player.Center.Y) + setup;
         }
         else if(mode == Sts.StaminaDisplayer.DisplayPosition.StaticScreen)
         {
