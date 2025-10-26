@@ -40,7 +40,7 @@ public class MessageDisplayer : Entity
     {
         string text = Dialog.Clean(content);
         
-        var lines = text.Split("{n}", StringSplitOptions.TrimEntries);
+        var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();
         foreach (string line in lines)
         {
