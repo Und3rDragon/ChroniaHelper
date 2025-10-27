@@ -26,21 +26,31 @@ public class MessageDisplayer : Entity
         template.segmentOrigin = Vc2.Zero;
         template.distance = d.Float("letterDistance", 1f);
         template.color = d.GetChroniaColor("fontColor", Color.White);
+        primaryAlpha = template.color.alpha;
 
         renderer = new SerialImageGroup(template, "ChroniaHelper/DisplayFonts/font");
         renderer.groupOrigin = new Vc2(d.Float("originX", 0.5f), d.Float("originY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);
 
-        content = d.Attr("message");
+        content = d.Attr("dialogID");
 
         parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
         staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
+
+        renderDistance = d.Float("renderDistance", -1f);
+        typingDisplay = renderDistance > 0f;
+        fadeInSpeed = d.Float("fadeInSpeed", 4f);
+        fadeOutSpeed = d.Float("fadeOutSpeed", 2f);
+        letterInterval = d.Float("letterDisplayInterval", 0.1f).ClampMin(Engine.DeltaTime);
     }
     public SerialImageGroup renderer;
     public string content;
     public Vc2 parallax = Vc2.Zero;
     public Vc2 staticScreen = Vc2.Zero;
     public bool typingDisplay = true;
+    public float renderDistance = 256f, fadeInSpeed = 4f, fadeOutSpeed = 2f;
+    public float primaryAlpha = 1f;
+    public float letterInterval = 0.1f;
 
     public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =";
 
@@ -86,12 +96,12 @@ public class MessageDisplayer : Entity
                 for (int i = 0; i < orig.Count; i++)
                 {
                     progressedText.Add("");
-                    progress.Add(0);
+                    progress.Add(-1);
                 }
             }
             else if (inRange)
             {
-                if (Scene.OnInterval(0.1f))
+                if (Scene.OnInterval(letterInterval))
                 {
                     for (int i = 0; i < progress.Count; i++)
                     {
@@ -113,7 +123,7 @@ public class MessageDisplayer : Entity
                 }
             }
         }
-
+        
         renderer.Render(progressedText,
             (c) => Reflection(c),
             Position.InParallax(parallax, staticScreen));
@@ -127,12 +137,15 @@ public class MessageDisplayer : Entity
 
         if(PUt.TryGetPlayer(out Player player))
         {
-            inRange = (player.Center - Position).Length() <= 128f; // setup distance
+            inRange = (player.Center - Position).Length() <= renderDistance; 
         }
 
-        renderer.template.color.alpha = Calc.Approach(renderer.template.color.alpha, 
-            inRange ? 1f : 0f, (inRange ? 4 : 2) * Engine.DeltaTime); // fading speed
-        fadeEnded = renderer.template.color.alpha == (inRange ? 1f : 0f); // fading colors
+        if (typingDisplay)
+        {
+            renderer.template.color.alpha = Calc.Approach(renderer.template.color.alpha,
+                inRange ? primaryAlpha : 0f, (inRange ? fadeInSpeed : fadeOutSpeed) * Engine.DeltaTime);
+            fadeEnded = renderer.template.color.alpha == (inRange ? primaryAlpha : 0f);
+        }
     }
 
 }
