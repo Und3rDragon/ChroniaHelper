@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace ChroniaHelper.Utils;
 
@@ -246,6 +247,26 @@ public static class ObjectUtils
         else
         {
             doOtherwise(source);
+        }
+    }
+    
+    public static T ForceTo<T>(this object obj)
+    {
+        if (obj == null)
+            return default(T)!; // null 转引用类型或可空值类型
+
+        if (obj is T t)
+            return t; // 无需转换
+
+        // 使用 Convert 支持跨数值类型、字符串等
+        try
+        {
+            return (T)Convert.ChangeType(obj, typeof(T));
+        }
+        catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is OverflowException)
+        {
+            throw new InvalidCastException(
+                $"Unable to convert object of type '{obj.GetType()}' to type '{typeof(T)}'.", ex);
         }
     }
 }

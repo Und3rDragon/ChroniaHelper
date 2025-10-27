@@ -19,4 +19,18 @@ public class ChroniaHelperSettings : EverestModuleSettings
     }
 
     public StaminaDisplayer staminaMeterMenu { get; set; } = new();
+
+    [SettingSubMenu]
+    public class DashesDisplayer
+    {
+        public bool enableDashCounter { get; set; } = false;
+        public enum DisplayPosition { PlayerBased, StaticScreen }
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.PlayerBased;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 0;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = -16;
+    }
+
+    public DashesDisplayer dashesCounter { get; set; } = new();
 }
