@@ -32,9 +32,14 @@ public class MessageDisplayer : Entity
         renderer.memberDistance = d.Float("lineDistance", 2f);
 
         content = d.Attr("message");
+
+        parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
+        staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
     }
     public SerialImageGroup renderer;
     public string content;
+    public Vc2 parallax = Vc2.Zero;
+    public Vc2 staticScreen = Vc2.Zero;
 
     public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =";
 
@@ -64,7 +69,10 @@ public class MessageDisplayer : Entity
     public override void Render()
     {
         base.Render();
-        
-        renderer.Render(ParseRenderTarget(), (c) => Reflection(c), Position);
+
+        renderer.Render(ParseRenderTarget(),
+            (c) => Reflection(c),
+            Position.InParallax(parallax, staticScreen));
     }
+
 }

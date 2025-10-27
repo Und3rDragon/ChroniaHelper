@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ChroniaHelper.Utils;
 
-public class AlignUtils
+public static class AlignUtils
 {
     public enum Aligns { None, TopLeft, TopCenter, TopRight, MiddleLeft, Center, MiddleRight, BottomLeft, BottomCenter, BottomRight }
     public static Dictionary<Aligns, Vector2> AlignToJustify = new()
@@ -22,4 +23,9 @@ public class AlignUtils
         { (Aligns)8, new Vector2(0.5f, 1f) },
         { (Aligns)9, new Vector2(1f,1f) }
     };
+
+    public static Vc2 ToJustify(this Aligns align)
+    {
+        return AlignToJustify[align];
+    }
 }

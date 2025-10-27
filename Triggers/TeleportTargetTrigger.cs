@@ -11,14 +11,14 @@ public class TeleportTargetTrigger : TeleportPositionTrigger
 
     private string targetId;
 
-    private PositionPoint positionPoint;
+    private AlignUtils.Aligns positionPoint;
 
     private bool positionOffset;
 
     public TeleportTargetTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         this.targetId = data.Attr("targetId", null);
-        this.positionPoint = data.Enum<PositionPoint>("positionPoint", PositionPoint.TopLeft);
+        this.positionPoint = data.Enum<AlignUtils.Aligns>("positionPoint", AlignUtils.Aligns.TopLeft);
         this.positionOffset = data.Bool("positionOffset", true);
     }
 
@@ -42,31 +42,31 @@ public class TeleportTargetTrigger : TeleportPositionTrigger
         base.targetPositionY += (int) (targetIdTrigger.Position.Y + (this.positionOffset ? 16 : 0));
         switch (this.positionPoint)
         {
-            case PositionPoint.TopCenter:
+            case AlignUtils.Aligns.TopCenter:
                 base.targetPositionX += (int) (this.Width / 2);
                 break;
-            case PositionPoint.TopRight:
+            case AlignUtils.Aligns.TopRight:
                 base.targetPositionX += (int) (this.Width);
                 break;
-            case PositionPoint.CenterLeft:
+            case AlignUtils.Aligns.MiddleLeft:
                 base.targetPositionY += (int) (this.Height / 2);
                 break;
-            case PositionPoint.Center:
+            case AlignUtils.Aligns.Center:
                 base.targetPositionX += (int) (this.Width / 2);
                 base.targetPositionY += (int) (this.Height / 2);
                 break;
-            case PositionPoint.CenterRight:
+            case AlignUtils.Aligns.MiddleRight:
                 base.targetPositionX += (int) (this.Width);
                 base.targetPositionY += (int) (this.Height / 2);
                 break;
-            case PositionPoint.BottomLeft:
+            case AlignUtils.Aligns.BottomLeft:
                 base.targetPositionY += (int) (this.Height);
                 break;
-            case PositionPoint.BottomCenter:
+            case AlignUtils.Aligns.BottomCenter:
                 base.targetPositionX += (int) (this.Width / 2);
                 base.targetPositionY += (int) (this.Height);
                 break;
-            case PositionPoint.BottomRight:
+            case AlignUtils.Aligns.BottomRight:
                 base.targetPositionX += (int) (this.Width);
                 base.targetPositionY += (int) (this.Height);
                 break;

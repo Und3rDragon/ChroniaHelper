@@ -60,7 +60,7 @@ public class RealTimeRenderer : SerialImageRenderer
         image.Render(renderTarget, (c) =>
         {
             return $"{c}".ParseInt(c == ':' ? 10 : 0);
-        }, Position.InGlobalParallax(parallax));
+        }, Position.InGlobalParallax(parallax, staticScreen));
     }
 
     public override void Update()
