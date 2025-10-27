@@ -40,6 +40,7 @@ public class MessageDisplayer : Entity
     public string content;
     public Vc2 parallax = Vc2.Zero;
     public Vc2 staticScreen = Vc2.Zero;
+    public bool typingDisplay = true;
 
     public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =";
 
@@ -66,13 +67,72 @@ public class MessageDisplayer : Entity
         return reference.Contains(c) ? reference.IndexOf(c) : reference.IndexOf(" ");
     }
 
+    List<string> progressedText = new();
+    List<int> progress = new();
     public override void Render()
     {
         base.Render();
 
-        renderer.Render(ParseRenderTarget(),
+        List<string> orig = ParseRenderTarget();
+
+        // set up typer text
+        if (!typingDisplay) { progressedText = orig; }
+        else
+        {
+            if (!inRange && fadeEnded)
+            {
+                progressedText = new();
+                progress = new();
+                for (int i = 0; i < orig.Count; i++)
+                {
+                    progressedText.Add("");
+                    progress.Add(0);
+                }
+            }
+            else if (inRange)
+            {
+                if (Scene.OnInterval(0.1f))
+                {
+                    for (int i = 0; i < progress.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            if (progress[0] < orig[0].Length - 1) { progress[0]++; }
+
+                            progressedText[0] = orig[0].Substring(0, progress[0] + 1);
+                            continue;
+                        }
+
+                        if (progress[i] < orig[i].Length - 1 && progress[i - 1] == orig[i - 1].Length - 1)
+                        {
+                            progress[i]++;
+                        }
+
+                        progressedText[i] = orig[i].Substring(0, progress[i] + 1);
+                    }
+                }
+            }
+        }
+
+        renderer.Render(progressedText,
             (c) => Reflection(c),
             Position.InParallax(parallax, staticScreen));
+    }
+
+    public bool inRange = false;
+    public bool fadeEnded = false;
+    public override void Update()
+    {
+        base.Update();
+
+        if(PUt.TryGetPlayer(out Player player))
+        {
+            inRange = (player.Center - Position).Length() <= 128f; // setup distance
+        }
+
+        renderer.template.color.alpha = Calc.Approach(renderer.template.color.alpha, 
+            inRange ? 1f : 0f, (inRange ? 4 : 2) * Engine.DeltaTime); // fading speed
+        fadeEnded = renderer.template.color.alpha == (inRange ? 1f : 0f); // fading colors
     }
 
 }
