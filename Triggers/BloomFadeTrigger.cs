@@ -66,7 +66,7 @@ public class BloomFadeTrigger : BaseTrigger
             while (t >= 0f)
             {
                 t = Calc.Approach(t, -1f, Engine.DeltaTime);
-                float progress = ((timer - t) / timer).ClampWhole(0f, 1f);
+                float progress = ((timer - t) / timer).Clamp(0f, 1f);
                 float bloomBase = Calc.ClampedMap(progress, 0f, 1f, this.bloomBaseFrom, this.bloomBaseTo);
                 base.level.Bloom.Base = bloomBase;
                 base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;

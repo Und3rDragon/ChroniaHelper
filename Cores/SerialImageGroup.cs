@@ -17,6 +17,11 @@ public class SerialImageGroup
     /// </summary>
     public SerialImage template = new SerialImage("ChroniaHelper/DisplayFonts/font");
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="template">An empty template defining member parameters</param>
+    /// <param name="paths"></param>
     public SerialImageGroup(SerialImage template, params string[] paths)
     {
         this.template = template;
@@ -55,6 +60,13 @@ public class SerialImageGroup
     public Vc2 groupTopleft, groupBottomRight;
     public List<Vc2> memberPosition = new();
     public Vc2 memberStart = Vc2.Zero;
+    /// <summary>
+    /// Measuring the size of the to-be-rendered texts
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source">The source should be a list of classes, if it's string,
+    /// the source should be a List of strings </param>
+    /// <param name="selector">The deepest reflection of the function returning integers as the texture index</param>
     public void Measure<T>(IList<IList<T>> source, Func<T, int> selector)
     {
         members = new();

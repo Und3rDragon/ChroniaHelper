@@ -98,7 +98,7 @@ public class ColoredCustomCoreMessage : Entity
         }
 
         defaultFadedValue = data.Float("DefaultFadedValue", 0f);
-        alphaMult = data.Float("AlphaMultiplier", 1f).ClampWhole(0f, 1f);
+        alphaMult = data.Float("AlphaMultiplier", 1f).Clamp(0f, 1f);
 
         // align
         align = (AlignUtils.Aligns)data.Fetch("align", 5);

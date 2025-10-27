@@ -17,8 +17,6 @@ renderer.placements = {
         message = "",
         lineOriginX = 1,
         lineOriginY = 1,
-        letterOriginX = 0.5,
-        letterOriginY = 0.5,
         letterDistance = 0,
         originX = 0.5,
         originY = 0.5,
@@ -32,7 +30,16 @@ renderer.placements = {
 }
 
 renderer.fieldInformation = {
-    segmentDistance = {
+    screenX = {
+        fieldType = "integer",
+    },
+    screenY = {
+        fieldType = "integer",
+    },
+    letterDistance = {
+        fieldType = "integer",
+    },
+    lineDistance = {
         fieldType = "integer",
     },
     sourcePath = {

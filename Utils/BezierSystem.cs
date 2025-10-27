@@ -15,35 +15,60 @@ public class BezierCurve
     public float lerp = 0f;
     public Vc2 offset = Vc2.Zero;
 
+    // 新增：预计算的曲线点
+    private Vc2[] _precomputedPoints = null;
+    private int _precomputedResolution = 0;
+    private float _precomputedLength = 0f;
+
     public BezierCurve() { }
 
-    public BezierCurve(Vector2[] points, float lerp = 0f, float offsetX = 0f, float offsetY = 0f)
+    public BezierCurve(Vector2[] points, float lerp = 0f, float offsetX = 0f, float offsetY = 0f, int estimationResolution = 100)
     {
-        this.points = new Vc2[points.Length]; 
+        this.points = new Vc2[points.Length];
         this.points = points;
-        this.lerp = lerp.ClampWhole(0f, 1f);
+        this.lerp = lerp.Clamp(0f, 1f);
         this.offset = new Vc2(offsetX, offsetY);
+
+        // 预计算曲线点
+        PrecomputeCurve(estimationResolution);
     }
 
-    public Vc2 GetBezierPoint()
+    /// <summary>
+    /// 预计算曲线点
+    /// </summary>
+    /// <param name="resolution">分辨率</param>
+    public void PrecomputeCurve(int resolution)
     {
-        return GetBezierPoint(points, lerp);
+        if (resolution < 1) resolution = 1;
+
+        _precomputedResolution = resolution;
+        _precomputedPoints = new Vc2[resolution + 1];
+
+        // 计算曲线点并存储
+        for (int i = 0; i <= resolution; i++)
+        {
+            float t = (float)i / resolution;
+            _precomputedPoints[i] = GetBezierPointRaw(points, t);
+        }
+
+        // 预计算曲线长度
+        _precomputedLength = 0f;
+        for (int i = 1; i < _precomputedPoints.Length; i++)
+        {
+            _precomputedLength += Vc2.Distance(_precomputedPoints[i - 1], _precomputedPoints[i]);
+        }
     }
 
-    public Vc2 GetBezierPoint(float overrideLerp)
-    {
-        return GetBezierPoint(points, overrideLerp);
-    }
-
-
-    public Vc2 GetBezierPoint(Vc2[] points, float overrideLerp)
+    /// <summary>
+    /// 原始贝塞尔计算（不依赖预计算）
+    /// </summary>
+    private Vc2 GetBezierPointRaw(Vc2[] points, float t)
     {
         if (points == null || points.Length == 0) return Vc2.Zero;
         if (points.Length == 1) return points[0];
         if (points.Length == 2)
-            return overrideLerp.LerpValue(0f, 1f, points[0], points[1]);
+            return t.LerpValue(0f, 1f, points[0], points[1]);
 
-        float t = overrideLerp;
         float u = 1 - t;
 
         // 二次贝塞尔：3个点
@@ -67,7 +92,7 @@ public class BezierCurve
                  + ttt * points[3];
         }
 
-        // 高阶：使用非递归迭代版 de Casteljau（避免递归 + new[]）
+        // 高阶：使用非递归迭代版 de Casteljau
         int n = points.Length;
         Vc2[] temp = new Vc2[n];
         Array.Copy(points, temp, n);
@@ -76,57 +101,138 @@ public class BezierCurve
         {
             for (int j = 0; j < n - i; j++)
             {
-                temp[j] = overrideLerp.LerpValue(0f, 1f, temp[j], temp[j + 1]);
+                temp[j] = t.LerpValue(0f, 1f, temp[j], temp[j + 1]);
             }
         }
 
         return temp[0];
     }
 
+    public Vc2 GetBezierPoint()
+    {
+        if (_precomputedPoints != null && _precomputedResolution > 0)
+        {
+            // 使用预计算的点进行插值
+            int index = (int)(lerp * _precomputedResolution);
+            index = index.Clamp(0, _precomputedResolution - 1);
+
+            // 线性插值获得更精确的结果
+            float segmentT = lerp * _precomputedResolution - index;
+            segmentT = segmentT.Clamp(0f, 1f);
+
+            if (index < _precomputedPoints.Length - 1)
+            {
+                return segmentT.LerpValue(0f, 1f, _precomputedPoints[index], _precomputedPoints[index + 1]);
+            }
+            else
+            {
+                return _precomputedPoints[_precomputedPoints.Length - 1];
+            }
+        }
+
+        // 回退到原始计算
+        return GetBezierPointRaw(points, lerp);
+    }
+
+    public Vc2 GetBezierPoint(float overrideLerp)
+    {
+        if (_precomputedPoints != null && _precomputedResolution > 0)
+        {
+            // 使用预计算的点进行插值
+            int index = (int)(overrideLerp * _precomputedResolution);
+            index = index.Clamp(0, _precomputedResolution - 1);
+
+            float segmentT = overrideLerp * _precomputedResolution - index;
+            segmentT = segmentT.Clamp(0f, 1f);
+
+            if (index < _precomputedPoints.Length - 1)
+            {
+                return segmentT.LerpValue(0f, 1f, _precomputedPoints[index], _precomputedPoints[index + 1]);
+            }
+            else
+            {
+                return _precomputedPoints[_precomputedPoints.Length - 1];
+            }
+        }
+
+        return GetBezierPointRaw(points, overrideLerp);
+    }
+
+    public Vc2 GetBezierPoint(Vc2[] points, float overrideLerp)
+    {
+        // 如果传入的是不同的点数组，使用原始计算
+        if (points != this.points)
+        {
+            return GetBezierPointRaw(points, overrideLerp);
+        }
+
+        return GetBezierPoint(overrideLerp);
+    }
+
     public Vc2[] GetBezierPoints(int resolution, Vc2? offsets = null)
     {
+        // 如果请求的分辨率与预计算相同，直接返回预计算结果
+        if (_precomputedPoints != null && resolution == _precomputedResolution)
+        {
+            if (offsets == null || offsets == Vc2.Zero)
+            {
+                return _precomputedPoints.ToArray(); // 返回副本
+            }
+            else
+            {
+                var result = new Vc2[_precomputedPoints.Length];
+                for (int i = 0; i < _precomputedPoints.Length; i++)
+                {
+                    result[i] = _precomputedPoints[i] + offsets.Value;
+                }
+                return result;
+            }
+        }
+
+        // 否则使用原始计算
         int res = resolution.ClampMin(1);
-        
         Vc2[] points = new Vc2[res + 1];
         for (int i = 0; i < res + 1; i++)
         {
-            points[i] = GetBezierPoint((float)i / res) + (offsets?? offset);
+            points[i] = GetBezierPointRaw(this.points, (float)i / res) + (offsets ?? offset);
         }
-
         return points;
     }
 
     public float GetBezierCurveLength(int resolution, Vc2? offset = null)
     {
-        Vc2[] bezierPoints = GetBezierPoints(resolution, offset);
+        // 使用预计算的长度（如果可用且分辨率匹配）
+        if (_precomputedPoints != null && resolution == _precomputedResolution && (offset == null || offset == Vc2.Zero))
+        {
+            return _precomputedLength;
+        }
 
+        Vc2[] bezierPoints = GetBezierPoints(resolution, offset);
         float length = 0f;
         for (int i = 1; i < bezierPoints.Length; i++)
         {
             length += Vc2.Distance(bezierPoints[i - 1], bezierPoints[i]);
         }
-
         return length;
     }
-    
+
     public float GetBezierCurveLength(int resolution, out Vc2[] bezierPoints, Vc2? offset = null)
     {
         bezierPoints = GetBezierPoints(resolution, offset);
-
         float length = 0f;
         for (int i = 1; i < bezierPoints.Length; i++)
         {
             length += Vc2.Distance(bezierPoints[i - 1], bezierPoints[i]);
         }
-
         return length;
     }
 
+    // 其他方法保持不变，因为它们都依赖于上述方法
     public void OperateBezierPoints(int resolution, Action<Vc2, Vc2> operation, Vc2? pointOffset = null)
     {
         Vc2[] points = GetBezierPoints(resolution, pointOffset);
-        
-        for(int i = 0; i < points.Length - 1; i++)
+
+        for (int i = 0; i < points.Length - 1; i++)
         {
             operation(points[i], points[i + 1]);
         }
@@ -165,10 +271,6 @@ public class BezierCurve
     /// <summary>
     /// 获取曲线上距离起点为 lerp * 总长度 的点（等弧长采样）
     /// </summary>
-    /// <param name="points">贝塞尔控制点</param>
-    /// <param name="lerp">归一化弧长比例 [0,1]</param>
-    /// <param name="resolution">采样分辨率（越高越准，默认 100）</param>
-    /// <returns>对应位置的点</returns>
     public Vc2 GetEqualDistancePoint(float lerp)
     {
         return GetEqualDistancePoint(points, lerp);
@@ -178,14 +280,14 @@ public class BezierCurve
     {
         return GetEqualDistancePoint(points, lerp);
     }
-    
+
     public Vc2 GetEqualDistancePoint(Vc2[] points, float lerp, int resolution = 100)
     {
         if (points == null || points.Length == 0) return Vc2.Zero;
         if (points.Length == 1) return points[0];
         if (resolution < 1) resolution = 1;
 
-        lerp = lerp.ClampWhole(0f, 1f);
+        lerp = lerp.Clamp(0f, 1f);
 
         // 特殊情况：线性贝塞尔（两点）
         if (points.Length == 2)
@@ -193,7 +295,28 @@ public class BezierCurve
             return lerp.LerpValue(0f, 1f, points[0], points[1]);
         }
 
-        // 1. 高分辨率采样，计算累积弧长
+        // 如果使用预计算且分辨率匹配
+        if (_precomputedPoints != null && resolution == _precomputedResolution && points == this.points)
+        {
+            float precomputedLength = lerp * _precomputedLength;
+
+            // 在预计算点中查找
+            float accumulated = 0f;
+            for (int i = 1; i < _precomputedPoints.Length; i++)
+            {
+                float segmentLength = Vc2.Distance(_precomputedPoints[i - 1], _precomputedPoints[i]);
+                if (accumulated + segmentLength >= precomputedLength)
+                {
+                    float ratio = (precomputedLength - accumulated) / segmentLength;
+                    ratio = ratio.Clamp(0f, 1f);
+                    return ratio.LerpValue(0f, 1f, _precomputedPoints[i - 1], _precomputedPoints[i]);
+                }
+                accumulated += segmentLength;
+            }
+            return _precomputedPoints[_precomputedPoints.Length - 1];
+        }
+
+        // 原始计算方式
         int numSegments = resolution;
         Vc2[] samples = new Vc2[numSegments + 1];
         float[] cumulativeLengths = new float[numSegments + 1];
@@ -205,7 +328,7 @@ public class BezierCurve
         for (int i = 1; i <= numSegments; i++)
         {
             float t = (float)i / numSegments;
-            samples[i] = GetBezierPoint(points, t);
+            samples[i] = GetBezierPointRaw(points, t);
             float segmentLength = Vc2.Distance(samples[i - 1], samples[i]);
             totalLength += segmentLength;
             cumulativeLengths[i] = totalLength;
@@ -214,11 +337,7 @@ public class BezierCurve
         if (totalLength <= 0f)
             return points[0];
 
-        // 2. 目标弧长
         float targetLength = lerp * totalLength;
-
-        // 3. 在 cumulativeLengths 中查找区间 [i-1, i] 使得:
-        //    cumulativeLengths[i-1] <= targetLength <= cumulativeLengths[i]
         int index = 0;
         for (int i = 1; i <= numSegments; i++)
         {
@@ -229,59 +348,81 @@ public class BezierCurve
             }
         }
 
-        // 边界处理
         if (index == 0) return samples[0];
         if (index >= numSegments) return samples[numSegments];
 
-        // 4. 线性插值估算精确的 t
         float prevLen = cumulativeLengths[index - 1];
         float nextLen = cumulativeLengths[index];
         float segmentRatio = (targetLength - prevLen) / (nextLen - prevLen);
-        segmentRatio = segmentRatio.ClampWhole(0f, 1f);
+        segmentRatio = segmentRatio.Clamp(0f, 1f);
 
         float t0 = (float)(index - 1) / numSegments;
         float t1 = (float)index / numSegments;
         float interpolatedT = t0 + segmentRatio * (t1 - t0);
 
-        // 5. 用精确的 t 计算点（可选：再用 de Casteljau 精确计算）
-        return GetBezierPoint(points, interpolatedT);
+        return GetBezierPointRaw(points, interpolatedT);
     }
 
     public void Render(int? resolution = null, Color? lineColor = null, float? thickness = null,
         Vc2? offset = null, int? gaps = null)
     {
-        Render(resolution?? 100, lineColor?? new CColor("663931").Parsed(), thickness?? 1f,
-            offset?? Vc2.Zero, gaps?? 0);
+        Render(resolution ?? 100, lineColor ?? new CColor("663931").Parsed(), thickness ?? 1f,
+            offset ?? Vc2.Zero, gaps ?? 0);
     }
+
     public void Render(int resolution, Color lineColor, float thickness, Vc2 offset, int gaps)
     {
+        // 使用预计算的点进行渲染（如果分辨率匹配）
+        Vc2[] renderPoints;
+        if (_precomputedPoints != null && resolution == _precomputedResolution && offset == Vc2.Zero)
+        {
+            renderPoints = _precomputedPoints;
+        }
+        else
+        {
+            renderPoints = GetBezierPoints(resolution, offset);
+        }
+
         int res = resolution < 1 ? 1 : resolution;
         int gap = gaps.GetAbs();
 
-        Vc2[] points = new Vc2[res + 1];
-        for (int i = 0; i < res + 1; i++)
-        {
-            points[i] = GetBezierPoint((float)i / res) + offset;
-        }
-        
         HashSet<int> byPassIndexes = new();
-        if(gap != 0)
+        if (gap != 0)
         {
-            for (int i = 0; i < points.Length; i++)
+            for (int i = 0; i < renderPoints.Length; i++)
             {
-                if(i % (gap * 2) >= gap)
+                if (i % (gap * 2) >= gap)
                 {
                     byPassIndexes.Add(i);
                 }
             }
         }
-        
-        for (int i = 0; i < points.Length - 1; i++)
+
+        for (int i = 0; i < renderPoints.Length - 1; i++)
         {
             if (byPassIndexes.Contains(i)) { continue; }
-            
-            Draw.Line(points[i], points[i + 1], lineColor, thickness);
+
+            Draw.Line(renderPoints[i], renderPoints[i + 1], lineColor, thickness);
         }
+    }
+
+    /// <summary>
+    /// 清除预计算数据（当控制点改变时调用）
+    /// </summary>
+    public void ClearPrecomputedData()
+    {
+        _precomputedPoints = null;
+        _precomputedResolution = 0;
+        _precomputedLength = 0f;
+    }
+
+    /// <summary>
+    /// 更新控制点并重新预计算
+    /// </summary>
+    public void UpdatePoints(Vc2[] newPoints, int estimationResolution = 100)
+    {
+        this.points = newPoints;
+        PrecomputeCurve(estimationResolution);
     }
 }
 

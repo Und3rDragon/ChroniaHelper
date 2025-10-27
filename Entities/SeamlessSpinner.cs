@@ -422,7 +422,7 @@ public class SeamlessSpinner : Entity
         path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeTriggerSpritePath : hotCoreModeTriggerSpritePath;
         loadSprite.textures.Enter("load", GFX.Game.GetAtlasSubtextures(path));
         loadSprite.currentAnimation = "load";
-        loadSprite.currentFrame.ClampWhole(0, loadSprite.textures[loadSprite.currentAnimation].Count - 1, out loadSprite.currentFrame);
+        loadSprite.currentFrame.Clamp(0, loadSprite.textures[loadSprite.currentAnimation].Count - 1, out loadSprite.currentFrame);
         loadSprite.Play();
     }
 

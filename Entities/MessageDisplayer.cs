@@ -17,11 +17,13 @@ public class MessageDisplayer : Entity
 {
     public MessageDisplayer(EntityData d, Vc2 o) : base(d.Position + o)
     {
+        base.Depth = d.Int("depth", -100000);
+
         SerialImage template = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
 
         template.renderMode = d.Int("renderMode", 0);
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));
-        template.segmentOrigin = new Vc2(d.Float("letterOriginX", 0.5f), d.Float("letterOriginY", 0.5f));
+        template.segmentOrigin = Vc2.Zero;
         template.distance = d.Float("letterDistance", 1f);
         template.color = d.GetChroniaColor("fontColor", Color.White);
 

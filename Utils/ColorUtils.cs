@@ -380,7 +380,7 @@ public static class ColorUtils
         
         public Color OverrideParse(float overrideAlpha)
         {
-            return color * overrideAlpha.ClampWhole(0f, 1f);
+            return color * overrideAlpha.Clamp(0f, 1f);
         }
 
         public Color ParseMultiplied(params float[] parameters)
@@ -389,7 +389,7 @@ public static class ColorUtils
 
             float a = 1f;
             parameters.EachDo((n) => a *= n);
-            a.ClampWhole(0f, 1f, out a);
+            a.Clamp(0f, 1f, out a);
             
             return color * alpha * a;
         }
@@ -400,7 +400,7 @@ public static class ColorUtils
 
             float a = 1f;
             parameters.EachDo((n) => a *= n);
-            a.ClampWhole(0f, 1f, out a);
+            a.Clamp(0f, 1f, out a);
 
             return color * a;
         }

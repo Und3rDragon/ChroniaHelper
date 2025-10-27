@@ -148,7 +148,7 @@ public static class EaseUtils
     {
         return StringToEase(str, Ease.Linear);
     }
-    public static Ease.Easer StringToEase (string str, Ease.Easer defaultEase)
+    public static Ease.Easer StringToEase(string str, Ease.Easer defaultEase)
     {
         switch (str.ToLower())
         {

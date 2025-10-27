@@ -52,8 +52,8 @@ public partial class Stopclock
 
     public void GetTimeData(out int[] digitals, int minUnit = 0, int maxUnit = 6)
     {
-        minUnit.ClampWhole(0, 6, out int min);
-        maxUnit.ClampWhole(min, 6, out int max);
+        minUnit.Clamp(0, 6, out int min);
+        maxUnit.Clamp(min, 6, out int max);
 
         digitals = new int[max - min + 1];
         
