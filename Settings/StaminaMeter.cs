@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using FASF2025Helper.Utils;
+using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
 namespace ChroniaHelper.Settings;
 
@@ -14,30 +15,30 @@ public class StaminaMeter
     [LoadHook]
     public static void Load()
     {
-        On.Celeste.Player.Render += PlayerRender;
+        On.Celeste.GrabbyIcon.Render += IconRender;
     }
 
     [UnloadHook]
     public static void Unload()
     {
-        On.Celeste.Player.Render -= PlayerRender;
+        On.Celeste.GrabbyIcon.Render -= IconRender;
     }
-
-    public static void PlayerRender(On.Celeste.Player.orig_Render orig, Celeste.Player self)
+    
+    public static void IconRender(On.Celeste.GrabbyIcon.orig_Render orig, GrabbyIcon icon)
     {
-        orig(self);
-
+        orig(icon);
+        
         if (Md.Settings.staminaMeterMenu.enableStaminaMeter)
         {
-            string staminaText = $"{float.Round(self.Stamina).ClampMin(0).ForceTo<int>()}";
-            
+            string staminaText = $"{float.Round(PUt.player?.Stamina ?? 0f).ClampMin(0).ForceTo<int>()}";
+
             staminaMeter_UI.Render(staminaText, (c) =>
             {
                 return $"{c}".ParseInt(0);
-            }, GetRenderPosition(self));
+            }, GetRenderPosition(PUt.player));
         }
     }
-
+    
     public static SerialImage staminaMeter_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"))
     {
         origin = Vc2.One * 0.5f,
@@ -51,7 +52,7 @@ public class StaminaMeter
         
         if(mode == Sts.StaminaDisplayer.DisplayPosition.PlayerBased)
         {
-            return new Vc2((int)player.Center.X, (int)player.Center.Y) + setup;
+            return new Vc2((int)(player?.Center.X ?? 0f), (int)(player?.Center.Y ?? 0f)) + setup;
         }
         else if(mode == Sts.StaminaDisplayer.DisplayPosition.StaticScreen)
         {
