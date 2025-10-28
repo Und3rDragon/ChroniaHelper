@@ -3,7 +3,7 @@ local drawableRectangle = require("structs.drawable_rectangle")
 
 local entity = {}
 
-entity.name = "ChroniaHelper/PasswordTrigger"
+entity.name = "ChroniaHelper/PasswordKeyboardTrigger"
 entity.depth = function(room,entity) return entity.depth or 9000 end
 --entity.justification = { 0.5, 1.0 }
 entity.placements = {
@@ -24,11 +24,12 @@ entity.placements = {
         --accessZone = "-16,0,32,8",
         --accessZoneIndicator = false,
         talkIconPosition = "0,-8",
-        depth = 9000,
+        --depth = 9000,
         globalFlag = false,
         toggleFlag = false,
         passwordEncrypted = false,
         showEncryptedPasswordInConsole = false,
+        onlyOnce = false,
     }
 }
 

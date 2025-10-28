@@ -1,34 +1,23 @@
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities.PasswordKeyboard;
 
-[CustomEntity("ChroniaHelper/PasswordKeyboard = LoadKeyboard",
-    "ChroniaHelper/InvisiblePasswordKeyboardTrigger = LoadTrigger")]
-public sealed partial class PasswordKeyboard : Entity
+[CustomEntity("ChroniaHelper/PasswordKeyboardTrigger")]
+public sealed partial class PasswordKeyboardTrigger : BaseTrigger
 {
-    public static Entity LoadKeyboard(Level level, LevelData leelData, Vc2 offset, EntityData data)
-    {
-        return new PasswordKeyboard(data, offset, 0);
-    }
-
-    public static Entity LoadTrigger(Level level, LevelData leelData, Vc2 offset, EntityData data)
-    {
-        return new PasswordKeyboard(data, offset, 1);
-    }
-
     public enum Mode { Exclusive, Normal, OutputFlag, Systematic }
 
     private readonly Config config;
     private readonly EntityID entityID;
-    private readonly TalkComponent talkComponent;
     private readonly UI ui;
     private Player lastPlayer;
 
-    public PasswordKeyboard(EntityData data, Vector2 offset, int identifier = 0)
+    public PasswordKeyboardTrigger(EntityData data, Vector2 offset)
         : this(
-              data.Position + offset,
+              offset,
               new Config(
                   (Mode)data.Int("mode"),
                   data.Attr("tag","passwordKeyboard"),
@@ -48,26 +37,15 @@ public sealed partial class PasswordKeyboard : Entity
                   data.Int("characterLimit", 12)
                   ),
               new EntityID(data.Level.Name, data.ID),
-              data, identifier
+              data
               )
     {
     }
 
-    public PasswordKeyboard(Vector2 position, Config config, EntityID entityID, EntityData data, int identifier = 0)
-        : base(position)
+    public PasswordKeyboardTrigger(Vector2 position, Config config, EntityID entityID, EntityData data)
+        : base(data, position)
     {
         // modified based on Sap's codes
-        string accessZone = data.Attr("accessZone", "-16,0,32,8");
-        string[] hitbox = accessZone.Split(',', StringSplitOptions.TrimEntries);
-        int[] hp = { -16, 0, 32, 8 };
-        for(int i = 0; i < Calc.Min(hitbox.Length, 4); i++)
-        {
-            int p = hp[i];
-            int.TryParse(hitbox[i], out p);
-            hp[i] = p;
-        }
-        hp[2].MakeAbs(); hp[3].MakeAbs();
-        
         Vector2 iconPos = new Vector2(0f, -8f);
         string[] iconPosSetting = config.TalkIconPosition.Split(",", StringSplitOptions.TrimEntries);
         for(int i = 0; i < iconPosSetting.Length; i++)
@@ -78,23 +56,8 @@ public sealed partial class PasswordKeyboard : Entity
 
         this.config = config;
         this.entityID = entityID;
-        if(identifier == 0)
-        {
-            Add(new Image(GFX.Game[config.Texture]).JustifyOrigin(0.5f, 0.5f));
-        }
-        Rectangle rec = new();
-        switch (identifier)
-        {
-            case 1:
-                rec = new Rectangle(0,0, 
-                    data.Width.ForceTo<int>(), data.Height.ForceTo<int>());
-                break;
-            default:
-                rec = new Rectangle(hp[0], hp[1], hp[2], hp[3]);
-                break;
-        }
-        Add(talkComponent = new TalkComponent(rec, iconPos, OnTalk));
-        talkComponent.PlayerMustBeFacing = identifier == 0;
+
+        Rectangle rec = new Rectangle(0,0,data.Width.ForceTo<int>(), data.Height.ForceTo<int>());
 
         ui = new(config, OnExit, OnTry);
         var dic = Md.Session.RemainingUses;
@@ -128,18 +91,15 @@ public sealed partial class PasswordKeyboard : Entity
         Md.Session.PasswordQueue.Enter(entityID, 0);
 
         base.Depth = data.Int("depth", 9000);
+
+        onlyOnce = data.Bool("onlyOnce", false);
     }
     private bool globalFlag = false;
     private string[] passwords, flagList; 
     private int passwordCount = 0, flagCount = 0;
 
-    private void OnTalk(Player player)
+    public override void OnEnter(Player player)
     {
-        if (Md.Session.RemainingUses[entityID] is 0)
-        {
-            talkComponent.Active = false;
-            return;
-        }
         player.StateMachine.State = Player.StDummy;
         ui.Clear();
         Scene.Add(ui);
