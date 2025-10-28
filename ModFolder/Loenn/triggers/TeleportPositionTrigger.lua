@@ -23,7 +23,8 @@ return {
             playerFacing = "None",
             resetDashes = true,
             clearState = true,
-            screenWipe = false
+            screenWipe = false,
+            velocityAsMultiplier = true,
         }
     },
     fieldInformation =

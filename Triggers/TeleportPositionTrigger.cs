@@ -32,6 +32,8 @@ public class TeleportPositionTrigger : BaseTrigger
 
     private bool screenWipe;
 
+    private bool velocityAsMultiplier = true;
+
     public TeleportPositionTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
         base.enterIfFlag = FlagUtils.Parse(data.Attr("ifFlag", null));
@@ -46,6 +48,7 @@ public class TeleportPositionTrigger : BaseTrigger
         this.resetDashes = data.Bool("resetDashes", true);
         this.clearState = data.Bool("clearState", true);
         this.screenWipe = data.Bool("screenWipe", false);
+        this.velocityAsMultiplier = data.Bool("velocityAsMultiplier", true);
     }
 
     protected override void AddedExecute(Scene scene)
@@ -88,7 +91,14 @@ public class TeleportPositionTrigger : BaseTrigger
             base.level.Add(player);
             base.level.LoadLevel(Player.IntroTypes.Transition);
             player.Position = new Vector2(levelData.Position.X + this.targetPositionX, levelData.Position.Y + this.targetPositionY);
-            player.Speed *= new Vector2(this.exitVelocityX, this.exitVelocityY);
+            if (velocityAsMultiplier)
+            {
+                player.Speed *= new Vector2(this.exitVelocityX, this.exitVelocityY);
+            }
+            else
+            {
+                player.Speed = new Vector2(this.exitVelocityX, this.exitVelocityY);
+            }
             player.Dashes = (this.resetDashes ? player.MaxDashes : currentDashes);
             if (this.clearState)
             {

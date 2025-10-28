@@ -24,7 +24,8 @@ return {
             resetDashes = true,
             clearState = true,
             screenWipe = false,
-            positionOffset = true
+            positionOffset = true,
+            velocityAsMultiplier = true,
         }
     },
     fieldInformation =
