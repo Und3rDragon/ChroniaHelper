@@ -29,7 +29,7 @@ public class MessageDisplayer : Entity
         template.color = d.GetChroniaColor("fontColor", Color.White);
         primaryAlpha = template.color.alpha;
 
-        renderer = new SerialImageGroup(template, "ChroniaHelper/DisplayFonts/font");
+        renderer = new SerialImageGroup(template, d.Attr("textures","ChroniaHelper/DisplayFonts/font").Split(',',StringSplitOptions.TrimEntries));
         renderer.groupOrigin = new Vc2(d.Float("originX", 0.5f), d.Float("originY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);
 
@@ -39,13 +39,15 @@ public class MessageDisplayer : Entity
         staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
 
         renderDistance = d.Float("renderDistance", -1f);
-        typingDisplay = renderDistance > 0f;
+        typingDisplay = d.Bool("typewriterEffect", false);
         fadeInSpeed = d.Float("fadeInSpeed", 4f);
         fadeOutSpeed = d.Float("fadeOutSpeed", 2f);
         letterInterval = d.Float("letterDisplayInterval", 0.1f).ClampMin(Engine.DeltaTime);
 
         overrideFlag = d.Attr("triggerFlag");
         hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
+
+        reference = d.Attr("characterReference", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,");
     }
     public SerialImageGroup renderer;
     public string content;
@@ -58,11 +60,11 @@ public class MessageDisplayer : Entity
     public string overrideFlag;
     private bool hasOverrideFlag = false;
 
-    public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =";
+    public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
 
     public List<string> ParseRenderTarget()
     {
-        string text = Dialog.Clean(content);
+        string text = Dialog.Clean(content, Dialog.Languages["english"]);
         
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();
@@ -95,7 +97,7 @@ public class MessageDisplayer : Entity
         if (!typingDisplay) { progressedText = orig; }
         else
         {
-            if (!inRange && fadeEnded)
+            if (!renderArg && fadeEnded)
             {
                 progressedText = new();
                 progress = new();
@@ -105,7 +107,7 @@ public class MessageDisplayer : Entity
                     progress.Add(-1);
                 }
             }
-            else if (inRange)
+            else if (renderArg)
             {
                 if (Scene.OnInterval(letterInterval))
                 {
@@ -134,6 +136,7 @@ public class MessageDisplayer : Entity
             (c) => Reflection(c),
             Position.InParallax(parallax, staticScreen));
     }
+    public bool renderArg => (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());
 
     public bool inRange = false;
     public bool fadeEnded = false;
@@ -143,18 +146,17 @@ public class MessageDisplayer : Entity
 
         if(PUt.TryGetPlayer(out Player player))
         {
-            inRange = (player.Center - Position).Length() <= renderDistance; 
+            inRange = renderDistance <= 0f ? true : (player.Center - Position).Length() <= renderDistance; 
         }
-
-        if (typingDisplay || hasOverrideFlag)
-        {
-            bool arg = inRange || overrideFlag.GetFlag();
-            renderer.template.color.alpha = Calc.Approach(renderer.template.color.alpha,
-                arg ? primaryAlpha : 0f, 
-                (arg ? fadeInSpeed : fadeOutSpeed) * Engine.DeltaTime
-                );
-            fadeEnded = renderer.template.color.alpha == (arg ? primaryAlpha : 0f);
-        }
+        
+        renderer.template.color.alpha = Calc.Approach(renderer.template.color.alpha,
+            updateArg ? primaryAlpha : 0f,
+            (updateArg ? fadeInSpeed : fadeOutSpeed) * Engine.DeltaTime
+            );
+        fadeEnded = renderer.template.color.alpha == (updateArg ? primaryAlpha : 0f);
     }
+    
+    public bool updateArg => (renderDistance <= 0f && !hasOverrideFlag) ||
+            (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());
 
 }

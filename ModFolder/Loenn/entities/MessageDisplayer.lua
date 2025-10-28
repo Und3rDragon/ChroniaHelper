@@ -14,6 +14,8 @@ renderer.placements = {
     name = "renderer",
     data = {
         depth = -10000000,
+        textures = "ChroniaHelper/DisplayFonts/font",
+        characterReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,",
         dialogID = "",
         lineOriginX = 0.5,
         lineOriginY = 0.5,
@@ -32,11 +34,16 @@ renderer.placements = {
         letterDisplayInterval = 0.1,
         fontColor = "ffffff",
         triggerFlag = "",
+        typewriterEffect = false,
     }, 
     --nodeLimits = {0,2}
 }
 
 renderer.fieldInformation = {
+    textures = {
+        fieldType = "list",
+        minimumElements = 1,
+    },
     screenX = {
         fieldType = "integer",
     },
@@ -111,8 +118,6 @@ renderer.fieldInformation = {
     },
     depth = require('mods').requireFromPlugin('helpers.field_options').depths,
 }
-
-renderer.fieldOrder = require("mods").requireFromPlugin("utils.table").getKeyOrderMapping(renderer.placements.data)
 
 renderer.selection = function (room, entity)
     return utils.rectangle(entity.x - 12, entity.y - 12, 24, 24)
