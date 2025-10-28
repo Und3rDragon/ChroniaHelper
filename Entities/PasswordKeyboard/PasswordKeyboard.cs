@@ -4,9 +4,20 @@ using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities.PasswordKeyboard;
 
-[CustomEntity("ChroniaHelper/PasswordKeyboard")]
+[CustomEntity("ChroniaHelper/PasswordKeyboard = LoadKeyboard",
+    "ChroniaHelper/PasswordTrigger = LoadTrigger")]
 public sealed partial class PasswordKeyboard : Entity
 {
+    public static Entity LoadKeyboard(Level level, LevelData leelData, Vc2 offset, EntityData data)
+    {
+        return new PasswordKeyboard(data, offset, 0);
+    }
+
+    public static Entity LoadTrigger(Level level, LevelData leelData, Vc2 offset, EntityData data)
+    {
+        return new PasswordKeyboard(data, offset, 1);
+    }
+
     public enum Mode { Exclusive, Normal, OutputFlag, Systematic }
 
     private readonly Config config;
@@ -15,7 +26,7 @@ public sealed partial class PasswordKeyboard : Entity
     private readonly UI ui;
     private Player lastPlayer;
 
-    public PasswordKeyboard(EntityData data, Vector2 offset)
+    public PasswordKeyboard(EntityData data, Vector2 offset, int identifier = 0)
         : this(
               data.Position + offset,
               new Config(
@@ -37,16 +48,16 @@ public sealed partial class PasswordKeyboard : Entity
                   data.Int("characterLimit", 12)
                   ),
               new EntityID(data.Level.Name, data.ID),
-              data
+              data, identifier
               )
     {
     }
 
-    public PasswordKeyboard(Vector2 position, Config config, EntityID entityID, EntityData data)
+    public PasswordKeyboard(Vector2 position, Config config, EntityID entityID, EntityData data, int identifier = 0)
         : base(position)
     {
         // modified based on Sap's codes
-        string accessZone = data.Attr("accessZone");
+        string accessZone = data.Attr("accessZone", "-16,0,32,8");
         string[] hitbox = accessZone.Split(',', StringSplitOptions.TrimEntries);
         int[] hp = { -16, 0, 32, 8 };
         for(int i = 0; i < Calc.Min(hitbox.Length, 4); i++)
@@ -67,8 +78,22 @@ public sealed partial class PasswordKeyboard : Entity
 
         this.config = config;
         this.entityID = entityID;
-        Add(new Image(GFX.Game[config.Texture]).JustifyOrigin(0.5f, 0.5f));
-        Add(talkComponent = new TalkComponent(new Rectangle(hp[0], hp[1], hp[2], hp[3]), iconPos, OnTalk));
+        if(identifier == 0)
+        {
+            Add(new Image(GFX.Game[config.Texture]).JustifyOrigin(0.5f, 0.5f));
+        }
+        Rectangle rec = new();
+        switch (identifier)
+        {
+            case 1:
+                rec = new Rectangle(data.Position.X.ForceTo<int>(), data.Position.Y.ForceTo<int>(), 
+                    data.Width.ForceTo<int>(), data.Height.ForceTo<int>());
+                break;
+            default:
+                rec = new Rectangle(hp[0], hp[1], hp[2], hp[3]);
+                break;
+        }
+        Add(talkComponent = new TalkComponent(rec, iconPos, OnTalk));
         talkComponent.PlayerMustBeFacing = true;
 
         ui = new(config, OnExit, OnTry);
