@@ -31,6 +31,7 @@ renderer.placements = {
         fadeOutSpeed = 2,
         letterDisplayInterval = 0.1,
         fontColor = "ffffff",
+        triggerFlag = "",
     }, 
     --nodeLimits = {0,2}
 }
@@ -110,6 +111,8 @@ renderer.fieldInformation = {
     },
     depth = require('mods').requireFromPlugin('helpers.field_options').depths,
 }
+
+renderer.fieldOrder = require("mods").requireFromPlugin("utils.table").getKeyOrderMapping(renderer.placements.data)
 
 renderer.selection = function (room, entity)
     return utils.rectangle(entity.x - 12, entity.y - 12, 24, 24)

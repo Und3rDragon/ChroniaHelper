@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using IL.MonoMod;
 using Microsoft.Build.Framework;
 
@@ -42,15 +43,20 @@ public class MessageDisplayer : Entity
         fadeInSpeed = d.Float("fadeInSpeed", 4f);
         fadeOutSpeed = d.Float("fadeOutSpeed", 2f);
         letterInterval = d.Float("letterDisplayInterval", 0.1f).ClampMin(Engine.DeltaTime);
+
+        overrideFlag = d.Attr("triggerFlag");
+        hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
     }
     public SerialImageGroup renderer;
     public string content;
     public Vc2 parallax = Vc2.Zero;
     public Vc2 staticScreen = Vc2.Zero;
-    public bool typingDisplay = true;
+    private bool typingDisplay = true;
     public float renderDistance = 256f, fadeInSpeed = 4f, fadeOutSpeed = 2f;
     public float primaryAlpha = 1f;
     public float letterInterval = 0.1f;
+    public string overrideFlag;
+    private bool hasOverrideFlag = false;
 
     public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =";
 
@@ -140,11 +146,14 @@ public class MessageDisplayer : Entity
             inRange = (player.Center - Position).Length() <= renderDistance; 
         }
 
-        if (typingDisplay)
+        if (typingDisplay || hasOverrideFlag)
         {
+            bool arg = inRange || overrideFlag.GetFlag();
             renderer.template.color.alpha = Calc.Approach(renderer.template.color.alpha,
-                inRange ? primaryAlpha : 0f, (inRange ? fadeInSpeed : fadeOutSpeed) * Engine.DeltaTime);
-            fadeEnded = renderer.template.color.alpha == (inRange ? primaryAlpha : 0f);
+                arg ? primaryAlpha : 0f, 
+                (arg ? fadeInSpeed : fadeOutSpeed) * Engine.DeltaTime
+                );
+            fadeEnded = renderer.template.color.alpha == (arg ? primaryAlpha : 0f);
         }
     }
 
