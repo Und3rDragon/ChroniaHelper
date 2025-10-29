@@ -39,340 +39,6 @@ public static class NumberUtils
         return decrement ? NumberUtils.Decrement(value, min, max) : NumberUtils.Increment(value, min, max);
     }
 
-    public static sbyte ParseSbyte(this string str, sbyte defaultValue = 0)
-    {
-        return sbyte.TryParse(str, out sbyte value) ? value : defaultValue;
-    }
-
-    public static byte ParseByte(this string str, byte defaultValue = 0)
-    {
-        return byte.TryParse(str, out byte value) ? value : defaultValue;
-    }
-
-    public static short ParseShort(this string str, short defaultValue = 0)
-    {
-        return short.TryParse(str, out short value) ? value : defaultValue;
-    }
-
-    public static ushort ParseUshort(this string str, ushort defaultValue = 0)
-    {
-        return ushort.TryParse(str, out ushort value) ? value : defaultValue;
-    }
-
-    public static int ParseInt(this string str, int defaultValue = 0)
-    {
-        return int.TryParse(str, out int value) ? value : defaultValue;
-    }
-
-    public static int ParseInt(this string str, NumberStyles style, IFormatProvider provider, int defaultValue = 0)
-    {
-        return int.TryParse(str, style, provider, out int value) ? value : defaultValue;
-    }
-
-    public static uint ParseUint(this string str, uint defaultValue = 0)
-    {
-        return uint.TryParse(str, out uint value) ? value : defaultValue;
-    }
-
-    public static uint ParseUint(this string str, NumberStyles style, IFormatProvider provider, uint defaultValue = 0)
-    {
-        return uint.TryParse(str, style, provider, out uint value) ? value : defaultValue;
-    }
-
-    public static long ParseLong(this string str, long defaultValue = 0L)
-    {
-        return long.TryParse(str, out long value) ? value : defaultValue;
-    }
-
-    public static long ParseLong(this string str, NumberStyles style, IFormatProvider provider, long defaultValue = 0L)
-    {
-        return long.TryParse(str, style, provider, out long value) ? value : defaultValue;
-    }
-
-    public static ulong ParseUlong(this string str, ulong defaultValue = 0L)
-    {
-        return ulong.TryParse(str, out ulong value) ? value : defaultValue;
-    }
-
-    public static ulong ParseUlong(this string str, NumberStyles style, IFormatProvider provider, ulong defaultValue = 0L)
-    {
-        return ulong.TryParse(str, style, provider, out ulong value) ? value : defaultValue;
-    }
-
-    public static float ParseFloat(this string str, float defaultValue = 0F)
-    {
-        return float.TryParse(str, out float value) ? value : defaultValue;
-    }
-
-    public static double ParseDouble(this string str, double defaultValue = 0D)
-    {
-        return double.TryParse(str, out double value) ? value : defaultValue;
-    }
-
-    public static decimal ParseDecimal(this string str, decimal defaultValue = 0M)
-    {
-        return decimal.TryParse(str, out decimal value) ? value : defaultValue;
-    }
-
-    // Value based
-    public static sbyte ParseSbyte(this string str, NumberStyles style, IFormatProvider provider, sbyte defaultValue = 0)
-    {
-        return (sbyte.TryParse(str, style, provider, out sbyte value)) ? value : defaultValue;
-    }
-
-    public static byte ParseByte(this string str, NumberStyles style, IFormatProvider provider, byte defaultValue = 0)
-    {
-        return (byte.TryParse(str, style, provider, out byte value)) ? value : defaultValue;
-    }
-
-    public static short ParseShort(this string str, NumberStyles style, IFormatProvider provider, short defaultValue = 0)
-    {
-        return (short.TryParse(str, style, provider, out short value)) ? value : defaultValue;
-    }
-
-    public static ushort ParseUshort(this string str, NumberStyles style, IFormatProvider provider, ushort defaultValue = 0)
-    {
-        return (ushort.TryParse(str, style, provider, out ushort value)) ? value : defaultValue;
-    }
-
-    public static float ParseFloat(this string str, NumberStyles style, IFormatProvider provider, float defaultValue = 0L)
-    {
-        return (float.TryParse(str, style, provider, out float value)) ? value : defaultValue;
-    }
-
-    public static double ParseDouble(this string str, NumberStyles style, IFormatProvider provider, double defaultValue = 0L)
-    {
-        return (double.TryParse(str, style, provider, out double value)) ? value : defaultValue;
-    }
-
-    public static decimal ParseDecimal(this string str, NumberStyles style, IFormatProvider provider, decimal defaultValue = 0L)
-    {
-        return (decimal.TryParse(str, style, provider, out decimal value)) ? value : defaultValue;
-    }
-
-    // Variable based
-    public static void ParseSbyte(this string str, out sbyte value, sbyte defaultValue = 0)
-    {
-        value = sbyte.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseSbyte(this string str, NumberStyles style, IFormatProvider provider, out sbyte value, sbyte defaultValue = 0)
-    {
-        value = sbyte.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseByte(this string str, out byte value, byte defaultValue = 0)
-    {
-        value = byte.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseByte(this string str, NumberStyles style, IFormatProvider provider, out byte value, byte defaultValue = 0)
-    {
-        value = byte.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseShort(this string str, out short value, short defaultValue = 0)
-    {
-        value = short.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseShort(this string str, NumberStyles style, IFormatProvider provider, out short value, short defaultValue = 0)
-    {
-        value = short.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUshort(this string str, out ushort value, ushort defaultValue = 0)
-    {
-        value = ushort.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUshort(this string str, NumberStyles style, IFormatProvider provider, out ushort value, ushort defaultValue = 0)
-    {
-        value = ushort.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseInt(this string str, out int value, int defaultValue = 0)
-    {
-        value = int.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseInt(this string str, NumberStyles style, IFormatProvider provider, out int value, int defaultValue = 0)
-    {
-        value = int.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUint(this string str, out uint value, uint defaultValue = 0)
-    {
-        value = uint.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUint(this string str, NumberStyles style, IFormatProvider provider, out uint value, uint defaultValue = 0)
-    {
-        value = uint.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseLong(this string str, out long value, long defaultValue = 0L)
-    {
-        value = long.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseLong(this string str, NumberStyles style, IFormatProvider provider, out long value, long defaultValue = 0L)
-    {
-        value = long.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUlong(this string str, out ulong value, ulong defaultValue = 0UL)
-    {
-        value = ulong.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUlong(this string str, NumberStyles style, IFormatProvider provider, out ulong value, ulong defaultValue = 0UL)
-    {
-        value = ulong.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseFloat(this string str, out float value, float defaultValue = 0F)
-    {
-        value = float.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseFloat(this string str, NumberStyles style, IFormatProvider provider, out float value, float defaultValue = 0F)
-    {
-        value = float.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseDouble(this string str, out double value, double defaultValue = 0D)
-    {
-        value = double.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseDouble(this string str, NumberStyles style, IFormatProvider provider, out double value, double defaultValue = 0D)
-    {
-        value = double.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseDecimal(this string str, out decimal value, decimal defaultValue = 0M)
-    {
-        value = decimal.TryParse(str, out value) ? value : defaultValue;
-    }
-
-    public static void ParseDecimal(this string str, NumberStyles style, IFormatProvider provider, out decimal value, decimal defaultValue = 0M)
-    {
-        value = decimal.TryParse(str, style, provider, out value) ? value : defaultValue;
-    }
-
-    // EntityData based
-    public static void ParseSbyte(this EntityData data, string name, out sbyte value, sbyte defaultValue = 0)
-    {
-        value = sbyte.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseSbyte(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out sbyte value, sbyte defaultValue = 0)
-    {
-        value = sbyte.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseByte(this EntityData data, string name, out byte value, byte defaultValue = 0)
-    {
-        value = byte.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseByte(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out byte value, byte defaultValue = 0)
-    {
-        value = byte.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseShort(this EntityData data, string name, out short value, short defaultValue = 0)
-    {
-        value = short.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseShort(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out short value, short defaultValue = 0)
-    {
-        value = short.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUshort(this EntityData data, string name, out ushort value, ushort defaultValue = 0)
-    {
-        value = ushort.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseUshort(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out ushort value, ushort defaultValue = 0)
-    {
-        value = ushort.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseInt(this EntityData data, string name, out int value, int defaultValue = 0)
-    {
-        value = int.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseInt(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out int value, int defaultValue = 0)
-    {
-        value = int.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUint(this EntityData data, string name, out uint value, uint defaultValue = 0)
-    {
-        value = uint.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseUint(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out uint value, uint defaultValue = 0)
-    {
-        value = uint.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseLong(this EntityData data, string name, out long value, long defaultValue = 0L)
-    {
-        value = long.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseLong(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out long value, long defaultValue = 0L)
-    {
-        value = long.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseUlong(this EntityData data, string name, out ulong value, ulong defaultValue = 0UL)
-    {
-        value = ulong.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseUlong(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out ulong value, ulong defaultValue = 0UL)
-    {
-        value = ulong.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseFloat(this EntityData data, string name, out float value, float defaultValue = 0F)
-    {
-        value = float.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseFloat(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out float value, float defaultValue = 0F)
-    {
-        value = float.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseDouble(this EntityData data, string name, out double value, double defaultValue = 0D)
-    {
-        value = double.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseDouble(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out double value, double defaultValue = 0D)
-    {
-        value = double.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-    public static void ParseDecimal(this EntityData data, string name, out decimal value, decimal defaultValue = 0M)
-    {
-        value = decimal.TryParse(data.Attr(name), out value) ? value : defaultValue;
-    }
-
-    public static void ParseDecimal(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out decimal value, decimal defaultValue = 0M)
-    {
-        value = decimal.TryParse(data.Attr(name), style, provider, out value) ? value : defaultValue;
-    }
-
-
     public static void Increment(this ref int value, int increase = 1)
     {
         value += increase;
@@ -859,5 +525,658 @@ public static class NumberUtils
         }
 
         return minItem;
+    }
+
+    // String 扩展方法 - 返回值版本 (保持不变)
+    public static sbyte ParseSbyte(this string str, sbyte defaultValue = 0)
+    {
+        return sbyte.TryParse(str, out sbyte value) ? value : defaultValue;
+    }
+
+    public static byte ParseByte(this string str, byte defaultValue = 0)
+    {
+        return byte.TryParse(str, out byte value) ? value : defaultValue;
+    }
+
+    public static short ParseShort(this string str, short defaultValue = 0)
+    {
+        return short.TryParse(str, out short value) ? value : defaultValue;
+    }
+
+    public static ushort ParseUshort(this string str, ushort defaultValue = 0)
+    {
+        return ushort.TryParse(str, out ushort value) ? value : defaultValue;
+    }
+
+    public static int ParseInt(this string str, int defaultValue = 0)
+    {
+        return int.TryParse(str, out int value) ? value : defaultValue;
+    }
+
+    public static int ParseInt(this string str, NumberStyles style, IFormatProvider provider, int defaultValue = 0)
+    {
+        return int.TryParse(str, style, provider, out int value) ? value : defaultValue;
+    }
+
+    public static uint ParseUint(this string str, uint defaultValue = 0)
+    {
+        return uint.TryParse(str, out uint value) ? value : defaultValue;
+    }
+
+    public static uint ParseUint(this string str, NumberStyles style, IFormatProvider provider, uint defaultValue = 0)
+    {
+        return uint.TryParse(str, style, provider, out uint value) ? value : defaultValue;
+    }
+
+    public static long ParseLong(this string str, long defaultValue = 0L)
+    {
+        return long.TryParse(str, out long value) ? value : defaultValue;
+    }
+
+    public static long ParseLong(this string str, NumberStyles style, IFormatProvider provider, long defaultValue = 0L)
+    {
+        return long.TryParse(str, style, provider, out long value) ? value : defaultValue;
+    }
+
+    public static ulong ParseUlong(this string str, ulong defaultValue = 0L)
+    {
+        return ulong.TryParse(str, out ulong value) ? value : defaultValue;
+    }
+
+    public static ulong ParseUlong(this string str, NumberStyles style, IFormatProvider provider, ulong defaultValue = 0L)
+    {
+        return ulong.TryParse(str, style, provider, out ulong value) ? value : defaultValue;
+    }
+
+    public static float ParseFloat(this string str, float defaultValue = 0F)
+    {
+        return float.TryParse(str, out float value) ? value : defaultValue;
+    }
+
+    public static double ParseDouble(this string str, double defaultValue = 0D)
+    {
+        return double.TryParse(str, out double value) ? value : defaultValue;
+    }
+
+    public static decimal ParseDecimal(this string str, decimal defaultValue = 0M)
+    {
+        return decimal.TryParse(str, out decimal value) ? value : defaultValue;
+    }
+
+    public static float ParseFloat(this string str, NumberStyles style, IFormatProvider provider, float defaultValue = 0F)
+    {
+        return float.TryParse(str, style, provider, out float value) ? value : defaultValue;
+    }
+
+    public static double ParseDouble(this string str, NumberStyles style, IFormatProvider provider, double defaultValue = 0D)
+    {
+        return double.TryParse(str, style, provider, out double value) ? value : defaultValue;
+    }
+
+    public static decimal ParseDecimal(this string str, NumberStyles style, IFormatProvider provider, decimal defaultValue = 0M)
+    {
+        return decimal.TryParse(str, style, provider, out decimal value) ? value : defaultValue;
+    }
+
+    // String 扩展方法 - 转换为 bool 返回值版本 (原 void 方法)
+    public static bool ParseSbyte(this string str, out sbyte value, sbyte defaultValue = 0)
+    {
+        bool success = sbyte.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseSbyte(this string str, NumberStyles style, IFormatProvider provider, out sbyte value, sbyte defaultValue = 0)
+    {
+        bool success = sbyte.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseByte(this string str, out byte value, byte defaultValue = 0)
+    {
+        bool success = byte.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseByte(this string str, NumberStyles style, IFormatProvider provider, out byte value, byte defaultValue = 0)
+    {
+        bool success = byte.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseShort(this string str, out short value, short defaultValue = 0)
+    {
+        bool success = short.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseShort(this string str, NumberStyles style, IFormatProvider provider, out short value, short defaultValue = 0)
+    {
+        bool success = short.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseUshort(this string str, out ushort value, ushort defaultValue = 0)
+    {
+        bool success = ushort.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseUshort(this string str, NumberStyles style, IFormatProvider provider, out ushort value, ushort defaultValue = 0)
+    {
+        bool success = ushort.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseInt(this string str, out int value, int defaultValue = 0)
+    {
+        bool success = int.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseInt(this string str, NumberStyles style, IFormatProvider provider, out int value, int defaultValue = 0)
+    {
+        bool success = int.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseUint(this string str, out uint value, uint defaultValue = 0)
+    {
+        bool success = uint.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseUint(this string str, NumberStyles style, IFormatProvider provider, out uint value, uint defaultValue = 0)
+    {
+        bool success = uint.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseLong(this string str, out long value, long defaultValue = 0L)
+    {
+        bool success = long.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseLong(this string str, NumberStyles style, IFormatProvider provider, out long value, long defaultValue = 0L)
+    {
+        bool success = long.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseUlong(this string str, out ulong value, ulong defaultValue = 0UL)
+    {
+        bool success = ulong.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseUlong(this string str, NumberStyles style, IFormatProvider provider, out ulong value, ulong defaultValue = 0UL)
+    {
+        bool success = ulong.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseFloat(this string str, out float value, float defaultValue = 0F)
+    {
+        bool success = float.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseFloat(this string str, NumberStyles style, IFormatProvider provider, out float value, float defaultValue = 0F)
+    {
+        bool success = float.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseDouble(this string str, out double value, double defaultValue = 0D)
+    {
+        bool success = double.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseDouble(this string str, NumberStyles style, IFormatProvider provider, out double value, double defaultValue = 0D)
+    {
+        bool success = double.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseDecimal(this string str, out decimal value, decimal defaultValue = 0M)
+    {
+        bool success = decimal.TryParse(str, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    public static bool ParseDecimal(this string str, NumberStyles style, IFormatProvider provider, out decimal value, decimal defaultValue = 0M)
+    {
+        bool success = decimal.TryParse(str, style, provider, out value);
+        if (!success) value = defaultValue;
+        return success;
+    }
+
+    // EntityData 扩展方法 - 转换为 bool 返回值版本
+    public static bool ParseSbyte(this EntityData data, string name, out sbyte value, sbyte defaultValue = 0)
+    {
+        return data.Attr(name).ParseSbyte(out value, defaultValue);
+    }
+
+    public static bool ParseSbyte(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out sbyte value, sbyte defaultValue = 0)
+    {
+        return data.Attr(name).ParseSbyte(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseByte(this EntityData data, string name, out byte value, byte defaultValue = 0)
+    {
+        return data.Attr(name).ParseByte(out value, defaultValue);
+    }
+
+    public static bool ParseByte(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out byte value, byte defaultValue = 0)
+    {
+        return data.Attr(name).ParseByte(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseShort(this EntityData data, string name, out short value, short defaultValue = 0)
+    {
+        return data.Attr(name).ParseShort(out value, defaultValue);
+    }
+
+    public static bool ParseShort(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out short value, short defaultValue = 0)
+    {
+        return data.Attr(name).ParseShort(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseUshort(this EntityData data, string name, out ushort value, ushort defaultValue = 0)
+    {
+        return data.Attr(name).ParseUshort(out value, defaultValue);
+    }
+
+    public static bool ParseUshort(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out ushort value, ushort defaultValue = 0)
+    {
+        return data.Attr(name).ParseUshort(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseInt(this EntityData data, string name, out int value, int defaultValue = 0)
+    {
+        return data.Attr(name).ParseInt(out value, defaultValue);
+    }
+
+    public static bool ParseInt(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out int value, int defaultValue = 0)
+    {
+        return data.Attr(name).ParseInt(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseUint(this EntityData data, string name, out uint value, uint defaultValue = 0)
+    {
+        return data.Attr(name).ParseUint(out value, defaultValue);
+    }
+
+    public static bool ParseUint(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out uint value, uint defaultValue = 0)
+    {
+        return data.Attr(name).ParseUint(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseLong(this EntityData data, string name, out long value, long defaultValue = 0L)
+    {
+        return data.Attr(name).ParseLong(out value, defaultValue);
+    }
+
+    public static bool ParseLong(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out long value, long defaultValue = 0L)
+    {
+        return data.Attr(name).ParseLong(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseUlong(this EntityData data, string name, out ulong value, ulong defaultValue = 0UL)
+    {
+        return data.Attr(name).ParseUlong(out value, defaultValue);
+    }
+
+    public static bool ParseUlong(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out ulong value, ulong defaultValue = 0UL)
+    {
+        return data.Attr(name).ParseUlong(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseFloat(this EntityData data, string name, out float value, float defaultValue = 0F)
+    {
+        return data.Attr(name).ParseFloat(out value, defaultValue);
+    }
+
+    public static bool ParseFloat(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out float value, float defaultValue = 0F)
+    {
+        return data.Attr(name).ParseFloat(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseDouble(this EntityData data, string name, out double value, double defaultValue = 0D)
+    {
+        return data.Attr(name).ParseDouble(out value, defaultValue);
+    }
+
+    public static bool ParseDouble(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out double value, double defaultValue = 0D)
+    {
+        return data.Attr(name).ParseDouble(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseDecimal(this EntityData data, string name, out decimal value, decimal defaultValue = 0M)
+    {
+        return data.Attr(name).ParseDecimal(out value, defaultValue);
+    }
+
+    public static bool ParseDecimal(this EntityData data, string name, NumberStyles style, IFormatProvider provider, out decimal value, decimal defaultValue = 0M)
+    {
+        return data.Attr(name).ParseDecimal(style, provider, out value, defaultValue);
+    }
+
+    // Object 扩展方法 - 返回值版本 (全部保留)
+    public static sbyte ParseSbyte(this object obj, sbyte defaultValue = 0)
+    {
+        return obj?.ToString().ParseSbyte(defaultValue) ?? defaultValue;
+    }
+
+    public static byte ParseByte(this object obj, byte defaultValue = 0)
+    {
+        return obj?.ToString().ParseByte(defaultValue) ?? defaultValue;
+    }
+
+    public static short ParseShort(this object obj, short defaultValue = 0)
+    {
+        return obj?.ToString().ParseShort(defaultValue) ?? defaultValue;
+    }
+
+    public static ushort ParseUshort(this object obj, ushort defaultValue = 0)
+    {
+        return obj?.ToString().ParseUshort(defaultValue) ?? defaultValue;
+    }
+
+    public static int ParseInt(this object obj, int defaultValue = 0)
+    {
+        return obj?.ToString().ParseInt(defaultValue) ?? defaultValue;
+    }
+
+    public static int ParseInt(this object obj, NumberStyles style, IFormatProvider provider, int defaultValue = 0)
+    {
+        return obj?.ToString().ParseInt(style, provider, defaultValue) ?? defaultValue;
+    }
+
+    public static uint ParseUint(this object obj, uint defaultValue = 0)
+    {
+        return obj?.ToString().ParseUint(defaultValue) ?? defaultValue;
+    }
+
+    public static uint ParseUint(this object obj, NumberStyles style, IFormatProvider provider, uint defaultValue = 0)
+    {
+        return obj?.ToString().ParseUint(style, provider, defaultValue) ?? defaultValue;
+    }
+
+    public static long ParseLong(this object obj, long defaultValue = 0L)
+    {
+        return obj?.ToString().ParseLong(defaultValue) ?? defaultValue;
+    }
+
+    public static long ParseLong(this object obj, NumberStyles style, IFormatProvider provider, long defaultValue = 0L)
+    {
+        return obj?.ToString().ParseLong(style, provider, defaultValue) ?? defaultValue;
+    }
+
+    public static ulong ParseUlong(this object obj, ulong defaultValue = 0L)
+    {
+        return obj?.ToString().ParseUlong(defaultValue) ?? defaultValue;
+    }
+
+    public static ulong ParseUlong(this object obj, NumberStyles style, IFormatProvider provider, ulong defaultValue = 0L)
+    {
+        return obj?.ToString().ParseUlong(style, provider, defaultValue) ?? defaultValue;
+    }
+
+    public static float ParseFloat(this object obj, float defaultValue = 0F)
+    {
+        return obj?.ToString().ParseFloat(defaultValue) ?? defaultValue;
+    }
+
+    public static double ParseDouble(this object obj, double defaultValue = 0D)
+    {
+        return obj?.ToString().ParseDouble(defaultValue) ?? defaultValue;
+    }
+
+    public static decimal ParseDecimal(this object obj, decimal defaultValue = 0M)
+    {
+        return obj?.ToString().ParseDecimal(defaultValue) ?? defaultValue;
+    }
+
+    public static float ParseFloat(this object obj, NumberStyles style, IFormatProvider provider, float defaultValue = 0F)
+    {
+        return obj?.ToString().ParseFloat(style, provider, defaultValue) ?? defaultValue;
+    }
+
+    public static double ParseDouble(this object obj, NumberStyles style, IFormatProvider provider, double defaultValue = 0D)
+    {
+        return obj?.ToString().ParseDouble(style, provider, defaultValue) ?? defaultValue;
+    }
+
+    public static decimal ParseDecimal(this object obj, NumberStyles style, IFormatProvider provider, decimal defaultValue = 0M)
+    {
+        return obj?.ToString().ParseDecimal(style, provider, defaultValue) ?? defaultValue;
+    }
+
+    // Object 扩展方法 - 转换为 bool 返回值版本 (全部保留)
+    public static bool ParseSbyte(this object obj, out sbyte value, sbyte defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseSbyte(out value, defaultValue);
+    }
+
+    public static bool ParseSbyte(this object obj, NumberStyles style, IFormatProvider provider, out sbyte value, sbyte defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseSbyte(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseByte(this object obj, out byte value, byte defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseByte(out value, defaultValue);
+    }
+
+    public static bool ParseByte(this object obj, NumberStyles style, IFormatProvider provider, out byte value, byte defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseByte(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseShort(this object obj, out short value, short defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseShort(out value, defaultValue);
+    }
+
+    public static bool ParseShort(this object obj, NumberStyles style, IFormatProvider provider, out short value, short defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseShort(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseUshort(this object obj, out ushort value, ushort defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseUshort(out value, defaultValue);
+    }
+
+    public static bool ParseUshort(this object obj, NumberStyles style, IFormatProvider provider, out ushort value, ushort defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseUshort(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseInt(this object obj, out int value, int defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseInt(out value, defaultValue);
+    }
+
+    public static bool ParseInt(this object obj, NumberStyles style, IFormatProvider provider, out int value, int defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseInt(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseUint(this object obj, out uint value, uint defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseUint(out value, defaultValue);
+    }
+
+    public static bool ParseUint(this object obj, NumberStyles style, IFormatProvider provider, out uint value, uint defaultValue = 0)
+    {
+        return (obj?.ToString()).ParseUint(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseLong(this object obj, out long value, long defaultValue = 0L)
+    {
+        return (obj?.ToString()).ParseLong(out value, defaultValue);
+    }
+
+    public static bool ParseLong(this object obj, NumberStyles style, IFormatProvider provider, out long value, long defaultValue = 0L)
+    {
+        return (obj?.ToString()).ParseLong(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseUlong(this object obj, out ulong value, ulong defaultValue = 0UL)
+    {
+        return (obj?.ToString()).ParseUlong(out value, defaultValue);
+    }
+
+    public static bool ParseUlong(this object obj, NumberStyles style, IFormatProvider provider, out ulong value, ulong defaultValue = 0UL)
+    {
+        return (obj?.ToString()).ParseUlong(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseFloat(this object obj, out float value, float defaultValue = 0F)
+    {
+        return (obj?.ToString()).ParseFloat(out value, defaultValue);
+    }
+
+    public static bool ParseFloat(this object obj, NumberStyles style, IFormatProvider provider, out float value, float defaultValue = 0F)
+    {
+        return (obj?.ToString()).ParseFloat(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseDouble(this object obj, out double value, double defaultValue = 0D)
+    {
+        return (obj?.ToString()).ParseDouble(out value, defaultValue);
+    }
+
+    public static bool ParseDouble(this object obj, NumberStyles style, IFormatProvider provider, out double value, double defaultValue = 0D)
+    {
+        return (obj?.ToString()).ParseDouble(style, provider, out value, defaultValue);
+    }
+
+    public static bool ParseDecimal(this object obj, out decimal value, decimal defaultValue = 0M)
+    {
+        return (obj?.ToString()).ParseDecimal(out value, defaultValue);
+    }
+
+    public static bool ParseDecimal(this object obj, NumberStyles style, IFormatProvider provider, out decimal value, decimal defaultValue = 0M)
+    {
+        return (obj?.ToString()).ParseDecimal(style, provider, out value, defaultValue);
+    }
+
+    // 通用转换函数 - 返回值版本
+    public static TOut GeneralParse<TIn, TOut>(this TIn input)
+        where TIn : IConvertible
+        where TOut : IConvertible
+    {
+        if (input == null)
+            throw new ArgumentNullException(nameof(input));
+
+        try
+        {
+            // 处理相同类型转换
+            if (typeof(TOut) == typeof(TIn))
+                return (TOut)(object)input;
+
+            // 处理字符串到其他类型的转换
+            if (typeof(TIn) == typeof(string))
+            {
+                string strInput = (string)(object)input;
+                if (string.IsNullOrEmpty(strInput))
+                    return default(TOut);
+
+                return (TOut)Convert.ChangeType(strInput, typeof(TOut));
+            }
+
+            // 处理其他类型到字符串的转换
+            if (typeof(TOut) == typeof(string))
+            {
+                return (TOut)(object)input.ToString();
+            }
+
+            // 使用 Convert.ChangeType 进行通用转换
+            return (TOut)Convert.ChangeType(input, typeof(TOut));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidCastException($"Cannot convert from {typeof(TIn)} to {typeof(TOut)}. Value: {input}", ex);
+        }
+    }
+
+    // 通用转换函数 - 安全版本
+    public static bool TryGeneralParse<TIn, TOut>(this TIn input, out TOut result)
+        where TIn : IConvertible
+        where TOut : IConvertible
+    {
+        result = default(TOut);
+
+        if (input == null)
+            return false;
+
+        try
+        {
+            // 处理相同类型转换
+            if (typeof(TOut) == typeof(TIn))
+            {
+                result = (TOut)(object)input;
+                return true;
+            }
+
+            // 处理字符串到其他类型的转换
+            if (typeof(TIn) == typeof(string))
+            {
+                string strInput = (string)(object)input;
+                if (string.IsNullOrEmpty(strInput))
+                    return false;
+
+                result = (TOut)Convert.ChangeType(strInput, typeof(TOut));
+                return true;
+            }
+
+            // 处理其他类型到字符串的转换
+            if (typeof(TOut) == typeof(string))
+            {
+                result = (TOut)(object)input.ToString();
+                return true;
+            }
+
+            // 使用 Convert.ChangeType 进行通用转换
+            result = (TOut)Convert.ChangeType(input, typeof(TOut));
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // 带默认值的重载版本
+    public static TOut GeneralParse<TIn, TOut>(this TIn input, TOut defaultValue)
+        where TIn : IConvertible
+        where TOut : IConvertible
+    {
+        return TryGeneralParse(input, out TOut result) ? result : defaultValue;
     }
 }

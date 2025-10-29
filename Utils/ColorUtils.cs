@@ -71,26 +71,6 @@ public static class ColorUtils
         return colors.ToArray();
     }
     
-    public static Color ParseColor(string hex, bool nullIfInvalid = false)
-    {
-        string hexplus = hex.Trim('#');
-        if (hexplus.StartsWith("0x"))
-            hexplus = hexplus.Substring(2);
-        uint result;
-        if (hexplus.Length == 6 && uint.TryParse(hexplus, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out result))
-        {
-            return Calc.HexToColor((int)result);
-        }
-        else if (hexplus.Length == 8 && hexplus.Substring(0, 2) == "00" && Regex.IsMatch(hexplus.Substring(2), "[^0-9a-f]")) //Optimized check to determine Regex matching for a hex number, marginally faster for a check where you dont need the end value.
-        {
-            return Color.Transparent;
-        }
-        else if (uint.TryParse(hexplus, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out result))
-        {
-            return UintToColor(result);
-        }
-        return Color.Transparent;
-    }
     public static Color UintToColor(uint hex)
     {
         Color result = default(Color);
