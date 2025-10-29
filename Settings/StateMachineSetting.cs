@@ -46,7 +46,7 @@ public class StateMachineSetting
     public static SerialImage stateMachine_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
-        distance = 1f
+        distance = 0f
     };
     
     public static Vc2 GetRenderPosition(Player player)

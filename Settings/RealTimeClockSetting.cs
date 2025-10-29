@@ -31,8 +31,8 @@ public class RealTimeClockSetting
         if (Md.Settings.realTimeClock.enableTimeClock)
         {
             string dashText = Md.Settings.realTimeClock.hasSeconds ? 
-                $"{DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}" :
-                $"{DateTime.Now.Hour}:{DateTime.Now.Minute}";
+                $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}" :
+                $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}";
 
             realTimeClock_UI.origin = ((int)Md.Settings.realTimeClock.aligning + 4).ToJustify();
             

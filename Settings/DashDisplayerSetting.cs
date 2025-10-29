@@ -43,7 +43,7 @@ public class DashDisplayerSetting
 
     public static SerialImage dashes_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"))
     {
-        distance = 1f
+        distance = 0f
     };
     
     public static Vc2 GetRenderPosition(Player player)
