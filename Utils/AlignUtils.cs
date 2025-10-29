@@ -28,4 +28,9 @@ public static class AlignUtils
     {
         return AlignToJustify[align];
     }
+    
+    public static Vc2 ToJustify(this int align)
+    {
+        return AlignToJustify[(Aligns)(align < 1 || align > 9 ? 0 : align)];
+    }
 }

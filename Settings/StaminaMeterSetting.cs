@@ -10,7 +10,7 @@ using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
 namespace ChroniaHelper.Settings;
 
-public class DashDisplayer
+public class StaminaMeterSetting
 {
     [LoadHook]
     public static void Load()
@@ -23,38 +23,39 @@ public class DashDisplayer
     {
         On.Celeste.GrabbyIcon.Render -= IconRender;
     }
-
+    
     public static void IconRender(On.Celeste.GrabbyIcon.orig_Render orig, GrabbyIcon icon)
     {
         orig(icon);
-
-        if (Md.Settings.dashesCounter.enableDashCounter)
+        
+        if (Md.Settings.staminaMeterMenu.enableStaminaMeter)
         {
-            string dashText = $"{PUt.player?.Dashes ?? 0}";
-
-            dashes_UI.Render(dashText, (c) =>
+            string staminaText = $"{float.Round(PUt.player?.Stamina ?? 0f).ClampMin(0).ForceTo<int>()}";
+            
+            staminaMeter_UI.origin = ((int)Md.Settings.staminaMeterMenu.aligning + 4).ToJustify();
+            
+            staminaMeter_UI.Render(staminaText, (c) =>
             {
                 return $"{c}".ParseInt(0);
             }, GetRenderPosition(PUt.player));
         }
     }
-
-    public static SerialImage dashes_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"))
+    
+    public static SerialImage staminaMeter_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"))
     {
-        origin = Vc2.One * 0.5f,
         distance = 1f
     };
     
     public static Vc2 GetRenderPosition(Player player)
     {
-        var mode = Md.Settings.dashesCounter.displayPosition;
-        Vc2 setup = new Vc2(Md.Settings.dashesCounter.X, Md.Settings.dashesCounter.Y);
+        var mode = Md.Settings.staminaMeterMenu.displayPosition;
+        Vc2 setup = new Vc2(Md.Settings.staminaMeterMenu.X, Md.Settings.staminaMeterMenu.Y);
         
-        if(mode == Sts.DashesDisplayer.DisplayPosition.PlayerBased)
+        if(mode == Sts.StaminaDisplayer.DisplayPosition.PlayerBased)
         {
-            return new Vc2((int)(player?.Center.X ?? 0), (int)(player?.Center.Y ?? 0)) + setup;
+            return new Vc2((int)(player?.Center.X ?? 0f), (int)(player?.Center.Y ?? 0f)) + setup;
         }
-        else if(mode == Sts.DashesDisplayer.DisplayPosition.StaticScreen)
+        else if(mode == Sts.StaminaDisplayer.DisplayPosition.StaticScreen)
         {
             return MaP.cameraPos + setup;
         }
