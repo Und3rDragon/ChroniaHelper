@@ -154,25 +154,25 @@ public class Displayers
             {
                 case Sts.PlayerPositionDisplayer.DisplayCoordinates.X:
                     target = Md.Settings.playerPositionDisplayer.useGlobalCoordinates ?
-                        $"{(playerPos.X + lvlPos.X).ParseInt()}" :
+                        $"{(playerPos.X - lvlPos.X).ParseInt()}" :
                         $"{playerPos.X.ParseInt()}";
                     break;
                 case Sts.PlayerPositionDisplayer.DisplayCoordinates.Y:
                     target = Md.Settings.playerPositionDisplayer.useGlobalCoordinates ?
-                        $"{(playerPos.Y + lvlPos.Y).ParseInt()}" :
+                        $"{(playerPos.Y - lvlPos.Y).ParseInt()}" :
                         $"{playerPos.Y.ParseInt()}";
                     break;
                 default:
                     target = Md.Settings.playerPositionDisplayer.useGlobalCoordinates ?
-                        $"({(playerPos.X + lvlPos.X).ParseInt()},{(playerPos.Y + lvlPos.Y).ParseInt()})" :
+                        $"({(playerPos.X - lvlPos.X).ParseInt()},{(playerPos.Y - lvlPos.Y).ParseInt()})" :
                         $"({playerPos.X.ParseInt()},{playerPos.Y.ParseInt()})";
                     break;
             }
 
-            playerSprite_UI.origin = ((int)Md.Settings.playerPositionDisplayer.aligning + 4).ToJustify();
-            playerSprite_UI.distance = Md.Settings.playerPositionDisplayer.letterDistance;
-
-            playerSprite_UI.Render(target, (c) =>
+            playerPos_UI.origin = ((int)Md.Settings.playerPositionDisplayer.aligning + 4).ToJustify();
+            playerPos_UI.distance = Md.Settings.playerPositionDisplayer.letterDistance;
+            
+            playerPos_UI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
             }, GetRenderPosition(Md.Settings.playerPositionDisplayer.displayPosition,
