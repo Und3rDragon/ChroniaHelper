@@ -96,7 +96,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
     public class PlayerSpriteDisplayer
     {
         public bool enabled { get; set; } = false;
-        public bool showCurrentAnimationName { get; set; } = true;
+        public enum DisplaySprite { Animation, File, Comparison}
+        public DisplaySprite displaySprite { get; set; } = DisplaySprite.Comparison;
         public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
         [SettingRange(-1000, 1000, true)]
         public int X { get; set; } = 160;

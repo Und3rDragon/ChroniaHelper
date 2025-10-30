@@ -118,9 +118,19 @@ public class Displayers
 
         if (Md.Settings.playerSpriteDisplayer.enabled)
         {
-            string target = Md.Settings.playerSpriteDisplayer.showCurrentAnimationName?
-                $"{PUt.player?.Sprite.CurrentAnimationID ?? "null"}" :
-                $"{PUt.player?.Sprite.Texture.AtlasPath ?? "null"}";
+            string target = string.Empty;
+            switch (Md.Settings.playerSpriteDisplayer.displaySprite)
+            {
+                case Modules.ChroniaHelperSettings.PlayerSpriteDisplayer.DisplaySprite.Animation:
+                    target = $"{PUt.player?.Sprite.CurrentAnimationID ?? "null"}";
+                    break;
+                case Modules.ChroniaHelperSettings.PlayerSpriteDisplayer.DisplaySprite.File:
+                    target = $"{PUt.player?.Sprite.Texture.AtlasPath ?? "null"}";
+                    break;
+                default:
+                    target = $"{PUt.player?.Sprite.CurrentAnimationID ?? "null"} => {PUt.player?.Sprite.Texture.AtlasPath ?? "null"}";
+                    break;
+            }
 
             playerSprite_UI.origin = ((int)Md.Settings.playerSpriteDisplayer.aligning + 4).ToJustify();
             playerSprite_UI.distance = Md.Settings.playerSpriteDisplayer.letterDistance;
