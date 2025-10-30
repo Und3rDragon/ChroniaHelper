@@ -6,18 +6,20 @@ namespace ChroniaHelper.Modules;
 
 public class ChroniaHelperSettings : EverestModuleSettings
 {
+    public enum DisplayPosition { PlayerBased, StaticScreen }
+    public enum Aligning { Left, Middle, Right }
+
     [SettingSubMenu]
     public class StaminaDisplayer
     {
-        public bool enableStaminaMeter { get; set; } = false;
-        public enum DisplayPosition { PlayerBased, StaticScreen }
+        public bool enabled { get; set; } = false;
         public DisplayPosition displayPosition { get; set; } = DisplayPosition.PlayerBased;
         [SettingRange(-1000, 1000, true)]
         public int X { get; set; } = 0;
         [SettingRange(-1000, 1000, true)]
         public int Y { get; set; } = -16;
-
-        public enum Aligning { Left, Middle, Right }
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -26,14 +28,14 @@ public class ChroniaHelperSettings : EverestModuleSettings
     [SettingSubMenu]
     public class DashesDisplayer
     {
-        public bool enableDashCounter { get; set; } = false;
-        public enum DisplayPosition { PlayerBased, StaticScreen }
+        public bool enabled { get; set; } = false;
         public DisplayPosition displayPosition { get; set; } = DisplayPosition.PlayerBased;
         [SettingRange(-1000, 1000, true)]
         public int X { get; set; } = 0;
         [SettingRange(-1000, 1000, true)]
         public int Y { get; set; } = -16;
-        public enum Aligning { Left, Middle, Right }
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -42,15 +44,15 @@ public class ChroniaHelperSettings : EverestModuleSettings
     [SettingSubMenu]
     public class RealTimeClockDisplayer
     {
-        public bool enableTimeClock { get; set; } = false;
+        public bool enabled { get; set; } = false;
         public bool hasSeconds { get; set; } = true;
-        public enum DisplayPosition { PlayerBased, StaticScreen }
-        public DisplayPosition displayPosition { get; set; } = DisplayPosition.PlayerBased;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
         [SettingRange(-1000, 1000, true)]
-        public int X { get; set; } = 0;
+        public int X { get; set; } = 160;
         [SettingRange(-1000, 1000, true)]
-        public int Y { get; set; } = -16;
-        public enum Aligning { Left, Middle, Right }
+        public int Y { get; set; } = 172;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -59,16 +61,68 @@ public class ChroniaHelperSettings : EverestModuleSettings
     [SettingSubMenu]
     public class StateMachineDisplayer
     {
-        public bool enableStateMachineDisplayer { get; set; } = false;
-        public enum DisplayPosition { PlayerBased, StaticScreen }
+        public bool enabled { get; set; } = false;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 160;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 165;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        public Aligning aligning { get; set; } = Aligning.Middle;
+    }
+
+    public StateMachineDisplayer stateMachineDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class SpeedDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public enum SpeedDisplay { speedX, speedY, speedToCoordinates, speedAll }
+        public SpeedDisplay speedDisplay { get; set; } = SpeedDisplay.speedAll;
         public DisplayPosition displayPosition { get; set; } = DisplayPosition.PlayerBased;
         [SettingRange(-1000, 1000, true)]
         public int X { get; set; } = 0;
         [SettingRange(-1000, 1000, true)]
         public int Y { get; set; } = -16;
-        public enum Aligning { Left, Middle, Right }
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
-    public StateMachineDisplayer stateMachineDisplayer { get; set; } = new();
+    public SpeedDisplayer speedDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class PlayerSpriteDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public bool showCurrentAnimationName { get; set; } = true;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 160;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 165;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        public Aligning aligning { get; set; } = Aligning.Middle;
+    }
+    public PlayerSpriteDisplayer playerSpriteDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class PlayerPositionDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public enum DisplayCoordinates { X, Y, Both }
+        public DisplayCoordinates displayCoordinates { get; set; } = DisplayCoordinates.Both;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        public bool useGlobalCoordinates { get; set; } = false;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 160;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 165;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        public Aligning aligning { get; set; } = Aligning.Middle;
+    }
+    public PlayerPositionDisplayer playerPositionDisplayer { get; set; } = new();
 }
