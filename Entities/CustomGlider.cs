@@ -22,8 +22,6 @@ public class CustomGlider : Actor
 
     public ParticleType P_Expand;
 
-    private const float HighFrictionTime = 0.5f;
-
     public Vector2 Speed;
 
     public Holdable Hold;

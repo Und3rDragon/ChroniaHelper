@@ -60,9 +60,6 @@ public class ZipGlass : OmniZipSolid
         Calc.HexToColor("9bd1cd"),
         Calc.HexToColor("bacae3")
     };
-
-    public const int StarCount = 100;
-    public const int RayCount = 50;
     public Star[] stars = new Star[100];
     public BGRay[] rays = new BGRay[50];
     public VertexPositionColor[] verts = new VertexPositionColor[2700];
@@ -71,9 +68,7 @@ public class ZipGlass : OmniZipSolid
     public VirtualRenderTarget beamsTarget;
     public VirtualRenderTarget starsTarget;
     public bool hasBlocks;
-
     
-
     public void BeforeRender()
     {
         List<Entity> entities = base.Scene.Tracker.GetEntities<ZipGlass>();

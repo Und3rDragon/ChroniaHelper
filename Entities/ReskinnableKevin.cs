@@ -33,14 +33,6 @@ public class ReskinnableKevin : Solid
         }
     }
 
-    public const float CrushSpeed = 240f;
-
-    public const float CrushAccel = 500f;
-
-    public const float ReturnSpeed = 60f;
-
-    public const float ReturnAccel = 160f;
-
     public Color fill = Calc.HexToColor("62222b");
 
     public Level level;

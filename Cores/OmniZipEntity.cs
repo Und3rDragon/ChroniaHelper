@@ -34,8 +34,6 @@ public class OmniZipEntity : Entity
 
             public float sparkDirStartA, sparkDirStartB;
             public float sparkDirEndA, sparkDirEndB;
-            public const float piOverEight = MathHelper.PiOver4 / 2f;
-            public const float eightPi = 4 * MathHelper.TwoPi;
 
             public Segment(Vector2 from, Vector2 to)
             {
@@ -57,10 +55,10 @@ public class OmniZipEntity : Entity
 
                 sparkAdd = (from - to).SafeNormalize(5f).Perpendicular();
                 float angle = (from - to).Angle();
-                sparkDirStartA = angle + piOverEight;
-                sparkDirStartB = angle - piOverEight;
-                sparkDirEndA = angle + MathHelper.Pi - piOverEight;
-                sparkDirEndB = angle + MathHelper.Pi + piOverEight;
+                sparkDirStartA = angle + Cons.piOverEight;
+                sparkDirStartB = angle - Cons.piOverEight;
+                sparkDirEndA = angle + MathHelper.Pi - Cons.piOverEight;
+                sparkDirEndB = angle + MathHelper.Pi + Cons.piOverEight;
 
                 Rectangle b = Miscs.Rectangle(from, to);
                 b.Inflate(10, 10);
@@ -82,7 +80,7 @@ public class OmniZipEntity : Entity
                 Draw.Line(lineStartA, lineEndA, rope);
                 Draw.Line(lineStartB, lineEndB, rope);
 
-                for (float d = 4f - (percent * eightPi % 4f); d < length; d += 4f)
+                for (float d = 4f - (percent * Cons.eightPi % 4f); d < length; d += 4f)
                 {
                     Vector2 pos = dir * d;
                     Vector2 teethA = lineStartA + perp + pos;
@@ -101,7 +99,7 @@ public class OmniZipEntity : Entity
                 Draw.Line(startA, lineEndA + Vector2.UnitY, Color.Black);
                 Draw.Line(lineStartB + Vector2.UnitY, endB, Color.Black);
 
-                for (float d = 4f - (percent * eightPi % 4f); d < length; d += 4f)
+                for (float d = 4f - (percent * Cons.eightPi % 4f); d < length; d += 4f)
                 {
                     Vector2 pos = dir * d;
                     Vector2 teethA = startA + perp + pos;

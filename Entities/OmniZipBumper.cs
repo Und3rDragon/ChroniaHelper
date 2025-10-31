@@ -21,49 +21,29 @@ public class OmniZipBumper : OmniZipEntity
     public static ParticleType P_FireAmbience;
 
     public static ParticleType P_FireHit;
-
-    
-    public const float RespawnTime = 0.6f;
-
-    
-    public const float MoveCycleTime = 1.81818187f;
-
-    
-    public const float SineCycleFreq = 0.44f;
-
     
     public Sprite sprite;
-
     
     public Sprite spriteEvil;
-
     
     public VertexLight light;
 
     
     // public BloomPoint bloom;
-
     
     public Vector2? node;
-
     
     public bool goBack;
-
     
     public Vector2 anchor;
-
     
     public SineWave sine;
-
     
     public float respawnTimer;
-
     
     public bool fireMode;
-
     
     public Wiggler hitWiggler;
-
     
     public Vector2 hitDir;
     #endregion

@@ -29,22 +29,6 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			Gone
 		}
 
-		private const float RespawnTime = 2.5f;
-
-		private const float RespawnMoveTime = 0.5f;
-
-		private const float BounceSpeed = 200f;
-
-		private const float ExplodeRadius = 40f;
-
-		private const float DetectRadius = 32f;
-
-		private const float StunnedAccel = 320f;
-
-		private const float AlertedRadius = 60f;
-
-		private const float CantExplodeTime = 0.5f;
-
 		private Sprite sprite;
 
 		private States state;

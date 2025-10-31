@@ -71,12 +71,6 @@ public class OmniZipWater : OmniZipEntity
 
     public class Surface
     {
-        public const int Resolution = 4;
-
-        public const float RaysPerPixel = 0.2f;
-
-        public const float BaseHeight = 6f;
-
         public readonly Vector2 Outwards;
 
         public readonly int Width;

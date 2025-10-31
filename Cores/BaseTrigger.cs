@@ -49,8 +49,12 @@ public abstract class BaseTrigger : Trigger
 
     protected bool inzone;
 
+    public Vc2[] nodes;
+
     protected BaseTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
+        nodes = data.NodesWithPosition(offset);
+        
         levelDeathMode = data.Enum("levelDeathMode", RelationalOperator.Equal);
         levelDeathCount = data.Int("levelDeathCount", -1);
         totalDeathMode = data.Enum("totalDeathMode", RelationalOperator.Equal);

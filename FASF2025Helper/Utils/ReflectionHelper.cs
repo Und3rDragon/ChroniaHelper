@@ -16,8 +16,6 @@ public static class ReflectionHelper
     private readonly static Dictionary<string, FieldInfo> fieldCache = new Dictionary<string, FieldInfo>();
     private readonly static Dictionary<string, PropertyInfo> propertyCache = new Dictionary<string, PropertyInfo>();
 
-    public const BindingFlags DefaultBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
-
     #region 反射获取
     // 获取类型
     public static Type GetType(string typeName)
@@ -45,7 +43,7 @@ public static class ReflectionHelper
     }
 
     // 获取无参方法
-    public static MethodInfo GetMethod<TType>(string methodName, BindingFlags binding = DefaultBindingFlags)
+    public static MethodInfo GetMethod<TType>(string methodName, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         string key = $"{typeof(TType).FullName}.{methodName}";
 
@@ -63,7 +61,7 @@ public static class ReflectionHelper
     }
 
     // 获取有参方法
-    public static MethodInfo GetMethod<TType>(string methodName, Type[] parameterTypes, BindingFlags binding = DefaultBindingFlags)
+    public static MethodInfo GetMethod<TType>(string methodName, Type[] parameterTypes, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         string key = $"{typeof(TType).FullName}.{methodName}({string.Join(",", parameterTypes.Select(t => t.Name))})";
 
@@ -80,7 +78,7 @@ public static class ReflectionHelper
     }
 
     // 获取无参构造函数
-    public static ConstructorInfo GetConstructor<TType>(BindingFlags binding = DefaultBindingFlags)
+    public static ConstructorInfo GetConstructor<TType>(BindingFlags binding = Cons.DefaultBindingFlags)
     {
         string key = $"{typeof(TType).FullName}.Constructor";
 
@@ -98,7 +96,7 @@ public static class ReflectionHelper
     }
 
     // 获取有参构造函数
-    public static ConstructorInfo GetConstructor<TType>(Type[] parameterTypes, BindingFlags binding = DefaultBindingFlags)
+    public static ConstructorInfo GetConstructor<TType>(Type[] parameterTypes, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         string key = $"{typeof(TType).FullName}.Constructor({string.Join(",", parameterTypes.Select(t => t.Name))})";
 
@@ -116,7 +114,7 @@ public static class ReflectionHelper
     }
 
     // 获取字段
-    public static FieldInfo GetField<TType>(string fieldName, BindingFlags binding = DefaultBindingFlags)
+    public static FieldInfo GetField<TType>(string fieldName, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         string key = $"{typeof(TType).FullName}.{fieldName}";
 
@@ -134,7 +132,7 @@ public static class ReflectionHelper
     }
 
     // 获取属性
-    public static PropertyInfo GetProperty<TType>(string propertyName, BindingFlags binding = DefaultBindingFlags)
+    public static PropertyInfo GetProperty<TType>(string propertyName, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         string key = $"{typeof(TType).FullName}.{propertyName}";
 
@@ -152,14 +150,14 @@ public static class ReflectionHelper
     }
 
     // 获取属性Getter方法
-    public static MethodInfo GetPropertyGetter<TType>(string propertyName, BindingFlags binding = DefaultBindingFlags)
+    public static MethodInfo GetPropertyGetter<TType>(string propertyName, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         PropertyInfo property = GetProperty<TType>(propertyName, binding);
         return property?.GetGetMethod(true);
     }
 
     // 获取属性Setter方法
-    public static MethodInfo GetPropertySetter<TType>(string propertyName, BindingFlags binding = DefaultBindingFlags)
+    public static MethodInfo GetPropertySetter<TType>(string propertyName, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         PropertyInfo property = GetProperty<TType>(propertyName, binding);
         return property?.GetSetMethod(true);

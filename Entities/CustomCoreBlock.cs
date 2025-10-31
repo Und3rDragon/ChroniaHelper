@@ -142,22 +142,6 @@ public class CustomCoreBlock : Solid
 
     public static ParticleType P_IceBreak = BounceBlock.P_IceBreak;
 
-    public const float WindUpDelay = 0f;
-
-    public const float WindUpDist = 10f;
-
-    public const float IceWindUpDist = 16f;
-
-    public const float BounceDist = 24f;
-
-    public const float LiftSpeedXMult = 0.75f;
-
-    public const float RespawnTime = 1.6f;
-
-    public const float WallPushTime = 0.1f;
-
-    public const float BounceEndTime = 0.05f;
-
     public Vector2 bounceDir;
 
     public States state;

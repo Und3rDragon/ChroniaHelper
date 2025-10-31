@@ -9,14 +9,12 @@ using YoctoHelper.Cores;
 
 namespace Celeste.Mod.ChroniaHelperIndicatorZone;
 
-[CustomEntity(EntityStringId, EntityStringId2), Tracked]
+[CustomEntity(Cons.EntityStringId, Cons.EntityStringId2), Tracked]
 public sealed partial class PlayerIndicatorZone : Entity
 {
     public enum ZoneMode { Limited, Toggle, None }
     public enum FlagMode { None, Zone, Enable, Disable }
 
-    public const string EntityStringId = "ChroniaHelper/PlayerIndicatorZone";
-    public const string EntityStringId2 = "ChroniaHelper/PlayerIndicatorZoneCustom";
 
     public readonly List<MTexture> Icons;
     public readonly List<Vector2> IconOffsets;

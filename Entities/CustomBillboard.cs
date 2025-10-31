@@ -34,8 +34,6 @@ public class CustomBillboard : Entity
         }
     }
 
-    public const int BGDepth = 9010;
-
     public Color BackgroundColor;
 
     public uint Seed;

@@ -10,8 +10,6 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/FloatyBgTile")]
 public class FloatyBgTile : Platform
 {
-    private const string BgTileListDynamicDataName = "BgTileList";
-
     public List<FloatyBgTile> Group;
     public List<FloatySpaceBlock> Floaties;
     public Dictionary<Entity, Vector2> Moves;
@@ -54,8 +52,8 @@ public class FloatyBgTile : Platform
     public bool HasGroup { get; private set; }
     public bool MasterOfGroup { get; private set; }
 
-    private static List<FloatyBgTile> GetBgTileList(FloatySpaceBlock block) => DynamicData.For(block).Get<List<FloatyBgTile>>(BgTileListDynamicDataName);
-    private static void SetBgTileList(FloatySpaceBlock block, List<FloatyBgTile> tiles) => DynamicData.For(block).Set(BgTileListDynamicDataName, tiles);
+    private static List<FloatyBgTile> GetBgTileList(FloatySpaceBlock block) => DynamicData.For(block).Get<List<FloatyBgTile>>(Cons.BgTileListDynamicDataName);
+    private static void SetBgTileList(FloatySpaceBlock block, List<FloatyBgTile> tiles) => DynamicData.For(block).Set(Cons.BgTileListDynamicDataName, tiles);
     private static void FloatySpaceBlock_AddToGroupAndFindChildren(FloatySpaceBlock parent, FloatySpaceBlock child) => DynamicData.For(parent).Invoke("AddToGroupAndFindChildren", new object[] { child });
 
     public override void Awake(Scene scene)

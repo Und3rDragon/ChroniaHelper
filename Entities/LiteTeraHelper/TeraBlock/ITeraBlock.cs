@@ -27,7 +27,6 @@ namespace ChroniaHelper.Entities
         private static ILHook playerUpdateHook;
         private static Hook liftSpeedHook;
         private static ILHook liftBoostHook;
-        public const float LiftBoostMultipler = 4f;
         [LoadHook]
         public static void OnLoad()
         {
@@ -329,7 +328,7 @@ namespace ChroniaHelper.Entities
         private static float GetLiftBoost(Actor actor)
         {
             var data = DynamicData.For(actor);
-            return data.Get<bool>("teraBoost") ? LiftBoostMultipler : 1f;
+            return data.Get<bool>("teraBoost") ? Cons.TeraBlockLiftBoostMultipler : 1f;
         }
     }
 }

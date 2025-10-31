@@ -21,7 +21,7 @@ public static class DelegateHelper
     private readonly static Dictionary<string, Func<object, object>> propertyGetterCache = new Dictionary<string, Func<object, object>>();
     private readonly static Dictionary<string, Action<object, object>> propertySetterCache = new Dictionary<string, Action<object, object>>();
 
-    public static TDelegate CreateFastDelegate<TDeclaringType, TDelegate>(string methodName, Type[] parameterTypes = null, BindingFlags binding = ReflectionHelper.DefaultBindingFlags) where TDelegate : Delegate
+    public static TDelegate CreateFastDelegate<TDeclaringType, TDelegate>(string methodName, Type[] parameterTypes = null, BindingFlags binding = Cons.DefaultBindingFlags) where TDelegate : Delegate
     {
         // 尝试获取缓存的委托
         string key = parameterTypes == null
@@ -70,14 +70,14 @@ public static class DelegateHelper
         delegateCache[key] = dynamicDelegate;
         return dynamicDelegate;
     }
-    public static Delegate CreateFastDelegate(Type declaringType, Type delegateType, string methodName, Type[] parameterTypes = null, BindingFlags binding = ReflectionHelper.DefaultBindingFlags)
+    public static Delegate CreateFastDelegate(Type declaringType, Type delegateType, string methodName, Type[] parameterTypes = null, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         var method = typeof(DelegateHelper).GetMethod(nameof(CreateFastDelegate), new[] { typeof(string), typeof(Type[]), typeof(BindingFlags) });
         var genericMethod = method.MakeGenericMethod(declaringType, delegateType);
         return (Delegate)genericMethod.Invoke(null, new object[] { methodName, parameterTypes, binding });
     }
 
-    public static TDelegate CreateConstructor<TDeclaringType, TDelegate>(Type[] parameterTypes = null, BindingFlags binding = ReflectionHelper.DefaultBindingFlags) where TDelegate : Delegate
+    public static TDelegate CreateConstructor<TDeclaringType, TDelegate>(Type[] parameterTypes = null, BindingFlags binding = Cons.DefaultBindingFlags) where TDelegate : Delegate
     {
         string key = parameterTypes == null
             ? $"{typeof(TDeclaringType).FullName}.Constructor.{typeof(TDelegate).FullName}"
@@ -133,7 +133,7 @@ public static class DelegateHelper
         constructorCache[key] = constructorDelegate;
         return (TDelegate)(object)constructorDelegate;
     }
-    public static Delegate CreateConstructor(Type declaringType, Type delegateType, Type[] parameterTypes = null, BindingFlags binding = ReflectionHelper.DefaultBindingFlags)
+    public static Delegate CreateConstructor(Type declaringType, Type delegateType, Type[] parameterTypes = null, BindingFlags binding = Cons.DefaultBindingFlags)
     {
         var method = typeof(DelegateHelper).GetMethod(nameof(CreateConstructor), new[] { typeof(Type[]), typeof(BindingFlags) });
         var genericMethod = method.MakeGenericMethod(declaringType, delegateType);
