@@ -66,33 +66,31 @@ public class StopclockRenderer : SerialImageRenderer
 
         if (!clockTag.GetStopclock(out Stopclock clock)) { return; }
 
-        clock.GetTimeData(out int[] data, minUnit, maxUnit);
+        clock.GetClampedTimeData(out int[] data, minUnit, maxUnit);
 
         string renderTarget = "";
         for (int i = 0; i < data.Length; i++)
         {
             if (i == 0)
             {
-                renderTarget = $":{data[i]:000}";
+                renderTarget = minUnit == 0 ? $"{data[i]:000}" : $"{data[i]:00}";
                 continue;
             }
-            if (i != data.Length - 1)
+            else
             {
-                renderTarget = $":{data[i]:00}" + renderTarget;
-                continue;
+                renderTarget = $"{data[i]:00}:" + renderTarget;
             }
-            renderTarget = $"{data[i]}" + renderTarget;
         }
         
         if (trimZeros)
         {
-            renderTarget = Regex.Replace(renderTarget, "^[0:]*:", "");
+            renderTarget = Regex.Replace(renderTarget, "0+:+", "");
         }
         
         image.Render(renderTarget, (c) =>
         {
             return $"{c}".ParseInt(c == ':' ? 10 : 0);
-        }, Position.InGlobalParallax(parallax));
+        }, Position.InGlobalParallax(parallax, staticScreen));
     }
 
     public override void Update()

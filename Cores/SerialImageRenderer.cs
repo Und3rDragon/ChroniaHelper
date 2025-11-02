@@ -59,7 +59,7 @@ public class SerialImageRenderer : Entity
 
         string renderTarget = ParseRenderTarget();
 
-        image.Render(renderTarget, (c) => Reflection(c), Position.InGlobalParallax(parallax));
+        image.Render(renderTarget, (c) => Reflection(c), Position.InGlobalParallax(parallax, staticScreen));
     }
 
     public override void Update()

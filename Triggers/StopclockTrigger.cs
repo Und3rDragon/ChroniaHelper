@@ -32,7 +32,7 @@ public class StopclockTrigger :BaseTrigger
         {
             if (!name.GetStopclock(out Stopclock clock)) { return; }
             int[] dt = time.TimeToDigitals();
-            clock.GetDigitals(out int[] t);
+            clock.GetTimeData(out int[] t);
             int Lmax = dt.Length > t.Length ? dt.Length : t.Length;
             int[] tt = new int[Lmax];
             for(int i = 0; i < Lmax; i++)
@@ -45,7 +45,7 @@ public class StopclockTrigger :BaseTrigger
         {
             if (!name.GetStopclock(out Stopclock clock)) { return; }
             int[] dt = time.TimeToDigitals();
-            clock.GetDigitals(out int[] t);
+            clock.GetTimeData(out int[] t);
             int Lmax = dt.Length > t.Length ? dt.Length : t.Length;
             int[] tt = new int[Lmax];
             for (int i = 0; i < Lmax; i++)

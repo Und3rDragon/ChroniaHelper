@@ -19,38 +19,20 @@ public partial class Stopclock
     /// 获取格式化时间字符串
     /// </summary>
     public string FormattedTime =>
-        $"{year:000}Years {month:00}Months {day:00}Days {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
+        $"{year:00}Years {month:00}Months {day:00}Days {hour:00}:{minute:00}:{second:00}.{millisecond:000}";
     
     public string DigitalTime =>
-        $"{year:000}:{month:00}:{day:00}:{hour:00}:{minute:00}:{second:00}:{millisecond:000}";
+        $"{year:00}:{month:00}:{day:00}:{hour:00}:{minute:00}:{second:00}:{millisecond:000}";
     
     public string Digitals =>
-        $"{year:000}{month:00}{day:00}{hour:00}{minute:00}{second:00}{millisecond:000}";
-
-    /// <summary>
-    /// 将计时器数字输出成整数组
-    /// </summary>
-    /// <param name="digitals">输出整数组</param>
-    /// <param name="trim">是否去除多余的前置0</param>
-    /// <param name="reverse">从ms的最后一位开始逆序排列</param>
-    public void GetDigitals(out int[] digitals, bool trim = false, bool reverse = true)
-    {
-        string d = Digitals;
-        if (trim) { d = d.TrimStart('0'); }
-
-        digitals = new int[d.Length];
-        for(int i = 0; i < d.Length; i++)
-        {
-            $"{(reverse ? d[d.Length - 1 - i] : d[i])}".ParseInt(out digitals[i], 0);
-        }
-    }
+        $"{year:00}{month:00}{day:00}{hour:00}{minute:00}{second:00}{millisecond:000}";
     
     public void GetTimeData(out int[] digitals)
     {
         digitals = new int[7] { millisecond, second, minute, hour, day, month, year };
     }
 
-    public void GetTimeData(out int[] digitals, int minUnit = 0, int maxUnit = 6)
+    public void GetClampedTimeData(out int[] digitals, int minUnit = 0, int maxUnit = 6)
     {
         minUnit.Clamp(0, 6, out int min);
         maxUnit.Clamp(min, 6, out int max);
@@ -67,24 +49,22 @@ public partial class Stopclock
         switch (max)
         {
             case 0:
-                digitals[max] += (((((year * 12 + month) * 30 + day) * 24 + hour) * 60 + minute) * 60 + second) * 1000;
+                digitals[digitals.MaxIndex()] += (((((year * 12 + month) * 30 + day) * 24 + hour) * 60 + minute) * 60 + second) * 1000;
                 break;
             case 1:
-                digitals[max] += ((((year * 12 + month) * 30 + day) * 24 + hour) * 60 + minute) * 60;
+                digitals[digitals.MaxIndex()] += ((((year * 12 + month) * 30 + day) * 24 + hour) * 60 + minute) * 60;
                 break;
             case 2:
-                digitals[max] += (((year * 12 + month) * 30 + day) * 24 + hour) * 60;
+                digitals[digitals.MaxIndex()] += (((year * 12 + month) * 30 + day) * 24 + hour) * 60;
                 break;
             case 3:
-                digitals[max] += ((year * 12 + month) * 30 + day) * 24;
+                digitals[digitals.MaxIndex()] += ((year * 12 + month) * 30 + day) * 24;
                 break;
             case 4:
-                digitals[max] += (year * 12 + month) * 30;
+                digitals[digitals.MaxIndex()] += (year * 12 + month) * 30;
                 break;
             case 5:
-                digitals[max] += year * 12;
-                break;
-            case 6:
+                digitals[digitals.MaxIndex()] += year * 12;
                 break;
             default:
                 break;

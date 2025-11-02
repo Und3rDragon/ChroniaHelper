@@ -194,7 +194,6 @@ public partial class Stopclock
                     m.AssignTo(initial, out initialYear, out year);
                     break;
                 default:
-                    m.AssignTo(initial, out initialMillisecond, out millisecond);
                     break;
             }
         }

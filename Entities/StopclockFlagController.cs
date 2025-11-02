@@ -39,10 +39,21 @@ public class StopclockFlagController : Entity
         {
             if (!tag.GetStopclock(out Stopclock clock)) { continue; }
 
-            clock.GetDigitals(out int[] digitals, true);
+            clock.GetTimeData(out int[] digitals);
+
+            int maxDigital = 0;
+            for(int i = 0; i < digitals.Length; i++)
+            {
+                if (digitals[digitals.Length - 1 - i] != 0) 
+                { 
+                    maxDigital = digitals.Length - i; 
+                    break; 
+                }
+            }
+            
             if (maxDigitals.ContainsKey(tag))
             {
-                maxDigitals[tag] = maxDigitals[tag] < digitals.Length ? digitals.Length : maxDigitals[tag];
+                maxDigitals[tag] = maxDigital;
             }
             else
             {
