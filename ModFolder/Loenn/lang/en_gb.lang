@@ -1025,3 +1025,5 @@ entities.ChroniaHelper/RealTimeRenderer.placements.name.renderer=Real Time Rende
 
 entities.ChroniaHelper/MessageDisplayer.placements.name.renderer=Message Displayer
 
+entities.ChroniaHelper/MessageDisplayZone.placements.name.renderer=Message Display Zone
+
