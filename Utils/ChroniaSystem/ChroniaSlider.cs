@@ -91,7 +91,7 @@ public class ChroniaSlider
         {
             if (item.Value.Global)
             {
-                item.Value.SetSlider(item.Key);
+                item.Key.SetSlider(item.Value.Value);
             }
         }
     }

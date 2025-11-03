@@ -91,7 +91,7 @@ public class ChroniaCounter
         {
             if (item.Value.Global)
             {
-                item.Value.SetCounter(item.Key);
+                item.Key.SetCounter(item.Value.Value);
             }
         }
     }
