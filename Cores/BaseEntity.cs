@@ -111,7 +111,6 @@ public class BaseEntity : Entity
     {
         base.Removed(scene);
         level = SceneAs<Level>();
-        session = level.Session;
         
         if(RemovedAwait <= 0f && RemovedFreeze <= 0f)
         {
