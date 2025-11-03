@@ -986,6 +986,16 @@ entities.ChroniaHelper/RoomTagSessionController.placements.name.Controller=Room 
 triggers.ChroniaHelper/ChroniaFlagTrigger.placements.name.FlagTrigger=Chronia Flag Trigger (Debug)
 triggers.ChroniaHelper/ChroniaFlagTrigger.placements.description.FlagTrigger=Do not use if you have no idea what it is
 
+# ================= Chronia Counter Trigger
+
+triggers.ChroniaHelper/ChroniaCounterTrigger.placements.name.trigger=Chronia Counter Trigger (Debug)
+triggers.ChroniaHelper/ChroniaCounterTrigger.placements.description.trigger=Do not use if you have no idea what it is
+
+# ================= Chronia Slider Trigger
+
+triggers.ChroniaHelper/ChroniaSliderTrigger.placements.name.trigger=Chronia Slider Trigger (Debug)
+triggers.ChroniaHelper/ChroniaSliderTrigger.placements.description.trigger=Do not use if you have no idea what it is
+
 # ================= Cornerboost Falling Dream Block
 
 entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.normal=Cornerboost Falling Dream Block (Normal)
@@ -1028,3 +1038,9 @@ entities.ChroniaHelper/MessageDisplayer.placements.name.renderer=Message Display
 
 entities.ChroniaHelper/MessageDisplayZone.placements.name.renderer=Message Display Zone
 
+# ================= Counter and Slider Fades
+
+entities.ChroniaHelper/TimeFadeCounterController.placements.name.controller=Time Fade Counter Controller
+entities.ChroniaHelper/TimeFadeSliderController.placements.name.controller=Time Fade Slider Controller
+triggers.ChroniaHelper/CounterFadeTrigger.placements.name.trigger=Counter Fade Trigger
+triggers.ChroniaHelper/SliderFadeTrigger.placements.name.trigger=Slider Fade Trigger

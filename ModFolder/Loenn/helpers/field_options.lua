@@ -180,4 +180,17 @@ fieldOptions.depths = {
     editable = true,
 }
 
+fieldOptions.positionMode = {
+    options = {
+        "NoEffect",
+        "RightToLeft",
+        "LeftToRight",
+        "BottomToTop",
+        "TopToBottom",
+        "VerticalCenter",
+        "HorizontalCenter",
+    },
+    editable = false,
+}
+
 return fieldOptions

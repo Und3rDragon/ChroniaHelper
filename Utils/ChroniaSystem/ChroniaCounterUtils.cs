@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Content;
 
 namespace ChroniaHelper.Utils.ChroniaSystem;
 
@@ -45,7 +46,12 @@ public static class ChroniaCounterUtils
 
     public static ChroniaCounter PullCounter(this string name)
     {
-        Md.SaveData.ChroniaCounters.Create(name, new());
+        ChroniaCounter c = new()
+        {
+            Value = name.GetCounter()
+        };
+
+        Md.SaveData.ChroniaCounters.Create(name, c);
 
         return Md.SaveData.ChroniaCounters[name];
     }

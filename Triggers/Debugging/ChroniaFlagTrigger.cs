@@ -8,7 +8,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
-namespace ChroniaHelper.Triggers;
+namespace ChroniaHelper.Triggers.Debugging;
 
 // Chronia Flag System Debugging
 
@@ -21,7 +21,7 @@ public class ChroniaFlagTrigger : BaseTrigger
     private ChroniaFlag parent = new();
     private string Name;
 
-    public ChroniaFlagTrigger(EntityData e, Vector2 offset) : base(e, offset)
+    public ChroniaFlagTrigger(EntityData e, Vc2 offset) : base(e, offset)
     {
         ID = e.ID;
 

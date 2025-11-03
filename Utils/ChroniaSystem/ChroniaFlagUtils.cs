@@ -57,10 +57,12 @@ public static class ChroniaFlagUtils
     /// <returns>By default, you'll get the item stored in ChroniaFlags. If the item doesn't exist, you'll get an empty ChroniaFlag (name, false, false, false)</returns>
     public static ChroniaFlag PullFlag(this string name)
     {
-        if (!name.CheckFlag())
+        ChroniaFlag flag = new()
         {
-            return new();
-        }
+            Active = name.GetFlag()
+        };
+
+        Md.SaveData.ChroniaFlags.Create(name, flag);
 
         return Md.SaveData.ChroniaFlags[name];
     }

@@ -44,7 +44,12 @@ public static class ChroniaSliderUtils
 
     public static ChroniaSlider PullSlider(this string name)
     {
-        Md.SaveData.ChroniaSliders.Create(name, new());
+        ChroniaSlider s = new()
+        {
+            Value = name.GetSlider()
+        };
+
+        Md.SaveData.ChroniaSliders.Create(name, s);
 
         return Md.SaveData.ChroniaSliders[name];
     }
