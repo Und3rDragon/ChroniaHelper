@@ -72,24 +72,29 @@ public static class ChroniaFlagUtils
     /// <param name="slotName"></param>
     public static void PushFlag(this ChroniaFlag flag, string name)
     {
-        if (!flag.IsNormalFlag || flag.IsCustomFlag)
+        if (flag.HasCustomData || flag.HasCustomState)
         {
             Md.SaveData.ChroniaFlags.Enter(name, flag);
         }
         name.SetFlag(flag.Active);
-        
-        FlagRefresh();
     }
 
     public static void FlagRefresh()
     {
+        HashSet<string> removing = new();
+
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
-            if (!item.Value.IsCustomFlag && item.Value.IsNormalFlag)
+            if (!item.Value.HasCustomData && !item.Value.HasCustomState)
             {
-                Md.SaveData.ChroniaFlags.SafeRemove(item.Key);
+                removing.Add(item.Key);
             }
         }
+
+        removing.EachDo((i) =>
+        {
+            Md.SaveData.ChroniaFlags.SafeRemove(i);
+        });
     }
 
     public static void SetFlag(this string name, bool active)
@@ -110,7 +115,7 @@ public static class ChroniaFlagUtils
         var flag = name.PullFlag();
         flag.Active = active;
         flag.Global = global;
-        flag.Temporary = temporary;
+        flag.ResetOnDeath = temporary;
         flag.PushFlag(name);
     }
 
@@ -151,8 +156,8 @@ public static class ChroniaFlagUtils
         var flag = name.PullFlag();
         flag.Active = basicState;
         flag.Global = global;
-        flag.Temporary = temporary;
-        flag.Timed = timer;
+        flag.ResetOnDeath = temporary;
+        flag.ResetTimer(timer);
         flag.PushFlag(name);
     }
 

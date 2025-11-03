@@ -8,6 +8,23 @@ namespace ChroniaHelper.Utils.ChroniaSystem;
 
 public static class ChroniaSliderUtils
 {
+    public static void SliderRefresh()
+    {
+        HashSet<string> removing = new();
+
+        Md.SaveData.ChroniaSliders.EachDo((s) =>
+        {
+            if (!s.Value.Operating())
+            {
+                removing.Add(s.Key);
+            }
+        });
+
+        removing.EachDo((i) =>
+        {
+            Md.SaveData.ChroniaSliders.SafeRemove(i);
+        });
+    }
     public static bool CheckSlider(this string name)
     {
         if (MaP.session == null) { return false; }

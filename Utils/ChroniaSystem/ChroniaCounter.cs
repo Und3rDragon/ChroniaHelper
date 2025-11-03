@@ -16,7 +16,6 @@ public class ChroniaCounter
     {
         On.Celeste.Level.Reload += OnLevelReload;
         On.Celeste.Level.LoadLevel += OnLoadLevel;
-        On.Celeste.Level.Update += OnLevelUpdate;
         On.Monocle.Scene.Update += GlobalUpdate;
         On.Celeste.Level.TransitionRoutine += OnLevelTransition;
     }
@@ -25,25 +24,33 @@ public class ChroniaCounter
     {
         On.Celeste.Level.Reload -= OnLevelReload;
         On.Celeste.Level.LoadLevel -= OnLoadLevel;
-        On.Celeste.Level.Update -= OnLevelUpdate;
         On.Monocle.Scene.Update -= GlobalUpdate;
         On.Celeste.Level.TransitionRoutine -= OnLevelTransition;
     }
 
     public static IEnumerator OnLevelTransition(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData levelData, Vector2 dir)
     {
-        // Remove temporary on transitions
+        HashSet<string> removing = new();
+
+        // Reset temporary on transitions
         foreach (var item in Md.SaveData.ChroniaCounters)
         {
-            if (item.Value.Temporary)
+            if (item.Value.ResetOnTransition)
             {
-                foreach (var counter in MaP.session.Counters)
+                item.Key.SetCounter(item.Value.DefaultValue);
+                item.Value.Reset();
+                if (item.Value.RemoveWhenReset)
                 {
-                    if (counter.Key == item.Key) { MaP.session.Counters.Remove(counter); }
+                    removing.Add(item.Key);
                 }
-                Md.SaveData.ChroniaCounters.SafeRemove(item.Key);
             }
         }
+
+        removing.EachDo((i) =>
+        {
+            MaP.session.Counters.RemoveAll((item) => item.Key == i);
+            Md.SaveData.ChroniaCounters.SafeRemove(i);
+        });
 
         yield return new SwapImmediately(orig(self, levelData, dir)); //On transition
     }
@@ -51,16 +58,33 @@ public class ChroniaCounter
     public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
     {
         orig(self); // Once per reload, not on first enter
+    }
+
+    public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
+    {
+        orig(self, intro, fromLoader); // Once per level load, also reload
+
+        HashSet<string> removing = new();
 
         // Remove temporary
         foreach (var item in Md.SaveData.ChroniaCounters)
         {
-            foreach (var counter in MaP.session.Counters)
+            if (item.Value.ResetOnDeath)
             {
-                if (counter.Key == item.Key) { MaP.session.Counters.Remove(counter); }
+                item.Key.SetSlider(item.Value.DefaultValue);
+                item.Value.Reset();
+                if (item.Value.RemoveWhenReset)
+                {
+                    removing.Add(item.Key);
+                }
             }
-            Md.SaveData.ChroniaCounters.SafeRemove(item.Key);
         }
+
+        removing.EachDo((i) =>
+        {
+            MaP.session.Counters.RemoveAll((item) => item.Key == i);
+            Md.SaveData.ChroniaCounters.SafeRemove(i);
+        });
 
         // Apply global
         foreach (var item in Md.SaveData.ChroniaCounters)
@@ -72,89 +96,60 @@ public class ChroniaCounter
         }
     }
 
-    public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
-    {
-        orig(self, intro, fromLoader); // Once per level load, also reload
-
-        // Remove temporary
-        foreach (var item in Md.SaveData.ChroniaCounters)
-        {
-            foreach (var counter in MaP.session.Counters)
-            {
-                if (counter.Key == item.Key) { MaP.session.Counters.Remove(counter); }
-            }
-            Md.SaveData.ChroniaCounters.SafeRemove(item.Key);
-        }
-
-        // Apply global flags
-        foreach (var item in Md.SaveData.ChroniaCounters)
-        {
-            if (item.Value.Global && !item.Value.Temporary)
-            {
-                item.Value.SetCounter(item.Key);
-            }
-        }
-    }
-
-    public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
-    {
-        orig(self);
-
-        foreach (var item in Md.SaveData.ChroniaCounters)
-        {
-            // Non-global stuffs only
-            if (!item.Value.Global)
-            {
-                if (item.Value.Timed > 0f)
-                {
-                    item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
-                }
-                else if (item.Value.Timed == 0f)
-                {
-                    foreach (var counter in MaP.session.Counters)
-                    {
-                        if (counter.Key == item.Key) { MaP.session.Counters.Remove(counter); }
-                    }
-                    Md.SaveData.ChroniaCounters.SafeRemove(item.Key);
-                }
-            }
-        }
-    }
-
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
     {
         orig(self);
 
         if (Md.SaveData.IsNotNull())
         {
+            ChroniaCounterUtils.CounterRefresh();
+
+            HashSet<string> removing = new();
+
             foreach (var item in Md.SaveData.ChroniaCounters)
             {
-                // Security Check
-
-                // Global stuffs only
-                if (item.Value.Global)
+                if (self is not Level)
                 {
-                    if (item.Value.Timed > 0f)
+                    if (item.Value.Global && item.Value.Timed > 0f)
                     {
                         item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
                     }
-                    else if (item.Value.Timed == 0f)
+                }
+                else
+                {
+                    if (!item.Value.Global && item.Value.Timed > 0f)
                     {
-                        foreach (var counter in MaP.session.Counters)
-                        {
-                            if (counter.Key == item.Key) { MaP.session.Counters.Remove(counter); }
-                        }
-                        Md.SaveData.ChroniaCounters.SafeRemove(item.Key);
+                        item.Value.Timed = Calc.Approach(item.Value.Timed, 0f, Engine.DeltaTime);
                     }
                 }
+
+                if (item.Value.Timed == 0f)
+                {
+                    item.Key.SetCounter(item.Value.DefaultValue);
+                }
+
+                if (item.Value.RemoveWhenReset)
+                {
+                    removing.Add(item.Key);
+                }
             }
+
+            removing.EachDo((i) =>
+            {
+                MaP.session.Counters.RemoveAll((item) => item.Key == i);
+                Md.SaveData.ChroniaCounters.SafeRemove(i);
+            });
         }
     }
 
+
     public int Value { get; set; } = 0;
     public float Timed { get; set; } = -1f;
+    public float Orig_Timed { get; set; } = -1f;
     public bool Global { get; set; } = false;
-    public bool Temporary { get; set; } = false;
+    public bool ResetOnDeath { get; set; } = false;
+    public bool ResetOnTransition { get; set; } = false;
+    public bool RemoveWhenReset { get; set; } = true;
     public int DefaultValue { get; set; } = 0;
 
     public ChroniaCounter() { }
@@ -169,4 +164,23 @@ public class ChroniaCounter
     {
         Value = DefaultValue;
     }
+
+    public bool Operating()
+    {
+        return Value != DefaultValue || Timed >= 0f || Orig_Timed >= 0f || Global
+            || ResetOnDeath || ResetOnTransition || DefaultValue != 0
+            || !RemoveWhenReset;
+    }
+
+    public void SetTimer(float t)
+    {
+        Orig_Timed = t;
+        Timed = t;
+    }
+
+    public void ResetTimer()
+    {
+        Timed = Orig_Timed;
+    }
+
 }

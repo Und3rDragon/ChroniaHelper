@@ -30,9 +30,8 @@ public class ChroniaFlagTrigger : BaseTrigger
         {
             Active = e.Bool("Active", false),
             Global = e.Bool("Global", false),
-            Temporary = e.Bool("Temporary", false),
+            ResetOnDeath = e.Bool("Temporary", false),
             Force = e.Bool("Force", false),
-            Timed = e.Float("Timed", -1f),
             DefaultResetState = (ExpectedResetState)e.Int("DefaultResetState", 0),
             Tags = e.Attr("Tags").Split(',',StringSplitOptions.TrimEntries).ToList(),
             CustomData = e.Attr("CustomData").ParseSquaredString().SquareStringToDictionary(),
@@ -40,6 +39,8 @@ public class ChroniaFlagTrigger : BaseTrigger
                 .EachDo<string[], List<Labels>, string, Labels>(
                 (entry) => entry.MatchEnum<Labels>(0)),
         };
+
+        parent.ResetTimer(e.Float("Timed", -1f));
     }
 
     protected override void OnEnterExecute(Player player)

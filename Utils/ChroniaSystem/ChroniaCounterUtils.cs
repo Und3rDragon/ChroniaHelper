@@ -9,6 +9,23 @@ namespace ChroniaHelper.Utils.ChroniaSystem;
 
 public static class ChroniaCounterUtils
 {
+    public static void CounterRefresh()
+    {
+        HashSet<string> removing = new();
+
+        Md.SaveData.ChroniaCounters.EachDo((c) =>
+        {
+            if (!c.Value.Operating())
+            {
+                removing.Add(c.Key);
+            }
+        });
+
+        removing.EachDo((i) =>
+        {
+            Md.SaveData.ChroniaCounters.SafeRemove(i);
+        });
+    }
     public static bool CheckCounter(this string name)
     {
         if (MaP.session == null) { return false; }
