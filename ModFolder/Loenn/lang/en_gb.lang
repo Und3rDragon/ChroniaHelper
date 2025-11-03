@@ -1044,3 +1044,8 @@ entities.ChroniaHelper/TimeFadeCounterController.placements.name.controller=Time
 entities.ChroniaHelper/TimeFadeSliderController.placements.name.controller=Time Fade Slider Controller
 triggers.ChroniaHelper/CounterFadeTrigger.placements.name.trigger=Counter Fade Trigger
 triggers.ChroniaHelper/SliderFadeTrigger.placements.name.trigger=Slider Fade Trigger
+
+# ================= Danger Range Controller
+
+entities.ChroniaHelper/DangerRangeController.placements.name.controller=Danger Range Controller
+entities.ChroniaHelper/DangerRangeController.attributes.description.value=World Coordinate
