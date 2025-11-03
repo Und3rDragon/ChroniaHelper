@@ -40,6 +40,7 @@ public class ChroniaFlag
         On.Celeste.Level.TransitionRoutine += OnLevelTransition;
         On.Celeste.Level.Begin += OnLevelBegin;
     }
+    
     [UnloadHook]
     public static void Unload()
     {
@@ -128,9 +129,9 @@ public class ChroniaFlag
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
         orig(self, intro, fromLoader); // Once per level load, also reload
-
+        
         HashSet<string> removing = new();
-
+        
         // Remove temporary flags
         Md.SaveData.ChroniaFlags.EachDo((item) =>
         {
@@ -197,11 +198,11 @@ public class ChroniaFlag
             if(item.Value.Timed == 0f)
             {
                 item.Key.SetFlag(item.Value.ResetTo);
-            }
 
-            if(item.Value.RemoveWhenReset)
-            {
-                removing.Add(item.Key);
+                if (item.Value.RemoveWhenReset)
+                {
+                    removing.Add(item.Key);
+                }
             }
         }
         

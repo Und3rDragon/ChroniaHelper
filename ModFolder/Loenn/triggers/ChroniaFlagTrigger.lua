@@ -1,6 +1,6 @@
 local drawableText = require("structs.drawable_text")
 
-return {}
+--return {}
 
 return{
 	name = "ChroniaHelper/ChroniaFlagTrigger",
@@ -12,7 +12,10 @@ return{
             Name = "flag",
 			Active = false,
             Global = false,
-            Temporary = false,
+            ResetOnDeath = false,
+            ResetOnReload = false,
+            ResetOnTransition = false,
+            RemoveWhenReset = true,
             Force = false,
             Timed = -1,
             DefaultResetState = 0,

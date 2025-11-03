@@ -30,7 +30,10 @@ public class ChroniaFlagTrigger : BaseTrigger
         {
             Active = e.Bool("Active", false),
             Global = e.Bool("Global", false),
-            ResetOnDeath = e.Bool("Temporary", false),
+            ResetOnDeath = e.Bool("ResetOnDeath", false),
+            ResetOnReload = e.Bool("ResetOnReload",false),
+            ResetOnTransition = e.Bool("ResetOnTransition", false),
+            RemoveWhenReset = e.Bool("RemoveWhenReset", true),
             Force = e.Bool("Force", false),
             DefaultResetState = (ExpectedResetState)e.Int("DefaultResetState", 0),
             Tags = e.Attr("Tags").Split(',',StringSplitOptions.TrimEntries).ToList(),

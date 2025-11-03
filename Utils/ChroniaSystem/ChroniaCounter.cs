@@ -126,11 +126,11 @@ public class ChroniaCounter
                 if (item.Value.Timed == 0f)
                 {
                     item.Key.SetCounter(item.Value.DefaultValue);
-                }
 
-                if (item.Value.RemoveWhenReset)
-                {
-                    removing.Add(item.Key);
+                    if (item.Value.RemoveWhenReset)
+                    {
+                        removing.Add(item.Key);
+                    }
                 }
             }
 

@@ -126,11 +126,11 @@ public class ChroniaSlider
                 if(item.Value.Timed == 0f)
                 {
                     item.Key.SetSlider(item.Value.DefaultValue);
-                }
 
-                if (item.Value.RemoveWhenReset)
-                {
-                    removing.Add(item.Key);
+                    if (item.Value.RemoveWhenReset)
+                    {
+                        removing.Add(item.Key);
+                    }
                 }
             }
 
