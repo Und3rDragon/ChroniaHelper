@@ -37,7 +37,7 @@ public class FlagPacker : Entity
                 f = name.PullFlag();
 
                 f.Global = false;
-                f.Temporary = true;
+                f.ResetOnDeath = true;
                 f.PresetTags.Create(Labels.Packed);
                 f.CustomData.Enter("packed_label", label);
                 f.CustomData.Create("packed_triggered", "false");
@@ -50,7 +50,7 @@ public class FlagPacker : Entity
                 f = name.PullFlag();
 
                 f.Global = true;
-                f.Temporary = false;
+                f.ResetOnDeath = false;
                 f.PresetTags.Create(Labels.Packed);
                 f.CustomData.Enter("packed_label", label);
                 f.CustomData.Create("packed_triggered", "false");
@@ -61,7 +61,7 @@ public class FlagPacker : Entity
                 f = flag.PullFlag();
                 
                 f.Global = false;
-                f.Temporary = false;
+                f.ResetOnDeath = false;
                 f.PresetTags.Create(Labels.Packed);
                 f.CustomData.Enter("packed_label", label);
                 f.CustomData.Create("packed_triggered", "false");

@@ -181,7 +181,7 @@ public static class ChroniaFlagUtils
             Log.Info($"==============flag: ", item.Key, "===================");
             Log.Info($"active: {item.Value.Active}");
             Log.Info($"global: {item.Value.Global}");
-            Log.Info($"temporary: {item.Value.Temporary}");
+            Log.Info($"temporary: {item.Value.ResetOnDeath}");
             Log.Info($"force: {item.Value.Force}");
             Log.Info($"timer: {item.Value.Timed}");
             Log.Info($"resetTo: {item.Value.ResetTo}");
