@@ -56,18 +56,20 @@ public class BubblePushField : Entity
         data.Bool("liftOffOfGround", false),
         data.Bool("force", true),
         data.Attr("particleDirs", "particles/ChroniaHelper/bubble_a,particles/ChroniaHelper/bubble_b"),
-        data.Bool("noParticles")
+        data.Bool("noParticles"),
+        data.Bool("instant", false)
         )
     { }
 
     public string[] particlePaths;
     public int pDirLength;
     private bool noParticles;
+    private bool instant;
     public BubblePushField(Vector2 position, 
         int width, int height, float strength, 
         string direction, ActivationMode activationMode,
         string flag, bool liftOff, bool makeWind,
-        string particleDirs, bool noParticles)
+        string particleDirs, bool noParticles, bool instant)
     {
         Position = position;
         Strength = strength;
@@ -89,6 +91,7 @@ public class BubblePushField : Entity
             particlePaths[i] = particlePaths[i].Trim();
         }
 
+        this.instant = instant;
     }
 
     public override void Added(Scene scene)
@@ -139,7 +142,7 @@ public class BubblePushField : Entity
                     if (mover.Entity.CollideCheck(this))
                     {
                         if (WindMovers.ContainsKey(mover))
-                            WindMovers[mover] = Calc.Approach(WindMovers[mover], Strength, Engine.DeltaTime / .6f);
+                            WindMovers[mover] = Calc.Approach(WindMovers[mover], Strength, instant? Engine.DeltaTime * 10000f : Engine.DeltaTime / 0.6f);
                         else
                             WindMovers.Add(mover, 0f);
                     }
@@ -147,7 +150,7 @@ public class BubblePushField : Entity
                     {
                         if (WindMovers.ContainsKey(mover))
                         {
-                            WindMovers[mover] = Calc.Approach(WindMovers[mover], 0f, Engine.DeltaTime / 0.3f);
+                            WindMovers[mover] = Calc.Approach(WindMovers[mover], 0f, instant ? Engine.DeltaTime * 10000f : Engine.DeltaTime / 0.3f);
                             if (WindMovers[mover] == 0f)
                                 WindMovers.Remove(mover);
                         }

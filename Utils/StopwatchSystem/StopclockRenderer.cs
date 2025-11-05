@@ -17,6 +17,7 @@ public class StopclockRenderer : SerialImageRenderer
 {
     public StopclockRenderer(EntityData d, Vc2 o) : base(d, o)
     {
+        Tag = Tags.TransitionUpdate;
         Position = d.Position;
         Depth = d.Int("depth", -10000000);
         

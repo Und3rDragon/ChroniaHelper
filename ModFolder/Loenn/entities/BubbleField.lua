@@ -15,7 +15,7 @@ bubblePushField.placements  = {
         width           = 8,
         height          = 8,
         noParticles     = false,
-
+        instant         = false,
     }
 }
 

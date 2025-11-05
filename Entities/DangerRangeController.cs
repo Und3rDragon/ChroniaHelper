@@ -35,7 +35,6 @@ public class DangerRangeController : BaseEntity
             bool argX = greater ? player.Center.X > value : player.Center.X < value;
             bool argY = greater ? player.Center.Y > value : player.Center.Y < value;
             bool arg = (isX && argX) || (argY && isY);
-            Log.Info(argX, argY, isX && argX, argY && isY, arg);
             
             if (arg) { player.Die(player.Speed.SafeNormalize()); }
         }
