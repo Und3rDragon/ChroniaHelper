@@ -606,6 +606,10 @@ entities.ChroniaHelper/CustomBillboard.placements.name.customBillboard=Custom Bi
 
 entities.ChroniaHelper/CustomDustBunny.placements.name.CustomDustBunny=Custom Dust Bunny
 
+# ================= BG Tile Entity
+
+entities.ChroniaHelper/StaticBgTile.placements.name.tile=BG Tile Entity
+
 # ================= Seperated Tile
 
 entities.ChroniaHelper/SeperatedTile.placements.name.SeperatedTile=Floaty Bg Tile (Seperated)
