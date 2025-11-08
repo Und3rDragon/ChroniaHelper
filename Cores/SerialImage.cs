@@ -26,6 +26,7 @@ public class SerialImage
     public Dictionary<int, Vc2> segmentOffset = new();
     public bool flipX = false;
     public bool flipY = false;
+    public float depth = 0f;
     public SpriteEffects GetSpriteEffect()
     {
         SpriteEffects result = SpriteEffects.None;
@@ -122,21 +123,10 @@ public class SerialImage
             Vc2 dPos = shift + segmentStart + segmentPosition[i];
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
-
-            //Log.Info($"Source: {source[i]} => {selector(source[i])}");
-            //Log.Info($"Position: {position}");
-            //Log.Info($"origin: {origin}");
-            //Log.Info($"segmentOrigin: {segmentOrigin}");
-            //Log.Info($"renderMode: {renderMode}");
-            //Log.Info($"distance: {distance}");
-            //Log.Info($"texturePath: {texture.AtlasPath}");
-            //Log.Error("_____________________________");
-
-            texture.Draw(renderPosition + dPos + overallOffset + (hasSegOffset? segOffset : Vc2.Zero), 
-                segmentOrigin * new Vc2(texture.Width, texture.Height), color.Parsed(), scale, rotation.ToRad(),
-                GetSpriteEffect());
-            //Draw.HollowRect(renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero) - segmentOrigin * new Vc2(texture.Width, texture.Height),
-            //    texture.Width, texture.Height, Color.Red);
+            
+            Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
+                null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),
+                scale, GetSpriteEffect(), depth);
         }
     }
     

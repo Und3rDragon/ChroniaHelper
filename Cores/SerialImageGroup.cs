@@ -47,7 +47,8 @@ public class SerialImageGroup
     public Vc2 groupPosition = Vc2.Zero;
     public Vc2 groupOffset = Vc2.Zero;
     public List<string> path = new();
-    public List<float> scales = new();
+    public List<float> scales = new() { 1f };
+    public List<float> depths = new() { 0f };
     
     public string SafeGetPath(int i)
     {
@@ -86,6 +87,13 @@ public class SerialImageGroup
                 if(scales.Count > 0)
                 {
                     image.scale = scales[i.ClampMax(scales.Count - 1)];
+                }
+            }
+            if (depths.IsNotNull())
+            {
+                if(depths.Count > 0)
+                {
+                    image.depth = depths[i.ClampMax(depths.Count - 1)];
                 }
             }
             image.Measure(source[i], (item) => selector(item));
@@ -140,6 +148,13 @@ public class SerialImageGroup
                 if (scales.Count > 0)
                 {
                     image.scale = scales[i.ClampMax(scales.Count - 1)];
+                }
+            }
+            if (depths.IsNotNull())
+            {
+                if (depths.Count > 0)
+                {
+                    image.depth = depths[i.ClampMax(depths.Count - 1)];
                 }
             }
             image.Measure(source[i], (item) => selector(item));

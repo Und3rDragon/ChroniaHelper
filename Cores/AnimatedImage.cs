@@ -27,6 +27,7 @@ public class AnimatedImage
     public bool playing = false;
     public bool flipX = false;
     public bool flipY = false;
+    public float depth = 0;
     public SpriteEffects GetSpriteEffect()
     {
         SpriteEffects result = SpriteEffects.None;
@@ -54,11 +55,12 @@ public class AnimatedImage
     {
         if (!textures.ContainsKey(currentAnimation)) { return; }
         if (textures[currentAnimation].Count == 0 || textures[currentAnimation].IsNull()) { return; }
-
+        
         MTexture asset = textures[currentAnimation][currentFrame.Clamp(0, textures[currentAnimation].Count - 1)];
         
-        asset.Draw(renderPosition + offset, origin * new Vc2(asset.Width, asset.Height), 
-            color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
+        Draw.SpriteBatch.Draw(asset.Texture.Texture, renderPosition + offset, null, color.Parsed(), rotation.ToRad(),
+            origin * new Vc2(asset.Width, asset.Height),
+             scale, GetSpriteEffect(), depth);
     }
 
     private int frameSetIndex = 0;
