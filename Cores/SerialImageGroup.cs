@@ -47,6 +47,7 @@ public class SerialImageGroup
     public Vc2 groupPosition = Vc2.Zero;
     public Vc2 groupOffset = Vc2.Zero;
     public List<string> path = new();
+    public List<float> scales = new();
     
     public string SafeGetPath(int i)
     {
@@ -80,6 +81,13 @@ public class SerialImageGroup
             image.renderMode = template.renderMode;
             image.distance = template.distance;
             image.color = template.color;
+            if (scales.IsNotNull())
+            {
+                if(scales.Count > 0)
+                {
+                    image.scale = scales[i.ClampMax(scales.Count - 1)];
+                }
+            }
             image.Measure(source[i], (item) => selector(item));
             members.Add(image);
         }
@@ -127,6 +135,13 @@ public class SerialImageGroup
             image.renderMode = template.renderMode;
             image.distance = template.distance;
             image.color = template.color;
+            if (scales.IsNotNull())
+            {
+                if (scales.Count > 0)
+                {
+                    image.scale = scales[i.ClampMax(scales.Count - 1)];
+                }
+            }
             image.Measure(source[i], (item) => selector(item));
             members.Add(image);
         }

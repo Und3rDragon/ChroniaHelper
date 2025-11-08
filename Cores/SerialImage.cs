@@ -62,8 +62,8 @@ public class SerialImage
             
             if (i == 0)
             {
-                p1 = new Vector2(-asset.Width, -asset.Height) * segmentOrigin;
-                p2 = new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin);
+                p1 = new Vector2(-asset.Width, -asset.Height) * segmentOrigin * scale;
+                p2 = new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
                 segmentPosition.Add(cal);
                 
                 continue;
@@ -77,11 +77,11 @@ public class SerialImage
             }
             else
             {
-                cal.X = cal.X + lastAsset.Width * (1 - segmentOrigin.X) + asset.Width * segmentOrigin.X + distance;
+                cal.X = cal.X + lastAsset.Width * (1 - segmentOrigin.X) * scale + asset.Width * segmentOrigin.X * scale + distance;
             }
             
-            Vc2 _p1 = cal + new Vector2(-asset.Width, -asset.Height) * segmentOrigin;
-            Vc2 _p2 = cal + new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin);
+            Vc2 _p1 = cal + new Vector2(-asset.Width, -asset.Height) * segmentOrigin * scale;
+            Vc2 _p2 = cal + new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
 
             segmentPosition.Add(cal);
 

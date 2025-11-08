@@ -34,6 +34,7 @@ renderer.placements = {
         letterDisplayInterval = 0.1,
         fontColor = "ffffff",
         triggerFlag = "",
+        scale = "1",
         typewriterEffect = false,
         leaveReset = false,
     }, 

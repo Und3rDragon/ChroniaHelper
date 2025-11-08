@@ -32,6 +32,11 @@ public class MessageDisplayer : Entity
         renderer = new SerialImageGroup(template, d.Attr("textures","ChroniaHelper/DisplayFonts/font").Split(',',StringSplitOptions.TrimEntries));
         renderer.groupOrigin = new Vc2(d.Float("overallOriginX", 0.5f), d.Float("overallOriginY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);
+        string[] _scales = d.Attr("scale", "1").Split(',', StringSplitOptions.TrimEntries);
+        foreach(var scale in _scales)
+        {
+            renderer.scales.Add(scale.ParseFloat(1f));
+        }
 
         content = d.Attr("dialogID");
 
