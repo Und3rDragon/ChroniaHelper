@@ -29,7 +29,7 @@ public class MessageDisplayZone : BaseEntity
         template.color.alpha = 0f;
 
         renderer = new SerialImageGroup(template, d.Attr("textures","ChroniaHelper/DisplayFonts/font").Split(',',StringSplitOptions.TrimEntries));
-        renderer.groupOrigin = new Vc2(d.Float("originX", 0.5f), d.Float("originY", 0.5f));
+        renderer.groupOrigin = new Vc2(d.Float("overallOriginX", 0.5f), d.Float("overallOriginY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);
 
         content = d.Attr("dialogID");
