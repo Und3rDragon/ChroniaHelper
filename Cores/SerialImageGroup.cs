@@ -47,8 +47,8 @@ public class SerialImageGroup
     public Vc2 groupPosition = Vc2.Zero;
     public Vc2 groupOffset = Vc2.Zero;
     public List<string> path = new();
-    public List<float> scales = new() { 1f };
-    public List<float> depths = new() { 0f };
+    public List<float> scales = new();
+    public List<float> depths = new();
     
     public string SafeGetPath(int i)
     {
@@ -82,19 +82,21 @@ public class SerialImageGroup
             image.renderMode = template.renderMode;
             image.distance = template.distance;
             image.color = template.color;
-            if (scales.IsNotNull())
+            if(scales.TryGetOrGetLast(i, out float? scale))
             {
-                if(scales.Count > 0)
-                {
-                    image.scale = scales[i.ClampMax(scales.Count - 1)];
-                }
+                image.scale = scale?? 1f;
             }
-            if (depths.IsNotNull())
+            else
             {
-                if(depths.Count > 0)
-                {
-                    image.depth = depths[i.ClampMax(depths.Count - 1)];
-                }
+                image.scale = 1f;
+            }
+            if(depths.TryGetOrGetLast(i, out float? depth))
+            {
+                image.depth = depth?? 0f;
+            }
+            else
+            {
+                image.depth = 0f;
             }
             image.Measure(source[i], (item) => selector(item));
             members.Add(image);
@@ -143,19 +145,21 @@ public class SerialImageGroup
             image.renderMode = template.renderMode;
             image.distance = template.distance;
             image.color = template.color;
-            if (scales.IsNotNull())
+            if (scales.TryGetOrGetLast(i, out float? scale))
             {
-                if (scales.Count > 0)
-                {
-                    image.scale = scales[i.ClampMax(scales.Count - 1)];
-                }
+                image.scale = scale ?? 1f;
             }
-            if (depths.IsNotNull())
+            else
             {
-                if (depths.Count > 0)
-                {
-                    image.depth = depths[i.ClampMax(depths.Count - 1)];
-                }
+                image.scale = 1f;
+            }
+            if (depths.TryGetOrGetLast(i, out float? depth))
+            {
+                image.depth = depth ?? 0f;
+            }
+            else
+            {
+                image.depth = 0f;
             }
             image.Measure(source[i], (item) => selector(item));
             members.Add(image);

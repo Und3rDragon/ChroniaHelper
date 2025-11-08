@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -676,5 +677,110 @@ public static class CollectiveUtils
         }
 
         return true;
+    }
+    
+    public static bool TryGet<T, Target>(this ICollection<T> source, Predicate<T> condition, out Target result)
+        where Target : ICollection<T>, new()
+    {
+        bool match = false;
+        result = new();
+        foreach(var item in source)
+        {
+            if (condition(item))
+            {
+                result.Add(item);
+                match = true;
+            }
+        }
+
+        return match;
+    }
+
+    public static bool TryGetOrGetFirst<T>(this IList<T> source, int index, out T? result)
+        where T : struct
+    {
+        if (source.IsNull())
+        {
+            result = null;
+            return false;
+        }
+        if (source.Count == 0)
+        {
+            result = null;
+            return false;
+        }
+        if (index >= source.Count)
+        {
+            result = source[0];
+            return true;
+        }
+
+        result = source[index];
+        return true;
+    }
+
+    public static bool TryGetOrGetLast<T>(this IList<T> source, int index, out T? result)
+        where T : struct
+    {
+        if (source.IsNull())
+        {
+            result = null;
+            return false;
+        }
+        if (source.Count == 0)
+        {
+            result = null;
+            return false;
+        }
+        if (index >= source.Count)
+        {
+            result = source[source.Count - 1];
+            return true;
+        }
+
+        result = source[index];
+        return true;
+    }
+
+
+    public static bool TryGet<T>(this IList<T> source, int index, out T? result)
+        where T : struct
+    {
+        if (source.IsNull())
+        {
+            result = null;
+            return false;
+        }
+        if(source.Count == 0)
+        {
+            result = null;
+            return false;
+        }
+        if(index >= source.Count)
+        {
+            result = null;
+            return false;
+        }
+
+        result = source[index];
+        return true;
+    }
+
+    public static T TryGet<T>(this IList<T> source, int index, T fallback)
+    {
+        if (source.IsNull())
+        {
+            return fallback;
+        }
+        if (source.Count == 0)
+        {
+            return fallback;
+        }
+        if (index >= source.Count)
+        {
+            return fallback;
+        }
+
+        return source[index];
     }
 }
