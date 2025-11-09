@@ -41,6 +41,10 @@ renderer.placements = {
 }
 
 renderer.fieldInformation = {
+    scale = {
+        fieldType = "list",
+        minimumElements = 1,
+    },
     textures = {
         fieldType = "list",
         minimumElements = 1,

@@ -15,11 +15,14 @@ public class BaseEntity : Entity
     public BaseEntity(EntityData data, Vc2 offset) : base(data.Position + offset)
     {
         nodes = data.NodesWithPosition(offset);
+
+        ID = data.ID;
     }
     /// <summary>
     /// If there are no nodes, there is only one element in the array, and it's the Position
     /// </summary>
     public Vc2[] nodes;
+    public int ID;
 
     public override void Added(Scene scene)
     {
@@ -145,37 +148,6 @@ public class BaseEntity : Entity
         RemovedExecute(scene);
         yield return RemovedRoutine(scene);
     }
-
-    public override void Render()
-    {
-        base.Render();
-
-        if (!RenderArg) { return; }
-        
-        if(RenderDelay <= 0f)
-        {
-            RenderExecute();
-            Add(new Coroutine(RenderInterfere(), true));
-        }
-        else
-        {
-            Add(new Coroutine(RenderInterfere(), true));
-        }
-    }
-    public bool RenderArg = true;
-    public float RenderDelay = -1f;
-    
-    protected virtual void RenderExecute() { }
-    protected virtual IEnumerator RenderRoutine() { yield break; }
-    private IEnumerator RenderInterfere()
-    {
-        if(RenderDelay > 0f)
-        {
-            yield return RenderDelay;
-        }
-        RenderExecute();
-        yield return RenderRoutine();
-    }
     
     public override void Update()
     {
@@ -272,33 +244,5 @@ public class BaseEntity : Entity
         }
         SceneEndExecute(scene);
         yield return SceneEndRoutine(scene);
-    }
-
-    public override void DebugRender(Camera camera)
-    {
-        base.DebugRender(camera);
-        
-        if(DebugRenderDelay <= 0f)
-        {
-            DebugRenderExecute(camera);
-            Add(new Coroutine(DebugRenderRoutine(camera), true));
-        }
-        else
-        {
-            Add(new Coroutine(DebugRenderInterfere(camera), true));
-        }
-    }
-    public float DebugRenderDelay = -1f;
-    
-    protected virtual void DebugRenderExecute(Camera camera) { }
-    protected virtual IEnumerator DebugRenderRoutine(Camera camera) { yield break; }
-    private IEnumerator DebugRenderInterfere(Camera camera)
-    {
-        if(DebugRenderDelay > 0f)
-        {
-            yield return DebugRenderDelay;
-        }
-        DebugRenderExecute (camera);
-        yield return DebugRenderRoutine(camera);
     }
 }

@@ -14,7 +14,7 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/MessageDisplayZone")]
-public class MessageDisplayZone : BaseEntity
+public class MessageDisplayZone : HDRenderEntity
 {
     public MessageDisplayZone(EntityData d, Vc2 o) : base(d, o)
     {
@@ -39,8 +39,8 @@ public class MessageDisplayZone : BaseEntity
 
         content = d.Attr("dialogID");
 
-        parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
-        staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
+        Parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
+        StaticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
         
         typingDisplay = d.Bool("typewriterEffect", false);
         fadeInSpeed = d.Float("fadeInSpeed", 4f);
@@ -55,11 +55,11 @@ public class MessageDisplayZone : BaseEntity
         leaveReset = d.Bool("leaveReset", false);
 
         Collider = new Hitbox(d.Width, d.Height);
+
+        Prepare();
     }
     public SerialImageGroup renderer;
     public string content;
-    public Vc2 parallax = Vc2.Zero;
-    public Vc2 staticScreen = Vc2.Zero;
     private bool typingDisplay = true;
     public float fadeInSpeed = 4f, fadeOutSpeed = 2f;
     public float primaryAlpha = 1f;
@@ -95,10 +95,8 @@ public class MessageDisplayZone : BaseEntity
     
     List<string> progressedText = new();
     List<int> progress = new();
-    public override void Render()
+    protected override void HDRender()
     {
-        base.Render();
-
         List<string> orig = ParseRenderTarget();
 
         // set up typer text
@@ -142,7 +140,7 @@ public class MessageDisplayZone : BaseEntity
         
         renderer.Render(progressedText,
             (c) => Reflection(c),
-            nodes[1].InParallax(parallax, staticScreen));
+            ParseGlobalPositionToHDPosition(nodes[1], Parallax, StaticScreen) * HDScale);
     }
     public bool renderArg => inRange || hasOverrideFlag && overrideFlag.GetFlag();
 

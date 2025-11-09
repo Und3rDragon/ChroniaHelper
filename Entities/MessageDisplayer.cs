@@ -14,9 +14,9 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/MessageDisplayer")]
-public class MessageDisplayer : Entity
+public class MessageDisplayer : HDRenderEntity
 {
-    public MessageDisplayer(EntityData d, Vc2 o) : base(d.Position + o)
+    public MessageDisplayer(EntityData d, Vc2 o) : base(d, o)
     {
         base.Depth = d.Int("depth", -100000);
 
@@ -40,8 +40,8 @@ public class MessageDisplayer : Entity
 
         content = d.Attr("dialogID");
 
-        parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
-        staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
+        Parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
+        StaticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
 
         renderDistance = d.Float("renderDistance", -1f);
         typingDisplay = d.Bool("typewriterEffect", false);
@@ -53,11 +53,11 @@ public class MessageDisplayer : Entity
         hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
 
         reference = d.Attr("characterReference", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,");
+
+        Prepare();
     }
     public SerialImageGroup renderer;
     public string content;
-    public Vc2 parallax = Vc2.Zero;
-    public Vc2 staticScreen = Vc2.Zero;
     private bool typingDisplay = true;
     public float renderDistance = 256f, fadeInSpeed = 4f, fadeOutSpeed = 2f;
     public float primaryAlpha = 1f;
@@ -66,7 +66,6 @@ public class MessageDisplayer : Entity
     private bool hasOverrideFlag = false;
 
     public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
-
     public List<string> ParseRenderTarget()
     {
         string text = Dialog.Clean(content, Dialog.Languages["english"]);
@@ -92,10 +91,8 @@ public class MessageDisplayer : Entity
 
     List<string> progressedText = new();
     List<int> progress = new();
-    public override void Render()
+    protected override void HDRender()
     {
-        base.Render();
-
         List<string> orig = ParseRenderTarget();
 
         // set up typer text
@@ -139,8 +136,9 @@ public class MessageDisplayer : Entity
         
         renderer.Render(progressedText,
             (c) => Reflection(c),
-            Position.InParallax(parallax, staticScreen));
+            ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen) * HDScale);
     }
+    
     public bool renderArg => (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());
 
     public bool inRange = false;
