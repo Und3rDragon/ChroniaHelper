@@ -24,6 +24,7 @@ renderer.placements = {
         positionAlign = 5,
         segmentAlign = 5,
         segmentDistance = 1,
+        scale = 6,
         rendererColor = "ffffff",
         maximumUnit = 3,
         minimumUnit = 0,

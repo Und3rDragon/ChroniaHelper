@@ -23,6 +23,7 @@ renderer.placements = {
         positionAlign = 0,
         segmentAlign = 0,
         segmentDistance = 1,
+        scale = 6,
         rendererColor = "ffffff",
         segmentOffset = "0,0,0;1,0,0",
         showMilliseconds = false,

@@ -18,7 +18,6 @@ public class RealTimeRenderer : SerialImageRenderer
 {
     public RealTimeRenderer(EntityData d, Vc2 o) : base(d, o)
     {
-        Position = d.Position;
         Depth = d.Int("depth", -10000000);
 
         source = d.Attr("sourcePath", "ChroniaHelper/StopclockFonts/font");
@@ -42,29 +41,29 @@ public class RealTimeRenderer : SerialImageRenderer
             offset = new Vc2(seg[1].ParseInt(0), seg[2].ParseInt(0));
             image.segmentOffset.Enter(index, offset);
         }
+        image.scale = d.Float("scale", 6f).GetAbs();
 
-        parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
-        staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
+        Parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
+        StaticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
 
         showMilliseconds = d.Bool("showMilliseconds", false);
     }
     private bool showMilliseconds = false;
 
-    public override void Render()
+    public override string ParseRenderTarget()
     {
-        base.Render();
-
         string format = showMilliseconds ? "HH:mm:ss:fff" : "HH:mm:ss";
-        string renderTarget = DateTime.Now.ToString(format);
-        
-        image.Render(renderTarget, (c) =>
-        {
-            return $"{c}".ParseInt(c == ':' ? 10 : 0);
-        }, Position.InGlobalParallax(parallax, staticScreen));
+        return DateTime.Now.ToString(format);
     }
 
-    public override void Update()
+    public override int Reflection(char c)
     {
-        base.Update();
+        return $"{c}".ParseInt(c == ':' ? 10 : 0);
     }
+
+    public override Vc2 SetRenderPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)
+    {
+        return ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen) * HDScale;
+    }
+    
 }

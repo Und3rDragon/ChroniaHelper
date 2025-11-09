@@ -11,17 +11,14 @@ namespace ChroniaHelper.Cores;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/SerialImageRenderer")]
-public class SerialImageRenderer : Entity
+public class SerialImageRenderer : HDRenderEntity
 {
-    public SerialImageRenderer(EntityData d, Vc2 o) : base(d.Position + o)
+    public SerialImageRenderer(EntityData d, Vc2 o) : base(d, o)
     {
-        Position = d.Position;
         Depth = d.Int("depth", -10000000);
     }
     public SerialImage image = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
     public string source = "ChroniaHelper/DisplayFonts/font";
-    public Vc2 parallax = new Vc2(1f, 1f);
-    public Vc2 staticScreen = new Vc2(160f, 90f);
     
     /// <summary>
     /// index,x,y => segment offset
@@ -53,13 +50,16 @@ public class SerialImageRenderer : Entity
         return $"{c}".ParseInt(c == ':' ? 10 : 0);
     }
     
-    public override void Render()
+    public virtual Vc2 SetRenderPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)
     {
-        base.Render();
-
-        string renderTarget = ParseRenderTarget();
-
-        image.Render(renderTarget, (c) => Reflection(c), Position.InGlobalParallax(parallax, staticScreen));
+        return ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen) * HDScale;
+    }
+    
+    protected override void HDRender()
+    {
+        image.Render(ParseRenderTarget(), 
+            (c) => Reflection(c), 
+            SetRenderPosition(Position, Parallax, StaticScreen));
     }
 
     public override void Update()

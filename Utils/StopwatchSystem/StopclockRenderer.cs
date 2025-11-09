@@ -17,8 +17,7 @@ public class StopclockRenderer : SerialImageRenderer
 {
     public StopclockRenderer(EntityData d, Vc2 o) : base(d, o)
     {
-        Tag = Tags.TransitionUpdate;
-        Position = d.Position;
+        Tag |= Tags.TransitionUpdate;
         Depth = d.Int("depth", -10000000);
         
         source = d.Attr("sourcePath", "ChroniaHelper/StopclockFonts/font");
@@ -45,10 +44,11 @@ public class StopclockRenderer : SerialImageRenderer
             offset = new Vc2(seg[1].ParseInt(0), seg[2].ParseInt(0));
             image.segmentOffset.Enter(index, offset);
         }
+        image.scale = d.Float("scale", 6f).GetAbs();
         
         clockTag = d.Attr("stopclockTag", "stopclock");
-        parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
-        staticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
+        Parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
+        StaticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
 
         maxUnit = d.Int("maximumUnit", 3);
         minUnit = d.Int("minimumUnit", 0);
@@ -60,12 +60,10 @@ public class StopclockRenderer : SerialImageRenderer
     private enum Units { Year = 6, Month = 5, Day = 4, Hour = 3, Minute = 2, Second = 1, Millisecond = 0 }
     private int maxUnit, minUnit;
     private bool trimZeros;
-
-    public override void Render()
+    
+    public override string ParseRenderTarget()
     {
-        base.Render();
-
-        if (!clockTag.GetStopclock(out Stopclock clock)) { return; }
+        if (!clockTag.GetStopclock(out Stopclock clock)) { return ""; }
 
         clock.GetClampedTimeData(out int[] data, minUnit, maxUnit);
 
@@ -82,16 +80,23 @@ public class StopclockRenderer : SerialImageRenderer
                 renderTarget = $"{data[i]:00}:" + renderTarget;
             }
         }
-        
+
         if (trimZeros)
         {
             renderTarget = Regex.Replace(renderTarget, "0+:+", "");
         }
-        
-        image.Render(renderTarget, (c) =>
-        {
-            return $"{c}".ParseInt(c == ':' ? 10 : 0);
-        }, Position.InGlobalParallax(parallax, staticScreen));
+
+        return renderTarget;
+    }
+
+    public override int Reflection(char c)
+    {
+        return $"{c}".ParseInt(c == ':' ? 10 : 0);
+    }
+
+    public override Vc2 SetRenderPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)
+    {
+        return ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen) * HDScale;
     }
 
     public override void Update()
