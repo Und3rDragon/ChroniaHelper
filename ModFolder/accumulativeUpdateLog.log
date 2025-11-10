@@ -1,0 +1,30 @@
+New entities:
+    Stopclock System indluded:
+        + Stopclock Trigger
+        + Stopclock Action Controller
+        + Stopclock Flag Controller
+
+    Renderers:
+        + Stopclock Renderer (Stopclock System)
+        + Message Displayer
+        + Real Time Renderer
+    
+    Danger Range Controller
+
+    Static BG Tile
+    
+Entities Enhancements:
+    Bubble Push Field + Instant Mode
+    Floaty BG Tile & Floaty BG Tile Separated <- Falling Block Colliding Fix
+
+HUD: Some home-made features for skin-modders mostly
+    + Dash Displayer
+    + Stamina Displayer
+    + Player Sprite Animation and Path Displayer
+    + Player State Machine Displayer
+    + Player Position Displayer
+
+Optimizations:
+    Bezier Zipmover optimized
+    + Teleport Trigger speed mode
+    Custom Booster Render bug fix

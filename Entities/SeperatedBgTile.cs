@@ -36,7 +36,8 @@ public class SeperatedBgTile : Platform
         Depth = depth;
         
         Collider = new Hitbox(width, height);
-
+        Collidable = false;
+        
         this.width = width;
         this.height = height;
 

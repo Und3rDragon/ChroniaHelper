@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Utils;
@@ -36,7 +37,8 @@ public class FloatyBgTile : Platform
         Depth = depth;
         sineWave = !disableSpawnOffset ? Calc.Random.NextFloat((float)Math.PI * 2f) : 0f;
         Collider = new Hitbox(width, height);
-        //Collidable = false;
+        Collidable = false;
+        
         HookedToFg = false;
 
         this.floatAmp = lerp >= 0 ? lerp : 4f;
@@ -157,8 +159,12 @@ public class FloatyBgTile : Platform
             return;
         }
 
-        foreach (FloatyBgTile bgTile in self.Scene.CollideAll<FloatyBgTile>(new Rectangle((int)from.X, (int)from.Y, (int)from.Width, (int)from.Height)))
+        foreach (FloatyBgTile bgTile in MaP.level.Tracker.GetEntities<FloatyBgTile>())
         {
+            if(!bgTile.Collider.Bounds.Crossover(new Rectangle((int)from.X, (int)from.Y, (int)from.Width, (int)from.Height)))
+            {
+                continue;
+            }
             if (!bgTileList.Contains(bgTile))
             {
                 if (!bgTile.awake)
@@ -183,7 +189,7 @@ public class FloatyBgTile : Platform
                     // try to continue expanding our group via nearby floaty fg tiles.
                     foreach (FloatySpaceBlock entity in self.Scene.Tracker.GetEntities<FloatySpaceBlock>())
                     {
-                        if (!entity.HasGroup && self.Scene.CollideCheck(new Rectangle((int)otherBg.X, (int)otherBg.Y, (int)otherBg.Width, (int)otherBg.Height), entity))
+                        if (!entity.HasGroup && entity.Collider.Bounds.Crossover(new Rectangle((int)otherBg.X, (int)otherBg.Y, (int)otherBg.Width, (int)otherBg.Height)))
                         {
                             FloatySpaceBlock_AddToGroupAndFindChildren(self, entity);
                         }
@@ -255,7 +261,7 @@ public class FloatyBgTile : Platform
 
         foreach (FloatyBgTile entity in Scene.Tracker.GetEntities<FloatyBgTile>())
         {
-            if (!entity.HasGroup && (Scene.CollideCheck(new Rectangle((int)from.X - 1, (int)from.Y, (int)from.Width + 2, (int)from.Height), entity) || Scene.CollideCheck(new Rectangle((int)from.X, (int)from.Y - 1, (int)from.Width, (int)from.Height + 2), entity)))
+            if (!entity.HasGroup && (entity.Collider.Bounds.Crossover(new Rectangle((int)from.X - 1, (int)from.Y, (int)from.Width + 2, (int)from.Height)) || entity.Collider.Bounds.Crossover(new Rectangle((int)from.X, (int)from.Y - 1, (int)from.Width, (int)from.Height + 2))))
             {
                 if (from.HookedToFg)
                 {

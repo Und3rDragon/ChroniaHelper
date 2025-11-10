@@ -406,4 +406,40 @@ public static partial class GeometryUtils
             return t * AB.Length();
         }
     }
+
+    /// <summary>
+    /// 判断两个矩形是否相交。
+    /// 如果它们仅在边或角点接触（即交集面积为0），则返回 abstractConditionValue；
+    /// 如果有实际重叠区域（面积 > 0），则返回 true；
+    /// 如果完全不相交，返回 false。
+    /// </summary>
+    public static bool Crossover(this Rectangle orig, Rectangle target, bool abstractConditionValue = false)
+    {
+        // 计算交集区域的边界
+        int left = Math.Max(orig.Left, target.Left);
+        int right = Math.Min(orig.Right, target.Right);
+        int top = Math.Max(orig.Top, target.Top);
+        int bottom = Math.Min(orig.Bottom, target.Bottom);
+
+        // 检查是否有交集
+        if (left >= right || top >= bottom)
+        {
+            // 完全无交集
+            return false;
+        }
+
+        // 此时存在交集区域
+        int width = right - left;
+        int height = bottom - top;
+
+        if (width == 0 || height == 0)
+        {
+            // 理论上由于上面的 >= 判断，这里不会发生，
+            // 但为了逻辑清晰：如果交集退化为线或点（面积为0）
+            return abstractConditionValue;
+        }
+
+        // 有正面积的重叠区域
+        return true;
+    }
 }

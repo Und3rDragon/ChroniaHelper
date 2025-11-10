@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Utils;
@@ -30,7 +31,7 @@ public class StaticBgTile : Platform
         Depth = depth;
         
         Collider = new Hitbox(width, height);
-        //Collidable = false;
+        Collidable = false;
         HookedToFg = false;
         
     }
@@ -42,11 +43,7 @@ public class StaticBgTile : Platform
 
     public bool HasGroup { get; private set; }
     public bool MasterOfGroup { get; private set; }
-
-    private static List<StaticBgTile> GetBgTileList(FloatySpaceBlock block) => DynamicData.For(block).Get<List<StaticBgTile>>(Cons.BgTileListDynamicDataName);
-    private static void SetBgTileList(FloatySpaceBlock block, List<StaticBgTile> tiles) => DynamicData.For(block).Set(Cons.BgTileListDynamicDataName, tiles);
-    private static void FloatySpaceBlock_AddToGroupAndFindChildren(FloatySpaceBlock parent, FloatySpaceBlock child) => DynamicData.For(parent).Invoke("AddToGroupAndFindChildren", new object[] { child });
-
+    
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
@@ -112,73 +109,6 @@ public class StaticBgTile : Platform
         Group = null;
         base.Removed(scene);
     }
-
-    internal static void Load()
-    {
-        On.Celeste.FloatySpaceBlock.AddToGroupAndFindChildren += AddToGroupAndFindChildrenAddendum;
-        On.Celeste.FloatySpaceBlock.Awake += AwakeAddendum;
-
-    }
-    internal static void Unload()
-    {
-        On.Celeste.FloatySpaceBlock.AddToGroupAndFindChildren -= AddToGroupAndFindChildrenAddendum;
-        On.Celeste.FloatySpaceBlock.Awake -= AwakeAddendum;
-    }
-
-    private static void AddToGroupAndFindChildrenAddendum(On.Celeste.FloatySpaceBlock.orig_AddToGroupAndFindChildren orig, FloatySpaceBlock self, FloatySpaceBlock from)
-    {
-        orig(self, from);
-
-        if (GetBgTileList(self) is not List<StaticBgTile> bgTileList)
-        {
-            return;
-        }
-
-        foreach (StaticBgTile bgTile in self.Scene.CollideAll<StaticBgTile>(new Rectangle((int)from.X, (int)from.Y, (int)from.Width, (int)from.Height)))
-        {
-            if (!bgTileList.Contains(bgTile))
-            {
-                if (!bgTile.awake)
-                {
-                    bgTile.Awake(self.Scene);
-                }
-
-                bgTileList.Add(bgTile);
-
-                // make the FG tile handle moving our BG tile.
-                self.Moves[bgTile] = bgTile.Position;
-
-                StaticBgTile masterBgTile = bgTile.MasterOfGroup ? bgTile : bgTile.master;
-                masterBgTile.HookedToFg = true;
-
-                foreach (StaticBgTile otherBg in masterBgTile.Group)
-                {
-                    // also attach all remaining floaty tiles in our group to the fg tile.
-                    // this is needed to make sure that the group forms correctly regardless of load order.
-                    self.Moves[otherBg] = otherBg.Position;
-
-                    // try to continue expanding our group via nearby floaty fg tiles.
-                    foreach (FloatySpaceBlock entity in self.Scene.Tracker.GetEntities<FloatySpaceBlock>())
-                    {
-                        if (!entity.HasGroup && self.Scene.CollideCheck(new Rectangle((int)otherBg.X, (int)otherBg.Y, (int)otherBg.Width, (int)otherBg.Height), entity))
-                        {
-                            FloatySpaceBlock_AddToGroupAndFindChildren(self, entity);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private static void AwakeAddendum(On.Celeste.FloatySpaceBlock.orig_Awake orig, FloatySpaceBlock self, Scene scene)
-    {
-        if (!self.HasGroup)
-        {
-            SetBgTileList(self, new List<StaticBgTile>());
-        }
-
-        orig(self, scene);
-    }
     
     private void AddToGroupAndFindChildren(StaticBgTile from)
     {
@@ -212,7 +142,10 @@ public class StaticBgTile : Platform
 
         foreach (StaticBgTile entity in Scene.Tracker.GetEntities<StaticBgTile>())
         {
-            if (!entity.HasGroup && (Scene.CollideCheck(new Rectangle((int)from.X - 1, (int)from.Y, (int)from.Width + 2, (int)from.Height), entity) || Scene.CollideCheck(new Rectangle((int)from.X, (int)from.Y - 1, (int)from.Width, (int)from.Height + 2), entity)))
+            bool cond1 = entity.Collider.Bounds.Crossover(new Rectangle((int)from.X - 1, (int)from.Y, (int)from.Width + 2, (int)from.Height));
+            bool cond2 = entity.Collider.Bounds.Crossover(new Rectangle((int)from.X, (int)from.Y - 1, (int)from.Width, (int)from.Height + 2));
+            
+            if (!entity.HasGroup && (cond1 || cond2))
             {
                 if (from.HookedToFg)
                 {
