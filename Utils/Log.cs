@@ -52,21 +52,11 @@ public static class Log
     {
         Output(LogLevel.Error, obj.ArrayToString());
     }
-
-    public static void Print(this object obj)
+    
+    public static void Print(this object obj, int? colorIndex = null, LogLevel level = LogLevel.Info)
     {
-        string text = obj == null ? "null" : obj.ToString();
-        int color = 11;
-
-        Console.ForegroundColor = (ConsoleColor)color;
-        Logger.Log(LogLevel.Info, Tag, text);
-        Console.ResetColor();
-    }
-
-    public static void Print(this object obj, int colorIndex, LogLevel level = LogLevel.Info)
-    {
-        string text = obj == null ? "null" : obj.ToString();
-        int color = int.Clamp(colorIndex, 0, 15);
+        string text = obj?.ToString() ?? "null";
+        int color = int.Clamp(colorIndex ?? 11, 0, 15);
 
         Console.ForegroundColor = (ConsoleColor)color;
         Logger.Log(level, Tag, text);
@@ -83,59 +73,62 @@ public static class Log
         Console.ResetColor();
     }
 
-    public static void Print(this object[] obj, int colorIndex, LogLevel level = LogLevel.Info)
+    public static void Print(this object[] obj, int? colorIndex = null, LogLevel level = LogLevel.Info)
     {
         string text = obj.ArrayToString();
-        int color = int.Clamp(colorIndex, 0, 15);
+        int color = int.Clamp(colorIndex?? 11, 0, 15);
 
         Console.ForegroundColor = (ConsoleColor)color;
         Logger.Log(level, Tag, text);
         Console.ResetColor();
     }
 
-    public static void Print(this object obj, ConsoleColor color, LogLevel level = LogLevel.Info)
+    public static void Print(this object obj, ConsoleColor? color = null, LogLevel level = LogLevel.Info)
     {
-        string text = obj == null ? "null" : obj.ToString();
+        string text = obj?.ToString() ?? "null";
 
-        Console.ForegroundColor = color;
+        Console.ForegroundColor = color ?? ConsoleColor.Gray;
         Logger.Log(level, Tag, text);
         Console.ResetColor();
     }
 
-    public static void Print(this object[] obj, ConsoleColor color, LogLevel level = LogLevel.Info)
-    {
-        string text = obj.ArrayToString();
-
-        Console.ForegroundColor = color;
-        Logger.Log(level, Tag, text);
-        Console.ResetColor();
-    }
-
-    public static void Print(ConsoleColor color, LogLevel level, params object[] obj)
+    public static void Print(this object[] obj, ConsoleColor? color = null, LogLevel level = LogLevel.Info)
     {
         string text = obj.ArrayToString();
 
-        Console.ForegroundColor = color;
+        Console.ForegroundColor = color ?? ConsoleColor.Gray;
         Logger.Log(level, Tag, text);
         Console.ResetColor();
     }
 
-    public enum LogMode { Info, Warn, Error }
-    public static void Each<T>(ICollection<T> objs, LogMode mode = LogMode.Info)
+    public static void Print(ConsoleColor? color = null, LogLevel? level = null, params object[] obj)
+    {
+        string text = obj.ArrayToString();
+
+        Console.ForegroundColor = color ?? ConsoleColor.Gray;
+        Logger.Log(level ?? LogLevel.Info, Tag, text);
+        Console.ResetColor();
+    }
+    
+    public static void Each<T>(ICollection<T> objs, LogLevel mode = LogLevel.Info)
     {
         foreach (var obj in objs)
         {
-            if(mode == LogMode.Info)
+            if(mode == LogLevel.Info)
             {
                 Info(obj);
             }
-            else if(mode == LogMode.Warn)
+            else if(mode == LogLevel.Warn)
             {
                 Warn(obj);
             }
-            else if(mode == LogMode.Error)
+            else if(mode == LogLevel.Error)
             {
                 Error(obj);
+            }
+            else
+            {
+                Info(obj);
             }
         }
     }
