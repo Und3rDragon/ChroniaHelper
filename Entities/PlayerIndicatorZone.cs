@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using ChroniaHelper;
 using YoctoHelper.Cores;
+using ChroniaHelper.Utils;
+using ChroniaHelper.Entities;
 
 namespace Celeste.Mod.ChroniaHelperIndicatorZone;
 
@@ -19,19 +21,19 @@ public sealed partial class PlayerIndicatorZone : Entity
     public readonly List<MTexture> Icons;
     public readonly List<Vector2> IconOffsets;
     public readonly List<Color> IconColors;
-    private readonly ZoneMode zoneMode;
-    private readonly string controlFlag;
+    public readonly ZoneMode zoneMode;
+    public readonly string controlFlag;
     private readonly bool renderBorder;
     private readonly bool renderInside;
     private readonly bool renderContinuousLine;
     private readonly Color zoneColor;
-    private readonly FlagMode flagMode;
-    private readonly string flag;
+    public readonly FlagMode flagMode;
+    public readonly string flag;
 
-    private bool playerIn;
-    private Player lastPlayer;
+    public bool playerIn;
+    public Player lastPlayer;
 
-    private bool independentFlag;
+    public bool independentFlag;
 
     public PlayerIndicatorZone(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Width, data.Height, ZoneConfig.FromEntityData(data))
@@ -58,6 +60,16 @@ public sealed partial class PlayerIndicatorZone : Entity
         IconColors = config.IconColors;
     }
 
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+        
+        if(scene.Tracker.GetEntities<PlayerIndicatorZoneMonitor>().Count < 1)
+        {
+            scene.Add(new PlayerIndicatorZoneMonitor());
+        }
+    }
+    
     public override void Removed(Scene scene)
     {
         base.Removed(scene);
@@ -74,6 +86,9 @@ public sealed partial class PlayerIndicatorZone : Entity
     public override void Update()
     {
         base.Update();
+        
+        return;
+        
         if (!independentFlag && zoneMode is ZoneMode.None) return;
 
         Session session = SceneAs<Level>().Session;
@@ -86,7 +101,7 @@ public sealed partial class PlayerIndicatorZone : Entity
         {
             Visible = true;
         }
-
+        
         var player = CollideFirst<Player>();
 
         // on player enter
