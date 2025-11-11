@@ -4,23 +4,25 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using ChroniaHelper.Utils;
 
+namespace ChroniaHelper.Utils.MathExpression;
+
 public static class MathExpression
 {
     /// <summary>
     /// 计算数学表达式的值，支持变量、函数（格式：func[arg]）、运算符等。
     /// </summary>
-    public static float GetMathExpression(this string exp)
+    public static float ParseMathExpression(this string exp)
     {
         if (string.IsNullOrWhiteSpace(exp) || exp.IsNullOrEmpty())
             throw new ArgumentException("Expression is null or empty.");
-
+        
         var lexer = new Lexer(exp);
         var tokens = lexer.Tokenize();
         var parser = new Parser(tokens);
         return parser.Parse();
     }
     
-    public static float GetNumber(this string variable)
+    public static float GetVariable(this string variable)
     {
         if (variable == "e") { return (float)Math.E; }
         if (new string[]{ "pi", "PI", "Pi" }.Contains(variable)) { return (float)Math.PI; }
@@ -50,7 +52,7 @@ public enum TokenType
     End
 }
 
-public class Token
+internal class Token
 {
     public TokenType Type;
     public string Value;
@@ -64,7 +66,7 @@ public class Token
     }
 }
 
-public class Lexer
+internal class Lexer
 {
     private readonly string _input;
     private int _pos = 0;
@@ -171,7 +173,7 @@ public class Lexer
     }
 }
 
-public class Parser
+internal class Parser
 {
     private readonly List<Token> _tokens;
     private int _current = 0;
@@ -253,7 +255,7 @@ public class Parser
 
             case TokenType.Variable:
                 Consume();
-                return token.Value.GetNumber(); // 调用变量获取方法
+                return token.Value.GetVariable(); // 调用变量获取方法
 
             case TokenType.Function:
                 return ParseFunctionCall();
