@@ -304,73 +304,136 @@ internal class Parser
 
         return EvaluateFunction(funcName, args);
     }
-    
+
     private float EvaluateFunction(string name, List<float> args)
     {
-        string lower = name.ToLowerInvariant();
-        switch (lower)
+        try
         {
-            case "sin":
-                ValidateArgCount(args, 1, "sin");
-                return (float)Math.Sin(args[0]);
-            case "cos":
-                ValidateArgCount(args, 1, "cos");
-                return (float)Math.Cos(args[0]);
-            case "tan":
-                ValidateArgCount(args, 1, "tan");
-                return (float)Math.Tan(args[0]);
-            case "ln":
-                ValidateArgCount(args, 1, "ln");
-                if (args[0] <= 0) throw new ArgumentException("ln[x] undefined for x <= 0.");
-                return (float)Math.Log(args[0]);
-            case "exp":
-                ValidateArgCount(args, 1, "exp");
-                return (float)Math.Exp(args[0]);
-            case "rand":
-                ValidateArgCount(args, 2, "rand");
-                float a = args[0], b = args[1];
-                float min = Math.Min(a, b);
-                float max = Math.Max(a, b);
-                return RandomUtils.RandomFloat(min, max);
-            case "abs":
-                ValidateArgCount(args, 1, "Abs");
-                return args[0].GetAbs();
-            case "ceiling":
-                ValidateArgCount(args, 1, "Ceiling");
-                return (float)Math.Ceiling(args[0]);
-            case "floor":
-                ValidateArgCount(args, 1, "Floor");
-                return (float)Math.Floor(args[0]);
-            case "round":
-                ValidateArgCount(args, 1, "Round");
-                return (float)Math.Round(args[0]);
-            case "min":
-                if (args.Count == 0) return 0f;
-                if (args.Count == 1) return args[0];
-                return args.Min(); // 使用 NumberUtils.Min 扩展方法
-            case "max":
-                if (args.Count == 0) return 0f;
-                if (args.Count == 1) return args[0];
-                return args.Max(); // 使用 NumberUtils.Max 扩展方法
-            case "clamp":
-                if (args.Count == 0)
-                    return 0f;
-                if (args.Count == 1)
-                    return args[0];
-                if (args.Count == 2)
-                    return args[0].ClampMin(args[1]);
-                if (args.Count == 3)
-                    return args[0].Clamp(args[1], args[2]);
-                throw new ArgumentException("Clamp[] accepts 0 to 3 arguments.");
+            string lower = name.ToLowerInvariant();
+            switch (lower)
+            {
+                // 单参数标准数学函数（严格要求1个参数）
+                case "sin":
+                    ValidateArgCount(args, 1, "sin");
+                    return (float)Math.Sin(args[0]);
+                case "cos":
+                    ValidateArgCount(args, 1, "cos");
+                    return (float)Math.Cos(args[0]);
+                case "tan":
+                    ValidateArgCount(args, 1, "tan");
+                    return (float)Math.Tan(args[0]);
+                case "ln":
+                    ValidateArgCount(args, 1, "ln");
+                    if (args[0] <= 0f) throw new ArgumentException("ln[x] undefined for x <= 0.");
+                    return (float)Math.Log(args[0]);
+                case "log": // alias for ln
+                    ValidateArgCount(args, 1, "log");
+                    if (args[0] <= 0f) throw new ArgumentException("log[x] undefined for x <= 0.");
+                    return (float)Math.Log(args[0]);
+                case "exp":
+                    ValidateArgCount(args, 1, "exp");
+                    return (float)Math.Exp(args[0]);
+                case "abs":
+                    ValidateArgCount(args, 1, "abs");
+                    return Math.Abs(args[0]);
+                case "ceiling":
+                    ValidateArgCount(args, 1, "ceiling");
+                    return (float)Math.Ceiling(args[0]);
+                case "floor":
+                    ValidateArgCount(args, 1, "floor");
+                    return (float)Math.Floor(args[0]);
+                case "round":
+                    ValidateArgCount(args, 1, "round");
+                    return (float)Math.Round(args[0]);
 
-            default:
-                throw new ArgumentException($"Unknown function: {name}");
+                // 随机数：rand[min, max]
+                case "rand":
+                    ValidateArgCount(args, 2, "rand");
+                    float a = args[0], b = args[1];
+                    return RandomUtils.RandomFloat(Math.Min(a, b), Math.Max(a, b));
+
+                // 可变参数函数
+                case "min":
+                    if (args.Count == 0) return 0f;
+                    return args.Min();
+                case "max":
+                    if (args.Count == 0) return 0f;
+                    return args.Max();
+
+                // clamp[value, min, max] — 支持 1~3 参数
+                case "clamp":
+                    if (args.Count == 0) return 0f;
+                    if (args.Count == 1) return args[0];
+                    if (args.Count == 2) return Math.Max(args[0], args[1]); // clamp to min
+                    if (args.Count == 3)
+                        return Math.Max(args[1], Math.Min(args[0], args[2])); // value.Clamp(min, max)
+                    throw new ArgumentException("Clamp[] accepts 1 to 3 arguments.");
+
+                // 新增：if[arg, x, y]
+                // arg != 0 ? x, y
+                // 缺失参数时按规则补 0
+                case "if":
+                    if (args.Count < 1) return 0f; // arg missing → return y, but y missing → 0
+                    float argIf = args[0];
+                    if (args.Count >= 2)
+                    {
+                        float x = args[1];
+                        if (args.Count >= 3)
+                        {
+                            float y = args[2];
+                            return argIf != 0f ? x : y;
+                        }
+                        else
+                        {
+                            // y missing → treat as 0
+                            return argIf != 0f ? x : 0f;
+                        }
+                    }
+                    else
+                    {
+                        // x missing → should return x → but missing → 0
+                        return 0f;
+                    }
+
+                // 新增：ifx[arg, x, y]
+                // 如果 arg >= 0 → 返回 x；否则返回 y
+                case "ifx":
+                    if (args.Count < 1) return 0f;
+                    float argIfx = args[0];
+                    if (args.Count >= 2)
+                    {
+                        float x = args[1];
+                        if (args.Count >= 3)
+                        {
+                            float y = args[2];
+                            return argIfx >= 0f ? x : y;
+                        }
+                        else
+                        {
+                            return argIfx >= 0f ? x : 0f;
+                        }
+                    }
+                    else
+                    {
+                        return 0f;
+                    }
+
+                // 未知函数
+                default:
+                    throw new ArgumentException($"Unknown function: {name}");
+            }
+        }
+        catch
+        {
+            // 任何错误（参数不足、域错误、NaN、overflow等）均返回 0f
+            return 0f;
         }
     }
-    
-    private static void ValidateArgCount(List<float> args, int expected, string funcName)
+
+    // 辅助方法：验证参数数量是否精确匹配
+    private void ValidateArgCount(List<float> args, int expected, string funcName)
     {
         if (args.Count != expected)
-            throw new ArgumentException($"{funcName}[...] requires exactly {expected} argument(s), got {args.Count}.");
+            throw new ArgumentException($"{funcName}[] requires exactly {expected} argument(s).");
     }
 }
