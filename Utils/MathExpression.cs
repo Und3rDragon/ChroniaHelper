@@ -304,7 +304,7 @@ internal class Parser
 
         return EvaluateFunction(funcName, args);
     }
-
+    
     private float EvaluateFunction(string name, List<float> args)
     {
         string lower = name.ToLowerInvariant();
@@ -313,36 +313,61 @@ internal class Parser
             case "sin":
                 ValidateArgCount(args, 1, "sin");
                 return (float)Math.Sin(args[0]);
-
             case "cos":
                 ValidateArgCount(args, 1, "cos");
                 return (float)Math.Cos(args[0]);
-
             case "tan":
                 ValidateArgCount(args, 1, "tan");
                 return (float)Math.Tan(args[0]);
-
             case "ln":
                 ValidateArgCount(args, 1, "ln");
                 if (args[0] <= 0) throw new ArgumentException("ln[x] undefined for x <= 0.");
                 return (float)Math.Log(args[0]);
-
             case "exp":
                 ValidateArgCount(args, 1, "exp");
                 return (float)Math.Exp(args[0]);
-
             case "rand":
                 ValidateArgCount(args, 2, "rand");
                 float a = args[0], b = args[1];
                 float min = Math.Min(a, b);
                 float max = Math.Max(a, b);
-                return RandomUtils.RandomFloat(min, max); // 调用随机数生成
+                return RandomUtils.RandomFloat(min, max);
+            case "abs":
+                ValidateArgCount(args, 1, "Abs");
+                return args[0].GetAbs();
+            case "ceiling":
+                ValidateArgCount(args, 1, "Ceiling");
+                return (float)Math.Ceiling(args[0]);
+            case "floor":
+                ValidateArgCount(args, 1, "Floor");
+                return (float)Math.Floor(args[0]);
+            case "round":
+                ValidateArgCount(args, 1, "Round");
+                return (float)Math.Round(args[0]);
+            case "min":
+                if (args.Count == 0) return 0f;
+                if (args.Count == 1) return args[0];
+                return args.Min(); // 使用 NumberUtils.Min 扩展方法
+            case "max":
+                if (args.Count == 0) return 0f;
+                if (args.Count == 1) return args[0];
+                return args.Max(); // 使用 NumberUtils.Max 扩展方法
+            case "clamp":
+                if (args.Count == 0)
+                    return 0f;
+                if (args.Count == 1)
+                    return args[0];
+                if (args.Count == 2)
+                    return args[0].ClampMin(args[1]);
+                if (args.Count == 3)
+                    return args[0].Clamp(args[1], args[2]);
+                throw new ArgumentException("Clamp[] accepts 0 to 3 arguments.");
 
             default:
                 throw new ArgumentException($"Unknown function: {name}");
         }
     }
-
+    
     private static void ValidateArgCount(List<float> args, int expected, string funcName)
     {
         if (args.Count != expected)
