@@ -139,6 +139,16 @@ public class ChroniaSlider
                 MaP.sliders.SafeRemove(i);
                 Md.SaveData.ChroniaSliders.SafeRemove(i);
             });
+            
+            if(self is Level)
+            {
+                foreach(var item in Md.SaveData.ChroniaSliders)
+                {
+                    if (!item.Value.PassiveRefresh) { continue; }
+
+                    item.Value.Value = item.Key.GetSlider();
+                }
+            }
         }
     }
 
@@ -150,6 +160,7 @@ public class ChroniaSlider
     public bool ResetOnTransition { get; set; } = false;
     public float DefaultValue { get; set; } = 0f;
     public bool RemoveWhenReset { get; set; } = true;
+    public bool PassiveRefresh { get; set; } = false;
 
     public ChroniaSlider() { }
 

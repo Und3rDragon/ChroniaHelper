@@ -184,7 +184,7 @@ public class ChroniaFlag
             }
             else
             {
-                if (item.Value.Force)
+                if (item.Value.Force && !item.Value.PassiveRefresh)
                 {
                     item.Key.SetFlag(item.Value.Active);
                 }
@@ -210,6 +210,17 @@ public class ChroniaFlag
         {
             Md.SaveData.ChroniaFlags.SafeRemove(item);
         }
+        
+        // Passive Refreshing
+        if(self is Level)
+        {
+            foreach(var item in Md.SaveData.ChroniaFlags)
+            {
+                if (!item.Value.PassiveRefresh) { continue; }
+
+                item.Value.Active = item.Key.GetFlag();
+            }
+        }
     }
     
     public bool Active { get; set; } = false;
@@ -221,6 +232,7 @@ public class ChroniaFlag
     public float Timed { get; set; } = -1f;
     public float Orig_Timed { get; set; } = -1f;
     public bool RemoveWhenReset { get; set; } = true;
+    public bool PassiveRefresh { get; set; } = false;
     
     public ExpectedResetState DefaultResetState { get; set; } = 0;
     public List<string> Tags { get; set; } = new();

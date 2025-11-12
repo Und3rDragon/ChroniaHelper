@@ -139,6 +139,16 @@ public class ChroniaCounter
                 MaP.session.Counters.RemoveAll((item) => item.Key == i);
                 Md.SaveData.ChroniaCounters.SafeRemove(i);
             });
+
+            if(self is Level)
+            {
+                foreach(var item in Md.SaveData.ChroniaCounters)
+                {
+                    if (!item.Value.PassiveRefresh) { continue; }
+
+                    item.Value.Value = item.Key.GetCounter();
+                }
+            }
         }
     }
 
@@ -151,6 +161,7 @@ public class ChroniaCounter
     public bool ResetOnTransition { get; set; } = false;
     public bool RemoveWhenReset { get; set; } = true;
     public int DefaultValue { get; set; } = 0;
+    public bool PassiveRefresh { get; set; } = false;
 
     public ChroniaCounter() { }
 
