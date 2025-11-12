@@ -27,7 +27,7 @@ public static class MathExpression
         if (variable == "e") { return (float)Math.E; }
         if (new string[]{ "pi", "PI", "Pi" }.Contains(variable)) { return (float)Math.PI; }
         
-        return 0f; // In progress
+        return MaP.level?.Session.GetSlider(variable) ?? 0f; // In progress
     }
 }
 
