@@ -68,6 +68,11 @@ public class ChroniaFlag
                 f.Key.SetFlag(false);
                 removing.Add(f.Key);
             }
+            
+            if((f.Key.GetSensitivity() & Sens.AllowNoRegister) != 0)
+            {
+                removing.Add(f.Key);
+            }
         });
 
         removing.EachDo((i) =>
@@ -90,6 +95,11 @@ public class ChroniaFlag
                 {
                     removing.Add(f.Key);
                 }
+            }
+
+            if ((f.Key.GetSensitivity() & Sens.AllowNoRegister) != 0)
+            {
+                removing.Add(f.Key);
             }
         });
 
@@ -118,6 +128,11 @@ public class ChroniaFlag
                     removing.Add(f.Key);
                 }
             }
+
+            if ((f.Key.GetSensitivity() & Sens.AllowNoRegister) != 0)
+            {
+                removing.Add(f.Key);
+            }
         });
 
         removing.EachDo((i) =>
@@ -142,6 +157,11 @@ public class ChroniaFlag
                 {
                     removing.Add(item.Key);
                 }
+            }
+
+            if ((item.Key.GetSensitivity() & Sens.AllowNoRegister) != 0)
+            {
+                removing.Add(item.Key);
             }
         });
 
@@ -175,7 +195,13 @@ public class ChroniaFlag
             // Security Check
             item.Value.ChroniaFlagDataCheck();
 
-            if(self is not Level)
+            if((item.Key.GetSensitivity() & Sens.AllowNoRegister) != 0)
+            {
+                removing.Add(item.Key);
+                continue;
+            }
+
+            if (self is not Level)
             {
                 if (item.Value.Global && item.Value.Timed > 0f)
                 {

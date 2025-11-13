@@ -74,11 +74,14 @@ public static class ChroniaFlagUtils
     /// <param name="slotName"></param>
     public static void PushFlag(this ChroniaFlag flag, string name)
     {
-        if (flag.HasCustomData || flag.HasCustomState)
+        if ((flag.HasCustomData || flag.HasCustomState) && ((name.GetSensitivity() & Sens.AllowNoRegister) == 0))
         {
             Md.SaveData.ChroniaFlags.Enter(name, flag);
         }
-        name.SetFlag(flag.Active);
+        if((name.GetSensitivity() & Sens.AllowNoSetFlag) == 0)
+        {
+            name.SetFlag(flag.Active);
+        }
     }
 
     public static void FlagRefresh()
@@ -88,6 +91,11 @@ public static class ChroniaFlagUtils
         foreach (var item in Md.SaveData.ChroniaFlags)
         {
             if (!item.Value.HasCustomData && !item.Value.HasCustomState)
+            {
+                removing.Add(item.Key);
+            }
+            
+            if((item.Key.GetSensitivity() & Sens.AllowNoRegister) != 0)
             {
                 removing.Add(item.Key);
             }
@@ -101,6 +109,7 @@ public static class ChroniaFlagUtils
 
     public static void SetFlag(this string name, bool active)
     {
+        if ((name.GetSensitivity() & Sens.AllowNoSetFlag) != 0) { return; }
         MaP.session.SetFlag(name, active);
     }
 
