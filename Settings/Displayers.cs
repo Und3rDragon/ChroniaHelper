@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
@@ -207,6 +208,21 @@ public class Displayers : HDRenderEntity
             }, GetRenderPosition(Md.Settings.totalDeathsDisplayer.displayPosition,
                 new Vc2(Md.Settings.totalDeathsDisplayer.X, Md.Settings.totalDeathsDisplayer.Y)));
         }
+
+        if (Md.Settings.saveFileDeathsDisplayer.enabled)
+        {
+            string target = $"{SaveData.Instance?.TotalDeaths ?? 0}";
+
+            saveDeaths_UI.origin = ((int)Md.Settings.saveFileDeathsDisplayer.aligning + 4).ToJustify();
+            saveDeaths_UI.distance = Md.Settings.saveFileDeathsDisplayer.letterDistance;
+            saveDeaths_UI.scale = Md.Settings.saveFileDeathsDisplayer.scale * 0.1f;
+
+            saveDeaths_UI.Render(target, (c) =>
+            {
+                return $"{c}".ParseInt();
+            }, GetRenderPosition(Md.Settings.saveFileDeathsDisplayer.displayPosition,
+                new Vc2(Md.Settings.saveFileDeathsDisplayer.X, Md.Settings.saveFileDeathsDisplayer.Y)));
+        }
     }
 
     public string generalReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
@@ -241,6 +257,7 @@ public class Displayers : HDRenderEntity
 
     public SerialImage totalDeaths_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
+    public SerialImage saveDeaths_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)

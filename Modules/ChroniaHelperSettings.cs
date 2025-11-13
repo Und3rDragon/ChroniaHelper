@@ -176,4 +176,22 @@ public class ChroniaHelperSettings : EverestModuleSettings
     }
 
     public TotalDeathsDisplayer totalDeathsDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class SaveFileDeathsDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 318;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 8;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 55;
+        public Aligning aligning { get; set; } = Aligning.Right;
+    }
+
+    public SaveFileDeathsDisplayer saveFileDeathsDisplayer { get; set; } = new();
 }
