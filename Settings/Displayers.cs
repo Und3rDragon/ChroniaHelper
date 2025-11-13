@@ -177,6 +177,36 @@ public class Displayers : HDRenderEntity
             }, GetRenderPosition(Md.Settings.playerPositionDisplayer.displayPosition,
                 new Vc2(Md.Settings.playerPositionDisplayer.X, Md.Settings.playerPositionDisplayer.Y)));
         }
+
+        if (Md.Settings.deathsDisplayer.enabled)
+        {
+            string target = $"{MaP.level?.Session.DeathsInCurrentLevel ?? 0}";
+
+            deaths_UI.origin = ((int)Md.Settings.deathsDisplayer.aligning + 4).ToJustify();
+            deaths_UI.distance = Md.Settings.deathsDisplayer.letterDistance;
+            deaths_UI.scale = Md.Settings.deathsDisplayer.scale * 0.1f;
+
+            deaths_UI.Render(target, (c) =>
+            {
+                return $"{c}".ParseInt();
+            }, GetRenderPosition(Md.Settings.deathsDisplayer.displayPosition,
+                new Vc2(Md.Settings.deathsDisplayer.X, Md.Settings.deathsDisplayer.Y)));
+        }
+
+        if (Md.Settings.totalDeathsDisplayer.enabled)
+        {
+            string target = $"{MaP.level?.Session.Deaths ?? 0}";
+
+            totalDeaths_UI.origin = ((int)Md.Settings.totalDeathsDisplayer.aligning + 4).ToJustify();
+            totalDeaths_UI.distance = Md.Settings.totalDeathsDisplayer.letterDistance;
+            totalDeaths_UI.scale = Md.Settings.totalDeathsDisplayer.scale * 0.1f;
+
+            totalDeaths_UI.Render(target, (c) =>
+            {
+                return $"{c}".ParseInt();
+            }, GetRenderPosition(Md.Settings.totalDeathsDisplayer.displayPosition,
+                new Vc2(Md.Settings.totalDeathsDisplayer.X, Md.Settings.totalDeathsDisplayer.Y)));
+        }
     }
 
     public string generalReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
@@ -206,6 +236,10 @@ public class Displayers : HDRenderEntity
     {
         segmentOrigin = Vc2.Zero,
     };
+
+    public SerialImage deaths_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+
+    public SerialImage totalDeaths_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {

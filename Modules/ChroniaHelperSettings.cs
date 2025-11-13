@@ -128,16 +128,52 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public enum DisplayCoordinates { X, Y, Both }
         public DisplayCoordinates displayCoordinates { get; set; } = DisplayCoordinates.Both;
         public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
-        public bool useGlobalCoordinates { get; set; } = false;
+        public bool useGlobalCoordinates { get; set; } = true;
         [SettingRange(-1000, 1000, true)]
         public int X { get; set; } = 160;
         [SettingRange(-1000, 1000, true)]
-        public int Y { get; set; } = 165;
+        public int Y { get; set; } = 175;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 45;
+        public Aligning aligning { get; set; } = Aligning.Middle;
+    }
+    public PlayerPositionDisplayer playerPositionDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class DeathsDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 318;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 19;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
         [SettingRange(0, 1000, true)]
         public int scale { get; set; } = 60;
-        public Aligning aligning { get; set; } = Aligning.Middle;
+        public Aligning aligning { get; set; } = Aligning.Right;
     }
-    public PlayerPositionDisplayer playerPositionDisplayer { get; set; } = new();
+
+    public DeathsDisplayer deathsDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class TotalDeathsDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 318;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 8;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 55;
+        public Aligning aligning { get; set; } = Aligning.Right;
+    }
+
+    public TotalDeathsDisplayer totalDeathsDisplayer { get; set; } = new();
 }
