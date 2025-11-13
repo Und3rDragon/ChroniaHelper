@@ -22,14 +22,19 @@ public class BoolMode
 
 public static class BoolUtils
 {
-    public static int ToInt(this bool b)
+    public static int ToInt(this bool b, int t = 1, int f = 0)
     {
-        return b ? 1 : 0;
+        return b ? t : f;
     }
     
-    public static bool ToBool(this int i)
+    public static bool ToBool(this int i, int f = 0)
     {
-        return i != 0 ? true : false;
+        return i != f ? true : false;
+    }
+    
+    public static float ToFloat(this bool b, float t = 1f, float f = 0f)
+    {
+        return b ? t : f;
     }
 
     public static bool TryNegative(ref this bool basic, bool enter)

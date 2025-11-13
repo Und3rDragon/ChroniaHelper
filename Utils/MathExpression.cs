@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Utils.MathExpression;
 
@@ -37,18 +38,26 @@ public enum TokenType
 {
     Number,
     Variable,
-    Function,       // 函数名（后跟 [）
+    Function,
+    Flag, 
     Plus,
     Minus,
     Multiply,
     Divide,
     Power,
     Modulo,
-    LeftParen,      // (
-    RightParen,     // )
-    LeftBracket,    // [
-    RightBracket,   // ]
-    Comma,          // ,
+    LessThan,        // <
+    GreaterThan,     // >
+    LessEqual,       // <=
+    GreaterEqual,    // >=
+    EqualEqual,      // ==
+    LeftParen,       // (
+    RightParen,      // )
+    LeftBracket,     // [
+    RightBracket,    // ]
+    LeftBrace,       // {
+    RightBrace,      // }
+    Comma,           // ,
     End
 }
 
@@ -88,6 +97,13 @@ internal class Lexer
                 continue;
             }
 
+            // {x}的flag检测
+            if (c == '{')
+            {
+                tokens.Add(ReadFlagContent());
+                continue;
+            }
+
             if (char.IsDigit(c) || c == '.')
             {
                 tokens.Add(ReadNumber());
@@ -111,6 +127,48 @@ internal class Lexer
                     case '[': tokens.Add(new Token(TokenType.LeftBracket)); break;
                     case ']': tokens.Add(new Token(TokenType.RightBracket)); break;
                     case ',': tokens.Add(new Token(TokenType.Comma)); break;
+                    case '<':
+                        _pos++;
+                        if (_pos < _input.Length && _input[_pos] == '=')
+                        {
+                            _pos++;
+                            tokens.Add(new Token(TokenType.LessEqual));
+                        }
+                        else
+                        {
+                            tokens.Add(new Token(TokenType.LessThan));
+                        }
+                        break;
+                    case '>':
+                        _pos++;
+                        if (_pos < _input.Length && _input[_pos] == '=')
+                        {
+                            _pos++;
+                            tokens.Add(new Token(TokenType.GreaterEqual));
+                        }
+                        else
+                        {
+                            tokens.Add(new Token(TokenType.GreaterThan));
+                        }
+                        break;
+                    case '=':
+                        _pos++;
+                        if (_pos < _input.Length && _input[_pos] == '=')
+                        {
+                            _pos++;
+                            tokens.Add(new Token(TokenType.EqualEqual));
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("Single '=' is not allowed. Use '==' for equality.");
+                        }
+                        break;
+                    case '{':
+                        tokens.Add(new Token(TokenType.LeftBrace));
+                        break;
+                    case '}':
+                        tokens.Add(new Token(TokenType.RightBrace));
+                        break;
                     default:
                         throw new InvalidOperationException($"Unexpected character: '{c}'");
                 }
@@ -171,6 +229,25 @@ internal class Lexer
             return new Token(TokenType.Variable, name);
         }
     }
+
+    private Token ReadFlagContent()
+    {
+        var sb = new StringBuilder();
+        _pos++; // skip '{'
+        while (_pos < _input.Length)
+        {
+            char c = _input[_pos];
+            if (c == '}')
+            {
+                _pos++; // skip '}'
+                string content = sb.ToString();
+                return new Token(TokenType.Flag, content);
+            }
+            sb.Append(c);
+            _pos++;
+        }
+        throw new InvalidOperationException("Unclosed '{' in flag expression.");
+    }
 }
 
 internal class Parser
@@ -194,7 +271,31 @@ internal class Parser
         return result;
     }
 
-    private float ParseExpression() => ParseAddition();
+    private float ParseExpression() => ParseComparison();
+
+    private float ParseComparison()
+    {
+        float left = ParseAddition();
+        var token = Peek().Type;
+        if (token is TokenType.LessThan or TokenType.GreaterThan or
+                    TokenType.LessEqual or TokenType.GreaterEqual or
+                    TokenType.EqualEqual)
+        {
+            var op = Consume();
+            float right = ParseAddition(); // 比较运算符左右是加减表达式
+            bool result = op.Type switch
+            {
+                TokenType.LessThan => left < right,
+                TokenType.GreaterThan => left > right,
+                TokenType.LessEqual => left <= right,
+                TokenType.GreaterEqual => left >= right,
+                TokenType.EqualEqual => Math.Abs(left - right) < 1e-6f, // 浮点相等
+                _ => false
+            };
+            return result ? 1f : 0f;
+        }
+        return left;
+    }
 
     private float ParseAddition()
     {
@@ -274,6 +375,10 @@ internal class Parser
             case TokenType.Plus:
                 Consume();
                 return ParseFactor();
+
+            case TokenType.Flag:
+                Consume();
+                return token.Value.GetFlag().ToFloat(); 
 
             default:
                 throw new InvalidOperationException($"Unexpected token in factor: {token.Type}");
