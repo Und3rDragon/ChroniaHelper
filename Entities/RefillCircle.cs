@@ -49,7 +49,10 @@ public class RefillCircle : Refill
         this.innerAlpha = data.Float("innerAlpha", 0.1F);
         this.borderColor *= this.borderAlpha;
         this.innerColor *= this.innerAlpha;
+
+        normalRender = data.Bool("normalRender", true);
     }
+    private bool normalRender = true;
 
     public RefillCircle(EntityData data, Vector2 offset) : this(data.Position + offset, data)
     {
@@ -59,7 +62,14 @@ public class RefillCircle : Refill
     {
         if (respawnTimer <= 0)
         {
-            Draw.Circle(base.Position, radius, this.innerColor, 4 * pointNumber);
+            if (normalRender)
+            {
+                Draw.Circle(base.Position, radius, this.innerColor, 4 * pointNumber);
+            }
+            else
+            {
+                Draw.Circle(base.Position, radius / 2, this.innerColor, radius, 4 * pointNumber);
+            }
             Draw.Circle(base.Position, radius + 2, this.borderColor, 4 * pointNumber);
         }
         else

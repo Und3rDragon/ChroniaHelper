@@ -608,6 +608,7 @@ local refillCircle = {
                 customAnimation = false,
                 idleAnimInterval = 0.1,
                 flashAnimInterval = 0.05,
+                normalRender = true,
             }
         },
         {
@@ -624,6 +625,7 @@ local refillCircle = {
                 customAnimation = false,
                 idleAnimInterval = 0.1,
                 flashAnimInterval = 0.05,
+                normalRender = true,
             }
         }
     },
