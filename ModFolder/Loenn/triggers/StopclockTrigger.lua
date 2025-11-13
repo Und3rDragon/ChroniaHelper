@@ -19,7 +19,7 @@ trigger.fieldInformation = {
             ["Add"] = 1,
             ["Minus"] = 2,
             ["Stop"] = 3,
-            ["Resume"] = 4,
+            ["Start/Resume"] = 4,
         },
         editable = false,
     },

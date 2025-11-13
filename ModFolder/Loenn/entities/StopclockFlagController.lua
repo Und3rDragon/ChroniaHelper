@@ -10,7 +10,7 @@ controller.placements = {
     name = "controller",
     data = {
         stopclockTags = "",
-        global = false,
+        --global = false,
     },
 }
 

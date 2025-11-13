@@ -1031,10 +1031,12 @@ entities.ChroniaHelper/BezierZipmover.attributes.description.uniformity=Bezier c
 
 entities.ChroniaHelper/StopclockFlagController.placements.name.controller=Stopclock Flag Controller
 entities.ChroniaHelper/StopclockFlagController.placements.description.controller=A controller that will split several Stopclocks data into separated flags
+entities.ChroniaHelper/StopclockFlagController.attributes.description.stopclockTags=A list of stopclock tags separated by comma\nThis controller will turn the stopclocks digits into in-game flags for per-digit flag purposes, say flag decals or likewise
 
 # ================= Stopclock Action Controller
 
 entities.ChroniaHelper/StopclockActionController.placements.name.controller=Stopclock Action Controller
+entities.ChroniaHelper/StopclockActionController.attributes.description.setFlag=If not empty, this flag will be enabled when the stopclock completes
 
 # ================= Stopclock Trigger
 
@@ -1043,16 +1045,42 @@ triggers.ChroniaHelper/StopclockTrigger.placements.name.trigger=Stopclock Trigge
 # ================= Stopclock Renderer
 
 entities.ChroniaHelper/StopclockRenderer.placements.name.renderer=Stopclock Renderer
+entities.ChroniaHelper/StopclockRenderer.attributes.description.sourcePath=The font file path starts after Gameplay without ending numbers
+entities.ChroniaHelper/StopclockRenderer.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/StopclockRenderer.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/StopclockRenderer.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/StopclockRenderer.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/StopclockRenderer.attributes.description.segmentDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/StopclockRenderer.attributes.description.segmentOffset=If you want to, you can include offset for each character, each offset should look like: "index, x, y"\nThe offsets are separated by ";"
 
 # ================= Real Time Renderer
 
 entities.ChroniaHelper/RealTimeRenderer.placements.name.renderer=Real Time Renderer
 
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.segmentDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.segmentOffset=If you want to, you can include offset for each character, each offset should look like: "index, x, y"\nThe offsets are separated by ";"
+
 # ================= Message Displayer
 
 entities.ChroniaHelper/MessageDisplayer.placements.name.renderer=Message Displayer
+entities.ChroniaHelper/MessageDisplayer.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayer.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayer.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayer.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayer.attributes.description.segmentDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/MessageDisplayer.attributes.description.segmentOffset=If you want to, you can include offset for each character, each offset should look like: "index, x, y"\nThe offsets are separated by ";"
 
 entities.ChroniaHelper/MessageDisplayZone.placements.name.renderer=Message Display Zone
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.segmentDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.segmentOffset=If you want to, you can include offset for each character, each offset should look like: "index, x, y"\nThe offsets are separated by ";"
 
 # ================= Counter and Slider Fades
 
