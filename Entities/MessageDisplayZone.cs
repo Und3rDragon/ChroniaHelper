@@ -140,7 +140,7 @@ public class MessageDisplayZone : HDRenderEntity
         
         renderer.Render(progressedText,
             (c) => Reflection(c),
-            ParseGlobalPositionToHDPosition(nodes[1], Parallax, StaticScreen) * HDScale);
+            ParseGlobalPositionToHDPosition(nodes[1], Parallax, StaticScreen));
     }
     public bool renderArg => inRange || hasOverrideFlag && overrideFlag.GetFlag();
 

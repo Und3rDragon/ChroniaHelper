@@ -63,7 +63,7 @@ public class RealTimeRenderer : SerialImageRenderer
 
     public override Vc2 SetRenderPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)
     {
-        return ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen) * HDScale;
+        return ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen);
     }
     
 }

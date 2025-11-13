@@ -136,7 +136,7 @@ public class MessageDisplayer : HDRenderEntity
         
         renderer.Render(progressedText,
             (c) => Reflection(c),
-            ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen) * HDScale);
+            ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen));
     }
     
     public bool renderArg => (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());

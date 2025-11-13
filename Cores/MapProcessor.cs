@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ChroniaHelper.Settings;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using MonoMod.Utils;
@@ -77,6 +78,7 @@ public static class MapProcessor
 
         // Dummy Entity setup
         level.Add(globalEntityDummy);
+        level.Add(new Displayers(new EntityData(), Vc2.Zero));
 
         // Apply Flag Timer Trigger flags
         foreach (var flag in Md.SaveData.FlagTimerS.Keys)
@@ -249,6 +251,13 @@ public static class MapProcessor
             }
         }
     }
+
+    public static Vc2 CameraPos(this Level level) => level?.Camera.Position ?? Vc2.Zero;
+    public static Vc2 CameraCenter(this Level level) => CameraPos(level) + new Vc2(160f, 90f);
+    public static Vc2 LevelPos(this Level level) => new Vc2(level?.Bounds.Left ?? 0, level?.Bounds.Top ?? 0);
+    public static Vc2 CameraPos(this Scene scene) => (scene as Level)?.Camera.Position ?? Vc2.Zero;
+    public static Vc2 CameraCenter(this Scene scene) => CameraPos(scene as Level) + new Vc2(160f, 90f);
+    public static Vc2 LevelPos(this Scene scene) => new Vc2((scene as Level)?.Bounds.Left ?? 0, (scene as Level)?.Bounds.Top ?? 0);
 
     // Check whether the group of touch switches is completed
     public static bool IsSwitchFlagCompleted(string flagIndex)

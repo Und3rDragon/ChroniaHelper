@@ -10,30 +10,23 @@ using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
 namespace ChroniaHelper.Settings;
 
-public class Displayers
+[Tracked(false)]
+public class Displayers : HDRenderEntity
 {
-    [LoadHook]
-    public static void Load()
+    public Displayers(EntityData d,Vc2 o) : base(d, o)
     {
-        On.Celeste.GrabbyIcon.Render += IconRender;
+        
     }
-
-    [UnloadHook]
-    public static void Unload()
+    
+    protected override void HDRender()
     {
-        On.Celeste.GrabbyIcon.Render -= IconRender;
-    }
-
-    public static void IconRender(On.Celeste.GrabbyIcon.orig_Render orig, GrabbyIcon icon)
-    {
-        orig(icon);
-
         if (Md.Settings.stateMachineDisplayer.enabled)
         {
             string target = $"{PUt.player?.StateMachine.GetCurrentStateName() ?? "null"}";
-            
+
             stateMachine_UI.origin = ((int)Md.Settings.stateMachineDisplayer.aligning + 4).ToJustify();
             stateMachine_UI.distance = Md.Settings.stateMachineDisplayer.letterDistance;
+            stateMachine_UI.scale = Md.Settings.stateMachineDisplayer.scale * 0.1f;
 
             stateMachine_UI.Render(target, (c) =>
             {
@@ -50,6 +43,7 @@ public class Displayers
 
             realTimeClock_UI.origin = ((int)Md.Settings.realTimeClock.aligning + 4).ToJustify();
             realTimeClock_UI.distance = Md.Settings.realTimeClock.letterDistance;
+            realTimeClock_UI.scale = Md.Settings.realTimeClock.scale * 0.1f;
 
             realTimeClock_UI.Render(target, (c) =>
             {
@@ -64,6 +58,7 @@ public class Displayers
 
             staminaMeter_UI.origin = ((int)Md.Settings.staminaMeterMenu.aligning + 4).ToJustify();
             staminaMeter_UI.distance = Md.Settings.staminaMeterMenu.letterDistance;
+            staminaMeter_UI.scale = Md.Settings.staminaMeterMenu.scale * 0.1f;
 
             staminaMeter_UI.Render(target, (c) =>
             {
@@ -78,6 +73,7 @@ public class Displayers
 
             dashes_UI.origin = ((int)Md.Settings.dashesCounter.aligning + 4).ToJustify();
             dashes_UI.distance = Md.Settings.dashesCounter.letterDistance;
+            dashes_UI.scale = Md.Settings.dashesCounter.scale * 0.1f;
 
             dashes_UI.Render(target, (c) =>
             {
@@ -108,7 +104,8 @@ public class Displayers
 
             speed_UI.origin = ((int)Md.Settings.speedDisplayer.aligning + 4).ToJustify();
             speed_UI.distance = Md.Settings.speedDisplayer.letterDistance;
-            
+            speed_UI.scale = Md.Settings.speedDisplayer.scale * 0.1f;
+
             speed_UI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
@@ -134,6 +131,7 @@ public class Displayers
 
             playerSprite_UI.origin = ((int)Md.Settings.playerSpriteDisplayer.aligning + 4).ToJustify();
             playerSprite_UI.distance = Md.Settings.playerSpriteDisplayer.letterDistance;
+            playerSprite_UI.scale = Md.Settings.playerSpriteDisplayer.scale * 0.1f;
 
             playerSprite_UI.Render(target, (c) =>
             {
@@ -171,7 +169,8 @@ public class Displayers
 
             playerPos_UI.origin = ((int)Md.Settings.playerPositionDisplayer.aligning + 4).ToJustify();
             playerPos_UI.distance = Md.Settings.playerPositionDisplayer.letterDistance;
-            
+            playerPos_UI.scale = Md.Settings.playerPositionDisplayer.scale * 0.1f;
+
             playerPos_UI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
@@ -180,43 +179,44 @@ public class Displayers
         }
     }
 
-    public static string generalReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
+    public string generalReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
 
-    public static SerialImage stateMachine_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImage stateMachine_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public static SerialImage realTimeClock_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImage realTimeClock_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public static SerialImage staminaMeter_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImage staminaMeter_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public static SerialImage dashes_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImage dashes_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public static SerialImage speed_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImage speed_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public static SerialImage playerSprite_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImage playerSprite_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public static SerialImage playerPos_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImage playerPos_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public static Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
+    public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)
         {
-            return new Vc2((int)(PUt.player?.Center.X ?? 0), (int)(PUt.player?.Center.Y ?? 0)) + setup;
+            Vc2 p = new Vc2((int)(PUt.player?.Center.X ?? 0), (int)(PUt.player?.Center.Y ?? 0)) + setup;
+            return (p - MaP.cameraPos) * HDScale;
         }
         else if (pos == Sts.DisplayPosition.StaticScreen)
         {
-            return MaP.cameraPos + setup;
+            return setup * HDScale;
         }
 
         return Vc2.Zero;

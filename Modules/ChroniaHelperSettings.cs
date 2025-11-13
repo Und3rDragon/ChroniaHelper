@@ -20,6 +20,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int Y { get; set; } = -16;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 60;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -36,6 +38,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int Y { get; set; } = -16;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 60;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -53,6 +57,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int Y { get; set; } = 172;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 60;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -69,6 +75,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int Y { get; set; } = 165;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 60;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -87,6 +95,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int Y { get; set; } = -16;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 60;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
 
@@ -105,6 +115,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int Y { get; set; } = 165;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 60;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
     public PlayerSpriteDisplayer playerSpriteDisplayer { get; set; } = new();
@@ -123,6 +135,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int Y { get; set; } = 165;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 60;
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
     public PlayerPositionDisplayer playerPositionDisplayer { get; set; } = new();
