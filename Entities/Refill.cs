@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities;
 
@@ -180,8 +181,11 @@ public class Refill : Entity
         CounterClockwise
     }
 
+    private string connectTag;
+    
     public Refill(Vector2 position, EntityData data) : base(position)
     {
+        this.connectTag = data.Attr("connectedTag");
         this.twoDashes = data.Bool("twoDashes", false);
         this.spritePath = data.Attr("sprite", null);
         this.spriteColor = data.GetChroniaColor("spriteColor");
@@ -313,16 +317,40 @@ public class Refill : Entity
             this.sineWave.Counter = 0F;
         }
     }
-
+    
     public override void Added(Scene scene)
     {
         base.Added(scene);
         this.level = base.SceneAs<Level>();
+        
+        level.Session.SetFlag($"ChroniaHelper_ConnectedRefill_{connectTag}_triggered", false);
+        level.Session.SetFlag($"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed", false);
     }
 
     public override void Update()
     {
         base.Update();
+        
+        if (connectTag.IsNotNullOrEmpty())
+        {
+            bool arg1 = $"ChroniaHelper_ConnectedRefill_{connectTag}_triggered".GetFlag();
+            bool arg2 = $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".GetFlag();
+            if (arg1 && !arg2)
+            {
+                var player = PUt.player;
+                
+                Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                this.Collidable = false;
+                global::Celeste.Celeste.Freeze(this.freeze);
+                base.Add(new Coroutine(this.RefillRoutine(player), true));
+                this.respawnTimer = this.respawnTime;
+                if (connectTag.IsNotNullOrEmpty())
+                {
+                    $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".SetFlag(true);
+                }
+                SceneAs<Level>().Session.SetFlag(flagOnCollected);
+            }
+        }
         if (this.respawnTimer > 0F)
         {
             this.respawnTimer -= Engine.DeltaTime;
@@ -370,6 +398,11 @@ public class Refill : Entity
             Audio.Play(this.respawnSound, this.centerPosition);
         }
         this.level.ParticlesFG.Emit(this.particleRegen, 16, this.centerPosition, Vector2.One * this.waveRadius);
+        if (connectTag.IsNotNullOrEmpty())
+        {
+            $"ChroniaHelper_ConnectedRefill_{connectTag}_triggered".SetFlag(false);
+            $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".SetFlag(false);
+        }
     }
 
     private void WaveMove()
@@ -465,6 +498,11 @@ public class Refill : Entity
         global::Celeste.Celeste.Freeze(this.freeze);
         base.Add(new Coroutine(this.RefillRoutine(player), true));
         this.respawnTimer = this.respawnTime;
+        if (connectTag.IsNotNullOrEmpty())
+        {
+            $"ChroniaHelper_ConnectedRefill_{connectTag}_triggered".SetFlag(true);
+            $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".SetFlag(true);
+        }
         SceneAs<Level>().Session.SetFlag(flagOnCollected);
     }
 

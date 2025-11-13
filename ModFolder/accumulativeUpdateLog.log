@@ -13,9 +13,12 @@ New entities:
 
     Static BG Tile
     
+    Refill Circle
+    
 Entities Enhancements:
     Bubble Push Field + Instant Mode
     Floaty BG Tile & Floaty BG Tile Separated <- Falling Block Colliding Fix
+    Refills + connectedTag
 
 HUD: Some home-made features for skin-modders mostly
     + Dash Displayer

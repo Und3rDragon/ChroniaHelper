@@ -425,6 +425,15 @@ entities.ChroniaHelper/RefillWall.attributes.description.fewerMode=When player's
 entities.ChroniaHelper/RefillWall.attributes.description.resetMode=The effect of this entity when player interacts
 entities.ChroniaHelper/RefillWall.attributes.description.sprite=The sprite or animation folder for the refill, relative to Gameplay folder\nIf it ends with a "/", then it will read the image arrays inside it\nIf not, it'll be read as a standalone image\nIf it's a folder, you should have several image arrays: "idle", "flash", and "outline"
 
+# ================= Refill Circle
+
+entities.ChroniaHelper/RefillCircle.placements.name.RefillCircle=Refill Circle
+entities.ChroniaHelper/RefillCircle.placements.name.TwoDashesRefillCircle=Refill Circle (Two Dashes)
+entities.ChroniaHelper/RefillCircle.attributes.description.freeze=The number of freeze frames
+entities.ChroniaHelper/RefillCircle.attributes.description.fewerMode=When player's certain value is less than the "fewer" parameters,\nthe player will be able to interact with this entity\notherwise, they can't
+entities.ChroniaHelper/RefillCircle.attributes.description.resetMode=The effect of this entity when player interacts
+entities.ChroniaHelper/RefillCircle.attributes.description.sprite=The sprite or animation folder for the refill, relative to Gameplay folder\nIf it ends with a "/", then it will read the image arrays inside it\nIf not, it'll be read as a standalone image\nIf it's a folder, you should have several image arrays: "idle", "flash", and "outline"
+
 # ================= Advanced Spikes
 
 entities.ChroniaHelper/UpAdvancedSpikes.placements.name.UpAdvancedSpikes=Advanced Spikes (Up)
