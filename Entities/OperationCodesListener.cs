@@ -243,6 +243,7 @@ public class OperationCodesListener : BaseEntity
         if (recordA.Count == target.Count && recordA.Count > 0)
         {
             SuccessA();
+            recordA.Clear();
         }
         else if (code1 != OperationCode.None && code1 != _code1)
         {
@@ -259,6 +260,7 @@ public class OperationCodesListener : BaseEntity
         if (recordB.Count == target.Count && recordB.Count > 0)
         {
             SuccessB();
+            recordB.Clear();
         }
         else if (code2 != OperationCode.None && code2 != _code2)
         {

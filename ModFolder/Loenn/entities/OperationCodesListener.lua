@@ -12,6 +12,7 @@ controller.placements = {
         flag = "operationsDone",
         interceptLength = 5,
         targetSequence = "2;3;2;3;2,4",
+        sequenceReference = 0,
         listener = 1,
         logOperationsInConsole = false,
     },
@@ -36,33 +37,26 @@ controller.fieldInformation =
         fieldType = "integer",
         minimumValue = 1,
     },
-    targetSequence = {
-        fieldType = "list",
-        elementSeparator = ";",
-        elementOptions = {
-            fieldType = "list",
-            elementOptions ={
-                options = {
-                    ["ESC = 0"] = 0,
-                    ["Pause = 1"] = 1,
-                    ["Left = 2"] = 2,
-                    ["Right = 3"] = 3,
-                    ["Up = 4"] = 4,
-                    ["Down = 5"] = 5,
-                    ["MenuConfirm = 6"] = 6,
-                    ["MenuJournal = 7"] = 7,
-                    ["QuickRestart = 8"] = 8,
-                    ["Jump = 9"] = 9,
-                    ["Dash = 10"] = 10,
-                    ["Grab = 11"] = 11,
-                    ["Talk = 12"] = 12,
-                    ["CrouchDash = 13"] = 13,
-                },
-                editable = false,
-            },
-            minimumElements = 1,
+    sequenceReference = {
+        fieldType = "integer",
+        options = {
+            ["ESC = 0"] = 0,
+            ["Pause = 1"] = 1,
+            ["MenuLeft (Left) = 2"] = 2,
+            ["MenuRight (Right) = 3"] = 3,
+            ["MenuUp (Up) = 4"] = 4,
+            ["MenuDown (Down) = 5"] = 5,
+            ["MenuConfirm = 6"] = 6,
+            ["MenuJournal = 7"] = 7,
+            ["QuickRestart = 8"] = 8,
+            ["Jump = 9"] = 9,
+            ["Dash = 10"] = 10,
+            ["Grab = 11"] = 11,
+            ["Talk = 12"] = 12,
+            ["CrouchDash = 13"] = 13,
         },
-    }
+        editable = false,
+    },
 }
 
 function controller.sprite(room, entity)
