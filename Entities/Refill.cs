@@ -326,6 +326,118 @@ public class Refill : Entity
         level.Session.SetFlag($"ChroniaHelper_ConnectedRefill_{connectTag}_triggered", false);
         level.Session.SetFlag($"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed", false);
     }
+    
+    public void NormalCollect()
+    {
+        if (!PUt.TryGetPlayer(out Player player)) { return; }
+        if (this.fewerMode == FewerMode.None || this.resetMode == ResetMode.None)
+        {
+            return;
+        }
+        if (this.fewerDashes == -1)
+        {
+            this.fewerDashes = player.MaxDashes;
+        }
+        if (this.rewerDashes == -1)
+        {
+            this.rewerDashes = player.MaxDashes;
+        }
+        if (!this.fewerDictionary[this.fewerMode](player.Dashes, player.Stamina, this.fewerDashes, this.fewerStamina))
+        {
+            return;
+        }
+        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.rewerDashes, this.resetStamina);
+        if (!string.IsNullOrEmpty(this.respawnSound))
+        {
+            Audio.Play(this.touchSound, this.centerPosition);
+        }
+        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+        this.Collidable = false;
+        global::Celeste.Celeste.Freeze(this.freeze);
+        base.Add(new Coroutine(this.RefillRoutine(player), true));
+        this.respawnTimer = this.respawnTime;
+        if (connectTag.IsNotNullOrEmpty())
+        {
+            $"ChroniaHelper_ConnectedRefill_{connectTag}_triggered".SetFlag(true);
+            $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".SetFlag(true);
+        }
+        SceneAs<Level>().Session.SetFlag(flagOnCollected);
+
+        $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_queue".SetFlag(false);
+        $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_collect".SetFlag(false);
+    }
+
+    public void ForceCollect()
+    {
+        if (!PUt.TryGetPlayer(out Player player)) { return; }
+        if (this.fewerMode == FewerMode.None || this.resetMode == ResetMode.None)
+        {
+            return;
+        }
+        if (this.fewerDashes == -1)
+        {
+            this.fewerDashes = player.MaxDashes;
+        }
+        if (this.rewerDashes == -1)
+        {
+            this.rewerDashes = player.MaxDashes;
+        }
+        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.rewerDashes, this.resetStamina);
+        if (!string.IsNullOrEmpty(this.respawnSound))
+        {
+            Audio.Play(this.touchSound, this.centerPosition);
+        }
+        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+        this.Collidable = false;
+        global::Celeste.Celeste.Freeze(this.freeze);
+        base.Add(new Coroutine(this.RefillRoutine(player), true));
+        this.respawnTimer = this.respawnTime;
+        if (connectTag.IsNotNullOrEmpty())
+        {
+            $"ChroniaHelper_ConnectedRefill_{connectTag}_triggered".SetFlag(true);
+            $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".SetFlag(true);
+        }
+        SceneAs<Level>().Session.SetFlag(flagOnCollected);
+
+        $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_queue".SetFlag(false);
+        $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_collect".SetFlag(false);
+    }
+
+    public void GroupCollect()
+    {
+        if (!PUt.TryGetPlayer(out Player player)) { return; }
+        if (this.fewerMode == FewerMode.None || this.resetMode == ResetMode.None)
+        {
+            return;
+        }
+        if (this.fewerDashes == -1)
+        {
+            this.fewerDashes = player.MaxDashes;
+        }
+        if (this.rewerDashes == -1)
+        {
+            this.rewerDashes = player.MaxDashes;
+        }
+        //this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.rewerDashes, this.resetStamina);
+        if (!string.IsNullOrEmpty(this.respawnSound))
+        {
+            Audio.Play(this.touchSound, this.centerPosition);
+        }
+        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+        this.Collidable = false;
+        global::Celeste.Celeste.Freeze(this.freeze);
+        base.Add(new Coroutine(this.RefillRoutine(player), true));
+        this.respawnTimer = this.respawnTime;
+        if (connectTag.IsNotNullOrEmpty())
+        {
+            $"ChroniaHelper_ConnectedRefill_{connectTag}_triggered".SetFlag(true);
+            $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".SetFlag(true);
+        }
+        SceneAs<Level>().Session.SetFlag(flagOnCollected);
+
+        $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_queue".SetFlag(false);
+        $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_collect".SetFlag(false);
+    }
 
     public override void Update()
     {
@@ -337,20 +449,21 @@ public class Refill : Entity
             bool arg2 = $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".GetFlag();
             if (arg1 && !arg2)
             {
-                var player = PUt.player;
-                
-                Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-                this.Collidable = false;
-                global::Celeste.Celeste.Freeze(this.freeze);
-                base.Add(new Coroutine(this.RefillRoutine(player), true));
-                this.respawnTimer = this.respawnTime;
-                if (connectTag.IsNotNullOrEmpty())
-                {
-                    $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_consumed".SetFlag(true);
-                }
-                SceneAs<Level>().Session.SetFlag(flagOnCollected);
+                GroupCollect();
             }
         }
+
+        bool arg = $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_queue".GetFlag();
+        bool farg = $"ChroniaHelper_ConnectedRefill_{this.SourceData.ID}_collect".GetFlag();
+        if (farg)
+        {
+            ForceCollect();
+        }
+        else if (arg)
+        {
+            NormalCollect();
+        }
+
         if (this.respawnTimer > 0F)
         {
             this.respawnTimer -= Engine.DeltaTime;
