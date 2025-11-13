@@ -1103,3 +1103,7 @@ triggers.ChroniaHelper/SliderFadeTrigger.placements.name.trigger=Slider Fade Tri
 
 entities.ChroniaHelper/DangerRangeController.placements.name.controller=Danger Range Controller
 entities.ChroniaHelper/DangerRangeController.attributes.description.value=World Coordinate
+
+# ================= Operation Codes Listener
+
+entities.ChroniaHelper/OperationCodesListener.placements.name.controller=Operation Codes Listener

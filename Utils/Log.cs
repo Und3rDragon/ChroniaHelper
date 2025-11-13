@@ -132,4 +132,25 @@ public static class Log
             }
         }
     }
+
+    public static string divider = "________________________________________________";
+    public static void Divider(LogLevel level = LogLevel.Info)
+    {
+        if (level == LogLevel.Info)
+        {
+            Info(divider);
+        }
+        else if (level == LogLevel.Warn)
+        {
+            Warn(divider);
+        }
+        else if (level == LogLevel.Error)
+        {
+            Error(divider);
+        }
+        else
+        {
+            Info(divider);
+        }
+    }
 }
