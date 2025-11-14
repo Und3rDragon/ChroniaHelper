@@ -16,6 +16,7 @@ local patientBooster = {
                 dashes = 1,
                 staminaMode = 0,
                 dashesMode = 0,
+                killIfStayed = -1,
             }
         },
         {
@@ -32,7 +33,13 @@ local patientBooster = {
         }
     },
     texture = function (room, entity)
-        return entity.red and "objects/ChroniaHelper/customBoosterPresets/red/loop0" or "objects/ChroniaHelper/customBoosterPresets/green/loop0"
+        if entity.killIfStayed > 0 then
+            return "objects/ChroniaHelper/customBoosterPresets/yellow/loop0"
+        elseif entity.red then
+            return "objects/ChroniaHelper/customBoosterPresets/red/loop0"
+        else
+            return "objects/ChroniaHelper/customBoosterPresets/green/loop0"
+        end
     end,
     selection = function (room, entity)
         return utils.rectangle(entity.x - 11, entity.y - 9, 22, 18)
@@ -57,6 +64,16 @@ local patientBooster = {
         },
         dashes = {
             fieldType = "integer",
+        },
+        sprite = {
+            options = {
+                "Preset_green",
+                "Preset_red",
+                "Preset_yellow",
+                "Default_booster",
+                "Preset_pink",
+            },
+            editable = true,
         },
     },
 }

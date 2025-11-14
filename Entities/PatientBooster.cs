@@ -101,25 +101,50 @@ public class PatientBooster : Booster
 		var spriteName = data.Attr("sprite", "");
 		var red = data.Bool("red");
 
+		killTimer = data.Float("killIfStayed", -1f);
+        
 		Remove(sprite);
-		Add(sprite = GFX.SpriteBank.Create(!string.IsNullOrEmpty(spriteName) ? spriteName : (red ? "Preset_red" : "Preset_green")));
+		Add(sprite = GFX.SpriteBank.Create(!string.IsNullOrEmpty(spriteName) ? spriteName : (killTimer > 0f ? "Preset_yellow" : (red ? "Preset_red" : "Preset_green"))));
 	}
 	private int dashes, stamina;
 	private enum DashRefill { refill, set};
 	private DashRefill dashesMode;
 	private enum StaminaRefill { refill, set};
 	private StaminaRefill staminaMode;
+	private float killTimer = -1f, timer_killTimer = -1f;
 
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+		timer_killTimer = killTimer;
+    }
 	public override void Update()
 	{
 		base.Update();
 		var player = Scene.Tracker.GetEntity<Player>();
-        if (player != null && player.CurrentBooster == this)
+		if (player?.CollideCheck(this) ?? false)
+		{
+            if(timer_killTimer > 0f)
+			{
+                timer_killTimer = Calc.Approach(timer_killTimer, 0f, Engine.DeltaTime);
+				Sprite.Color = timer_killTimer.LerpValue(killTimer, 0f, Color.White, Color.Red);
+			}
+            if(timer_killTimer == 0f)
+			{
+				player?.Die(player?.Speed.SafeNormalize() ?? Vc2.Zero);
+			}
+		}
+		else
+		{
+			timer_killTimer = killTimer;
+            Sprite.Color = Color.White;
+        }
+		if (player != null && player.CurrentBooster == this)
 		{
 			BoostingPlayer = true;
 			player.boostTarget = Center;
 			var targetPos = Center - player.Collider.Center + (Input.Aim.Value * 3f);
-            player.MoveToX(targetPos.X);
+			player.MoveToX(targetPos.X);
 			player.MoveToY(targetPos.Y);
 		}
 		var sprite = Sprite;
@@ -199,6 +224,7 @@ public class PatientBooster : Booster
 		if (self is PatientBooster patientBooster)
 		{
 			patientBooster.respawnTimer = patientBooster.respawnDelay;
+			patientBooster.timer_killTimer = patientBooster.killTimer;
 		}
 	}
 
@@ -208,7 +234,7 @@ public class PatientBooster : Booster
 
 		if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("RefillStamina")))
 		{
-			Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed IL Hook for Booster.BoostBegin (RefillStamina)");
+			Log.Error($"Failed IL Hook for Booster.BoostBegin (RefillStamina)");
 			return;
 		}
 

@@ -82,6 +82,15 @@
 		<Anim id="appear" path="appear" delay="0.08"/>
 	</Preset_green>
 
+	<Preset_yellow path="objects/ChroniaHelper/customBoosterPresets/yellow/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_yellow>
+
 	<Preset_pink path="objects/ChroniaHelper/customBoosterPresets/pink/" start="loop">
 		<Justify x="0.5" y="0.5"/>
 		<Loop id="loop" path="loop" delay="0.1"/>
