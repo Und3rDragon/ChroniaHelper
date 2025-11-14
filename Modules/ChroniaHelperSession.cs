@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using ChroniaHelper.Components;
 using System.Diagnostics;
 using ChroniaHelper.Utils.StopwatchSystem;
+using ChroniaHelper.Entities;
 
 namespace ChroniaHelper.Modules;
 
@@ -158,6 +159,10 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // Stopwatch
     public Dictionary<string, Stopclock> sessionStopwatches = new();
+
+    // OperationCode Listener
+    public Dictionary<int, OperationCodesListener.OperationCodeData> operationCodeListeners = new();
+
 
     // Backup Simplified Flag System (Unused)
     //public HashSet<string> TemporaryFlags = new();
