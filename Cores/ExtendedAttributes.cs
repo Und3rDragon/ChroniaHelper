@@ -16,7 +16,7 @@ public class UnloadHook : Attribute
 {
 }
 
-[AttributeUsage(AttributeTargets.Field)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public class ChroniaGlobalSavePathAttribute : Attribute
 {
     public string RelativePath { get; }
