@@ -219,6 +219,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 "bool" => bool.Parse(text),
                 "string" => text,
                 "datetime" => DateTime.Parse(text),
+                "biginteger" => System.Numerics.BigInteger.Parse(text),
                 _ => text // fallback
             };
         }
