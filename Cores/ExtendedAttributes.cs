@@ -15,3 +15,14 @@ public class LoadHook : Attribute
 public class UnloadHook : Attribute
 {
 }
+
+[AttributeUsage(AttributeTargets.Field)]
+public class ChroniaGlobalSavePathAttribute : Attribute
+{
+    public string RelativePath { get; }
+
+    public ChroniaGlobalSavePathAttribute(string relativePath = "ChroniaHelperGlobalSaveData.xml")
+    {
+        RelativePath = relativePath;
+    }
+}

@@ -1,29 +1,30 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Numerics;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using Celeste;
 using Celeste.Mod;
 using Celeste.Mod.ChroniaHelperIndicatorZone;
 using Celeste.Mod.Helpers;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Effects;
 using ChroniaHelper.Entities;
 using ChroniaHelper.Entities.MigratedNeonHelper;
 using ChroniaHelper.Imports;
 using ChroniaHelper.Modules;
+using ChroniaHelper.Settings;
 using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Utils.StopwatchSystem;
+using FASF2025Helper.Utils;
 using FMOD.Studio;
+using Microsoft.Xna.Framework.Graphics;
 using MonoMod.ModInterop;
 using YoctoHelper.Hooks;
-using FASF2025Helper.Utils;
-using ChroniaHelper.Utils.ChroniaSystem;
-using ChroniaHelper.Components;
-using ChroniaHelper.Utils.StopwatchSystem;
-using ChroniaHelper.Settings;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ChroniaHelper;
 
@@ -46,6 +47,8 @@ public class ChroniaHelperModule : EverestModule
 
     public static ChroniaHelperSaveData SaveData => (ChroniaHelperSaveData)ChroniaHelperModule.Instance._SaveData;
 
+    public static ChroniaHelperGlobalSaveData GlobalData { get; private set; }
+    
     public ChroniaHelperHandle ChroniaHelperHandle { get; private set; }
 
     public HookManager HookManager { get; private set; }
@@ -76,6 +79,9 @@ public class ChroniaHelperModule : EverestModule
         this.ChroniaHelperHandle = new ChroniaHelperHandle();
         this.HookManager = new HookManager();
         ChroniaHelperModule.Instance.ChroniaHelperHandle.LoadHandle();
+
+        GlobalData = new ChroniaHelperGlobalSaveData();
+        GlobalData.LoadAll(); // 自动从多个 XML 文件加载
         
         LoadingManager.Load();
         
@@ -138,7 +144,9 @@ public class ChroniaHelperModule : EverestModule
         ChroniaHelperModule.Instance.ChroniaHelperHandle.UnloadHandle();
         
         LoadingManager.Unload();
-        
+
+        GlobalData.SaveAll(); // 数据保存
+
         Everest.Events.LevelLoader.OnLoadingThread -= LevelLoader_OnLoadingThread;
         
         // migrated from VivHelper
@@ -158,7 +166,7 @@ public class ChroniaHelperModule : EverestModule
                 Spikes.Directions directions = ((dir <= 0) ? Spikes.Directions.Right : Spikes.Directions.Left);
                 foreach (Spikes entity in player.Scene.Tracker.GetEntities<Spikes>())
                 {
-                    if (entity.Direction == directions && player.CollideCheck(entity, player.Position + Vector2.UnitX * dir * 5f))
+                    if (entity.Direction == directions && player.CollideCheck(entity, player.Position + Vc2.UnitX * dir * 5f))
                     {
                         flag = false;
                         break;
