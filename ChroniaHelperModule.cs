@@ -82,7 +82,11 @@ public class ChroniaHelperModule : EverestModule
 
         GlobalData = new ChroniaHelperGlobalSaveData();
         GlobalData.LoadAll(); // 自动从多个 XML 文件加载
+
+        Everest.Events.Celeste.OnExiting += OnGameExiting;
         
+        AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
         LoadingManager.Load();
         
         Everest.Events.LevelLoader.OnLoadingThread += LevelLoader_OnLoadingThread;
@@ -151,6 +155,33 @@ public class ChroniaHelperModule : EverestModule
         
         // migrated from VivHelper
         On.Celeste.GameLoader.Begin -= LateInitialize;
+    }
+
+    private void OnGameExiting()
+    {
+        try
+        {
+            Logger.Log("ChroniaHelper", "Saving on game exit...");
+            GlobalData?.SaveAll();
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to save on exit: {ex}");
+        }
+    }
+
+    // 这个需要参数（UnhandledExceptionEventArgs）
+    private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        try
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", "Emergency save due to crash...");
+            GlobalData?.SaveAll();
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Emergency save failed: {ex}");
+        }
     }
 
     public static void LateInitialize(On.Celeste.GameLoader.orig_Begin orig, GameLoader self)
@@ -341,4 +372,6 @@ public class ChroniaHelperModule : EverestModule
         menu.Add(submenu);
         
     }
+    
+    
 }
