@@ -10,11 +10,42 @@ using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Modules;
 
+// ===== 内部成员包装器：统一处理 Field 和 Property =====
+internal readonly struct SaveMember
+{
+    private readonly FieldInfo? _field;
+    private readonly PropertyInfo? _property;
+
+    public SaveMember(FieldInfo field)
+    {
+        _field = field;
+        _property = null;
+    }
+
+    public SaveMember(PropertyInfo property)
+    {
+        _property = property;
+        _field = null;
+    }
+
+    public object GetValue(object instance) =>
+        _field?.GetValue(instance) ?? _property!.GetValue(instance);
+
+    public void SetValue(object instance, object value)
+    {
+        if (_field != null)
+            _field.SetValue(instance, value);
+        else
+            _property!.SetValue(instance, value);
+    }
+}
+
+// ===== 全局保存数据基类 =====
 public abstract class ChroniaHelperModuleGlobalSaveData
 {
-    // 缓存字段 -> 路径映射
-    private readonly Dictionary<string, string> _fieldToPath = new();
-    private readonly Dictionary<string, FieldInfo> _fields = new();
+    // 缓存成员名 -> 路径映射
+    private readonly Dictionary<string, string> _memberToPath = new();
+    private readonly Dictionary<string, SaveMember> _members = new();
 
     protected ChroniaHelperModuleGlobalSaveData()
     {
@@ -24,34 +55,43 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     private void Initialize()
     {
         var type = GetType();
-        var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
+        // === 处理字段（支持 public / non-public / instance）===
+        var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         foreach (var field in fields)
         {
             var attr = field.GetCustomAttribute<ChroniaGlobalSavePathAttribute>();
-            string relativePath = attr?.RelativePath ?? "ChroniaHelperGlobalSaveData.xml";
+            if (attr == null) continue; // 仅处理标记了 Attribute 的字段
 
-            // 构建完整路径：Saves/ChroniaHelper/ + relativePath
-            string fullPath = Path.Combine(
-                Everest.PathGame,
-                "Saves",
-                "ChroniaHelper",
-                relativePath
-            );
+            string relativePath = attr.RelativePath;
+            string fullPath = Path.Combine(Everest.PathGame, "Saves", "ChroniaHelper", relativePath);
+            _memberToPath[field.Name] = fullPath;
+            _members[field.Name] = new SaveMember(field);
+        }
 
-            _fieldToPath[field.Name] = fullPath;
-            _fields[field.Name] = field;
+        // === 新增：处理属性（必须是 public、instance、可读可写）===
+        var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        .Where(p => p.CanRead && p.CanWrite);
+        foreach (var prop in props)
+        {
+            var attr = prop.GetCustomAttribute<ChroniaGlobalSavePathAttribute>();
+            if (attr == null) continue; // 仅处理标记了 Attribute 的属性
+
+            string relativePath = attr.RelativePath;
+            string fullPath = Path.Combine(Everest.PathGame, "Saves", "ChroniaHelper", relativePath);
+            _memberToPath[prop.Name] = fullPath;
+            _members[prop.Name] = new SaveMember(prop);
         }
     }
 
     // ===== 加载所有数据 =====
     public void LoadAll()
     {
-        var pathGroups = _fieldToPath
+        var pathGroups = _memberToPath
             .GroupBy(kv => kv.Value)
             .ToDictionary(g => g.Key, g => g.Select(kv => kv.Key).ToList());
 
-        foreach (var (filePath, fieldNames) in pathGroups)
+        foreach (var (filePath, memberNames) in pathGroups)
         {
             if (!File.Exists(filePath))
             {
@@ -64,14 +104,13 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 var doc = new XmlDocument();
                 doc.Load(filePath);
 
-                foreach (string fieldName in fieldNames)
+                foreach (string memberName in memberNames)
                 {
-                    var field = _fields[fieldName];
-                    var node = doc.SelectSingleNode($"/Root/{fieldName}");
+                    var node = doc.SelectSingleNode($"/Root/{memberName}");
                     if (node != null)
                     {
                         object value = DeserializeNode(node);
-                        field.SetValue(this, value);
+                        _members[memberName].SetValue(this, value);
                     }
                 }
             }
@@ -85,11 +124,11 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     // ===== 保存所有数据 =====
     public void SaveAll()
     {
-        var pathGroups = _fieldToPath
+        var pathGroups = _memberToPath
             .GroupBy(kv => kv.Value)
             .ToDictionary(g => g.Key, g => g.Select(kv => kv.Key).ToList());
 
-        foreach (var (filePath, fieldNames) in pathGroups)
+        foreach (var (filePath, memberNames) in pathGroups)
         {
             try
             {
@@ -102,11 +141,10 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 XmlElement root = doc.CreateElement("Root");
                 doc.AppendChild(root);
 
-                foreach (string fieldName in fieldNames)
+                foreach (string memberName in memberNames)
                 {
-                    var field = _fields[fieldName];
-                    object value = field.GetValue(this);
-                    XmlElement valueNode = SerializeValue(doc, fieldName, value);
+                    object value = _members[memberName].GetValue(this);
+                    XmlElement valueNode = SerializeValue(doc, memberName, value);
                     root.AppendChild(valueNode);
                 }
 
@@ -141,10 +179,14 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         }
         else
         {
-            // 基本类型 or string
             var elem = doc.CreateElement(name);
             elem.InnerText = value.ToString();
-            elem.SetAttribute("type", Type.GetTypeCode(type).ToString().ToLowerInvariant());
+            string typeCode;
+            if (type == typeof(System.Numerics.BigInteger))
+                typeCode = "biginteger";
+            else
+                typeCode = Type.GetTypeCode(type).ToString().ToLowerInvariant();
+            elem.SetAttribute("type", typeCode);
             return elem;
         }
     }
@@ -266,7 +308,6 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 addMethod?.Invoke(dict, new[] { key, value });
             }
         }
-        
 
         return dict;
     }
@@ -328,7 +369,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         var fields = classType.GetFields(BindingFlags.Public | BindingFlags.Instance);
 
         var attributeMember = node.SelectNodes("Attribute");
-        if(attributeMember != null)
+        if (attributeMember != null)
         {
             foreach (XmlNode attrNode in attributeMember.Cast<XmlNode>())
             {
@@ -360,7 +401,6 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 }
             }
         }
-        
 
         return obj;
     }
@@ -386,6 +426,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             "boolean" or "bool" => bool.Parse(text),
             "string" => text,
             "datetime" => DateTime.Parse(text),
+            "biginteger" => System.Numerics.BigInteger.Parse(text),
             _ => text
         };
     }
