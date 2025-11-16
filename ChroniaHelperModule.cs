@@ -166,8 +166,7 @@ public class ChroniaHelperModule : EverestModule
 
     private static bool IsFromHelpers(ModAsset asset)
     {
-        return GlobalData.HelperMapsToHide.Contains(asset?.Source?.Name) || 
-            (asset?.Source?.Name.ToLower().Contains("helper") ?? false);
+        return GlobalData.HelperMapsToHide.Contains(asset?.Source?.Name);
     }
 
     private static void HookAreaDataLoad(ILContext il)
