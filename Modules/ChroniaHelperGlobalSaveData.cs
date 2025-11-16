@@ -10,15 +10,14 @@ namespace ChroniaHelper.Modules;
 
 public class ChroniaHelperGlobalSaveData : ChroniaHelperModuleGlobalSaveData
 {
-    // 默认保存到 ChroniaHelperGlobalSaveData.xml
-    //public string SomeEntry = "hahaha";
-    //public int SomeNumber = 1;
-    //public float SomeFloat = 2f;
+    public string Name { get; set; } = "123";
+    public int hhh { get; set; } = 2;
 
-    // 保存到 Saves/ChroniaHelper/ChroniaGaming/SomeData.xml
-    //[ChroniaGlobalSavePath("ChroniaGaming/SomeData.xml")]
-    //public Dictionary<string, int> AchievementProgress = new();
+    [ChroniaGlobalSavePath]
+    public bool lol { get; set; } = false;
+    [ChroniaGlobalSavePath]
+    public int hhh2 { get; set; } = 3;
 
-    //[ChroniaGlobalSavePath("PlayerStats/Points.xml")]
-    //public BigInteger TotalPoints = BigInteger.Zero;
+    [ChroniaGlobalSavePath("Gaming/Haha.xml")]
+    public int hhh3 { get; set; } = 4;
 }

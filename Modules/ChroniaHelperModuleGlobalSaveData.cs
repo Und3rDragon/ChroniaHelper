@@ -7,14 +7,15 @@ using System.Xml;
 using Celeste;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using System.Numerics; // Ensure this using is present for BigInteger
 
 namespace ChroniaHelper.Modules;
 
 // ===== 内部成员包装器：统一处理 Field 和 Property =====
 internal readonly struct SaveMember
 {
-    private readonly FieldInfo? _field;
-    private readonly PropertyInfo? _property;
+    public readonly FieldInfo? _field;
+    public readonly PropertyInfo? _property;
 
     public SaveMember(FieldInfo field)
     {
@@ -33,10 +34,22 @@ internal readonly struct SaveMember
 
     public void SetValue(object instance, object value)
     {
-        if (_field != null)
-            _field.SetValue(instance, value);
-        else
-            _property!.SetValue(instance, value);
+        try
+        {
+            if (_field != null)
+                _field.SetValue(instance, value);
+            else
+                _property!.SetValue(instance, value);
+        }
+        catch (ArgumentException ae)
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to set value for '{_field?.Name ?? _property?.Name}'. Type mismatch: {ae.Message}");
+            // Optionally re-throw or handle differently
+        }
+        catch (Exception e)
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Unexpected error setting value for '{_field?.Name ?? _property?.Name}': {e.Message}");
+        }
     }
 }
 
@@ -46,6 +59,9 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     // 缓存成员名 -> 路径映射
     private readonly Dictionary<string, string> _memberToPath = new();
     private readonly Dictionary<string, SaveMember> _members = new();
+
+    // 默认保存文件名
+    public const string DEFAULT_SAVE_PATH = "ChroniaHelperGlobalSaveData.xml";
 
     protected ChroniaHelperModuleGlobalSaveData()
     {
@@ -57,13 +73,15 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         var type = GetType();
 
         // === 处理字段（支持 public / non-public / instance）===
-        var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        foreach (var field in fields)
+        var allFields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        var validFields = allFields.Where(field =>
+            !field.Name.StartsWith("<") // 过滤掉编译器生成的自动属性后台字段
+        ).ToArray();
+
+        foreach (var field in validFields)
         {
             var attr = field.GetCustomAttribute<ChroniaGlobalSavePathAttribute>();
-            if (attr == null) continue; // 仅处理标记了 Attribute 的字段
-
-            string relativePath = attr.RelativePath;
+            string relativePath = attr?.RelativePath ?? DEFAULT_SAVE_PATH;
             string fullPath = Path.Combine(Everest.PathGame, "Saves", "ChroniaHelper", relativePath);
             _memberToPath[field.Name] = fullPath;
             _members[field.Name] = new SaveMember(field);
@@ -75,14 +93,24 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         foreach (var prop in props)
         {
             var attr = prop.GetCustomAttribute<ChroniaGlobalSavePathAttribute>();
-            if (attr == null) continue; // 仅处理标记了 Attribute 的属性
 
-            string relativePath = attr.RelativePath;
+            string relativePath;
+            if (attr != null)
+            {
+                relativePath = attr.RelativePath;
+            }
+            else
+            {
+                // 如果没有指定路径，使用默认路径
+                relativePath = DEFAULT_SAVE_PATH;
+            }
+
             string fullPath = Path.Combine(Everest.PathGame, "Saves", "ChroniaHelper", relativePath);
             _memberToPath[prop.Name] = fullPath;
             _members[prop.Name] = new SaveMember(prop);
         }
     }
+
 
     // ===== 加载所有数据 =====
     public void LoadAll()
@@ -96,6 +124,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             if (!File.Exists(filePath))
             {
                 // 首次运行，跳过加载（保留默认值）
+                Logger.Log(LogLevel.Verbose, "ChroniaHelper", $"Save file not found, skipping load: {filePath}");
                 continue;
             }
 
@@ -104,13 +133,31 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 var doc = new XmlDocument();
                 doc.Load(filePath);
 
+                XmlNode rootNode = doc.SelectSingleNode("/ChroniaHelperGlobalData");
+                if (rootNode == null)
+                {
+                    Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Malformed XML in {filePath}: Missing root element 'ChroniaHelperGlobalData'. Skipping.");
+                    continue;
+                }
+
                 foreach (string memberName in memberNames)
                 {
-                    var node = doc.SelectSingleNode($"/Root/{memberName}");
+                    XmlNode node = rootNode.SelectSingleNode(memberName);
                     if (node != null)
                     {
-                        object value = DeserializeNode(node);
-                        _members[memberName].SetValue(this, value);
+                        try
+                        {
+                            object value = DeserializeNode(node, memberName); // Pass memberName for context
+                            _members[memberName].SetValue(this, value);
+                        }
+                        catch (Exception innerEx)
+                        {
+                            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Error deserializing member '{memberName}' from {filePath}: {innerEx.Message}");
+                        }
+                    }
+                    else
+                    {
+                        Logger.Log(LogLevel.Verbose, "ChroniaHelper", $"Node for member '{memberName}' not found in {filePath}. Keeping default value.");
                     }
                 }
             }
@@ -138,17 +185,26 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 XmlDeclaration decl = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
                 doc.AppendChild(decl);
 
-                XmlElement root = doc.CreateElement("Root");
+                XmlElement root = doc.CreateElement("ChroniaHelperGlobalData");
                 doc.AppendChild(root);
 
                 foreach (string memberName in memberNames)
                 {
-                    object value = _members[memberName].GetValue(this);
-                    XmlElement valueNode = SerializeValue(doc, memberName, value);
-                    root.AppendChild(valueNode);
+                    try
+                    {
+                        object value = _members[memberName].GetValue(this);
+                        XmlElement valueNode = SerializeValue(doc, memberName, value);
+                        root.AppendChild(valueNode);
+                    }
+                    catch (Exception innerEx)
+                    {
+                        Logger.Log(LogLevel.Error, "ChroniaHelper", $"Error serializing member '{memberName}' for {filePath}: {innerEx.Message}");
+                        // Consider adding a placeholder node or skipping?
+                    }
                 }
 
                 doc.Save(filePath);
+                Logger.Log(LogLevel.Verbose, "ChroniaHelper", $"Successfully saved data to {filePath}");
             }
             catch (Exception e)
             {
@@ -160,6 +216,9 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     // ===== 序列化单个值 =====
     private XmlElement SerializeValue(XmlDocument doc, string name, object value)
     {
+        // ✅ Add validation for XML element names
+        ValidateXmlElementName(name);
+
         if (value == null)
         {
             var elem = doc.CreateElement(name);
@@ -180,9 +239,9 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         else
         {
             var elem = doc.CreateElement(name);
-            elem.InnerText = value.ToString();
+            elem.InnerText = value.ToString() ?? "";
             string typeCode;
-            if (type == typeof(System.Numerics.BigInteger))
+            if (type == typeof(BigInteger))
                 typeCode = "biginteger";
             else
                 typeCode = Type.GetTypeCode(type).ToString().ToLowerInvariant();
@@ -192,7 +251,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     }
 
     // ===== 反序列化节点 =====
-    private object DeserializeNode(XmlNode node)
+    private object DeserializeNode(XmlNode node, string memberName = "")
     {
         if (node.Attributes?["isNull"]?.Value == "true")
             return null;
@@ -207,11 +266,31 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         }
         else
         {
-            // 基本类型
-            string typeName = node.Attributes?["type"]?.Value ?? "string";
+            // --- Enhanced Deserialization Logic ---
             string text = node.InnerText;
 
-            return typeName switch
+            // 1. Try to determine target type from the member info
+            if (_members.TryGetValue(node.Name, out var member))
+            {
+                Type targetType = member._property?.PropertyType ?? member._field?.FieldType;
+                if (targetType != null)
+                {
+                    try
+                    {
+                        return ParseBasicType(text, targetType);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse '{text}' to target type '{targetType.Name}' for member '{node.Name}'. Falling back to type attribute. Error: {ex.Message}");
+                        // Fall through to legacy logic below
+                    }
+                }
+            }
+
+            // 2. Fallback: Use type attribute or default to string
+            string typeName = node.Attributes?["type"]?.Value ?? "string";
+
+            return typeName.ToLowerInvariant() switch
             {
                 "int" => int.Parse(text),
                 "float" => float.Parse(text),
@@ -219,8 +298,8 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 "bool" => bool.Parse(text),
                 "string" => text,
                 "datetime" => DateTime.Parse(text),
-                "biginteger" => System.Numerics.BigInteger.Parse(text),
-                _ => text // fallback
+                "biginteger" => BigInteger.Parse(text),
+                _ => text // final fallback
             };
         }
     }
@@ -228,6 +307,8 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     // ===== 序列化 Dictionary<K,V> =====
     private XmlElement SerializeDictionary(XmlDocument doc, string name, object dict)
     {
+        ValidateXmlElementName(name); // Validate wrapper element name
+
         var elem = doc.CreateElement("Dictionary");
         elem.SetAttribute("name", name);
 
@@ -241,22 +322,29 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         var keys = dictType.GetProperty("Keys")?.GetValue(dict) as System.Collections.IEnumerable;
         var indexer = dictType.GetProperty("Item");
 
-        foreach (var key in keys!)
+        if (keys != null && indexer != null)
         {
-            var member = doc.CreateElement("DictionaryMember");
+            foreach (var key in keys)
+            {
+                var member = doc.CreateElement("DictionaryMember");
 
-            // Key
-            object keyValue = key;
-            if (keyValue == null) throw new InvalidOperationException("Dictionary key cannot be null");
-            XmlElement keyNode = SerializeValue(doc, "Key", keyValue);
-            member.AppendChild(keyNode.FirstChild ?? keyNode); // 如果是基本类型，直接取 InnerText 包装
+                // Key
+                object keyValue = key ?? throw new InvalidOperationException("Dictionary key cannot be null");
+                XmlElement keyNode = SerializeValue(doc, "Key", keyValue);
+                // Append the actual content of the serialized key/value node
+                XmlNode keyContent = keyNode.FirstChild ?? keyNode;
+                XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
+                member.AppendChild(importedKeyContent);
 
-            // Value
-            object valueValue = indexer!.GetValue(dict, new object[] { keyValue });
-            XmlElement valueNode = SerializeValue(doc, "Value", valueValue);
-            member.AppendChild(valueNode.FirstChild ?? valueNode);
+                // Value
+                object valueValue = indexer.GetValue(dict, new object[] { keyValue });
+                XmlElement valueNode = SerializeValue(doc, "Value", valueValue);
+                XmlNode valueContent = valueNode.FirstChild ?? valueNode;
+                XmlNode importedValueContent = doc.ImportNode(valueContent, true);
+                member.AppendChild(importedValueContent);
 
-            elem.AppendChild(member);
+                elem.AppendChild(member);
+            }
         }
 
         return elem;
@@ -265,8 +353,8 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     // ===== 反序列化 Dictionary =====
     private object DeserializeDictionary(XmlNode node)
     {
-        string keyTypeName = node.Attributes["keyType"]?.Value ?? "string";
-        string valueTypeName = node.Attributes["valueType"]?.Value ?? "object";
+        string keyTypeName = node.Attributes?["keyType"]?.Value ?? "string";
+        string valueTypeName = node.Attributes?["valueType"]?.Value ?? "object";
 
         Type keyType = keyTypeName switch
         {
@@ -316,9 +404,11 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     // ===== 序列化 Class =====
     private XmlElement SerializeClass(XmlDocument doc, string name, object obj)
     {
+        ValidateXmlElementName(name); // Validate wrapper element name
+
         var elem = doc.CreateElement("Class");
         elem.SetAttribute("name", name);
-        elem.SetAttribute("classType", obj.GetType().Name);
+        elem.SetAttribute("classType", obj.GetType().FullName ?? obj.GetType().Name); // FullName safer
 
         var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
         foreach (var field in fields)
@@ -326,7 +416,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             object value = field.GetValue(obj);
             XmlElement attr = doc.CreateElement("Attribute");
             attr.SetAttribute("name", field.Name);
-            attr.SetAttribute("type", field.FieldType.Name);
+            attr.SetAttribute("type", field.FieldType.FullName ?? field.FieldType.Name); // FullName safer
 
             if (value == null)
             {
@@ -334,16 +424,18 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             }
             else
             {
-                // 对于复杂类型，递归序列化
+                // For complex types, recursively serialize
                 if (field.FieldType.IsClass && field.FieldType != typeof(string))
                 {
-                    // 嵌套 Class 或 Dictionary
+                    // Nested Class or Dictionary
                     XmlElement nested = SerializeValue(doc, field.Name, value);
-                    attr.AppendChild(nested.FirstChild ?? nested);
+                    XmlNode nestedContent = nested.FirstChild ?? nested;
+                    XmlNode importedNestedContent = doc.ImportNode(nestedContent, true);
+                    attr.AppendChild(importedNestedContent);
                 }
                 else
                 {
-                    attr.InnerText = value.ToString();
+                    attr.InnerText = value.ToString() ?? "";
                 }
             }
 
@@ -356,27 +448,27 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     // ===== 反序列化 Class =====
     private object DeserializeClass(XmlNode node)
     {
-        string className = node.Attributes["classType"]?.Value;
-        if (string.IsNullOrEmpty(className)) return new object();
+        string classTypeName = node.Attributes?["classType"]?.Value;
+        if (string.IsNullOrEmpty(classTypeName)) return new object();
 
-        // ⚠️ 简化：假设类在当前程序集，且有无参构造函数
-        Type classType = GetType().Assembly.GetType($"ChroniaHelper.Save.{className}")
-                     ?? Type.GetType(className)
-                     ?? typeof(object);
+        // ⚠️ Simplified: Assume class is in current assembly or a common one
+        Type classType = Type.GetType(classTypeName) ??
+                         GetType().Assembly.GetType(classTypeName) ??
+                         typeof(object);
 
-        if (classType == typeof(object)) return new object();
+        if (classType == typeof(object) || classType == null) return new object();
 
         var obj = Activator.CreateInstance(classType);
         var fields = classType.GetFields(BindingFlags.Public | BindingFlags.Instance);
 
-        var attributeMember = node.SelectNodes("Attribute");
-        if (attributeMember != null)
+        var attributeMembers = node.SelectNodes("Attribute");
+        if (attributeMembers != null)
         {
-            foreach (XmlNode attrNode in attributeMember.Cast<XmlNode>())
+            foreach (XmlNode attrNode in attributeMembers.Cast<XmlNode>())
             {
-                string fieldName = attrNode.Attributes["name"]?.Value;
-                string typeName = attrNode.Attributes["type"]?.Value;
-                bool isNull = attrNode.Attributes["isNull"]?.Value == "true";
+                string fieldName = attrNode.Attributes?["name"]?.Value;
+                string typeName = attrNode.Attributes?["type"]?.Value;
+                bool isNull = attrNode.Attributes?["isNull"]?.Value == "true";
 
                 var field = fields.FirstOrDefault(f => f.Name == fieldName);
                 if (field == null) continue;
@@ -389,14 +481,16 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                 {
                     if (field.FieldType.IsClass && field.FieldType != typeof(string))
                     {
-                        // 递归反序列化子节点
-                        object nested = DeserializeNode(attrNode.FirstChild ?? attrNode);
+                        // Recursively deserialize child node
+                        XmlNode childNode = attrNode.FirstChild ?? attrNode;
+                        object nested = DeserializeNode(childNode, fieldName ?? "");
                         field.SetValue(obj, nested);
                     }
                     else
                     {
                         string text = attrNode.InnerText;
-                        object val = ParseBasicType(text, typeName ?? field.FieldType.Name);
+                        // Prefer parsing based on field type
+                        object val = ParseBasicType(text, field.FieldType);
                         field.SetValue(obj, val);
                     }
                 }
@@ -413,22 +507,93 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         if (node.Name == "Class") return DeserializeClass(node);
         if (node.Name == "Dictionary") return DeserializeDictionary(node);
 
-        return ParseBasicType(node.InnerText, targetType.Name);
+        return ParseBasicType(node.InnerText, targetType);
     }
 
-    private object ParseBasicType(string text, string typeName)
+    private object ParseBasicType(string text, Type targetType)
     {
-        return typeName.ToLowerInvariant() switch
+        if (targetType == typeof(string)) return text;
+        if (string.IsNullOrEmpty(text)) return GetDefaultValue(targetType);
+
+        try
         {
-            "int32" or "int" => int.Parse(text),
-            "int64" or "long" => long.Parse(text),
-            "single" or "float" => float.Parse(text),
-            "double" => double.Parse(text),
-            "boolean" or "bool" => bool.Parse(text),
-            "string" => text,
-            "datetime" => DateTime.Parse(text),
-            "biginteger" => System.Numerics.BigInteger.Parse(text),
-            _ => text
-        };
+            if (targetType == typeof(int) || targetType == typeof(int?)) return int.Parse(text);
+            if (targetType == typeof(long) || targetType == typeof(long?)) return long.Parse(text);
+            if (targetType == typeof(float) || targetType == typeof(float?)) return float.Parse(text);
+            if (targetType == typeof(double) || targetType == typeof(double?)) return double.Parse(text);
+            if (targetType == typeof(bool) || targetType == typeof(bool?)) return bool.Parse(text);
+            if (targetType == typeof(DateTime) || targetType == typeof(DateTime?)) return DateTime.Parse(text);
+            if (targetType == typeof(BigInteger)) return BigInteger.Parse(text);
+            // Add more types as needed...
+        }
+        catch (FormatException fe)
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse '{text}' to type '{targetType.Name}': Format error. Returning default.");
+            return GetDefaultValue(targetType);
+        }
+        catch (OverflowException oe)
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse '{text}' to type '{targetType.Name}': Overflow error. Returning default.");
+            return GetDefaultValue(targetType);
+        }
+
+        Logger.Log(LogLevel.Warn, "ChroniaHelper", $"No parser defined for type '{targetType.Name}', returning raw text.");
+        return text; // Final fallback
+    }
+
+    private object GetDefaultValue(Type t)
+    {
+        if (t.IsValueType)
+        {
+            return Activator.CreateInstance(t);
+        }
+        return null;
+    }
+
+    // Helper method to validate XML element names
+    private static void ValidateXmlElementName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("XML element name cannot be null or whitespace.", nameof(name));
+        }
+
+        if (!IsValidXmlName(name))
+        {
+            throw new ArgumentException($"Invalid characters found in XML element name: '{name}'", nameof(name));
+        }
+    }
+
+    // A simple check for valid XML 1.0 NameStartChar and NameChar (simplified)
+    private static bool IsValidXmlName(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return false;
+
+        char firstChar = name[0];
+        if (!((firstChar >= 'A' && firstChar <= 'Z') ||
+              (firstChar >= 'a' && firstChar <= 'z') ||
+              firstChar == '_' || firstChar == ':'))
+        {
+            return false;
+        }
+
+        for (int i = 1; i < name.Length; i++)
+        {
+            char c = name[i];
+            if (!((c >= 'A' && c <= 'Z') ||
+                  (c >= 'a' && c <= 'z') ||
+                  (c >= '0' && c <= '9') ||
+                  c == '_' || c == '-' || c == '.' || c == ':' ||
+                  c == 0xB7 || (c >= 0xC0 && c <= 0xD6) || (c >= 0xD8 && c <= 0xF6) || (c >= 0xF8 && c <= 0x2FF) ||
+                  (c >= 0x370 && c <= 0x37D) || (c >= 0x37F && c <= 0x1FFF) ||
+                  (c >= 0x200C && c <= 0x200D) || (c >= 0x2070 && c <= 0x218F) ||
+                  (c >= 0x2C00 && c <= 0x2FEF) || (c >= 0x3001 && c <= 0xD7FF) ||
+                  (c >= 0xF900 && c <= 0xFDCF) || (c >= 0xFDF0 && c <= 0xFFFD) ||
+                  (c >= 0x10000 && c <= 0xEFFFF))) // Simplified range check
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
