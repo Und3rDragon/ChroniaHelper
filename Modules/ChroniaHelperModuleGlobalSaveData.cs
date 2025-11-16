@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -74,7 +75,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     private const string ATTR_T2 = "T2";
     private const string ATTR_T3 = "T3";
     private const string ATTR_T4 = "T4";
-    
+
     // 缓存成员名 -> 路径映射
     private readonly Dictionary<string, string> _memberToPath = new();
     private readonly Dictionary<string, SaveMember> _members = new();
@@ -131,27 +132,32 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     }
 
 
-    // ===== 加载所有数据 =====
     public void LoadAll()
     {
+        // 1. Group members by their save path
         var pathGroups = _memberToPath
             .GroupBy(kv => kv.Value)
             .ToDictionary(g => g.Key, g => g.Select(kv => kv.Key).ToList());
 
+        // 2. Set defaults (your added code) - This runs regardless
+
+        // 3. Loop through each file path
         foreach (var (filePath, memberNames) in pathGroups)
         {
+            // 4. Check if file exists
             if (!File.Exists(filePath))
             {
-                // 首次运行，跳过加载（保留默认值）
                 Logger.Log(LogLevel.Verbose, "ChroniaHelper", $"Save file not found, skipping load: {filePath}");
                 continue;
             }
 
             try
             {
+                // 5. Load XML document
                 var doc = new XmlDocument();
                 doc.Load(filePath);
 
+                // 6. Find root node
                 XmlNode rootNode = doc.SelectSingleNode("/ChroniaHelperGlobalData");
                 if (rootNode == null)
                 {
@@ -159,15 +165,34 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                     continue;
                 }
 
+                // 7. Loop through members assigned to this file
                 foreach (string memberName in memberNames)
                 {
-                    XmlNode node = rootNode.SelectSingleNode(memberName);
+                    XmlNode node = null;
+
+                    // --- 修改查找逻辑 Start ---
+                    // 遍历根节点的所有直接子节点
+                    foreach (XmlNode potentialNode in rootNode.ChildNodes)
+                    {
+                        // 检查节点是否有 'name' 属性，并且其值等于我们要找的 memberName
+                        XmlAttribute nameAttr = potentialNode.Attributes?["name"];
+                        if (nameAttr != null && nameAttr.Value == memberName)
+                        {
+                            node = potentialNode;
+                            break; // 找到了就停止循环
+                        }
+                    }
+                    // --- 修改查找逻辑 End ---
+
                     if (node != null)
                     {
                         try
                         {
-                            object value = DeserializeNode(node, memberName); // Pass memberName for context
+                            Logger.Log(LogLevel.Verbose, "ChroniaHelper", $"Found node for member '{memberName}' in {filePath}.");
+                            object value = DeserializeNode(node, memberName);
+
                             _members[memberName].SetValue(this, value);
+
                         }
                         catch (Exception innerEx)
                         {
@@ -212,7 +237,12 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                     try
                     {
                         object value = _members[memberName].GetValue(this);
-                        XmlElement valueNode = SerializeValue(doc, memberName, value);
+
+                        // === 修改点：传递 memberName 给 SerializeValue ===
+                        // 我们传递 memberName 两次：
+                        // 第一次作为节点的“类型”指示符（虽然现在 SerializeValue 内部会决定实际节点名）
+                        // 第二次作为 nodeNameForAttribute，告诉它应该把这个值作为 'name' 属性
+                        XmlElement valueNode = SerializeValue(doc, memberName, value, memberName);
                         root.AppendChild(valueNode);
                     }
                     catch (Exception innerEx)
@@ -232,14 +262,25 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         }
     }
 
-    private XmlElement SerializeValue(XmlDocument doc, string name, object value)
+    // === 修改方法签名，添加 nodeNameForAttribute 参数 ===
+    private XmlElement SerializeValue(XmlDocument doc, string name, object value, string nodeNameForAttribute = null)
     {
-        ValidateXmlElementName(name); // Ensure 'name' is a valid XML element name
+        // ValidateXmlElementName(name); // 注意：这里的 'name' 是传进来的 memberName，不一定适合作为 XML 节点名了。
+        // 我们将在创建具体节点时再验证或确定节点名。
+        // 如果需要，可以验证 nodeNameForAttribute
 
         // --- Handle Null Values ---
         if (value == null)
         {
-            var elem = doc.CreateElement(name);
+            // 对于 null 值，我们仍然创建一个通用节点，并设置 name 属性和 isNull 属性
+            var elem = doc.CreateElement("Value"); // 使用通用名称
+
+            // === 添加 name 属性 ===
+            if (!string.IsNullOrEmpty(nodeNameForAttribute))
+            {
+                elem.SetAttribute("name", nodeNameForAttribute);
+            }
+
             elem.SetAttribute("isNull", "true");
             return elem;
         }
@@ -254,41 +295,43 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             // Lists and Sets
             if (genericTypeDef == typeof(List<>) || genericTypeDef == typeof(HashSet<>))
             {
-                return SerializeList(doc, name, value);
+                // === 修改点：传递 nodeNameForAttribute ===
+                return SerializeList(doc, name, value, nodeNameForAttribute);
             }
 
             // Custom ILists
             if (genericTypeDef == typeof(IList2<,>))
             {
-                return SerializeIList2(doc, name, value);
+                return SerializeIList2(doc, name, value, nodeNameForAttribute); // 假设你也会相应修改这些方法
             }
             else if (genericTypeDef == typeof(IList3<,,>))
             {
-                return SerializeIList3(doc, name, value);
+                return SerializeIList3(doc, name, value, nodeNameForAttribute);
             }
             else if (genericTypeDef == typeof(IList4<,,,>))
             {
-                return SerializeIList4(doc, name, value);
+                return SerializeIList4(doc, name, value, nodeNameForAttribute);
             }
 
             // Dictionaries
             if (genericTypeDef == typeof(Dictionary<,>))
             {
-                return SerializeDictionary(doc, name, value);
+                // === 修改点：传递 nodeNameForAttribute ===
+                return SerializeDictionary(doc, name, value, nodeNameForAttribute);
             }
 
             // Custom IDictionaries
             if (genericTypeDef == typeof(IDictionary2<,,>))
             {
-                return SerializeIDictionary2(doc, name, value);
+                return SerializeIDictionary2(doc, name, value, nodeNameForAttribute);
             }
             else if (genericTypeDef == typeof(IDictionary3<,,,>))
             {
-                return SerializeIDictionary3(doc, name, value);
+                return SerializeIDictionary3(doc, name, value, nodeNameForAttribute);
             }
             else if (genericTypeDef == typeof(IDictionary4<,,,,>))
             {
-                return SerializeIDictionary4(doc, name, value);
+                return SerializeIDictionary4(doc, name, value, nodeNameForAttribute);
             }
 
             // If it's a generic type not handled above, fall through...
@@ -299,7 +342,14 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         // --- Handle All Other Types (Non-Generic, Primitives, String, Classes, Structs) ---
         // This 'else' block executes if the type is NOT a handled generic type.
         {
-            var elem = doc.CreateElement(name);
+            // === 修改点：创建通用节点名 "Value" ===
+            var elem = doc.CreateElement("Value");
+
+            // === 添加 name 属性 ===
+            if (!string.IsNullOrEmpty(nodeNameForAttribute))
+            {
+                elem.SetAttribute("name", nodeNameForAttribute);
+            }
 
             string typeCodeStr = null; // Will hold the type attribute value
             bool setValueText = false; // Flag to indicate if InnerText should be set
@@ -310,8 +360,8 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             // Crucially, 'string' is a class, but we treat it as a primitive value.
             if (type.IsClass && type != typeof(string))
             {
-                // This correctly identifies custom classes (but NOT string)
-                return SerializeClass(doc, name, value);
+                // === 修改点：传递 nodeNameForAttribute ===
+                return SerializeClass(doc, name, value, nodeNameForAttribute); // 假设你也会相应修改这个方法
             }
             else
             {
@@ -352,7 +402,8 @@ public abstract class ChroniaHelperModuleGlobalSaveData
                         // For these, defaulting to SerializeClass is often the best option.
                         // Log a warning as it might be unintended.
                         Log.Warn($"Serializing unhandled non-primitive, non-class type '{type.FullName}' using class serializer.");
-                        return SerializeClass(doc, name, value); // Fallback to class serialization
+                        // === 修改点：传递 nodeNameForAttribute ===
+                        return SerializeClass(doc, name, value, nodeNameForAttribute); // Fallback to class serialization
                     }
                 }
             }
@@ -375,7 +426,14 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         // --- Ultimate Fallback (Defensive Programming) ---
         // Should be unreachable with the logic above, but ensures compilation safety.
         Logger.Log(LogLevel.Error, "ChroniaHelper", $"CRITICAL: Unreachable code reached in SerializeValue for type {type.FullName}. This indicates a logical flaw.");
-        var fallbackElem = doc.CreateElement(name);
+        var fallbackElem = doc.CreateElement("Value"); // === 修改点：通用节点名 ===
+
+        // === 添加 name 属性 ===
+        if (!string.IsNullOrEmpty(nodeNameForAttribute))
+        {
+            fallbackElem.SetAttribute("name", nodeNameForAttribute);
+        }
+
         fallbackElem.InnerText = value.ToString() ?? "";
         fallbackElem.SetAttribute("type", "unknown_fallback");
         return fallbackElem;
@@ -467,12 +525,11 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     }
 
     // ===== 序列化 Dictionary<K,V> =====
-    private XmlElement SerializeDictionary(XmlDocument doc, string name, object dict)
+    private XmlElement SerializeDictionary(XmlDocument doc, string name, object dict, string nodeNameForAttribute = null)
     {
         ValidateXmlElementName(name); // Validate wrapper element name
-
         var elem = doc.CreateElement("Dictionary");
-        elem.SetAttribute("name", name);
+        elem.SetAttribute("name", nodeNameForAttribute);
 
         Type dictType = dict.GetType();
         Type keyType = dictType.GetGenericArguments()[0];
@@ -488,27 +545,18 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         {
             foreach (var key in keys)
             {
-                var member = doc.CreateElement("DictionaryMember");
+                var member = doc.CreateElement("DictionaryMember"); // <DictionaryMember>
 
-                // Key
                 object keyValue = key ?? throw new InvalidOperationException("Dictionary key cannot be null");
-                XmlElement keyNode = SerializeValue(doc, "Key", keyValue);
-                // Append the actual content of the serialized key/value node
-                XmlNode keyContent = keyNode.FirstChild ?? keyNode;
-                XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
-                member.AppendChild(importedKeyContent);
-
-                // Value
                 object valueValue = indexer.GetValue(dict, new object[] { keyValue });
-                XmlElement valueNode = SerializeValue(doc, "Value", valueValue);
-                XmlNode valueContent = valueNode.FirstChild ?? valueNode;
-                XmlNode importedValueContent = doc.ImportNode(valueContent, true);
-                member.AppendChild(importedValueContent);
 
-                elem.AppendChild(member);
+                // 将键和值直接作为属性
+                member.SetAttribute("key", keyValue.ToString());
+                member.SetAttribute("value", valueValue.ToString());
+
+                elem.AppendChild(member); // <Dictionary> -> <DictionaryMember .../>
             }
         }
-
         return elem;
     }
 
@@ -518,36 +566,47 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         string keyTypeName = node.Attributes?["keyType"]?.Value ?? "string";
         string valueTypeName = node.Attributes?["valueType"]?.Value ?? "object";
 
-        // 使用 GetTypeFromName
         Type keyType = GetTypeFromName(keyTypeName) ?? typeof(string);
         Type valueType = GetTypeFromName(valueTypeName) ?? typeof(object);
 
         Type dictType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
         var dict = Activator.CreateInstance(dictType);
-
         var addMethod = dictType.GetMethod("Add");
-        var memberNodes = node.SelectNodes("DictionaryMember");
+
+        var memberNodes = node.SelectNodes("DictionaryMember"); // 选择所有 <DictionaryMember> 子节点
         if (memberNodes != null)
         {
             foreach (XmlNode member in memberNodes.Cast<XmlNode>())
             {
-                var keyNode = member.ChildNodes[0];
-                var valueNode = member.ChildNodes[1];
-                object key = DeserializeSingleNode(keyNode, keyType);
-                object value = DeserializeSingleNode(valueNode, valueType);
-                addMethod?.Invoke(dict, new[] { key, value });
+                // 直接从属性获取
+                string keyStr = member.Attributes?["key"]?.Value;
+                string valueStr = member.Attributes?["value"]?.Value;
+
+                if (string.IsNullOrEmpty(keyStr)) continue; // 跳过无效项
+
+                try
+                {
+                    object key = ParseBasicType(keyStr, keyType);
+                    object value = ParseBasicType(valueStr, valueType);
+                    addMethod?.Invoke(dict, new[] { key, value });
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse Dictionary entry: key='{keyStr}', value='{valueStr}'. Error: {ex.Message}");
+                    // 根据需要决定是否跳过或使用默认值
+                }
             }
         }
         return dict;
     }
 
     // ===== 序列化 Class =====
-    private XmlElement SerializeClass(XmlDocument doc, string name, object obj)
+    private XmlElement SerializeClass(XmlDocument doc, string name, object obj, string nodeNameForAttribute = null)
     {
         ValidateXmlElementName(name); // Validate wrapper element name
 
         var elem = doc.CreateElement("Class");
-        elem.SetAttribute("name", name);
+        elem.SetAttribute("name", nodeNameForAttribute);
         elem.SetAttribute("classType", obj.GetType().FullName ?? obj.GetType().Name); // FullName safer
 
         var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
@@ -590,7 +649,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     {
         string classTypeName = node.Attributes?["classType"]?.Value;
         if (string.IsNullOrEmpty(classTypeName)) return new object();
-        
+
         Type classType = GetTypeFromName(classTypeName)
                      ?? GetType().Assembly.GetType(classTypeName)
                      ?? typeof(object);
@@ -736,64 +795,37 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         return true;
     }
 
-    // ===== 序列化 List<T> 和 HashSet<T> =====
-    // ===== 序列化 List<T> 和 HashSet<T> =====
-    private XmlElement SerializeList(XmlDocument doc, string name, object listObj)
+    // === 修改方法签名，添加 nodeNameForAttribute 参数 ===
+    private XmlElement SerializeList(XmlDocument doc, string name, object value, string nodeNameForAttribute = null)
     {
-        ValidateXmlElementName(name);
-        var elem = doc.CreateElement("List"); // 统一使用 "List" 标签
-        elem.SetAttribute("name", name);
+        ValidateXmlElementName(name); // Validate the member name itself if needed elsewhere?
 
-        Type listType = listObj.GetType();
-        Type elementType;
+        IList list = (IList)value;
+        Type listType = value.GetType();
+        Type elementType = listType.GetGenericArguments()[0];
 
-        // Determine the element type for both List<T> and HashSet<T>
-        if (listType.IsGenericType)
+        // === 修改点：使用固定的 "List" 作为节点名 ===
+        XmlElement listNode = doc.CreateElement("List");
+
+        // === 添加 name 属性 ===
+        if (!string.IsNullOrEmpty(nodeNameForAttribute))
         {
-            Type genericTypeDefinition = listType.GetGenericTypeDefinition();
-            if (genericTypeDefinition == typeof(List<>) || genericTypeDefinition == typeof(HashSet<>))
-            {
-                elementType = listType.GetGenericArguments()[0];
-                elem.SetAttribute("elementType", elementType.Name);
-            }
-            else
-            {
-                Logger.Log(LogLevel.Error, "ChroniaHelper", $"SerializeList called on unsupported generic type: {listType.FullName}");
-                return elem;
-            }
-        }
-        else
-        {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"SerializeList called on non-generic type: {listType.FullName}");
-            return elem;
+            listNode.SetAttribute("name", nodeNameForAttribute);
         }
 
-        // 确保 listObj 实现了 IEnumerable 接口
-        if (!(listObj is System.Collections.IEnumerable enumerable))
+        // Add elementType attribute
+        listNode.SetAttribute("elementType", elementType.Name);
+
+        foreach (var item in list)
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Object of type {listType.FullName} does not implement IEnumerable.");
-            return elem;
+            // === 修改点：递归调用 SerializeValue 时，传递 "Item" 作为 name，且不设置 name 属性 (或设置为 "Item"? 看你需求) ===
+            // 如果 Item 也需要 name 属性，可以传递 "Item"；如果只是列表项，可以不传或传 null。
+            // 这里我们假设 Item 不需要额外的 name 属性，或者它的 name 就是 "Item"
+            XmlElement itemNode = SerializeValue(doc, "Item", item /*, "Item" 或 null */);
+            listNode.AppendChild(itemNode);
         }
 
-        // 遍历集合并序列化每个元素
-        foreach (object item in enumerable)
-        {
-            // 关键：直接调用顶层 SerializeValue 来处理列表中的每个元素
-            try
-            {
-                XmlElement itemElement = SerializeValue(doc, "Item", item); // 子项统一命名为 "Item"
-                elem.AppendChild(itemElement);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogLevel.Error, "ChroniaHelper", $"Error serializing list item of type {item?.GetType().FullName ?? "null"}: {ex.Message}");
-                var errorElem = doc.CreateElement("Item");
-                errorElem.SetAttribute("serializationError", "true");
-                elem.AppendChild(errorElem);
-            }
-        }
-
-        return elem;
+        return listNode;
     }
 
     // ===== 反序列化 List<T> =====
@@ -827,111 +859,50 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     }
 
     // ===== 序列化 IList2<T1, T2> =====
-    private XmlElement SerializeIList2(XmlDocument doc, string name, object list2)
+    private XmlElement SerializeIList2(XmlDocument doc, string name, object list2, string nodeNameForAttribute = null)
     {
         ValidateXmlElementName(name);
         var elem = doc.CreateElement(NODE_ILIST2);
-        elem.SetAttribute(ATTR_NAME, name);
+        elem.SetAttribute(ATTR_NAME, nodeNameForAttribute);
 
         Type listType = list2.GetType();
         Type[] genArgs = listType.GetGenericArguments(); // [T1, T2]
-        elem.SetAttribute(ATTR_T1, genArgs[0].Name);
-        elem.SetAttribute(ATTR_T2, genArgs[1].Name);
+        elem.SetAttribute("item1Type", genArgs[0].Name); // 使用 item1Type/item2Type
+        elem.SetAttribute("item2Type", genArgs[1].Name);
 
-        // 获取 _items 字段
         FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (itemsField == null)
-        {
-            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
-            return elem; // 返回空节点
-        }
+        if (itemsField == null) return elem;
 
         var items = itemsField.GetValue(list2) as System.Collections.IEnumerable;
         if (items == null) return elem;
 
         foreach (var item in items)
         {
-            // item 是 List2Item<T1, T2>
-            XmlElement itemNode = SerializeValue(doc, "Item", item);
-            XmlNode importedNode = doc.ImportNode(itemNode, true);
-            elem.AppendChild(importedNode);
+            var valueElem = doc.CreateElement("Value"); // <Value>
+
+            FieldInfo field1 = item.GetType().GetField("Item1");
+            FieldInfo field2 = item.GetType().GetField("Item2");
+
+            if (field1 == null || field2 == null)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find fields in List2Item");
+                continue;
+            }
+
+            // 将每个字段作为属性
+            valueElem.SetAttribute("item1", (field1.GetValue(item) ?? "").ToString());
+            valueElem.SetAttribute("item2", (field2.GetValue(item) ?? "").ToString());
+
+            elem.AppendChild(valueElem); // <IList2> -> <Value .../>
         }
-
-        return elem;
-    }
-
-    // ===== 序列化 IList3<T1, T2, T3> =====
-    private XmlElement SerializeIList3(XmlDocument doc, string name, object list3)
-    {
-        ValidateXmlElementName(name);
-        var elem = doc.CreateElement(NODE_ILIST3);
-        elem.SetAttribute(ATTR_NAME, name);
-
-        Type listType = list3.GetType();
-        Type[] genArgs = listType.GetGenericArguments(); // [T1, T2, T3]
-        elem.SetAttribute(ATTR_T1, genArgs[0].Name);
-        elem.SetAttribute(ATTR_T2, genArgs[1].Name);
-        elem.SetAttribute(ATTR_T3, genArgs[2].Name);
-
-        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (itemsField == null)
-        {
-            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
-            return elem;
-        }
-
-        var items = itemsField.GetValue(list3) as System.Collections.IEnumerable;
-        if (items == null) return elem;
-
-        foreach (var item in items)
-        {
-            XmlElement itemNode = SerializeValue(doc, "Item", item);
-            XmlNode importedNode = doc.ImportNode(itemNode, true);
-            elem.AppendChild(importedNode);
-        }
-
-        return elem;
-    }
-
-    // ===== 序列化 IList4<T1, T2, T3, T4> =====
-    private XmlElement SerializeIList4(XmlDocument doc, string name, object list4)
-    {
-        ValidateXmlElementName(name);
-        var elem = doc.CreateElement(NODE_ILIST4);
-        elem.SetAttribute(ATTR_NAME, name);
-
-        Type listType = list4.GetType();
-        Type[] genArgs = listType.GetGenericArguments(); // [T1, T2, T3, T4]
-        elem.SetAttribute(ATTR_T1, genArgs[0].Name);
-        elem.SetAttribute(ATTR_T2, genArgs[1].Name);
-        elem.SetAttribute(ATTR_T3, genArgs[2].Name);
-        elem.SetAttribute(ATTR_T4, genArgs[3].Name);
-
-        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (itemsField == null)
-        {
-            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
-            return elem;
-        }
-
-        var items = itemsField.GetValue(list4) as System.Collections.IEnumerable;
-        if (items == null) return elem;
-
-        foreach (var item in items)
-        {
-            XmlElement itemNode = SerializeValue(doc, "Item", item);
-            XmlNode importedNode = doc.ImportNode(itemNode, true);
-            elem.AppendChild(importedNode);
-        }
-
         return elem;
     }
 
     // ===== 反序列化 IList2<T1, T2> =====
     private object DeserializeIList2(XmlNode node)
     {
-        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
-        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
+        string t1Name = node.Attributes?["item1Type"]?.Value ?? "object"; // 从 item1Type 获取
+        string t2Name = node.Attributes?["item2Type"]?.Value ?? "object";
 
         Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
         Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
@@ -941,43 +912,92 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         var list = Activator.CreateInstance(listType);
 
         FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (itemsField == null)
-        {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
-            return list;
-        }
+        if (itemsField == null) return list;
 
-        // 获取 _items 字段的实际对象 (应该是 List<List2Item<T1, T2>>)
         var itemsListObject = itemsField.GetValue(list);
         if (itemsListObject == null) return list;
 
-        // 获取其 Add 方法 (List<T>.Add(T))
-        Type itemsListType = itemsListObject.GetType(); // List<List2Item<T1, T2>>
+        Type itemsListType = itemsListObject.GetType();
         MethodInfo addMethod = itemsListType.GetMethod("Add");
+        if (addMethod == null) return list;
 
-        if (addMethod == null)
+        foreach (XmlNode itemNode in node.ChildNodes) // 遍历 <Value> 节点
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find 'Add' method on the items list type {itemsListType.Name}");
-            return list;
+            if (itemNode.Name != "Value") continue; // 确保是正确的节点
+
+            string val1Str = itemNode.Attributes?["item1"]?.Value;
+            string val2Str = itemNode.Attributes?["item2"]?.Value;
+
+            try
+            {
+                object val1 = ParseBasicType(val1Str, t1);
+                object val2 = ParseBasicType(val2Str, t2);
+
+                var listItem = Activator.CreateInstance(listItemType);
+                FieldInfo item1Field = listItemType.GetField("Item1");
+                FieldInfo item2Field = listItemType.GetField("Item2");
+                if (item1Field != null) item1Field.SetValue(listItem, val1);
+                if (item2Field != null) item2Field.SetValue(listItem, val2);
+
+                addMethod.Invoke(itemsListObject, new object[] { listItem });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse IList2 item: val1='{val1Str}', val2='{val2Str}'. Error: {ex.Message}");
+            }
         }
-
-
-        foreach (XmlNode itemNode in node.ChildNodes)
-        {
-            object item = DeserializeSingleNode(itemNode, listItemType);
-            // 使用反射调用 Add 方法
-            addMethod.Invoke(itemsListObject, new object[] { item });
-        }
-
         return list;
+    }
+
+    // ===== 序列化 IList3<T1, T2, T3> =====
+    private XmlElement SerializeIList3(XmlDocument doc, string name, object list3, string nodeNameForAttribute = null)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_ILIST3);
+        elem.SetAttribute(ATTR_NAME, nodeNameForAttribute);
+
+        Type listType = list3.GetType();
+        Type[] genArgs = listType.GetGenericArguments(); // [T1, T2, T3]
+        elem.SetAttribute("item1Type", genArgs[0].Name); // 使用 item1Type/item2Type/item3Type
+        elem.SetAttribute("item2Type", genArgs[1].Name);
+        elem.SetAttribute("item3Type", genArgs[2].Name);
+
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null) return elem;
+
+        var items = itemsField.GetValue(list3) as System.Collections.IEnumerable;
+        if (items == null) return elem;
+
+        foreach (var item in items)
+        {
+            var valueElem = doc.CreateElement("Value"); // <Value>
+
+            FieldInfo field1 = item.GetType().GetField("Item1");
+            FieldInfo field2 = item.GetType().GetField("Item2");
+            FieldInfo field3 = item.GetType().GetField("Item3");
+
+            if (field1 == null || field2 == null || field3 == null)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find fields in List3Item");
+                continue;
+            }
+
+            // 将每个字段作为属性
+            valueElem.SetAttribute("item1", (field1.GetValue(item) ?? "").ToString());
+            valueElem.SetAttribute("item2", (field2.GetValue(item) ?? "").ToString());
+            valueElem.SetAttribute("item3", (field3.GetValue(item) ?? "").ToString());
+
+            elem.AppendChild(valueElem); // <IList3> -> <Value .../>
+        }
+        return elem;
     }
 
     // ===== 反序列化 IList3<T1, T2, T3> =====
     private object DeserializeIList3(XmlNode node)
     {
-        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
-        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
-        string t3Name = node.Attributes?[ATTR_T3]?.Value ?? "object";
+        string t1Name = node.Attributes?["item1Type"]?.Value ?? "object"; // 从 item1Type 获取
+        string t2Name = node.Attributes?["item2Type"]?.Value ?? "object";
+        string t3Name = node.Attributes?["item3Type"]?.Value ?? "object";
 
         Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
         Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
@@ -988,40 +1008,100 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         var list = Activator.CreateInstance(listType);
 
         FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (itemsField == null)
-        {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
-            return list;
-        }
+        if (itemsField == null) return list;
 
         var itemsListObject = itemsField.GetValue(list);
         if (itemsListObject == null) return list;
 
-        Type itemsListType = itemsListObject.GetType(); // List<List3Item<T1, T2, T3>>
+        Type itemsListType = itemsListObject.GetType();
         MethodInfo addMethod = itemsListType.GetMethod("Add");
+        if (addMethod == null) return list;
 
-        if (addMethod == null)
+        foreach (XmlNode itemNode in node.ChildNodes) // 遍历 <Value> 节点
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find 'Add' method on the items list type {itemsListType.Name}");
-            return list;
-        }
+            if (itemNode.Name != "Value") continue; // 确保是正确的节点
 
-        foreach (XmlNode itemNode in node.ChildNodes)
-        {
-            object item = DeserializeSingleNode(itemNode, listItemType);
-            addMethod.Invoke(itemsListObject, new object[] { item });
-        }
+            string val1Str = itemNode.Attributes?["item1"]?.Value;
+            string val2Str = itemNode.Attributes?["item2"]?.Value;
+            string val3Str = itemNode.Attributes?["item3"]?.Value;
 
+            try
+            {
+                object val1 = ParseBasicType(val1Str, t1);
+                object val2 = ParseBasicType(val2Str, t2);
+                object val3 = ParseBasicType(val3Str, t3);
+
+                var listItem = Activator.CreateInstance(listItemType);
+                FieldInfo item1Field = listItemType.GetField("Item1");
+                FieldInfo item2Field = listItemType.GetField("Item2");
+                FieldInfo item3Field = listItemType.GetField("Item3");
+                if (item1Field != null) item1Field.SetValue(listItem, val1);
+                if (item2Field != null) item2Field.SetValue(listItem, val2);
+                if (item3Field != null) item3Field.SetValue(listItem, val3);
+
+                addMethod.Invoke(itemsListObject, new object[] { listItem });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse IList3 item: val1='{val1Str}', val2='{val2Str}', val3='{val3Str}'. Error: {ex.Message}");
+            }
+        }
         return list;
+    }
+
+    // ===== 序列化 IList4<T1, T2, T3, T4> =====
+    private XmlElement SerializeIList4(XmlDocument doc, string name, object list4, string nodeNameForAttribute = null)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_ILIST4);
+        elem.SetAttribute(ATTR_NAME, nodeNameForAttribute);
+
+        Type listType = list4.GetType();
+        Type[] genArgs = listType.GetGenericArguments(); // [T1, T2, T3, T4]
+        elem.SetAttribute("item1Type", genArgs[0].Name); // 使用 item1Type/item2Type/item3Type/item4Type
+        elem.SetAttribute("item2Type", genArgs[1].Name);
+        elem.SetAttribute("item3Type", genArgs[2].Name);
+        elem.SetAttribute("item4Type", genArgs[3].Name);
+
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null) return elem;
+
+        var items = itemsField.GetValue(list4) as System.Collections.IEnumerable;
+        if (items == null) return elem;
+
+        foreach (var item in items)
+        {
+            var valueElem = doc.CreateElement("Value"); // <Value>
+
+            FieldInfo field1 = item.GetType().GetField("Item1");
+            FieldInfo field2 = item.GetType().GetField("Item2");
+            FieldInfo field3 = item.GetType().GetField("Item3");
+            FieldInfo field4 = item.GetType().GetField("Item4");
+
+            if (field1 == null || field2 == null || field3 == null || field4 == null)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find fields in List4Item");
+                continue;
+            }
+
+            // 将每个字段作为属性
+            valueElem.SetAttribute("item1", (field1.GetValue(item) ?? "").ToString());
+            valueElem.SetAttribute("item2", (field2.GetValue(item) ?? "").ToString());
+            valueElem.SetAttribute("item3", (field3.GetValue(item) ?? "").ToString());
+            valueElem.SetAttribute("item4", (field4.GetValue(item) ?? "").ToString());
+
+            elem.AppendChild(valueElem); // <IList4> -> <Value .../>
+        }
+        return elem;
     }
 
     // ===== 反序列化 IList4<T1, T2, T3, T4> =====
     private object DeserializeIList4(XmlNode node)
     {
-        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
-        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
-        string t3Name = node.Attributes?[ATTR_T3]?.Value ?? "object";
-        string t4Name = node.Attributes?[ATTR_T4]?.Value ?? "object";
+        string t1Name = node.Attributes?["item1Type"]?.Value ?? "object"; // 从 item1Type 获取
+        string t2Name = node.Attributes?["item2Type"]?.Value ?? "object";
+        string t3Name = node.Attributes?["item3Type"]?.Value ?? "object";
+        string t4Name = node.Attributes?["item4Type"]?.Value ?? "object";
 
         Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
         Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
@@ -1033,46 +1113,65 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         var list = Activator.CreateInstance(listType);
 
         FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (itemsField == null)
-        {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
-            return list;
-        }
+        if (itemsField == null) return list;
 
         var itemsListObject = itemsField.GetValue(list);
         if (itemsListObject == null) return list;
 
-        Type itemsListType = itemsListObject.GetType(); // List<List4Item<T1, T2, T3, T4>>
+        Type itemsListType = itemsListObject.GetType();
         MethodInfo addMethod = itemsListType.GetMethod("Add");
+        if (addMethod == null) return list;
 
-        if (addMethod == null)
+        foreach (XmlNode itemNode in node.ChildNodes) // 遍历 <Value> 节点
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find 'Add' method on the items list type {itemsListType.Name}");
-            return list;
-        }
+            if (itemNode.Name != "Value") continue; // 确保是正确的节点
 
-        foreach (XmlNode itemNode in node.ChildNodes)
-        {
-            object item = DeserializeSingleNode(itemNode, listItemType);
-            addMethod.Invoke(itemsListObject, new object[] { item });
-        }
+            string val1Str = itemNode.Attributes?["item1"]?.Value;
+            string val2Str = itemNode.Attributes?["item2"]?.Value;
+            string val3Str = itemNode.Attributes?["item3"]?.Value;
+            string val4Str = itemNode.Attributes?["item4"]?.Value;
 
+            try
+            {
+                object val1 = ParseBasicType(val1Str, t1);
+                object val2 = ParseBasicType(val2Str, t2);
+                object val3 = ParseBasicType(val3Str, t3);
+                object val4 = ParseBasicType(val4Str, t4);
+
+                var listItem = Activator.CreateInstance(listItemType);
+                FieldInfo item1Field = listItemType.GetField("Item1");
+                FieldInfo item2Field = listItemType.GetField("Item2");
+                FieldInfo item3Field = listItemType.GetField("Item3");
+                FieldInfo item4Field = listItemType.GetField("Item4");
+                if (item1Field != null) item1Field.SetValue(listItem, val1);
+                if (item2Field != null) item2Field.SetValue(listItem, val2);
+                if (item3Field != null) item3Field.SetValue(listItem, val3);
+                if (item4Field != null) item4Field.SetValue(listItem, val4);
+
+                addMethod.Invoke(itemsListObject, new object[] { listItem });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse IList4 item: val1='{val1Str}', val2='{val2Str}', val3='{val3Str}', val4='{val4Str}'. Error: {ex.Message}");
+            }
+        }
         return list;
     }
 
-    private XmlElement SerializeIDictionary2(XmlDocument doc, string name, object dict2)
+    // ===== 序列化 IDictionary2<TKey, T1, T2> =====
+    private XmlElement SerializeIDictionary2(XmlDocument doc, string name, object dict2, string nodeNameForAttribute = null)
     {
         ValidateXmlElementName(name);
         var elem = doc.CreateElement(NODE_IDICT2);
-        elem.SetAttribute(ATTR_NAME, name);
+        elem.SetAttribute(ATTR_NAME, nodeNameForAttribute);
 
         Type dictType = dict2.GetType();
         Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2]
+
         elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
         elem.SetAttribute(ATTR_T1, genArgs[1].Name);
         elem.SetAttribute(ATTR_T2, genArgs[2].Name);
 
-        // 类似于 SerializeDictionary，遍历 _dict 字段中的每个键值对
         FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
         if (dictField == null) return elem;
 
@@ -1081,109 +1180,32 @@ public abstract class ChroniaHelperModuleGlobalSaveData
 
         foreach (System.Collections.DictionaryEntry entry in dictionary)
         {
-            var member = doc.CreateElement("DictionaryMember");
+            var member = doc.CreateElement("DictionaryMember"); // <DictionaryMember>
 
-            // Key
-            XmlElement keyNode = SerializeValue(doc, "Key", entry.Key);
-            XmlNode keyContent = keyNode.FirstChild ?? keyNode;
-            XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
-            member.AppendChild(importedKeyContent);
-
-            // Value (Dict2Item<T1, T2>)
-            XmlElement valueNode = SerializeValue(doc, "Value", entry.Value);
-            XmlNode valueContent = valueNode.FirstChild ?? valueNode;
-            XmlNode importedValueContent = doc.ImportNode(valueContent, true);
-            member.AppendChild(importedValueContent);
-
-            elem.AppendChild(member);
-        }
-
-        return elem;
-    }
-
-    // ===== 序列化 IDictionary3<TKey, T1, T2, T3> =====
-    private XmlElement SerializeIDictionary3(XmlDocument doc, string name, object dict3)
-    {
-        ValidateXmlElementName(name);
-        var elem = doc.CreateElement(NODE_IDICT3);
-        elem.SetAttribute(ATTR_NAME, name);
-
-        Type dictType = dict3.GetType();
-        Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2, T3]
-        elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
-        elem.SetAttribute(ATTR_T1, genArgs[1].Name);
-        elem.SetAttribute(ATTR_T2, genArgs[2].Name);
-        elem.SetAttribute(ATTR_T3, genArgs[3].Name);
-
-        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (dictField == null) return elem;
-
-        var dictionary = dictField.GetValue(dict3) as System.Collections.IDictionary;
-        if (dictionary == null) return elem;
-
-        foreach (System.Collections.DictionaryEntry entry in dictionary)
-        {
-            var member = doc.CreateElement("DictionaryMember");
             object keyValue = entry.Key ?? throw new InvalidOperationException("Dictionary key cannot be null");
+            var valueItem = entry.Value; // This is a Dict2Item<T1, T2>
 
-            XmlElement keyNode = SerializeValue(doc, "Key", keyValue);
-            XmlNode keyContent = keyNode.FirstChild ?? keyNode;
-            XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
-            member.AppendChild(importedKeyContent);
+            // 获取 Dict2Item 的字段
+            FieldInfo field1 = valueItem.GetType().GetField("Item1");
+            FieldInfo field2 = valueItem.GetType().GetField("Item2");
 
-            XmlElement valueNode = SerializeValue(doc, "Value", entry.Value);
-            XmlNode valueContent = valueNode.FirstChild ?? valueNode;
-            XmlNode importedValueContent = doc.ImportNode(valueContent, true);
-            member.AppendChild(importedValueContent);
+            if (field1 == null || field2 == null)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find fields in Dict2Item for key '{keyValue}'");
+                continue;
+            }
 
-            elem.AppendChild(member);
+            // 将键和值的各个部分作为属性
+            member.SetAttribute("key", keyValue.ToString());
+            member.SetAttribute("value1", (field1.GetValue(valueItem) ?? "").ToString());
+            member.SetAttribute("value2", (field2.GetValue(valueItem) ?? "").ToString());
+
+            elem.AppendChild(member); // <IDictionary2> -> <DictionaryMember .../>
         }
-
         return elem;
     }
 
-    // ===== 序列化 IDictionary4<TKey, T1, T2, T3, T4> =====
-    private XmlElement SerializeIDictionary4(XmlDocument doc, string name, object dict4)
-    {
-        ValidateXmlElementName(name);
-        var elem = doc.CreateElement(NODE_IDICT4);
-        elem.SetAttribute(ATTR_NAME, name);
-
-        Type dictType = dict4.GetType();
-        Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2, T3, T4]
-        elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
-        elem.SetAttribute(ATTR_T1, genArgs[1].Name);
-        elem.SetAttribute(ATTR_T2, genArgs[2].Name);
-        elem.SetAttribute(ATTR_T3, genArgs[3].Name);
-        elem.SetAttribute(ATTR_T4, genArgs[4].Name);
-
-        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (dictField == null) return elem;
-
-        var dictionary = dictField.GetValue(dict4) as System.Collections.IDictionary;
-        if (dictionary == null) return elem;
-
-        foreach (System.Collections.DictionaryEntry entry in dictionary)
-        {
-            var member = doc.CreateElement("DictionaryMember");
-            object keyValue = entry.Key ?? throw new InvalidOperationException("Dictionary key cannot be null");
-
-            XmlElement keyNode = SerializeValue(doc, "Key", keyValue);
-            XmlNode keyContent = keyNode.FirstChild ?? keyNode;
-            XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
-            member.AppendChild(importedKeyContent);
-
-            XmlElement valueNode = SerializeValue(doc, "Value", entry.Value);
-            XmlNode valueContent = valueNode.FirstChild ?? valueNode;
-            XmlNode importedValueContent = doc.ImportNode(valueContent, true);
-            member.AppendChild(importedValueContent);
-
-            elem.AppendChild(member);
-        }
-
-        return elem;
-    }
-
+    // ===== 反序列化 IDictionary2<TKey, T1, T2> =====
     private object DeserializeIDictionary2(XmlNode node)
     {
         string keyTypeName = node.Attributes?[ATTR_KEY_TYPE]?.Value ?? "string";
@@ -1194,6 +1216,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
         Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
 
+        Type dictItemType = typeof(Dict2Item<,>).MakeGenericType(t1, t2);
         Type dictType = typeof(IDictionary2<,,>).MakeGenericType(keyType, t1, t2);
         var dict = Activator.CreateInstance(dictType);
 
@@ -1208,17 +1231,84 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         {
             foreach (XmlNode member in memberNodes.Cast<XmlNode>())
             {
-                var keyNode = member.ChildNodes[0];
-                var valueNode = member.ChildNodes[1];
+                string keyStr = member.Attributes?["key"]?.Value;
+                string val1Str = member.Attributes?["value1"]?.Value;
+                string val2Str = member.Attributes?["value2"]?.Value;
 
-                object key = DeserializeSingleNode(keyNode, keyType);
-                object value = DeserializeSingleNode(valueNode, typeof(Dict2Item<,>).MakeGenericType(t1, t2));
+                if (string.IsNullOrEmpty(keyStr)) continue;
 
-                targetDict[key] = value;
+                try
+                {
+                    object key = ParseBasicType(keyStr, keyType);
+                    object val1 = ParseBasicType(val1Str, t1);
+                    object val2 = ParseBasicType(val2Str, t2);
+
+                    // 创建一个新的 Dict2Item<T1, T2>
+                    var dictItem = Activator.CreateInstance(dictItemType);
+                    FieldInfo item1Field = dictItemType.GetField("Item1");
+                    FieldInfo item2Field = dictItemType.GetField("Item2");
+                    if (item1Field != null) item1Field.SetValue(dictItem, val1);
+                    if (item2Field != null) item2Field.SetValue(dictItem, val2);
+
+                    targetDict[key] = dictItem;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse IDictionary2 entry: key='{keyStr}', val1='{val1Str}', val2='{val2Str}'. Error: {ex.Message}");
+                }
             }
         }
-
         return dict;
+    }
+
+    // ===== 序列化 IDictionary3<TKey, T1, T2, T3> =====
+    private XmlElement SerializeIDictionary3(XmlDocument doc, string name, object dict3, string nodeNameForAttribute = null)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_IDICT3);
+        elem.SetAttribute(ATTR_NAME, nodeNameForAttribute);
+
+        Type dictType = dict3.GetType();
+        Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2, T3]
+
+        elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T1, genArgs[1].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[2].Name);
+        elem.SetAttribute(ATTR_T3, genArgs[3].Name);
+
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return elem;
+
+        var dictionary = dictField.GetValue(dict3) as System.Collections.IDictionary;
+        if (dictionary == null) return elem;
+
+        foreach (System.Collections.DictionaryEntry entry in dictionary)
+        {
+            var member = doc.CreateElement("DictionaryMember"); // <DictionaryMember>
+
+            object keyValue = entry.Key ?? throw new InvalidOperationException("Dictionary key cannot be null");
+            var valueItem = entry.Value; // This is a Dict3Item<T1, T2, T3>
+
+            // 获取 Dict3Item 的字段
+            FieldInfo field1 = valueItem.GetType().GetField("Item1");
+            FieldInfo field2 = valueItem.GetType().GetField("Item2");
+            FieldInfo field3 = valueItem.GetType().GetField("Item3");
+
+            if (field1 == null || field2 == null || field3 == null)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find fields in Dict3Item for key '{keyValue}'");
+                continue;
+            }
+
+            // 将键和值的各个部分作为属性
+            member.SetAttribute("key", keyValue.ToString());
+            member.SetAttribute("value1", (field1.GetValue(valueItem) ?? "").ToString());
+            member.SetAttribute("value2", (field2.GetValue(valueItem) ?? "").ToString());
+            member.SetAttribute("value3", (field3.GetValue(valueItem) ?? "").ToString());
+
+            elem.AppendChild(member); // <IDictionary3> -> <DictionaryMember .../>
+        }
+        return elem;
     }
 
     // ===== 反序列化 IDictionary3<TKey, T1, T2, T3> =====
@@ -1241,26 +1331,99 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
         if (dictField == null) return dict;
 
-        var targetDictObject = dictField.GetValue(dict) as System.Collections.IDictionary; // _dict is IDictionary
-        if (targetDictObject == null) return dict;
-
+        var targetDict = dictField.GetValue(dict) as System.Collections.IDictionary;
+        if (targetDict == null) return dict;
 
         var memberNodes = node.SelectNodes("DictionaryMember");
         if (memberNodes != null)
         {
             foreach (XmlNode member in memberNodes.Cast<XmlNode>())
             {
-                var keyNode = member.ChildNodes[0];
-                var valueNode = member.ChildNodes[1];
+                string keyStr = member.Attributes?["key"]?.Value;
+                string val1Str = member.Attributes?["value1"]?.Value;
+                string val2Str = member.Attributes?["value2"]?.Value;
+                string val3Str = member.Attributes?["value3"]?.Value;
 
-                object key = DeserializeSingleNode(keyNode, keyType);
-                object value = DeserializeSingleNode(valueNode, dictItemType); // Deserialize as Dict3Item<T1,T2,T3>
+                if (string.IsNullOrEmpty(keyStr)) continue;
 
-                targetDictObject[key] = value;
+                try
+                {
+                    object key = ParseBasicType(keyStr, keyType);
+                    object val1 = ParseBasicType(val1Str, t1);
+                    object val2 = ParseBasicType(val2Str, t2);
+                    object val3 = ParseBasicType(val3Str, t3);
+
+                    // 创建一个新的 Dict3Item<T1, T2, T3>
+                    var dictItem = Activator.CreateInstance(dictItemType);
+                    FieldInfo item1Field = dictItemType.GetField("Item1");
+                    FieldInfo item2Field = dictItemType.GetField("Item2");
+                    FieldInfo item3Field = dictItemType.GetField("Item3");
+                    if (item1Field != null) item1Field.SetValue(dictItem, val1);
+                    if (item2Field != null) item2Field.SetValue(dictItem, val2);
+                    if (item3Field != null) item3Field.SetValue(dictItem, val3);
+
+                    targetDict[key] = dictItem;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse IDictionary3 entry: key='{keyStr}', val1='{val1Str}', val2='{val2Str}', val3='{val3Str}'. Error: {ex.Message}");
+                }
             }
         }
-
         return dict;
+    }
+
+    // ===== 序列化 IDictionary4<TKey, T1, T2, T3, T4> =====
+    private XmlElement SerializeIDictionary4(XmlDocument doc, string name, object dict4, string nodeNameForAttribute = null)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_IDICT4);
+        elem.SetAttribute(ATTR_NAME, nodeNameForAttribute);
+
+        Type dictType = dict4.GetType();
+        Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2, T3, T4]
+
+        elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T1, genArgs[1].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[2].Name);
+        elem.SetAttribute(ATTR_T3, genArgs[3].Name);
+        elem.SetAttribute(ATTR_T4, genArgs[4].Name);
+
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return elem;
+
+        var dictionary = dictField.GetValue(dict4) as System.Collections.IDictionary;
+        if (dictionary == null) return elem;
+
+        foreach (System.Collections.DictionaryEntry entry in dictionary)
+        {
+            var member = doc.CreateElement("DictionaryMember"); // <DictionaryMember>
+
+            object keyValue = entry.Key ?? throw new InvalidOperationException("Dictionary key cannot be null");
+            var valueItem = entry.Value; // This is a Dict4Item<T1, T2, T3, T4>
+
+            // 获取 Dict4Item 的字段
+            FieldInfo field1 = valueItem.GetType().GetField("Item1");
+            FieldInfo field2 = valueItem.GetType().GetField("Item2");
+            FieldInfo field3 = valueItem.GetType().GetField("Item3");
+            FieldInfo field4 = valueItem.GetType().GetField("Item4");
+
+            if (field1 == null || field2 == null || field3 == null || field4 == null)
+            {
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find fields in Dict4Item for key '{keyValue}'");
+                continue;
+            }
+
+            // 将键和值的各个部分作为属性
+            member.SetAttribute("key", keyValue.ToString());
+            member.SetAttribute("value1", (field1.GetValue(valueItem) ?? "").ToString());
+            member.SetAttribute("value2", (field2.GetValue(valueItem) ?? "").ToString());
+            member.SetAttribute("value3", (field3.GetValue(valueItem) ?? "").ToString());
+            member.SetAttribute("value4", (field4.GetValue(valueItem) ?? "").ToString());
+
+            elem.AppendChild(member); // <IDictionary4> -> <DictionaryMember .../>
+        }
+        return elem;
     }
 
     // ===== 反序列化 IDictionary4<TKey, T1, T2, T3, T4> =====
@@ -1285,25 +1448,49 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
         if (dictField == null) return dict;
 
-        var targetDictObject = dictField.GetValue(dict) as System.Collections.IDictionary; // _dict is IDictionary
-        if (targetDictObject == null) return dict;
-
+        var targetDict = dictField.GetValue(dict) as System.Collections.IDictionary;
+        if (targetDict == null) return dict;
 
         var memberNodes = node.SelectNodes("DictionaryMember");
         if (memberNodes != null)
         {
             foreach (XmlNode member in memberNodes.Cast<XmlNode>())
             {
-                var keyNode = member.ChildNodes[0];
-                var valueNode = member.ChildNodes[1];
+                string keyStr = member.Attributes?["key"]?.Value;
+                string val1Str = member.Attributes?["value1"]?.Value;
+                string val2Str = member.Attributes?["value2"]?.Value;
+                string val3Str = member.Attributes?["value3"]?.Value;
+                string val4Str = member.Attributes?["value4"]?.Value;
 
-                object key = DeserializeSingleNode(keyNode, keyType);
-                object value = DeserializeSingleNode(valueNode, dictItemType); // Deserialize as Dict4Item<T1,T2,T3,T4>
+                if (string.IsNullOrEmpty(keyStr)) continue;
 
-                targetDictObject[key] = value;
+                try
+                {
+                    object key = ParseBasicType(keyStr, keyType);
+                    object val1 = ParseBasicType(val1Str, t1);
+                    object val2 = ParseBasicType(val2Str, t2);
+                    object val3 = ParseBasicType(val3Str, t3);
+                    object val4 = ParseBasicType(val4Str, t4);
+
+                    // 创建一个新的 Dict4Item<T1, T2, T3, T4>
+                    var dictItem = Activator.CreateInstance(dictItemType);
+                    FieldInfo item1Field = dictItemType.GetField("Item1");
+                    FieldInfo item2Field = dictItemType.GetField("Item2");
+                    FieldInfo item3Field = dictItemType.GetField("Item3");
+                    FieldInfo item4Field = dictItemType.GetField("Item4");
+                    if (item1Field != null) item1Field.SetValue(dictItem, val1);
+                    if (item2Field != null) item2Field.SetValue(dictItem, val2);
+                    if (item3Field != null) item3Field.SetValue(dictItem, val3);
+                    if (item4Field != null) item4Field.SetValue(dictItem, val4);
+
+                    targetDict[key] = dictItem;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to parse IDictionary4 entry: key='{keyStr}', val1='{val1Str}', val2='{val2Str}', val3='{val3Str}', val4='{val4Str}'. Error: {ex.Message}");
+                }
             }
         }
-
         return dict;
     }
 
@@ -1328,3 +1515,5 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         return null;
     }
 }
+
+
