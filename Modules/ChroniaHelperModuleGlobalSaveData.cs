@@ -518,33 +518,14 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         string keyTypeName = node.Attributes?["keyType"]?.Value ?? "string";
         string valueTypeName = node.Attributes?["valueType"]?.Value ?? "object";
 
-        Type keyType = keyTypeName switch
-        {
-            "String" => typeof(string),
-            "Int32" => typeof(int),
-            "Int64" => typeof(long),
-            "Single" => typeof(float),
-            "Double" => typeof(double),
-            "Boolean" => typeof(bool),
-            _ => Type.GetType($"System.{keyTypeName}") ?? typeof(string)
-        };
-
-        Type valueType = valueTypeName switch
-        {
-            "String" => typeof(string),
-            "Int32" => typeof(int),
-            "Int64" => typeof(long),
-            "Single" => typeof(float),
-            "Double" => typeof(double),
-            "Boolean" => typeof(bool),
-            _ => Type.GetType($"System.{valueTypeName}") ?? typeof(object)
-        };
+        // 使用 GetTypeFromName
+        Type keyType = GetTypeFromName(keyTypeName) ?? typeof(string);
+        Type valueType = GetTypeFromName(valueTypeName) ?? typeof(object);
 
         Type dictType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
         var dict = Activator.CreateInstance(dictType);
 
         var addMethod = dictType.GetMethod("Add");
-
         var memberNodes = node.SelectNodes("DictionaryMember");
         if (memberNodes != null)
         {
@@ -552,14 +533,11 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             {
                 var keyNode = member.ChildNodes[0];
                 var valueNode = member.ChildNodes[1];
-
                 object key = DeserializeSingleNode(keyNode, keyType);
                 object value = DeserializeSingleNode(valueNode, valueType);
-
                 addMethod?.Invoke(dict, new[] { key, value });
             }
         }
-
         return dict;
     }
 
@@ -612,11 +590,10 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     {
         string classTypeName = node.Attributes?["classType"]?.Value;
         if (string.IsNullOrEmpty(classTypeName)) return new object();
-
-        // ⚠️ Simplified: Assume class is in current assembly or a common one
-        Type classType = Type.GetType(classTypeName) ??
-                         GetType().Assembly.GetType(classTypeName) ??
-                         typeof(object);
+        
+        Type classType = GetTypeFromName(classTypeName)
+                     ?? GetType().Assembly.GetType(classTypeName)
+                     ?? typeof(object);
 
         if (classType == typeof(object) || classType == null) return new object();
 
@@ -823,9 +800,9 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     private object DeserializeList(XmlNode node)
     {
         string elementTypeName = node.Attributes?["elementType"]?.Value ?? "object";
-        Type elementType = Type.GetType($"System.{elementTypeName}") ??
-                           Type.GetType(elementTypeName) ??
-                           typeof(object);
+
+        // 使用现有的 GetTypeFromName 方法，它能处理 System 前缀和当前程序集查找
+        Type elementType = GetTypeFromName(elementTypeName) ?? typeof(object);
 
         // 创建一个 List<T> 的实例
         Type listType = typeof(List<>).MakeGenericType(elementType);
@@ -833,6 +810,11 @@ public abstract class ChroniaHelperModuleGlobalSaveData
 
         // 获取 List<T>.Add 方法
         var addMethod = listType.GetMethod("Add");
+        if (addMethod == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find 'Add' method on List<{elementType.Name}>");
+            return list;
+        }
 
         // 遍历所有子节点（即 <Item> 节点）
         foreach (XmlNode itemNode in node.ChildNodes)
@@ -841,7 +823,6 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             object item = DeserializeSingleNode(itemNode, elementType); // 使用 DeserializeSingleNode 处理
             addMethod?.Invoke(list, new[] { item });
         }
-
         return list;
     }
 
