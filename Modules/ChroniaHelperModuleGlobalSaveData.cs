@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics; // Ensure this using is present for BigInteger
 using System.Reflection;
 using System.Xml;
 using Celeste;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
-using System.Numerics; // Ensure this using is present for BigInteger
 
 namespace ChroniaHelper.Modules;
 
@@ -56,6 +56,25 @@ internal readonly struct SaveMember
 // ===== 全局保存数据基类 =====
 public abstract class ChroniaHelperModuleGlobalSaveData
 {
+    // 常量 
+    private const string NODE_LIST = "List";
+    private const string NODE_DICTIONARY = "Dictionary";
+    private const string NODE_ILIST2 = "IList2";
+    private const string NODE_ILIST3 = "IList3";
+    private const string NODE_ILIST4 = "IList4";
+    private const string NODE_IDICT2 = "IDictionary2";
+    private const string NODE_IDICT3 = "IDictionary3";
+    private const string NODE_IDICT4 = "IDictionary4";
+
+    private const string ATTR_NAME = "name";
+    private const string ATTR_KEY_TYPE = "keyType";
+    private const string ATTR_VALUE_TYPE = "valueType";
+    private const string ATTR_ELEMENT_TYPE = "elementType";
+    private const string ATTR_T1 = "T1";
+    private const string ATTR_T2 = "T2";
+    private const string ATTR_T3 = "T3";
+    private const string ATTR_T4 = "T4";
+    
     // 缓存成员名 -> 路径映射
     private readonly Dictionary<string, string> _memberToPath = new();
     private readonly Dictionary<string, SaveMember> _members = new();
@@ -213,12 +232,11 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         }
     }
 
-    // ===== 序列化单个值 =====
     private XmlElement SerializeValue(XmlDocument doc, string name, object value)
     {
-        // ✅ Add validation for XML element names
-        ValidateXmlElementName(name);
+        ValidateXmlElementName(name); // Ensure 'name' is a valid XML element name
 
+        // --- Handle Null Values ---
         if (value == null)
         {
             var elem = doc.CreateElement(name);
@@ -228,26 +246,139 @@ public abstract class ChroniaHelperModuleGlobalSaveData
 
         Type type = value.GetType();
 
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        // --- Handle Generic Collection Types ---
+        if (type.IsGenericType)
         {
-            return SerializeDictionary(doc, name, value);
+            Type genericTypeDef = type.GetGenericTypeDefinition();
+
+            // Lists and Sets
+            if (genericTypeDef == typeof(List<>) || genericTypeDef == typeof(HashSet<>))
+            {
+                return SerializeList(doc, name, value);
+            }
+
+            // Custom ILists
+            if (genericTypeDef == typeof(IList2<,>))
+            {
+                return SerializeIList2(doc, name, value);
+            }
+            else if (genericTypeDef == typeof(IList3<,,>))
+            {
+                return SerializeIList3(doc, name, value);
+            }
+            else if (genericTypeDef == typeof(IList4<,,,>))
+            {
+                return SerializeIList4(doc, name, value);
+            }
+
+            // Dictionaries
+            if (genericTypeDef == typeof(Dictionary<,>))
+            {
+                return SerializeDictionary(doc, name, value);
+            }
+
+            // Custom IDictionaries
+            if (genericTypeDef == typeof(IDictionary2<,,>))
+            {
+                return SerializeIDictionary2(doc, name, value);
+            }
+            else if (genericTypeDef == typeof(IDictionary3<,,,>))
+            {
+                return SerializeIDictionary3(doc, name, value);
+            }
+            else if (genericTypeDef == typeof(IDictionary4<,,,,>))
+            {
+                return SerializeIDictionary4(doc, name, value);
+            }
+
+            // If it's a generic type not handled above, fall through...
+            // (e.g., a custom generic class MyGeneric<T>)
+            // We'll treat it like any other class at the end.
         }
-        else if (type.IsClass && type != typeof(string))
-        {
-            return SerializeClass(doc, name, value);
-        }
-        else
+
+        // --- Handle All Other Types (Non-Generic, Primitives, String, Classes, Structs) ---
+        // This 'else' block executes if the type is NOT a handled generic type.
         {
             var elem = doc.CreateElement(name);
-            elem.InnerText = value.ToString() ?? "";
-            string typeCode;
-            if (type == typeof(BigInteger))
-                typeCode = "biginteger";
+
+            string typeCodeStr = null; // Will hold the type attribute value
+            bool setValueText = false; // Flag to indicate if InnerText should be set
+            string valueText = "";     // The text content to set
+
+            // --- Special Handling for Known Complex Types ---
+            // Check if it's a class or struct that needs field-by-field serialization.
+            // Crucially, 'string' is a class, but we treat it as a primitive value.
+            if (type.IsClass && type != typeof(string))
+            {
+                // This correctly identifies custom classes (but NOT string)
+                return SerializeClass(doc, name, value);
+            }
             else
-                typeCode = Type.GetTypeCode(type).ToString().ToLowerInvariant();
-            elem.SetAttribute("type", typeCode);
+            {
+                // This 'else' branch handles:
+                // - Primitive types (int, bool, char, etc.)
+                // - Enum types
+                // - The string type (because of the check above)
+                // - Potentially some value types (structs) that map to simple TypeCodes
+                // We determine how to represent them by their TypeCode.
+
+                // Handle BigInteger specially
+                if (type == typeof(BigInteger))
+                {
+                    typeCodeStr = "biginteger";
+                    setValueText = true;
+                    valueText = value.ToString();
+                }
+                else
+                {
+                    TypeCode typeCode = Type.GetTypeCode(type);
+
+                    // TypeCode.Object usually means class/struct/complex type.
+                    // However, TypeCode.String specifically identifies the string type.
+                    if (typeCode != TypeCode.Object)
+                    {
+                        // This covers: Boolean, Char, SByte, Byte, Int16, UInt16,
+                        // Int32, UInt32, Int64, UInt64, Single, Double, Decimal, DateTime, String
+                        // It also covers Enum types, whose underlying type will have a code.
+                        typeCodeStr = typeCode.ToString().ToLowerInvariant();
+                        setValueText = true;
+                        valueText = value.ToString();
+                    }
+                    else
+                    {
+                        // This branch handles:
+                        // - Custom classes not caught by IsClass check above (shouldn't happen due to order)
+                        // - Custom structs (value types) not mapping to simple codes.
+                        // For these, defaulting to SerializeClass is often the best option.
+                        // Log a warning as it might be unintended.
+                        Log.Warn($"Serializing unhandled non-primitive, non-class type '{type.FullName}' using class serializer.");
+                        return SerializeClass(doc, name, value); // Fallback to class serialization
+                    }
+                }
+            }
+
+            // Apply the determined text content if needed
+            if (setValueText)
+            {
+                elem.InnerText = valueText;
+            }
+
+            // Apply the type attribute if determined
+            if (!string.IsNullOrEmpty(typeCodeStr))
+            {
+                elem.SetAttribute("type", typeCodeStr);
+            }
+
             return elem;
         }
+
+        // --- Ultimate Fallback (Defensive Programming) ---
+        // Should be unreachable with the logic above, but ensures compilation safety.
+        Logger.Log(LogLevel.Error, "ChroniaHelper", $"CRITICAL: Unreachable code reached in SerializeValue for type {type.FullName}. This indicates a logical flaw.");
+        var fallbackElem = doc.CreateElement(name);
+        fallbackElem.InnerText = value.ToString() ?? "";
+        fallbackElem.SetAttribute("type", "unknown_fallback");
+        return fallbackElem;
     }
 
     // ===== 反序列化节点 =====
@@ -256,7 +387,38 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         if (node.Attributes?["isNull"]?.Value == "true")
             return null;
 
-        if (node.Name == "Dictionary")
+        // 按顺序检查，先检查更具体的类型
+        if (node.Name == NODE_ILIST4)
+        {
+            return DeserializeIList4(node);
+        }
+        if (node.Name == NODE_ILIST3)
+        {
+            return DeserializeIList3(node);
+        }
+        if (node.Name == NODE_ILIST2)
+        {
+            return DeserializeIList2(node);
+        }
+
+        if (node.Name == NODE_IDICT4)
+        {
+            return DeserializeIDictionary4(node);
+        }
+        if (node.Name == NODE_IDICT3)
+        {
+            return DeserializeIDictionary3(node);
+        }
+        if (node.Name == NODE_IDICT2)
+        {
+            return DeserializeIDictionary2(node);
+        }
+
+        if (node.Name == NODE_LIST)
+        {
+            return DeserializeList(node);
+        }
+        if (node.Name == NODE_DICTIONARY)
         {
             return DeserializeDictionary(node);
         }
@@ -595,5 +757,593 @@ public abstract class ChroniaHelperModuleGlobalSaveData
             }
         }
         return true;
+    }
+
+    // ===== 序列化 List<T> 和 HashSet<T> =====
+    // ===== 序列化 List<T> 和 HashSet<T> =====
+    private XmlElement SerializeList(XmlDocument doc, string name, object listObj)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement("List"); // 统一使用 "List" 标签
+        elem.SetAttribute("name", name);
+
+        Type listType = listObj.GetType();
+        Type elementType;
+
+        // Determine the element type for both List<T> and HashSet<T>
+        if (listType.IsGenericType)
+        {
+            Type genericTypeDefinition = listType.GetGenericTypeDefinition();
+            if (genericTypeDefinition == typeof(List<>) || genericTypeDefinition == typeof(HashSet<>))
+            {
+                elementType = listType.GetGenericArguments()[0];
+                elem.SetAttribute("elementType", elementType.Name);
+            }
+            else
+            {
+                Logger.Log(LogLevel.Error, "ChroniaHelper", $"SerializeList called on unsupported generic type: {listType.FullName}");
+                return elem;
+            }
+        }
+        else
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"SerializeList called on non-generic type: {listType.FullName}");
+            return elem;
+        }
+
+        // 确保 listObj 实现了 IEnumerable 接口
+        if (!(listObj is System.Collections.IEnumerable enumerable))
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Object of type {listType.FullName} does not implement IEnumerable.");
+            return elem;
+        }
+
+        // 遍历集合并序列化每个元素
+        foreach (object item in enumerable)
+        {
+            // 关键：直接调用顶层 SerializeValue 来处理列表中的每个元素
+            try
+            {
+                XmlElement itemElement = SerializeValue(doc, "Item", item); // 子项统一命名为 "Item"
+                elem.AppendChild(itemElement);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "ChroniaHelper", $"Error serializing list item of type {item?.GetType().FullName ?? "null"}: {ex.Message}");
+                var errorElem = doc.CreateElement("Item");
+                errorElem.SetAttribute("serializationError", "true");
+                elem.AppendChild(errorElem);
+            }
+        }
+
+        return elem;
+    }
+
+    // ===== 反序列化 List<T> =====
+    private object DeserializeList(XmlNode node)
+    {
+        string elementTypeName = node.Attributes?["elementType"]?.Value ?? "object";
+        Type elementType = Type.GetType($"System.{elementTypeName}") ??
+                           Type.GetType(elementTypeName) ??
+                           typeof(object);
+
+        // 创建一个 List<T> 的实例
+        Type listType = typeof(List<>).MakeGenericType(elementType);
+        var list = Activator.CreateInstance(listType);
+
+        // 获取 List<T>.Add 方法
+        var addMethod = listType.GetMethod("Add");
+
+        // 遍历所有子节点（即 <Item> 节点）
+        foreach (XmlNode itemNode in node.ChildNodes)
+        {
+            // itemNode 就是之前 SerializeValue 生成的完整节点，如 <Item type="string">...</Item>
+            object item = DeserializeSingleNode(itemNode, elementType); // 使用 DeserializeSingleNode 处理
+            addMethod?.Invoke(list, new[] { item });
+        }
+
+        return list;
+    }
+
+    // ===== 序列化 IList2<T1, T2> =====
+    private XmlElement SerializeIList2(XmlDocument doc, string name, object list2)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_ILIST2);
+        elem.SetAttribute(ATTR_NAME, name);
+
+        Type listType = list2.GetType();
+        Type[] genArgs = listType.GetGenericArguments(); // [T1, T2]
+        elem.SetAttribute(ATTR_T1, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[1].Name);
+
+        // 获取 _items 字段
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null)
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
+            return elem; // 返回空节点
+        }
+
+        var items = itemsField.GetValue(list2) as System.Collections.IEnumerable;
+        if (items == null) return elem;
+
+        foreach (var item in items)
+        {
+            // item 是 List2Item<T1, T2>
+            XmlElement itemNode = SerializeValue(doc, "Item", item);
+            XmlNode importedNode = doc.ImportNode(itemNode, true);
+            elem.AppendChild(importedNode);
+        }
+
+        return elem;
+    }
+
+    // ===== 序列化 IList3<T1, T2, T3> =====
+    private XmlElement SerializeIList3(XmlDocument doc, string name, object list3)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_ILIST3);
+        elem.SetAttribute(ATTR_NAME, name);
+
+        Type listType = list3.GetType();
+        Type[] genArgs = listType.GetGenericArguments(); // [T1, T2, T3]
+        elem.SetAttribute(ATTR_T1, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[1].Name);
+        elem.SetAttribute(ATTR_T3, genArgs[2].Name);
+
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null)
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
+            return elem;
+        }
+
+        var items = itemsField.GetValue(list3) as System.Collections.IEnumerable;
+        if (items == null) return elem;
+
+        foreach (var item in items)
+        {
+            XmlElement itemNode = SerializeValue(doc, "Item", item);
+            XmlNode importedNode = doc.ImportNode(itemNode, true);
+            elem.AppendChild(importedNode);
+        }
+
+        return elem;
+    }
+
+    // ===== 序列化 IList4<T1, T2, T3, T4> =====
+    private XmlElement SerializeIList4(XmlDocument doc, string name, object list4)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_ILIST4);
+        elem.SetAttribute(ATTR_NAME, name);
+
+        Type listType = list4.GetType();
+        Type[] genArgs = listType.GetGenericArguments(); // [T1, T2, T3, T4]
+        elem.SetAttribute(ATTR_T1, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[1].Name);
+        elem.SetAttribute(ATTR_T3, genArgs[2].Name);
+        elem.SetAttribute(ATTR_T4, genArgs[3].Name);
+
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null)
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
+            return elem;
+        }
+
+        var items = itemsField.GetValue(list4) as System.Collections.IEnumerable;
+        if (items == null) return elem;
+
+        foreach (var item in items)
+        {
+            XmlElement itemNode = SerializeValue(doc, "Item", item);
+            XmlNode importedNode = doc.ImportNode(itemNode, true);
+            elem.AppendChild(importedNode);
+        }
+
+        return elem;
+    }
+
+    // ===== 反序列化 IList2<T1, T2> =====
+    private object DeserializeIList2(XmlNode node)
+    {
+        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
+        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
+
+        Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
+        Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
+
+        Type listItemType = typeof(List2Item<,>).MakeGenericType(t1, t2);
+        Type listType = typeof(IList2<,>).MakeGenericType(t1, t2);
+        var list = Activator.CreateInstance(listType);
+
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
+            return list;
+        }
+
+        // 获取 _items 字段的实际对象 (应该是 List<List2Item<T1, T2>>)
+        var itemsListObject = itemsField.GetValue(list);
+        if (itemsListObject == null) return list;
+
+        // 获取其 Add 方法 (List<T>.Add(T))
+        Type itemsListType = itemsListObject.GetType(); // List<List2Item<T1, T2>>
+        MethodInfo addMethod = itemsListType.GetMethod("Add");
+
+        if (addMethod == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find 'Add' method on the items list type {itemsListType.Name}");
+            return list;
+        }
+
+
+        foreach (XmlNode itemNode in node.ChildNodes)
+        {
+            object item = DeserializeSingleNode(itemNode, listItemType);
+            // 使用反射调用 Add 方法
+            addMethod.Invoke(itemsListObject, new object[] { item });
+        }
+
+        return list;
+    }
+
+    // ===== 反序列化 IList3<T1, T2, T3> =====
+    private object DeserializeIList3(XmlNode node)
+    {
+        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
+        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
+        string t3Name = node.Attributes?[ATTR_T3]?.Value ?? "object";
+
+        Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
+        Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
+        Type t3 = GetTypeFromName(t3Name) ?? typeof(object);
+
+        Type listItemType = typeof(List3Item<,,>).MakeGenericType(t1, t2, t3);
+        Type listType = typeof(IList3<,,>).MakeGenericType(t1, t2, t3);
+        var list = Activator.CreateInstance(listType);
+
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
+            return list;
+        }
+
+        var itemsListObject = itemsField.GetValue(list);
+        if (itemsListObject == null) return list;
+
+        Type itemsListType = itemsListObject.GetType(); // List<List3Item<T1, T2, T3>>
+        MethodInfo addMethod = itemsListType.GetMethod("Add");
+
+        if (addMethod == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find 'Add' method on the items list type {itemsListType.Name}");
+            return list;
+        }
+
+        foreach (XmlNode itemNode in node.ChildNodes)
+        {
+            object item = DeserializeSingleNode(itemNode, listItemType);
+            addMethod.Invoke(itemsListObject, new object[] { item });
+        }
+
+        return list;
+    }
+
+    // ===== 反序列化 IList4<T1, T2, T3, T4> =====
+    private object DeserializeIList4(XmlNode node)
+    {
+        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
+        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
+        string t3Name = node.Attributes?[ATTR_T3]?.Value ?? "object";
+        string t4Name = node.Attributes?[ATTR_T4]?.Value ?? "object";
+
+        Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
+        Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
+        Type t3 = GetTypeFromName(t3Name) ?? typeof(object);
+        Type t4 = GetTypeFromName(t4Name) ?? typeof(object);
+
+        Type listItemType = typeof(List4Item<,,,>).MakeGenericType(t1, t2, t3, t4);
+        Type listType = typeof(IList4<,,,>).MakeGenericType(t1, t2, t3, t4);
+        var list = Activator.CreateInstance(listType);
+
+        FieldInfo itemsField = listType.GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (itemsField == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find '_items' field in {listType.Name}");
+            return list;
+        }
+
+        var itemsListObject = itemsField.GetValue(list);
+        if (itemsListObject == null) return list;
+
+        Type itemsListType = itemsListObject.GetType(); // List<List4Item<T1, T2, T3, T4>>
+        MethodInfo addMethod = itemsListType.GetMethod("Add");
+
+        if (addMethod == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to find 'Add' method on the items list type {itemsListType.Name}");
+            return list;
+        }
+
+        foreach (XmlNode itemNode in node.ChildNodes)
+        {
+            object item = DeserializeSingleNode(itemNode, listItemType);
+            addMethod.Invoke(itemsListObject, new object[] { item });
+        }
+
+        return list;
+    }
+
+    private XmlElement SerializeIDictionary2(XmlDocument doc, string name, object dict2)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_IDICT2);
+        elem.SetAttribute(ATTR_NAME, name);
+
+        Type dictType = dict2.GetType();
+        Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2]
+        elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T1, genArgs[1].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[2].Name);
+
+        // 类似于 SerializeDictionary，遍历 _dict 字段中的每个键值对
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return elem;
+
+        var dictionary = dictField.GetValue(dict2) as System.Collections.IDictionary;
+        if (dictionary == null) return elem;
+
+        foreach (System.Collections.DictionaryEntry entry in dictionary)
+        {
+            var member = doc.CreateElement("DictionaryMember");
+
+            // Key
+            XmlElement keyNode = SerializeValue(doc, "Key", entry.Key);
+            XmlNode keyContent = keyNode.FirstChild ?? keyNode;
+            XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
+            member.AppendChild(importedKeyContent);
+
+            // Value (Dict2Item<T1, T2>)
+            XmlElement valueNode = SerializeValue(doc, "Value", entry.Value);
+            XmlNode valueContent = valueNode.FirstChild ?? valueNode;
+            XmlNode importedValueContent = doc.ImportNode(valueContent, true);
+            member.AppendChild(importedValueContent);
+
+            elem.AppendChild(member);
+        }
+
+        return elem;
+    }
+
+    // ===== 序列化 IDictionary3<TKey, T1, T2, T3> =====
+    private XmlElement SerializeIDictionary3(XmlDocument doc, string name, object dict3)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_IDICT3);
+        elem.SetAttribute(ATTR_NAME, name);
+
+        Type dictType = dict3.GetType();
+        Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2, T3]
+        elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T1, genArgs[1].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[2].Name);
+        elem.SetAttribute(ATTR_T3, genArgs[3].Name);
+
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return elem;
+
+        var dictionary = dictField.GetValue(dict3) as System.Collections.IDictionary;
+        if (dictionary == null) return elem;
+
+        foreach (System.Collections.DictionaryEntry entry in dictionary)
+        {
+            var member = doc.CreateElement("DictionaryMember");
+            object keyValue = entry.Key ?? throw new InvalidOperationException("Dictionary key cannot be null");
+
+            XmlElement keyNode = SerializeValue(doc, "Key", keyValue);
+            XmlNode keyContent = keyNode.FirstChild ?? keyNode;
+            XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
+            member.AppendChild(importedKeyContent);
+
+            XmlElement valueNode = SerializeValue(doc, "Value", entry.Value);
+            XmlNode valueContent = valueNode.FirstChild ?? valueNode;
+            XmlNode importedValueContent = doc.ImportNode(valueContent, true);
+            member.AppendChild(importedValueContent);
+
+            elem.AppendChild(member);
+        }
+
+        return elem;
+    }
+
+    // ===== 序列化 IDictionary4<TKey, T1, T2, T3, T4> =====
+    private XmlElement SerializeIDictionary4(XmlDocument doc, string name, object dict4)
+    {
+        ValidateXmlElementName(name);
+        var elem = doc.CreateElement(NODE_IDICT4);
+        elem.SetAttribute(ATTR_NAME, name);
+
+        Type dictType = dict4.GetType();
+        Type[] genArgs = dictType.GetGenericArguments(); // [TKey, T1, T2, T3, T4]
+        elem.SetAttribute(ATTR_KEY_TYPE, genArgs[0].Name);
+        elem.SetAttribute(ATTR_T1, genArgs[1].Name);
+        elem.SetAttribute(ATTR_T2, genArgs[2].Name);
+        elem.SetAttribute(ATTR_T3, genArgs[3].Name);
+        elem.SetAttribute(ATTR_T4, genArgs[4].Name);
+
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return elem;
+
+        var dictionary = dictField.GetValue(dict4) as System.Collections.IDictionary;
+        if (dictionary == null) return elem;
+
+        foreach (System.Collections.DictionaryEntry entry in dictionary)
+        {
+            var member = doc.CreateElement("DictionaryMember");
+            object keyValue = entry.Key ?? throw new InvalidOperationException("Dictionary key cannot be null");
+
+            XmlElement keyNode = SerializeValue(doc, "Key", keyValue);
+            XmlNode keyContent = keyNode.FirstChild ?? keyNode;
+            XmlNode importedKeyContent = doc.ImportNode(keyContent, true);
+            member.AppendChild(importedKeyContent);
+
+            XmlElement valueNode = SerializeValue(doc, "Value", entry.Value);
+            XmlNode valueContent = valueNode.FirstChild ?? valueNode;
+            XmlNode importedValueContent = doc.ImportNode(valueContent, true);
+            member.AppendChild(importedValueContent);
+
+            elem.AppendChild(member);
+        }
+
+        return elem;
+    }
+
+    private object DeserializeIDictionary2(XmlNode node)
+    {
+        string keyTypeName = node.Attributes?[ATTR_KEY_TYPE]?.Value ?? "string";
+        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
+        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
+
+        Type keyType = GetTypeFromName(keyTypeName) ?? typeof(string);
+        Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
+        Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
+
+        Type dictType = typeof(IDictionary2<,,>).MakeGenericType(keyType, t1, t2);
+        var dict = Activator.CreateInstance(dictType);
+
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return dict;
+
+        var targetDict = dictField.GetValue(dict) as System.Collections.IDictionary;
+        if (targetDict == null) return dict;
+
+        var memberNodes = node.SelectNodes("DictionaryMember");
+        if (memberNodes != null)
+        {
+            foreach (XmlNode member in memberNodes.Cast<XmlNode>())
+            {
+                var keyNode = member.ChildNodes[0];
+                var valueNode = member.ChildNodes[1];
+
+                object key = DeserializeSingleNode(keyNode, keyType);
+                object value = DeserializeSingleNode(valueNode, typeof(Dict2Item<,>).MakeGenericType(t1, t2));
+
+                targetDict[key] = value;
+            }
+        }
+
+        return dict;
+    }
+
+    // ===== 反序列化 IDictionary3<TKey, T1, T2, T3> =====
+    private object DeserializeIDictionary3(XmlNode node)
+    {
+        string keyTypeName = node.Attributes?[ATTR_KEY_TYPE]?.Value ?? "string";
+        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
+        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
+        string t3Name = node.Attributes?[ATTR_T3]?.Value ?? "object";
+
+        Type keyType = GetTypeFromName(keyTypeName) ?? typeof(string);
+        Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
+        Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
+        Type t3 = GetTypeFromName(t3Name) ?? typeof(object);
+
+        Type dictItemType = typeof(Dict3Item<,,>).MakeGenericType(t1, t2, t3);
+        Type dictType = typeof(IDictionary3<,,,>).MakeGenericType(keyType, t1, t2, t3);
+        var dict = Activator.CreateInstance(dictType);
+
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return dict;
+
+        var targetDictObject = dictField.GetValue(dict) as System.Collections.IDictionary; // _dict is IDictionary
+        if (targetDictObject == null) return dict;
+
+
+        var memberNodes = node.SelectNodes("DictionaryMember");
+        if (memberNodes != null)
+        {
+            foreach (XmlNode member in memberNodes.Cast<XmlNode>())
+            {
+                var keyNode = member.ChildNodes[0];
+                var valueNode = member.ChildNodes[1];
+
+                object key = DeserializeSingleNode(keyNode, keyType);
+                object value = DeserializeSingleNode(valueNode, dictItemType); // Deserialize as Dict3Item<T1,T2,T3>
+
+                targetDictObject[key] = value;
+            }
+        }
+
+        return dict;
+    }
+
+    // ===== 反序列化 IDictionary4<TKey, T1, T2, T3, T4> =====
+    private object DeserializeIDictionary4(XmlNode node)
+    {
+        string keyTypeName = node.Attributes?[ATTR_KEY_TYPE]?.Value ?? "string";
+        string t1Name = node.Attributes?[ATTR_T1]?.Value ?? "object";
+        string t2Name = node.Attributes?[ATTR_T2]?.Value ?? "object";
+        string t3Name = node.Attributes?[ATTR_T3]?.Value ?? "object";
+        string t4Name = node.Attributes?[ATTR_T4]?.Value ?? "object";
+
+        Type keyType = GetTypeFromName(keyTypeName) ?? typeof(string);
+        Type t1 = GetTypeFromName(t1Name) ?? typeof(object);
+        Type t2 = GetTypeFromName(t2Name) ?? typeof(object);
+        Type t3 = GetTypeFromName(t3Name) ?? typeof(object);
+        Type t4 = GetTypeFromName(t4Name) ?? typeof(object);
+
+        Type dictItemType = typeof(Dict4Item<,,,>).MakeGenericType(t1, t2, t3, t4);
+        Type dictType = typeof(IDictionary4<,,,,>).MakeGenericType(keyType, t1, t2, t3, t4);
+        var dict = Activator.CreateInstance(dictType);
+
+        FieldInfo dictField = dictType.GetField("_dict", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (dictField == null) return dict;
+
+        var targetDictObject = dictField.GetValue(dict) as System.Collections.IDictionary; // _dict is IDictionary
+        if (targetDictObject == null) return dict;
+
+
+        var memberNodes = node.SelectNodes("DictionaryMember");
+        if (memberNodes != null)
+        {
+            foreach (XmlNode member in memberNodes.Cast<XmlNode>())
+            {
+                var keyNode = member.ChildNodes[0];
+                var valueNode = member.ChildNodes[1];
+
+                object key = DeserializeSingleNode(keyNode, keyType);
+                object value = DeserializeSingleNode(valueNode, dictItemType); // Deserialize as Dict4Item<T1,T2,T3,T4>
+
+                targetDictObject[key] = value;
+            }
+        }
+
+        return dict;
+    }
+
+    /// <summary>
+    /// 根据字符串名称获取 Type 对象。
+    /// </summary>
+    private Type GetTypeFromName(string typeName)
+    {
+        // 尝试直接通过全名获取
+        Type type = Type.GetType(typeName);
+        if (type != null) return type;
+
+        // 尝试加上 System. 前缀
+        type = Type.GetType($"System.{typeName}");
+        if (type != null) return type;
+
+        // 尝试在当前程序集查找
+        type = GetType().Assembly.GetType(typeName);
+        if (type != null) return type;
+
+        // 最后，返回 null
+        return null;
     }
 }

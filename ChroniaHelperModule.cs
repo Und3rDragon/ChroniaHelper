@@ -23,6 +23,8 @@ using ChroniaHelper.Utils.StopwatchSystem;
 using FASF2025Helper.Utils;
 using FMOD.Studio;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using MonoMod.ModInterop;
 using YoctoHelper.Hooks;
 
@@ -141,6 +143,9 @@ public class ChroniaHelperModule : EverestModule
         MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
 
         PolygonCollider.Load();
+
+        // Map Hider?
+        IL.Celeste.AreaData.Load += HookAreaDataLoad;
     }
 
     public override void Unload()
@@ -155,6 +160,30 @@ public class ChroniaHelperModule : EverestModule
         
         // migrated from VivHelper
         On.Celeste.GameLoader.Begin -= LateInitialize;
+
+        IL.Celeste.AreaData.Load -= HookAreaDataLoad;
+    }
+
+    private static bool IsFromHelpers(ModAsset asset)
+    {
+        return GlobalData.HelperMapsToHide.Contains(asset?.Source?.Name) || 
+            (asset?.Source?.Name.ToLower().Contains("helper") ?? false);
+    }
+
+    private static void HookAreaDataLoad(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+        int i = 0;
+        if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdloc(out i),
+                instr => instr.MatchLdfld<ModAsset>("PathVirtual"))
+            && cursor.TryGotoPrev(MoveType.After, instr => instr.MatchStloc(i)))
+        {
+            cursor.Emit(OpCodes.Ldloc, i);
+            cursor.EmitDelegate(IsFromHelpers);
+            ILLabel target = cursor.DefineLabel();
+            cursor.Emit(OpCodes.Brtrue, target);
+            cursor.GotoNext(MoveType.After, instr => instr.MatchStfld<AreaData>("OnLevelBegin")).MarkLabel(target);
+        }
     }
 
     private void OnGameExiting(On.Celeste.Celeste.orig_OnExiting orig, Celeste.Celeste self, object sender, EventArgs args)

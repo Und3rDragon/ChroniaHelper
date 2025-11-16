@@ -10,5 +10,14 @@ namespace ChroniaHelper.Modules;
 
 public class ChroniaHelperGlobalSaveData : ChroniaHelperModuleGlobalSaveData
 {
-    
+    [ChroniaGlobalSavePath("MapHider.xml")]
+    public List<string> HelperMapsToHide { get; set; } = new List<string> {
+        "AltSidesHelper",
+        "bitsbolts",
+        "BounceHelper",
+        "CustomPoints",
+        "HonlyHelper",
+        "JackalHelper",
+        "SusanHelper"
+    };
 }
