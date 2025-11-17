@@ -10,23 +10,6 @@ namespace ChroniaHelper.Utils.ChroniaSystem;
 
 public static class ChroniaCounterUtils
 {
-    public static void CounterRefresh()
-    {
-        HashSet<string> removing = new();
-
-        Md.SaveData.ChroniaCounters.EachDo((c) =>
-        {
-            if (!c.Value.Operating())
-            {
-                removing.Add(c.Key);
-            }
-        });
-
-        removing.EachDo((i) =>
-        {
-            Md.SaveData.ChroniaCounters.SafeRemove(i);
-        });
-    }
     public static bool CheckCounter(this string name)
     {
         if (MaP.session == null) { return false; }
@@ -38,39 +21,7 @@ public static class ChroniaCounterUtils
 
         return false;
     }
-
-    public static bool CheckCounterRecord(this string name)
-    {
-        return Md.SaveData.ChroniaCounters.ContainsKey(name);
-    }
-
-    public static ChroniaCounter PullCounter(this string name)
-    {
-        ChroniaCounter c = new()
-        {
-            Value = name.GetCounter()
-        };
-
-        Md.SaveData.ChroniaCounters.Create(name, c);
-
-        return Md.SaveData.ChroniaCounters[name];
-    }
-
-    public static void PushCounter(this ChroniaCounter counter, string name)
-    {
-        Md.SaveData.ChroniaCounters.Enter(name, counter);
-        counter.SetCounter(name);
-    }
-
-    public static void ResetCounter(this string name)
-    {
-        if (name.CheckCounterRecord())
-        {
-            name.PullCounter().Reset();
-            name.PullCounter().SetCounter(name);
-        }
-    }
-
+    
     public static int GetCounter(this string name)
     {
         return MaP.session.GetCounter(name);

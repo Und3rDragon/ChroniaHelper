@@ -86,9 +86,8 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // Flag Button Data
     // Can be migrated but not necessary?
-    public Dictionary<string, bool> switchFlag = new Dictionary<string, bool>();
+    public HashSet<string> switchFlag = new();
     public HashSet<string> flagNames = new HashSet<string>();
-    public HashSet<string> lastRoom = new HashSet<string>();
     public Dictionary<int, int> touchSwitchFrame = new Dictionary<int, int>();
 
     // Flag Carousel Trigger extended
@@ -164,6 +163,10 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<int, OperationCodesListener.OperationCodeData> operationCodeListeners = new();
 
 
-    // Backup Simplified Flag System (Unused)
-    //public HashSet<string> TemporaryFlags = new();
+    public HashSet<string> flagsPerRoom = new();
+    public HashSet<string> flagsPerDeath = new();
+    public Dictionary<string, int> countersPerRoom = new();
+    public Dictionary<string, int> countersPerDeath = new();
+    public Dictionary<string, float> slidersPerRoom = new();
+    public Dictionary<string, float> slidersPerDeath = new();
 }

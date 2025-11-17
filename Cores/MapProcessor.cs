@@ -4,6 +4,7 @@ using ChroniaHelper.Settings;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using MonoMod.Utils;
+using YamlDotNet.Core;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
@@ -106,7 +107,7 @@ public static class MapProcessor
                 {
                     // Can get the Entity ID here
                     flagName = item.Values["flag"].ToString().Trim();
-                    SwitchFlagSlot($"ChroniaButtonFlag-{flagName}-ButtonID-{item.ID}", false);
+                    RegisterSwitchFlags(flagName, item.ID);
                     
                     Md.Session.flagNames.Enter(flagName);
                 }
@@ -215,7 +216,6 @@ public static class MapProcessor
                 if (IsSwitchFlagCompleted(item))
                 {
                     level.Session.SetFlag(item, true);
-                    SwitchFlagSave(item, true);
                 }
             }
         }
@@ -263,28 +263,21 @@ public static class MapProcessor
     public static bool IsSwitchFlagCompleted(string flagIndex)
     {
         bool b = true;
-        int count = 0;
-        foreach (string key in Md.Session.switchFlag.Keys)
+        foreach (string key in Md.Session.switchFlag)
         {
             if (key.StartsWith($"ChroniaButtonFlag-{flagIndex}-ButtonID-"))
             {
-                b = b ? Md.Session.switchFlag[key] : false;
-                count++;
+                b.TryNegative(key.GetFlag());
             }
         }
-        if (count == 0) { return false; }
+        
         return b;
     }
 
     // Creating slots for the flags
-    public static void SwitchFlagSlot(string key, bool defaultValue)
+    public static void RegisterSwitchFlags(string name, int ID)
     {
-        Md.Session.switchFlag.Enter(key, defaultValue);
+        Md.Session.switchFlag.Add($"ChroniaButtonFlag-{name}-ButtonID-{ID}");
     }
-
-    // Save or overwrite the existing values
-    public static void SwitchFlagSave(string key, bool overwrite)
-    {
-        Md.Session.switchFlag.Enter(key, overwrite);
-    }
+    
 }

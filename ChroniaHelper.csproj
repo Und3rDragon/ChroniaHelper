@@ -32,6 +32,10 @@
 		<CelesteModReference Include="MaxHelpingHand" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="ModFolder\Loenn\triggers\debugging\" />
+	</ItemGroup>
+
     <!--Implement dependencies here in an ItemGroup-->
 
 

@@ -25,19 +25,7 @@ public class FlagClearTrigger : FlagManageTrigger
 
         if (clearGlobal)
         {
-            HashSet<string> remove = new();
-            foreach(var item in Md.SaveData.ChroniaFlags)
-            {
-                if (item.Value.Global)
-                {
-                    remove.Add(item.Key);
-                }
-            }
-            foreach(var i in remove)
-            {
-                Md.SaveData.ChroniaFlags.SafeRemove(i);
-                i.SetFlag(false);
-            }
+            Md.SaveData.flags.Clear();
         }
     }
 

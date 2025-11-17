@@ -9,6 +9,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Entities;
@@ -207,55 +208,7 @@ public class FlagButton : Entity {
     }
     // Save or overwrite the existing values
     private bool passwordProtected = false; private string passwordID, password;
-
-    public void FlagSave(string key)
-    {
-        Md.Session.switchFlag.Enter(key, Activated());
-    }
-
-    public void FlagSave(string key, bool overwrite)
-    {
-        Md.Session.switchFlag.Enter(key, overwrite);
-    }
-    // Get and override flag states
-    public bool FlagLoad(string key)
-    {
-        if (Md.Session.switchFlag.ContainsKey(key))
-        {
-            return Activated(Md.Session.switchFlag[key]);
-        }
-        return Activated(false);
-    }
     
-    // Deal with flags in last room
-    public void RegisterLastFlag()
-    {
-        if (Md.Session.lastRoom.Contains(flagID) && persistent)
-        {
-            Md.Session.lastRoom.Remove(flagID);
-        }
-        Md.Session.lastRoom.Enter(flag);
-        if (persistent) { return; }
-        Md.Session.lastRoom.Enter(flagID);
-    }
-
-    public void ListFlagReset()
-    {
-        foreach (string item in Md.Session.lastRoom)
-        {
-            FlagSave(item, false);
-            level.Session.SetFlag(item, false);
-        }
-    }
-
-    public void DebugFlag()
-    {
-        foreach (string key in Md.Session.switchFlag.Keys)
-        {
-            Log.Info(key + " " + Md.Session.switchFlag[key]);
-        }
-    }
-
     public void TurnOn()
     {
         if (!Activated())
@@ -263,7 +216,11 @@ public class FlagButton : Entity {
             touchSfx.Play(hitSound);
 
             Activated(true);
-            FlagSave(flagID);
+            if (!persistent)
+            {
+                Md.Session.flagsPerRoom.Add(flagID);
+                Md.Session.flagsPerDeath.Add(flagID);
+            }
 
             // animation
             wiggler.Start();
@@ -283,7 +240,7 @@ public class FlagButton : Entity {
             touchSfx.Play(hitSound);
 
             Activated(false);
-            FlagSave(flagID);
+            
             level.Session.SetFlag(flag, false);
             level.Session.SetFlag($"playedSound_{flag}_button", false);
 
@@ -293,25 +250,10 @@ public class FlagButton : Entity {
             icon.Rate = 1f;
         }
     }
-
-    public bool IsCompleted(string flagIndex)
-    {
-        bool b = true;
-        int count = 0;
-        foreach (string key in Md.Session.switchFlag.Keys) {
-            if (key.StartsWith($"ChroniaButtonFlag-{flagIndex}-ButtonID-"))
-            {
-                b = b ? Md.Session.switchFlag[key] : false;
-                count++;
-            }
-        }
-        if(count == 0) { return false; }
-        return b;
-    }
-
+    
     public bool IsCompleted()
     {
-        return IsCompleted(flag);
+        return MaP.IsSwitchFlagCompleted(flag);
     }
 
     public bool inside = false;
@@ -363,21 +305,21 @@ public class FlagButton : Entity {
 
         level = SceneAs<Level>();
 
-        // Register the flags in current room to see which should be reset once out of room
-        RegisterLastFlag();
+        if (!persistent)
+        {
+            Md.Session.flagsPerRoom.Add(flagID);
+            Md.Session.flagsPerDeath.Add(flagID);
+        }
     }
 
     public override void Removed(Scene scene)
     {
         base.Removed(scene);
-
-        // Reset the last room flags
-        ListFlagReset();
-
+        
         // If not persistent, reset the values
         if (!persistent)
         {
-            FlagSave(flagID, false);
+            flagID.SetFlag(false);
         }
 
         // If not completed, we should reset the flag too
@@ -386,8 +328,6 @@ public class FlagButton : Entity {
             level.Session.SetFlag(flag, false);
             level.Session.SetFlag($"playedSound_{flag}_button", false);
         }
-
-        FlagLoad(flagID);
     }
 
     public override void Awake(Scene scene)
