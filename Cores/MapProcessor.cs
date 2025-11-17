@@ -89,8 +89,10 @@ public static class MapProcessor
                 flag.SetFlag(true);
             }
         }
-        
+
         // Check all the switches and save the flags
+        Md.Session.flagNames = new();
+        Md.Session.switchFlag = new();
         var levels = level.Session.MapData.Levels;
         string flagName;
         HashSet<string> switches = new()
