@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Triggers;
 
@@ -26,15 +28,22 @@ public class ClearPackedFlagsTrigger : BaseTrigger
 
     protected override void OnEnterExecute(Player player)
     {
-        HashSet<string> toRemove = new();
-        foreach(var item in Md.SaveData.ChroniaFlags)
+        if((Operation)mode == Operation.RemoveTag)
         {
-            if (item.Value.PresetTags.Contains(Utils.ChroniaSystem.Labels.Packed))
+            Md.SaveData.PackedFlags.Clear();
+            Md.SaveData.CurrentPackedFlags.Clear();
+        }
+        else
+        {
+            foreach(var f in Md.SaveData.PackedFlags)
             {
-                if (!labels.Contains(item.Value.CustomData["packed_label"])) { continue; }
-                
-                
+                foreach(var i in f.Value)
+                {
+                    i.SetFlag(false);
+                }
             }
+            Md.SaveData.PackedFlags.Clear();
+            Md.SaveData.CurrentPackedFlags.Clear();
         }
     }
 }

@@ -22,75 +22,53 @@ public class RandomPackedFlagTrigger : BaseTrigger
         onlyOnce = e.Bool("onlyOnce", false);
     }
     private string label;
-    private HashSet<string> targets;
-    private string[] idle;
+    private Random random;
 
-    protected override void AddedExecute(Scene scene)
+    public override void Added(Scene scene)
     {
-        targets = new();
-        
-        foreach (var entry in Md.SaveData.ChroniaFlags)
-        {
-            if (!entry.Value.PresetTags.Contains(Utils.ChroniaSystem.Labels.Packed)) { continue; }
-            if (entry.Value.CustomData.Count == 0) { continue; }
-            if (!entry.Value.CustomData.ContainsKey("packed_label")) { continue; }
+        base.Added(scene);
 
-            if (entry.Value.CustomData["packed_label"] == label)
-            {
-                targets.Enter(entry.Key);
-            }
-        }
-        
+        random = new(DateTime.Now.Day * 1000000 + DateTime.Now.Hour * 10000 + DateTime.Now.Minute * 100 + DateTime.Now.Second);
     }
-
+    
     protected override void OnEnterExecute(Player player)
     {
-        if (targets.IsNull() || targets.Count == 0) { return; }
-        
-        Random random = new(DateTime.Now.Day * 1000000 + DateTime.Now.Hour * 10000 + DateTime.Now.Minute * 100 + DateTime.Now.Second);
-        
-        idle = new string[targets.Count];
-        int count = 0;
-        var a = targets.ToArray();
-        for(int i = 0, j = 0; i < a.Length; i++)
+        if (!Md.SaveData.CurrentPackedFlags.ContainsKey(label))
         {
-            if (!Md.SaveData.ChroniaFlags[a[i]].CustomData.ContainsKey("packed_triggered"))
+            if (Md.SaveData.PackedFlags.ContainsKey(label))
             {
-                idle[j] = a[i];
-                j++;
-                count++;
-                continue;
+                Md.SaveData.PackedFlags[label].ApplyTo(out List<string> list);
+                Md.SaveData.CurrentPackedFlags.Enter(label, list);
             }
-            
-            if (!Md.SaveData.ChroniaFlags[a[i]].CustomData["packed_triggered"].ParseBool(false))
+            else { return; }
+        }
+        else if (Md.SaveData.CurrentPackedFlags[label].Count == 0)
+        {
+            if (Md.SaveData.PackedFlags.ContainsKey(label))
             {
-                idle[j] = a[i];
-                j++;
-                count++;
+                Md.SaveData.PackedFlags[label].ApplyTo(out List<string> list);
+                Md.SaveData.CurrentPackedFlags.Enter(label, list);
             }
+            else { return; }
         }
         
-        if(count == 0)
+        string _flag = Md.SaveData.CurrentPackedFlags[label][random.Next(Md.SaveData.CurrentPackedFlags[label].Count)];
+        if (_flag.StartsWith("!"))
         {
-            for(int i = 0; i < a.Length; i++)
-            {
-                Md.SaveData.ChroniaFlags[a[i]].CustomData.Enter("packed_triggered", "false");
-                idle[i] = a[i];
-            }
-            
-            int m = random.Next(0, count);
-            
-            Md.SaveData.ChroniaFlags[idle[m]].Active = true;
-            Md.SaveData.ChroniaFlags[idle[m]].CustomData.Enter("packed_triggered", "true");
-            Md.SaveData.ChroniaFlags[idle[m]].PushFlag(idle[m]);
-
-            return;
+            _flag.RemoveFirst("!").SetFlag(true);
+            Md.Session.flagsPerDeath.Add(_flag.RemoveFirst("!"));
+            Md.SaveData.CurrentPackedFlags[label].SafeRemove(_flag);
         }
-
-        int selection = random.Next(0, count);
-
-        Md.SaveData.ChroniaFlags[idle[selection]].Active = true;
-        Md.SaveData.ChroniaFlags[idle[selection]].CustomData.Enter("packed_triggered", "true");
-        Md.SaveData.ChroniaFlags[idle[selection]].PushFlag(idle[selection]);
+        else if (_flag.StartsWith("*"))
+        {
+            _flag.RemoveFirst("*").SetFlag(true);
+            Md.SaveData.flags.Add(_flag.RemoveFirst("*"));
+            Md.SaveData.CurrentPackedFlags[label].SafeRemove(_flag);
+        }
+        else
+        {
+            _flag.SetFlag(true);
+            Md.SaveData.CurrentPackedFlags[label].SafeRemove(_flag);
+        }
     }
 }

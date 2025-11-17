@@ -26,47 +26,6 @@ public class FlagPacker : Entity
     {
         base.Added(scene);
         
-        ChroniaFlag f = new();
-
-        foreach (var flag in flags)
-        {
-            if (flag.StartsWith('!'))
-            {
-                // temporary flag
-                string name = flag.RemoveFirst("!");
-                f = name.PullFlag();
-
-                f.Global = false;
-                f.ResetOnDeath = true;
-                f.PresetTags.Create(Labels.Packed);
-                f.CustomData.Enter("packed_label", label);
-                f.CustomData.Create("packed_triggered", "false");
-                f.PushFlag(name);
-            }
-            else if (flag.StartsWith('*'))
-            {
-                // global flag
-                string name = flag.RemoveFirst("*");
-                f = name.PullFlag();
-
-                f.Global = true;
-                f.ResetOnDeath = false;
-                f.PresetTags.Create(Labels.Packed);
-                f.CustomData.Enter("packed_label", label);
-                f.CustomData.Create("packed_triggered", "false");
-                f.PushFlag(name);
-            }
-            else
-            {
-                f = flag.PullFlag();
-                
-                f.Global = false;
-                f.ResetOnDeath = false;
-                f.PresetTags.Create(Labels.Packed);
-                f.CustomData.Enter("packed_label", label);
-                f.CustomData.Create("packed_triggered", "false");
-                f.PushFlag(flag);
-            }
-        }
+        Md.SaveData.PackedFlags.Enter(label, flags.ToList());
     }
 }
