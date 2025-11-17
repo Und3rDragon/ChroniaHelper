@@ -398,37 +398,51 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     }
 
     /// <summary>
-    /// 序列化一个自定义类的实例。
+    /// 序列化一个自定义类（Class）。
+    /// 将类的所有公共字段和属性序列化为其子节点。
     /// </summary>
     private XmlElement SerializeClass(XmlDocument doc, string name, object obj)
     {
         var classNode = doc.CreateElement(CLASS_NODE_NAME);
         classNode.SetAttribute("name", name);
-        classNode.SetAttribute("type", obj.GetType().FullName ?? obj.GetType().Name);
+        classNode.SetAttribute("type", obj.GetType().AssemblyQualifiedName);
 
-        var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        // 获取所有公共的实例字段
+        var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
         foreach (var field in fields)
         {
-            if (field.Name.StartsWith("<")) continue; // Skip compiler-generated fields
-
-            var attrNode = doc.CreateElement("Field");
-            attrNode.SetAttribute("name", field.Name);
-            attrNode.SetAttribute("type", field.FieldType.FullName ?? field.FieldType.Name);
-
-            object fieldValue = field.GetValue(obj);
-            if (fieldValue == null)
+            try
             {
-                attrNode.SetAttribute("isNull", "true");
+                object value = field.GetValue(obj);
+                // 使用字段名作为子节点的 name
+                var valueNode = SerializeValue(doc, field.Name, value);
+                classNode.AppendChild(valueNode);
             }
-            else
+            catch (Exception ex)
             {
-                // Recursively serialize the field value
-                XmlElement fieldValueNode = SerializeValue(doc, field.Name, fieldValue);
-                // Import and append the *content* of the serialized value
-                XmlNode importedNode = doc.ImportNode(fieldValueNode, true);
-                attrNode.AppendChild(importedNode);
+                Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to serialize field '{field.Name}' of class '{obj.GetType().Name}': {ex.Message}");
             }
-            classNode.AppendChild(attrNode);
+        }
+
+        // 获取所有公共的实例属性
+        var properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var prop in properties)
+        {
+            // 检查属性是否有 getter
+            if (prop.GetMethod != null)
+            {
+                try
+                {
+                    object value = prop.GetValue(obj);
+                    // 使用属性名作为子节点的 name
+                    var valueNode = SerializeValue(doc, prop.Name, value);
+                    classNode.AppendChild(valueNode);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to serialize property '{prop.Name}' of class '{obj.GetType().Name}': {ex.Message}");
+                }
+            }
         }
 
         return classNode;
@@ -1244,48 +1258,110 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     }
 
     /// <summary>
-    /// 反序列化一个自定义类的实例。
+    /// 反序列化一个自定义类（Class）。
+    /// 从子节点中重建对象的字段和属性。
     /// </summary>
     private object DeserializeClass(XmlNode node)
     {
         string typeName = node.Attributes?["type"]?.Value;
-        if (string.IsNullOrEmpty(typeName)) return new object();
-
-        Type type = GetTypeFromName(typeName) ?? GetType().Assembly.GetType(typeName) ?? typeof(object);
-        if (type == typeof(object)) return new object();
-
-        var obj = Activator.CreateInstance(type);
-        var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-        XmlNodeList attrNodes = node.SelectNodes("Field");
-        if (attrNodes != null) // 检查 SelectNodes 是否返回了 null
+        if (string.IsNullOrEmpty(typeName))
         {
-            foreach (XmlNode attrNode in attrNodes)
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", "Class node is missing 'type' attribute.");
+            return null;
+        }
+
+        Type type = Type.GetType(typeName);
+        if (type == null)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Cannot resolve type '{typeName}' for deserialization.");
+            return null;
+        }
+
+        // 创建该类型的实例
+        object instance;
+        try
+        {
+            instance = Activator.CreateInstance(type);
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed to create instance of type '{typeName}': {ex.Message}");
+            return null;
+        }
+
+        // 获取所有公共的实例字段和属性，用于后续赋值
+        var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+        var fieldMap = fields.ToDictionary(f => f.Name, f => f);
+
+        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var propertyMap = properties.ToDictionary(p => p.Name, p => p);
+
+        // 遍历 <Class> 的所有子节点
+        foreach (XmlNode childNode in node.ChildNodes)
+        {
+            if (childNode.NodeType != XmlNodeType.Element) continue;
+
+            string valueName = childNode.Attributes?["name"]?.Value;
+            if (string.IsNullOrEmpty(valueName)) continue;
+
+            object deserializedValue = DeserializeNode(childNode);
+
+            // 尝试匹配字段
+            if (fieldMap.TryGetValue(valueName, out var field))
             {
-                string fieldName = attrNode.Attributes?["name"]?.Value;
-                if (string.IsNullOrEmpty(fieldName)) continue;
-
-                var field = fields.FirstOrDefault(f => f.Name == fieldName);
-                if (field == null) continue;
-
-                if (attrNode.Attributes?["isNull"]?.Value == "true")
+                try
                 {
-                    field.SetValue(obj, null);
+                    // 检查反序列化值的类型是否与字段类型兼容
+                    if (deserializedValue == null || field.FieldType.IsAssignableFrom(deserializedValue.GetType()) || IsAssignableToGenericType(deserializedValue.GetType(), field.FieldType))
+                    {
+                        field.SetValue(instance, deserializedValue);
+                    }
+                    else
+                    {
+                        Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Deserialized value type '{deserializedValue.GetType().Name}' is not assignable to field '{valueName}' of type '{field.FieldType.Name}' in class '{type.Name}'.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to set field '{valueName}' on class '{type.Name}': {ex.Message}");
+                }
+            }
+            // 如果不是字段，则尝试匹配属性
+            else if (propertyMap.TryGetValue(valueName, out var prop))
+            {
+                // 检查属性是否有 setter
+                if (prop.SetMethod != null)
+                {
+                    try
+                    {
+                        // 检查反序列化值的类型是否与属性类型兼容
+                        if (deserializedValue == null || prop.PropertyType.IsAssignableFrom(deserializedValue.GetType()) || IsAssignableToGenericType(deserializedValue.GetType(), prop.PropertyType))
+                        {
+                            prop.SetValue(instance, deserializedValue);
+                        }
+                        else
+                        {
+                            Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Deserialized value type '{deserializedValue.GetType().Name}' is not assignable to property '{valueName}' of type '{prop.PropertyType.Name}' in class '{type.Name}'.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Warn, "ChroniaHelper", $"Failed to set property '{valueName}' on class '{type.Name}': {ex.Message}");
+                    }
                 }
                 else
                 {
-                    // Find the first child node that represents the value
-                    XmlNode valueContentNode = attrNode.FirstChild;
-                    if (valueContentNode != null)
-                    {
-                        object value = DeserializeNode(valueContentNode);
-                        field.SetValue(obj, value);
-                    }
+                    Logger.Log(LogLevel.Verbose, "ChroniaHelper", $"Property '{valueName}' on class '{type.Name}' has no setter, skipping.");
                 }
+            }
+            else
+            {
+                // 既不是字段也不是属性
+                Logger.Log(LogLevel.Verbose, "ChroniaHelper", $"No public field or property named '{valueName}' found in class '{type.Name}'. Skipping this value.");
             }
         }
 
-        return obj;
+        return instance;
     }
 
     /// <summary>
