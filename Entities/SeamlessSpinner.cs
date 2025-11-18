@@ -135,7 +135,6 @@ public class SeamlessSpinner : Entity
     public SeamlessSpinner(Vector2 position, EntityData data) : base(position)
     {
         offset = Calc.Random.NextFloat();
-        Tag = Tags.TransitionUpdate;
 
         //碰撞箱
         string inputHitbox = data.Attr("customHitbox").ToLower();
@@ -230,7 +229,7 @@ public class SeamlessSpinner : Entity
         sprite.textures.Enter("load_cold", GFX.Game.GetAtlasSubtextures(coldCoreModeTriggerSpritePath));
         sprite.interval.Enter("load_cold", triggerAnimDelay);
         sprite.loop.Enter("load_cold", false);
-        
+
         int totalFrames = sprite.CurrentAnimationLength();
         int randomChoice = Calc.Random.Range(0, totalFrames);
         sprite.currentFrame = randomChoice;
@@ -565,9 +564,6 @@ public class SeamlessSpinner : Entity
 
     public override void Removed(Scene scene)
     {
-        
-        RemoveSelf();
-        
         base.Removed(scene);
     }
 
