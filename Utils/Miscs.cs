@@ -192,4 +192,40 @@ public static class Miscs
             }
         }
     }
+    
+    public static bool TryGetSubTextures(this Atlas atlas, string path, out List<MTexture> texture)
+    {
+        texture = new();
+        
+        if (atlas.HasAtlasSubtextures(path))
+        {
+            texture = GFX.Game.GetAtlasSubtextures(path);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static List<MTexture> TryGetSubTextures(this Atlas atlas, string path)
+    {
+        if (atlas.HasAtlasSubtextures(path))
+        {
+            return atlas.GetAtlasSubtextures(path);
+        }
+
+        return new List<MTexture>();
+    }
+
+    public static bool InView(this Vc2 pos, float extension = 16f, Vc2? cameraPos = null)
+    {
+        extension = extension.GetAbs();
+        
+        Vc2 camera = cameraPos == null ? MaP.cameraPos : (Vc2)cameraPos;
+        if (pos.X > camera.X - extension && pos.Y > camera.Y - extension && pos.X < camera.X + 320f + extension)
+        {
+            return pos.Y < camera.Y + 180f + extension;
+        }
+
+        return false;
+    }
 }

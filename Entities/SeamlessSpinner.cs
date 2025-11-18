@@ -214,19 +214,19 @@ public class SeamlessSpinner : Entity
         sprite.origin = Vc2.One * 0.5f;
         sprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipX == 1 ? true : false);
         sprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
-        sprite.textures.Enter("idle", GFX.Game.GetAtlasSubtextures(imagePath));
+        sprite.textures.Enter("idle", GFX.Game.TryGetSubTextures(imagePath));
         sprite.interval.Enter("idle", fgAnim);
-        sprite.textures.Enter("load", GFX.Game.GetAtlasSubtextures($"{imagePath}_base"));
+        sprite.textures.Enter("load", GFX.Game.TryGetSubTextures(($"{imagePath}_base")));
         sprite.interval.Enter("load", triggerAnimDelay);
         sprite.loop.Enter("load", false);
-        sprite.textures.Enter("idle_hot", GFX.Game.GetAtlasSubtextures(hotCoreModeSpritePath));
+        sprite.textures.Enter("idle_hot", GFX.Game.TryGetSubTextures(hotCoreModeSpritePath));
         sprite.interval.Enter("idle_hot", fgAnim);
-        sprite.textures.Enter("idle_cold", GFX.Game.GetAtlasSubtextures(coldCoreModeSpritePath));
+        sprite.textures.Enter("idle_cold", GFX.Game.TryGetSubTextures(coldCoreModeSpritePath));
         sprite.interval.Enter("idle_cold", fgAnim);
-        sprite.textures.Enter("load_hot", GFX.Game.GetAtlasSubtextures(hotCoreModeTriggerSpritePath));
+        sprite.textures.Enter("load_hot", GFX.Game.TryGetSubTextures(hotCoreModeTriggerSpritePath));
         sprite.interval.Enter("load_hot", triggerAnimDelay);
         sprite.loop.Enter("load_hot", false);
-        sprite.textures.Enter("load_cold", GFX.Game.GetAtlasSubtextures(coldCoreModeTriggerSpritePath));
+        sprite.textures.Enter("load_cold", GFX.Game.TryGetSubTextures(coldCoreModeTriggerSpritePath));
         sprite.interval.Enter("load_cold", triggerAnimDelay);
         sprite.loop.Enter("load_cold", false);
 
@@ -400,9 +400,16 @@ public class SeamlessSpinner : Entity
             UpdateRainbowHue();
         }
 
-        if (Scene.OnInterval(0.25f, offset) && !InView())
+        if (Position.InView())
         {
-            Visible = false;
+            Visible = true;
+        }
+        else
+        {
+            if (Scene.OnInterval(0.25f))
+            {
+                Visible = false;
+            }
         }
 
         if (Scene.OnInterval(0.05f, offset))
@@ -430,17 +437,6 @@ public class SeamlessSpinner : Entity
         {
             sprite.color.color = spinner.GetHue(Position);
         }
-    }
-
-    private bool InView()
-    {
-        Camera camera = (Scene as Level).Camera;
-        if (X > camera.X - 16f && Y > camera.Y - 16f && X < camera.X + 320f + 16f)
-        {
-            return Y < camera.Y + 180f + 16f;
-        }
-
-        return false;
     }
 
     public AnimatedImage sprite;
