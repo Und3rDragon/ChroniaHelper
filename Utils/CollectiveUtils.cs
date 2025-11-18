@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using YoctoHelper.Cores;
@@ -782,5 +783,230 @@ public static class CollectiveUtils
         }
 
         return source[index];
+    }
+
+    /// <summary>
+    /// 深度比较两个对象是否内容相等，支持嵌套 List 和 Dictionary。
+    /// </summary>
+    public static bool DeepEquals(object x, object y)
+    {
+        // 引用相等或同时为 null
+        if (ReferenceEquals(x, y)) return true;
+        if (x == null || y == null) return false;
+
+        var typeX = x.GetType();
+        var typeY = y.GetType();
+
+        // 类型不同直接返回 false
+        if (typeX != typeY) return false;
+
+        // 基本类型、string 等直接比较
+        if (IsSimpleType(typeX))
+            return x.Equals(y);
+
+        // 处理数组（可选）
+        if (x is Array ax && y is Array ay)
+            return ArraysEqual(ax, ay);
+
+        // 处理 IList（包括 List<T>）
+        if (x is IList listX && y is IList listY)
+            return ListsEqual(listX, listY);
+
+        // 处理 IDictionary（包括 Dictionary<K,V>）
+        if (x is IDictionary dictX && y is IDictionary dictY)
+            return DictionariesEqual(dictX, dictY);
+
+        // 其他引用类型：回退到 Equals（或你可抛异常）
+        return x.Equals(y);
+    }
+    
+    private static bool ArraysEqual(Array a, Array b)
+    {
+        if (a.Length != b.Length) return false;
+        var len = a.Length;
+        for (int i = 0; i < len; i++)
+        {
+            if (!Equals(a.GetValue(i), b.GetValue(i)))
+                return false;
+        }
+        return true;
+    }
+
+    private static bool ListsEqual(IList a, IList b)
+    {
+        if (a.Count != b.Count) return false;
+        for (int i = 0; i < a.Count; i++)
+        {
+            if (!Equals(a[i], b[i]))
+                return false;
+        }
+        return true;
+    }
+
+    private static bool DictionariesEqual(IDictionary a, IDictionary b)
+    {
+        if (a.Count != b.Count) return false;
+
+        foreach (DictionaryEntry entry in a)
+        {
+            object key = entry.Key;
+            if (!b.Contains(key))
+                return false;
+
+            object valueA = entry.Value;
+            object valueB = b[key];
+
+            if (!Equals(valueA, valueB))
+                return false;
+        }
+        return true;
+    }
+
+    // 用于防止循环引用
+    private static readonly ConditionalWeakTable<object, object> _visited = new();
+
+    /// <summary>
+    /// 深拷贝一个对象，支持嵌套 List 和 Dictionary。
+    /// 注意：资源类型（如 MTexture）仅复制引用。
+    /// </summary>
+    public static object DeepCopy(object obj)
+    {
+        if (obj == null) return null;
+
+        var type = obj.GetType();
+
+        // 处理简单类型（值类型 + string）
+        if (IsSimpleType(type))
+            return obj;
+
+        // 检查是否已拷贝（防循环引用）
+        if (_visited.TryGetValue(obj, out object existing))
+            return existing;
+
+        object copy;
+
+        // 数组
+        if (obj is Array arr)
+        {
+            var copiedArr = Array.CreateInstance(arr.GetType().GetElementType(), arr.Length);
+            _visited.Add(obj, copiedArr);
+            for (int i = 0; i < arr.Length; i++)
+                copiedArr.SetValue(DeepCopy(arr.GetValue(i)), i);
+            copy = copiedArr;
+        }
+        // IList（如 List<T>）
+        else if (obj is IList list)
+        {
+            var elementType = GetListElementType(type) ?? typeof(object);
+            var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+            _visited.Add(obj, newList);
+            foreach (var item in list)
+                newList.Add(DeepCopy(item));
+            copy = newList;
+        }
+        // IDictionary（如 Dictionary<K,V>）
+        else if (obj is IDictionary dict)
+        {
+            var kv = GetDictionaryKeyValueType(type);
+            if (kv != null)
+            {
+                var newDict = (IDictionary)Activator.CreateInstance(
+                    typeof(Dictionary<,>).MakeGenericType(kv.Value.Item1, kv.Value.Item2));
+                _visited.Add(obj, newDict);
+                foreach (DictionaryEntry entry in dict)
+                {
+                    var key = DeepCopy(entry.Key);
+                    var value = DeepCopy(entry.Value);
+                    newDict.Add(key, value);
+                }
+                copy = newDict;
+            }
+            else
+            {
+                // 非泛型字典，回退
+                var newDict = new Hashtable();
+                _visited.Add(obj, newDict);
+                foreach (DictionaryEntry entry in dict)
+                    newDict.Add(DeepCopy(entry.Key), DeepCopy(entry.Value));
+                copy = newDict;
+            }
+        }
+        else
+        {
+            // 其他引用类型：**不深拷！只返回原引用**
+            // （适用于 MTexture, Color, Vector2 等资源或结构体包装类）
+            copy = obj;
+        }
+
+        return copy;
+    }
+
+    // 清除循环引用缓存（每次完整拷贝后调用）
+    public static T DeepCopy<T>(T obj)
+    {
+        try
+        {
+            return (T)DeepCopy((object)obj);
+        }
+        finally
+        {
+            _visited.Clear(); // 防止跨调用污染
+        }
+    }
+
+    private static bool IsSimpleType(Type t)
+    {
+        return t.IsPrimitive ||
+               t == typeof(string) ||
+               t == typeof(decimal) ||
+               t.IsEnum ||
+               // Celeste 常见结构体（不可变或值语义）
+               t == typeof(Microsoft.Xna.Framework.Color) ||
+               t == typeof(Microsoft.Xna.Framework.Vector2) ||
+               t == typeof(Microsoft.Xna.Framework.Rectangle);
+    }
+
+    // 获取 List<T> 的 T
+    private static Type GetListElementType(Type listType)
+    {
+        if (listType.IsGenericType && listType.GetGenericTypeDefinition() == typeof(List<>))
+            return listType.GetGenericArguments()[0];
+
+        // 支持 IList<T>
+        foreach (var iface in listType.GetInterfaces())
+        {
+            if (iface.IsGenericType && iface.GetGenericTypeDefinition() == typeof(IList<>))
+                return iface.GetGenericArguments()[0];
+        }
+        return null;
+    }
+
+    // 获取 Dictionary<K,V> 的 (K, V)
+    private static (Type, Type)? GetDictionaryKeyValueType(Type dictType)
+    {
+        if (dictType.IsGenericType)
+        {
+            var def = dictType.GetGenericTypeDefinition();
+            if (def == typeof(Dictionary<,>) || def == typeof(IDictionary<,>))
+            {
+                var args = dictType.GetGenericArguments();
+                return (args[0], args[1]);
+            }
+        }
+
+        // 接口支持
+        foreach (var iface in dictType.GetInterfaces())
+        {
+            if (iface.IsGenericType)
+            {
+                var def = iface.GetGenericTypeDefinition();
+                if (def == typeof(IDictionary<,>))
+                {
+                    var args = iface.GetGenericArguments();
+                    return (args[0], args[1]);
+                }
+            }
+        }
+        return null;
     }
 }
