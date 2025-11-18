@@ -1,11 +1,12 @@
-﻿using Celeste.Mod.Entities;
+﻿using System.IO;
+using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
-[Tracked()]
+[Tracked(true)]
 [CustomEntity("ChroniaHelper/SeamlessSpinner")]
 public class SeamlessSpinner : Entity
 {
@@ -99,7 +100,7 @@ public class SeamlessSpinner : Entity
 
     private string bgImagePath;
 
-    private Color spriteColor, bgSpriteColor;
+    public CColor spriteColor, bgSpriteColor;
 
     private bool noBorder;
 
@@ -140,27 +141,13 @@ public class SeamlessSpinner : Entity
         string inputHitbox = data.Attr("customHitbox").ToLower();
         string hitboxType = data.Attr("hitboxType");
         SetColliderByHitboxTypeAndData(hitboxType, inputHitbox);
-
-        Visible = false;
+        
         Add(new PlayerCollider(OnPlayer));
         Add(new HoldableCollider(OnHoldable));
         Add(new LedgeBlocker());
         
         Depth = data.Int("depth", -8500);
         AttachToSolid = data.Bool("attachToSolid");
-
-        // 新增变量
-        imagePath = data.Attr("foreDirectory");
-        bgImagePath = data.Attr("backDirectory");
-
-        List<string> vanillaNames = new List<string> { "blue", "red", "purple", "rainbow", "white" };
-
-        rainbow = imagePath.ToLower() == "rainbow" || data.Bool("rainbow");
-        if (vanillaNames.Contains(imagePath.ToLower()))
-            imagePath = fgTextureLookup[checkColor[imagePath.ToLower()]];
-        if (vanillaNames.Contains(bgImagePath.ToLower()))
-            bgImagePath = bgTextureLookup[checkColor[bgImagePath.ToLower()]];
-
 
         if (AttachToSolid)
         {
@@ -172,17 +159,29 @@ public class SeamlessSpinner : Entity
             });
         }
 
-        randomSeed = Calc.Random.Next();
-
         float bloomAlpha = data.Float("bloomAlpha");
         if (bloomAlpha != 0.0f)
         {
             Add(new BloomPoint(Collidable ? Collider.Center : Position + new Vector2(8f, 8f), bloomAlpha, data.Float("bloomRadius")));
         }
 
-        spriteColor = Calc.HexToColor(data.Attr("colorOverlay", "ffffff"));
-        bgSpriteColor = string.IsNullOrEmpty(data.Attr("bgColorOverlay")) ? spriteColor : Calc.HexToColor(data.Attr("bgColorOverlay", "ffffff"));
+        // 路径设置
+        imagePath = data.Attr("foreDirectory");
+        bgImagePath = data.Attr("backDirectory");
 
+        spriteColor = data.GetChroniaColor("colorOverlay", "ffffff");
+        bgSpriteColor = string.IsNullOrEmpty(data.Attr("bgColorOverlay")) ? spriteColor : data.GetChroniaColor("bgColorOverlay", "ffffff");
+
+        List<string> vanillaNames = new List<string> { "blue", "red", "purple", "rainbow", "white" };
+
+        rainbow = imagePath.ToLower() == "rainbow" || data.Bool("rainbow");
+        if (vanillaNames.Contains(imagePath.ToLower()))
+            imagePath = fgTextureLookup[checkColor[imagePath.ToLower()]];
+        if (vanillaNames.Contains(bgImagePath.ToLower()))
+            bgImagePath = bgTextureLookup[checkColor[bgImagePath.ToLower()]];
+        
+        randomSeed = Calc.Random.Next();
+        
         noBorder = data.Bool("noBorder");
 
         dynamic = data.Bool("dynamic");
@@ -209,6 +208,32 @@ public class SeamlessSpinner : Entity
         hotCoreModeSpritePath = data.Attr("hotCoreModeSpritePath");
         coldCoreModeTriggerSpritePath = data.Attr("coldCoreModeTriggerSpritePath");
         hotCoreModeTriggerSpritePath = data.Attr("hotCoreModeTriggerSpritePath");
+
+        // Sprite Setup
+        sprite = new AnimatedImage();
+        sprite.color = spriteColor;
+        sprite.origin = Vc2.One * 0.5f;
+        sprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipX == 1 ? true : false);
+        sprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
+        sprite.textures.Enter("idle", GFX.Game.GetAtlasSubtextures(imagePath));
+        sprite.interval.Enter("idle", fgAnim);
+        sprite.textures.Enter("load", GFX.Game.GetAtlasSubtextures($"{imagePath}_base"));
+        sprite.interval.Enter("load", triggerAnimDelay);
+        sprite.loop.Enter("load", false);
+        sprite.textures.Enter("idle_hot", GFX.Game.GetAtlasSubtextures(hotCoreModeSpritePath));
+        sprite.interval.Enter("idle_hot", fgAnim);
+        sprite.textures.Enter("idle_cold", GFX.Game.GetAtlasSubtextures(coldCoreModeSpritePath));
+        sprite.interval.Enter("idle_cold", fgAnim);
+        sprite.textures.Enter("load_hot", GFX.Game.GetAtlasSubtextures(hotCoreModeTriggerSpritePath));
+        sprite.interval.Enter("load_hot", triggerAnimDelay);
+        sprite.loop.Enter("load_hot", false);
+        sprite.textures.Enter("load_cold", GFX.Game.GetAtlasSubtextures(coldCoreModeTriggerSpritePath));
+        sprite.interval.Enter("load_cold", triggerAnimDelay);
+        sprite.loop.Enter("load_cold", false);
+        
+        int totalFrames = sprite.CurrentAnimationLength();
+        int randomChoice = Calc.Random.Range(0, totalFrames);
+        sprite.currentFrame = randomChoice;
     }
 
     private void SetColliderByHitboxTypeAndData(string hitboxType, string hitboxData)
@@ -243,7 +268,7 @@ public class SeamlessSpinner : Entity
 
     private float timer, setTimer;
 
-    public override void Awake(Scene scene)
+    public override void Added(Scene scene)
     {
         if (spinner == null)
         {
@@ -254,14 +279,54 @@ public class SeamlessSpinner : Entity
 
         timer = setTimer;
         killPlayer = !trigger;
-
-        base.Awake(scene);
-        Add(new CoreModeListener(this));
-
-
-        if (InView())
+        triggered = false;
+        
+        if (useCoreModeStyle)
         {
-            CreateSprites();
+            string tag = MaP.level.CoreMode == Session.CoreModes.Cold ? "cold" : "hot";
+            
+            if (trigger)
+            {
+                sprite.Switch($"load_{tag}");
+                triggerAnimTime = triggerAnimDelay * sprite.CurrentAnimationLength();
+            }
+            else
+            {
+                sprite.Switch($"idle_{tag}");
+                sprite.playing = dynamic;
+            }
+        }
+        else
+        {
+            if (trigger)
+            {
+                sprite.Switch("load");
+                triggerAnimTime = triggerAnimDelay * sprite.CurrentAnimationLength();
+            }
+            else
+            {
+                sprite.Switch("idle");
+                sprite.playing = dynamic;
+            }
+        }
+
+        base.Added(scene);
+        
+        Add(new CoreModeListener(this));
+    }
+
+    public override void Awake(Scene scene)
+    {
+        base.Awake(scene);
+        
+        bgSprites = new();
+        
+        foreach (SeamlessSpinner entity in Scene.Tracker.GetEntities<SeamlessSpinner>())
+        {
+            if (entity.ID > ID && entity.AttachToSolid == AttachToSolid && (entity.Position - Position).LengthSquared() < 576f)
+            {
+                AddSprite((Position + entity.Position) / 2f - Position);
+            }
         }
     }
 
@@ -283,7 +348,7 @@ public class SeamlessSpinner : Entity
 
     private bool timerActive;
     private float triggerAnimTime;
-
+    private bool triggered = false;
     public override void Update()
     {
         Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
@@ -295,79 +360,73 @@ public class SeamlessSpinner : Entity
                 timer -= Engine.DeltaTime;
             }
 
-            if (timer <= triggerAnimTime)
+            if (timer <= triggerAnimTime && timerActive)
             {
-                loadSprite.Play();
+                sprite.playing = true;
             }
 
-            if (timer <= 0f)
+            if (timer <= 0f && timerActive)
             {
                 killPlayer = true;
+                triggered = true;
                 timerActive = false;
 
-                if (loadSprite.currentFrame == loadSprite.CurrentAnimationLength() - 1)
+                if (useCoreModeStyle)
                 {
-                    loadSprite.color.alpha = 0f;
+                    string tag = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "cold" : "hot";
+                    
+                    sprite.Switch($"idle_{tag}");
+                    
+                    int totalFrames = sprite.CurrentAnimationLength();
+                    int randomChoice = Calc.Random.Range(0, totalFrames);
+                    sprite.currentFrame = randomChoice;
 
-                    sprite.color.alpha = 1f;
+                    sprite.playing = dynamic;
+                }
+                else
+                {
+                    sprite.Switch("idle");
+                    int totalFrames = sprite.CurrentAnimationLength();
+                    int randomChoice = Calc.Random.Range(0, totalFrames);
+                    sprite.currentFrame = randomChoice;
+
+                    sprite.playing = dynamic;
                 }
             }
         }
 
-        if (!Visible)
+        base.Update();
+        if (rainbow && Scene.OnInterval(0.08f, offset))
         {
-            Collidable = false;
-
-            if (InView())
-            {
-                Visible = true;
-                if (!expanded)
-                {
-                    CreateSprites();
-                }
-
-                if (rainbow)
-                {
-                    UpdateRainbowHue();
-                }
-            }
+            UpdateRainbowHue();
         }
-        else
+
+        if (Scene.OnInterval(0.25f, offset) && !InView())
         {
-            base.Update();
-            if (rainbow && Scene.OnInterval(0.08f, offset))
-            {
-                UpdateRainbowHue();
-            }
-
-            if (Scene.OnInterval(0.25f, offset) && !InView())
-            {
-                Visible = false;
-            }
-
-            if (Scene.OnInterval(0.05f, offset))
-            {
-                Player entity = Scene.Tracker.GetEntity<Player>();
-                if (entity != null)
-                {
-                    Collidable = Math.Abs(entity.X - X) < 128f && Math.Abs(entity.Y - Y) < 128f;
-                }
-            }
-
-            bgSprites.EachDo((image) =>
-            {
-                image.Update();
-            });
-
-            loadSprite?.Update();
-            sprite.Update();
+            Visible = false;
         }
+
+        if (Scene.OnInterval(0.05f, offset))
+        {
+            Player entity = Scene.Tracker.GetEntity<Player>();
+            if (entity != null)
+            {
+                Collidable = Math.Abs(entity.X - X) < 128f && Math.Abs(entity.Y - Y) < 128f;
+            }
+        }
+
+        bgSprites.EachDo((image) =>
+        {
+            image.Update();
+        });
+        
+        sprite.Update();
     }
 
     private void UpdateRainbowHue()
     {
         sprite.color.color = spinner.GetHue(Position);
-        loadSprite.color.color = spinner.GetHue(Position);
+        
         foreach(var sprite in bgSprites)
         {
             sprite.color.color = spinner.GetHue(Position);
@@ -385,7 +444,7 @@ public class SeamlessSpinner : Entity
         return false;
     }
 
-    private AnimatedImage sprite, loadSprite;
+    public AnimatedImage sprite;
 
     private void TrySwitchCoreModeSprite()
     {
@@ -395,144 +454,86 @@ public class SeamlessSpinner : Entity
         }
 
         // spinner
-        string path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeSpritePath : hotCoreModeSpritePath;
-        sprite.textures.Enter("idle", GFX.Game.GetAtlasSubtextures(path));
-        sprite.interval.Enter("idle", fgAnim);
-        sprite.Play("idle");
+        string anim = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot";
+        sprite.Switch(anim);
+        bgSprites.EachDo((image) =>
+            {
+                image.Switch(anim);
+                image.playing = dynamic;
+            }
+        );
 
         int totalFrames = sprite.CurrentAnimationLength();
         int randomChoice = Calc.Random.Range(0, totalFrames);
         sprite.currentFrame = randomChoice;
 
-        // bg
-        foreach (AnimatedImage bgSprite in bgSprites)
-        {
-            path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeBGSpritePath : hotCoreModeBGSpritePath;
-            bgSprite.textures.Enter("idle", GFX.Game.GetAtlasSubtextures(path));
-            bgSprite.interval.Enter("idle", fgAnim);
-            bgSprite.Play("idle");
-        }
-
-        // loadSprite
-        // 因为如果play完了, currentAnimation就变成null, 所以这里也要判断一下
-        if (loadSprite == null || loadSprite.currentAnimation == null){ 
-            return; 
-        }
-        
-        path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeTriggerSpritePath : hotCoreModeTriggerSpritePath;
-        loadSprite.textures.Enter("load", GFX.Game.GetAtlasSubtextures(path));
-        loadSprite.currentAnimation = "load";
-        loadSprite.currentFrame.Clamp(0, loadSprite.textures[loadSprite.currentAnimation].Count - 1, out loadSprite.currentFrame);
-        loadSprite.Play();
-    }
-
-    private void CreateSprites()
-    {
-        // Create FG spinner
-        if (expanded)
-        {
-            return;
-        }
-
-        Calc.PushRandom(randomSeed);
-
-        sprite = new AnimatedImage("idle", GFX.Game.GetAtlasSubtextures(imagePath));
-        sprite.loop.Enter("idle", true);
-        sprite.interval.Enter("idle", fgAnim);
-        
-        sprite.color = new(spriteColor);
-        if (rainbow)
-        {
-            sprite.color.color = spinner.GetHue(Position);
-        }
-
-        sprite.currentAnimation = "idle";
-        sprite.origin = Vc2.One * 0.5f;
-        sprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0,2).ToBool() : ((int)flipX == 1 ? true : false);
-        sprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
-
-        if (!dynamic)
-        {
-            int totalFrames = sprite.CurrentAnimationLength();
-            int randomChoice = Calc.Random.Range(0, totalFrames);
-            sprite.currentFrame = randomChoice;
-        }
-        else
-        {
-            sprite.Play();
-        }
+        sprite.playing = dynamic;
 
         if (trigger)
         {
-            sprite.color.alpha = 0f;
+            if (triggered)
+            {
+                anim = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot";
+            }
+            else
+            {
+                anim = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "load_cold" : "load_hot";
+            }
+            
+            sprite.Switch(anim);
 
-            loadSprite = new AnimatedImage("load", GFX.Game.GetAtlasSubtextures($"{imagePath}_base"));
-            loadSprite.interval.Enter("load", triggerAnimDelay);
-            loadSprite.loop.Enter("load", false);
-            loadSprite.currentAnimation = "load";
-            triggerAnimTime = triggerAnimDelay * loadSprite.CurrentAnimationLength();
+            triggerAnimTime = triggerAnimDelay * sprite.CurrentAnimationLength();
 
-            loadSprite.color.color = spriteColor;
+            sprite.color = spriteColor;
             if (rainbow)
             {
-                loadSprite.color.color = spinner.GetHue(Position);
-            }
-
-            loadSprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipX == 1 ? true : false);
-            loadSprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
-
-            loadSprite.origin = Vc2.One * 0.5f;
-
-            loadSprite.currentFrame = 0;
-            loadSprite.ResetAnimation();
-            loadSprite.Stop();
-        }
-
-        foreach (SeamlessSpinner entity in Scene.Tracker.GetEntities<SeamlessSpinner>())
-        {
-            if (entity.ID > ID && entity.AttachToSolid == AttachToSolid && (entity.Position - Position).LengthSquared() < 576f)
-            {
-                AddSprite((Position + entity.Position) / 2f - Position);
+                sprite.color.color = spinner.GetHue(Position);
             }
         }
-        
-        expanded = true;
-        Calc.PopRandom();
     }
 
-    private List<AnimatedImage> bgSprites = new();
+    public List<AnimatedImage> bgSprites = new();
 
     private void AddSprite(Vector2 offset)
     {
         // Create BG Spinner
-        AnimatedImage bgsprite = new AnimatedImage("idle", GFX.Game.GetAtlasSubtextures(bgImagePath));
-        bgSprites.Add(bgsprite);
-
-        bgsprite.interval.Enter("idle", bgAnim);
+        AnimatedImage bgsprite = new AnimatedImage();
+        bgsprite.textures.Enter("idle", GFX.Game.GetAtlasSubtextures(bgImagePath));
+        bgsprite.interval.Enter("idle_hot", bgAnim);
+        bgsprite.textures.Enter("idle_hot", GFX.Game.GetAtlasSubtextures(hotCoreModeBGSpritePath));
+        bgsprite.interval.Enter("idle_hot", bgAnim);
+        bgsprite.textures.Enter("idle_cold", GFX.Game.GetAtlasSubtextures(coldCoreModeBGSpritePath));
+        bgsprite.interval.Enter("idle_cold", bgAnim);
+        
         bgsprite.origin = Vc2.One * 0.5f;
         bgsprite.offset = offset;
 
-        bgsprite.color.color = bgSpriteColor;
+        bgsprite.color = bgSpriteColor;
         if (rainbow)
         {
             bgsprite.color.color = spinner.GetHue(Position + offset);
         }
+        
+        bgsprite.flipX = (int)bgFlipX == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)bgFlipX == 1 ? true : false);
+        bgsprite.flipY = (int)bgFlipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)bgFlipY == 1 ? true : false);
 
-        bgsprite.currentAnimation = "idle";
-
-        bgsprite.flipX = (int)flipX == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipX == 1 ? true : false);
-        bgsprite.flipY = (int)flipY == 2 ? Calc.Random.Range(0, 2).ToBool() : ((int)flipY == 1 ? true : false);
-
-        if (!dynamic)
+        if (useCoreModeStyle)
         {
-            int totalFrames = bgsprite.CurrentAnimationLength();
-            int randomChoice = Calc.Random.Range(0, totalFrames);
-            bgsprite.currentFrame = randomChoice;
+            string anim = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot";
+            bgsprite.Switch(anim);
         }
         else
         {
-            bgsprite.Play();
+            bgsprite.Switch("idle");
         }
+        
+        int totalFrames = bgsprite.CurrentAnimationLength();
+        int randomChoice = Calc.Random.Range(0, totalFrames);
+        bgsprite.currentFrame = randomChoice;
+
+        bgsprite.playing = dynamic;
+
+        bgSprites.Add(bgsprite);
     }
     
 
@@ -581,7 +582,6 @@ public class SeamlessSpinner : Entity
             image.Render(Position);
         });
         
-        loadSprite?.Render(Position);
         sprite.Render(Position);
         
     }

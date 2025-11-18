@@ -227,37 +227,37 @@ public class Displayers : HDRenderEntity
 
     public string generalReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
 
-    public SerialImage stateMachine_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImageRaw stateMachine_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public SerialImage realTimeClock_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImageRaw realTimeClock_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public SerialImage staminaMeter_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImageRaw staminaMeter_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public SerialImage dashes_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImageRaw dashes_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public SerialImage speed_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImageRaw speed_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public SerialImage playerSprite_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImageRaw playerSprite_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public SerialImage playerPos_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    public SerialImageRaw playerPos_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
 
-    public SerialImage deaths_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImageRaw deaths_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public SerialImage totalDeaths_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImageRaw totalDeaths_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
-    public SerialImage saveDeaths_UI = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+    public SerialImageRaw saveDeaths_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)

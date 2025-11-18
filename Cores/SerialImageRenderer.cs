@@ -17,7 +17,7 @@ public class SerialImageRenderer : HDRenderEntity
     {
         Depth = d.Int("depth", -10000000);
     }
-    public SerialImage image = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
+    public SerialImageRaw image = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
     public string source = "ChroniaHelper/DisplayFonts/font";
     
     /// <summary>

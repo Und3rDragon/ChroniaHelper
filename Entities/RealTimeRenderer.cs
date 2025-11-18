@@ -21,7 +21,7 @@ public class RealTimeRenderer : SerialImageRenderer
         Depth = d.Int("depth", -10000000);
 
         source = d.Attr("sourcePath", "ChroniaHelper/StopclockFonts/font");
-        image = new SerialImage(GFX.Game.GetAtlasSubtextures(source));
+        image = new SerialImageRaw(GFX.Game.GetAtlasSubtextures(source));
 
         image.renderMode = d.Int("renderMode", 0);
         image.origin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("positionAlign", 5)];

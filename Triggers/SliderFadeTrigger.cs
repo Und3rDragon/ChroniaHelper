@@ -20,9 +20,10 @@ public class SliderFadeTrigger : BaseTrigger
         fadeTo = data.Float("fadeTo", 0);
         positionMode = data.Attr("positionMode", "NoEffect").MatchEnum(PositionModes.NoEffect);
         easeMode = data.Attr("easing", "Linear").MatchEnum(EaseMode.Linear);
+        timed = data.Float("timed", -1f);
     }
     public string _fadeFrom, name;
-    public float fadeFrom, fadeTo;
+    public float fadeFrom, fadeTo, timed, timer;
     public PositionModes positionMode;
     public EaseMode easeMode;
 
@@ -36,12 +37,29 @@ public class SliderFadeTrigger : BaseTrigger
         {
             fadeFrom = _fadeFrom.ParseFloat(0f);
         }
+
+        timer = timed;
     }
 
     protected override void OnStayExecute(Player player)
     {
+        if (timed >= 0f) { return; }
+        
         float p = GetPositionLerp(player, positionMode);
 
         name.SetSlider(p.LerpValue(0f, 1f, fadeFrom, fadeTo, easeMode));
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if (timed < 0) { return; }
+
+        if(timer > 0f)
+        {
+            timer = Calc.Approach(timer, 0f, Engine.DeltaTime);
+            name.SetSlider(timer.LerpValue(timed, 0f, fadeFrom, fadeTo, easeMode));
+        }
     }
 }

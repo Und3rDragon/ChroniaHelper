@@ -10,9 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace ChroniaHelper.Cores;
 
 /// <summary>
-/// An image class that renders by MTexture.Draw()
+/// Alternate AnimatedImage that renders by Draw.SpriteBatch.Draw(), compatible for HD Renders
 /// </summary>
-public class AnimatedImage
+public class AnimatedImageRaw
 {
     public Dictionary<string, List<MTexture>> textures = new();
     public string currentAnimation = "";
@@ -39,8 +39,8 @@ public class AnimatedImage
         return result;
     }
     
-    public AnimatedImage() { }
-    public AnimatedImage(string id, List<MTexture> textures)
+    public AnimatedImageRaw() { }
+    public AnimatedImageRaw(string id, List<MTexture> textures)
     {
         this.textures.Enter(id, textures);
     }
@@ -61,11 +61,10 @@ public class AnimatedImage
         
         MTexture asset = textures[currentAnimation][currentFrame.Clamp(0, textures[currentAnimation].Count - 1)];
 
-        asset.Draw(renderPosition + offset - origin * new Vc2(asset.Width, asset.Height), 
-            Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
-        //Draw.SpriteBatch.Draw(asset.Texture.Texture, renderPosition + offset, null, color.Parsed(), rotation.ToRad(),
-        //    origin * new Vc2(asset.Width, asset.Height),
-        //     scale, GetSpriteEffect(), depth);
+        //asset.Draw(renderPosition + offset, origin, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
+        Draw.SpriteBatch.Draw(asset.Texture.Texture, renderPosition + offset, null, color.Parsed(), rotation.ToRad(),
+            origin * new Vc2(asset.Width, asset.Height),
+             scale, GetSpriteEffect(), depth);
     }
 
     private int frameSetIndex = 0;

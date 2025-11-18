@@ -20,11 +20,13 @@ public class CounterFadeTrigger : BaseTrigger
         fadeTo = data.Int("fadeTo", 0);
         positionMode = data.Attr("positionMode", "NoEffect").MatchEnum(PositionModes.NoEffect);
         easeMode = data.Attr("easing", "Linear").MatchEnum(EaseMode.Linear);
+        timed = data.Float("timed", -1f);
     }
     public string _fadeFrom, name;
     public int fadeFrom, fadeTo;
     public PositionModes positionMode;
     public EaseMode easeMode;
+    public float timed, timer;
 
     protected override void OnEnterExecute(Player player)
     {
@@ -36,12 +38,26 @@ public class CounterFadeTrigger : BaseTrigger
         {
             fadeFrom = _fadeFrom.ParseInt(0);
         }
+
+        timer = timed;
     }
 
     protected override void OnStayExecute(Player player)
     {
+        if (timed >= 0) { return; }
+        
         float p = GetPositionLerp(player, positionMode);
 
         name.SetCounter(p.LerpValue(0f, 1f, fadeFrom, fadeTo, easeMode));
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if (timed < 0) { return; }
+
+        timer = Calc.Approach(timer, 0f, Engine.DeltaTime);
+        name.SetCounter(timer.LerpValue(timed, 0f, fadeFrom, fadeTo, easeMode));
     }
 }

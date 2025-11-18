@@ -11,9 +11,9 @@ using YamlDotNet.Serialization;
 namespace ChroniaHelper.Cores;
 
 /// <summary>
-/// An image class that renders by MTexture.Draw()
+/// Alternate SerialImage that renders by Draw.SpriteBatch.Draw(), compatible for HD Renders
 /// </summary>
-public class SerialImage
+public class SerialImageRaw
 {
     public List<MTexture> textures = new();
     public Vc2 position = Vc2.Zero;
@@ -38,11 +38,11 @@ public class SerialImage
         return result;
     }
 
-    public SerialImage(string path)
+    public SerialImageRaw(string path)
     {
         GFX.Game.GetAtlasSubtextures(path).ApplyTo(out textures);
     }
-    public SerialImage(List<MTexture> source)
+    public SerialImageRaw(List<MTexture> source)
     {
         source.ApplyTo(out textures);
     }
@@ -127,11 +127,11 @@ public class SerialImage
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
 
-            texture.Draw(renderPosition + dPos + overallOffset - origin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
-                Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
-            //Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
-            //    null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),
-            //    scale, GetSpriteEffect(), depth);
+            //texture.Draw(renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero), 
+            //    origin, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
+            Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
+                null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),
+                scale, GetSpriteEffect(), depth);
         }
     }
     

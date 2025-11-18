@@ -12,6 +12,7 @@ return{
 			fadeTo = 0,
 			positionMode = "NoEffect",
 			easing = "Linear",
+            timed = -1,
 		}
 	},
 	fieldInformation = {
