@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using FASF2025Helper.Utils;
@@ -226,12 +227,40 @@ public class Displayers : HDRenderEntity
 
         if (Md.Settings.mapNameDisplayer.enabled)
         {
-            string sid = MaP.level?.Session.Area.SID.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_') ?? "null";
-            string target = Dialog.Has(sid, Dialog.Languages["english"]) ? Dialog.Clean(sid, Dialog.Languages["english"])
-                : MaP.level?.Session.Area.SID.Trim() ?? "null";
+            Language lang = Dialog.Languages["english"];
+            
+            string target = string.Empty;
+            string sid = MaP.level?.Session.Area.SID ?? "null";
+            if (sid.StartsWith("Celeste/"))
+            {
+                target = sid.Remove(0, sid.IndexOf('-') + 1);
+            }
+            else
+            {
+                if(sid != "null")
+                {
+                    string ssid = sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
+                    
+                    bool has = Dialog.Has(ssid, lang);
+                    
+                    target = has ? Dialog.Clean(ssid, lang) : sid.Trim();
+                }
+                else
+                {
+                    target = sid;
+                }
+            }
+                
             if (Md.Settings.mapNameDisplayer.prefix)
             {
                 target = "Map Name: " + target;
+            }
+            if (Md.Settings.mapNameDisplayer.suffixAuthor)
+            {
+                string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
+                bool dialogHas = Dialog.Has(ssid + "_author", lang);
+                string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).SafeGet(0, "null");
+                target = target + $" -> {(dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor)}";
             }
 
             mapName_UI.origin = ((int)Md.Settings.mapNameDisplayer.aligning + 4).ToJustify();
@@ -262,6 +291,33 @@ public class Displayers : HDRenderEntity
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
             }, GetRenderPosition(Md.Settings.roomNameDisplayer.displayPosition,
                 new Vc2(Md.Settings.roomNameDisplayer.X, Md.Settings.roomNameDisplayer.Y)));
+        }
+
+        if (Md.Settings.mapAuthorNameDisplayer.enabled)
+        {
+            Language lang = Dialog.Languages["english"];
+
+            string target = string.Empty;
+            string sid = MaP.level?.Session.Area.SID ?? "null";
+            string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
+            bool dialogHas = Dialog.Has(ssid + "_author", lang);
+            string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).SafeGet(0, "null");
+            target = dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor;
+            
+            if (Md.Settings.mapAuthorNameDisplayer.prefix)
+            {
+                target = "Author Name: " + target;
+            }
+
+            roomName_UI.origin = ((int)Md.Settings.mapAuthorNameDisplayer.aligning + 4).ToJustify();
+            roomName_UI.distance = Md.Settings.mapAuthorNameDisplayer.letterDistance;
+            roomName_UI.scale = Md.Settings.mapAuthorNameDisplayer.scale * 0.1f;
+
+            roomName_UI.Render(target, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(Md.Settings.mapAuthorNameDisplayer.displayPosition,
+                new Vc2(Md.Settings.mapAuthorNameDisplayer.X, Md.Settings.mapAuthorNameDisplayer.Y)));
         }
     }
 
@@ -305,6 +361,11 @@ public class Displayers : HDRenderEntity
     };
 
     public SerialImageRaw roomName_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    {
+        segmentOrigin = Vc2.Zero,
+    };
+
+    public SerialImageRaw authorName_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };

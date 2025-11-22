@@ -152,6 +152,16 @@ public static class CollectiveUtils
         return ifNotExist;
     }
 
+    public static TypeA SafeGet<TypeA>(this IList<TypeA> list, int at, TypeA ifNotExist)
+    {
+        if(at < list.Count)
+        {
+            return list[at];
+        }
+
+        return ifNotExist;
+    }
+
     public static void Replace<T>(this ICollection<T> dic, T find, T replaceWith)
     {
         foreach (var i in dic)

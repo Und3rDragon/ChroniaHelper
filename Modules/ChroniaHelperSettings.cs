@@ -200,6 +200,7 @@ public class ChroniaHelperSettings : EverestModuleSettings
     {
         public bool enabled { get; set; } = false;
         public bool prefix { get; set; } = false;
+        public bool suffixAuthor { get; set; } = false;
         public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
         [SettingRange(-1000, 1000, true)]
         public int X { get; set; } = 160;
@@ -230,4 +231,22 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public Aligning aligning { get; set; } = Aligning.Middle;
     }
     public RoomNameDisplayer roomNameDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class MapAuthorNameDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public bool prefix { get; set; } = false;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 160;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 168;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 40;
+        public Aligning aligning { get; set; } = Aligning.Middle;
+    }
+    public MapAuthorNameDisplayer mapAuthorNameDisplayer { get; set; } = new();
 }
