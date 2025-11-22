@@ -22,7 +22,18 @@ public static class MathExpression
         var parser = new Parser(tokens);
         return parser.Parse();
     }
-    
+
+    public static float ParseMathExpression(this string exp, Func<string, float> getVariable)
+    {
+        if (string.IsNullOrWhiteSpace(exp) || exp.IsNullOrEmpty())
+            throw new ArgumentException("Expression is null or empty.");
+
+        var lexer = new Lexer(exp);
+        var tokens = lexer.Tokenize();
+        var parser = new Parser(tokens, getVariable);
+        return parser.Parse();
+    }
+
     public static float GetVariable(this string variable)
     {
         if (variable == "e") { return (float)Math.E; }
@@ -254,10 +265,17 @@ internal class Parser
 {
     private readonly List<Token> _tokens;
     private int _current = 0;
+    private readonly Func<string, float> _getVariableFunc = MathExpression.GetVariable;
 
     public Parser(List<Token> tokens)
     {
         _tokens = tokens;
+    }
+
+    public Parser(List<Token> tokens, Func<string, float> getVariable)
+    {
+        _tokens = tokens;
+        _getVariableFunc = getVariable;
     }
 
     private Token Peek() => _tokens[_current];
@@ -356,7 +374,7 @@ internal class Parser
 
             case TokenType.Variable:
                 Consume();
-                return token.Value.GetVariable(); // 调用变量获取方法
+                return _getVariableFunc(token.Value); // 调用变量获取方法
 
             case TokenType.Function:
                 return ParseFunctionCall();

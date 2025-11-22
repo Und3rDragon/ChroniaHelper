@@ -162,6 +162,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // OperationCode Listener
     public Dictionary<int, OperationCodesListener.OperationCodeData> operationCodeListeners = new();
 
+    // HUD Controller
+    public List<bool> HUDPrimaryState = new();
+
 
     public HashSet<string> flagsPerRoom = new();
     public HashSet<string> flagsPerDeath = new();
