@@ -25,6 +25,7 @@ public class HUDController : BaseEntity
     }
     public string condition, flag;
     public bool hasFlag;
+    private bool seal = false;
 
     [LoadHook]
     public static void Load()
@@ -82,6 +83,22 @@ public class HUDController : BaseEntity
 
     protected override void AddedExecute(Scene scene)
     {
+        seal = false;
+    }
+    protected override void UpdateExecute()
+    {
+        if(hasFlag && !flag.GetFlag())
+        {
+            return;
+        }
+
+        if (seal)
+        {
+            return;
+        }
+
+        seal = true;
+        
         if (condition.ParseMathExpression((v) =>
         {
             if(v.ToLower() == "x")
