@@ -223,6 +223,46 @@ public class Displayers : HDRenderEntity
             }, GetRenderPosition(Md.Settings.saveFileDeathsDisplayer.displayPosition,
                 new Vc2(Md.Settings.saveFileDeathsDisplayer.X, Md.Settings.saveFileDeathsDisplayer.Y)));
         }
+
+        if (Md.Settings.mapNameDisplayer.enabled)
+        {
+            string sid = MaP.level?.Session.Area.SID.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_') ?? "null";
+            string target = Dialog.Has(sid, Dialog.Languages["english"]) ? Dialog.Clean(sid, Dialog.Languages["english"])
+                : MaP.level?.Session.Area.SID.Trim() ?? "null";
+            if (Md.Settings.mapNameDisplayer.prefix)
+            {
+                target = "Map Name: " + target;
+            }
+
+            mapName_UI.origin = ((int)Md.Settings.mapNameDisplayer.aligning + 4).ToJustify();
+            mapName_UI.distance = Md.Settings.mapNameDisplayer.letterDistance;
+            mapName_UI.scale = Md.Settings.mapNameDisplayer.scale * 0.1f;
+
+            mapName_UI.Render(target, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(Md.Settings.mapNameDisplayer.displayPosition,
+                new Vc2(Md.Settings.mapNameDisplayer.X, Md.Settings.mapNameDisplayer.Y)));
+        }
+        
+        if(Md.Settings.roomNameDisplayer.enabled)
+        {
+            string target = MaP.level?.Session.LevelData.Name ?? "null";
+            if (Md.Settings.roomNameDisplayer.prefix)
+            {
+                target = "Room Name: " + target;
+            }
+
+            roomName_UI.origin = ((int)Md.Settings.roomNameDisplayer.aligning + 4).ToJustify();
+            roomName_UI.distance = Md.Settings.roomNameDisplayer.letterDistance;
+            roomName_UI.scale = Md.Settings.roomNameDisplayer.scale * 0.1f;
+
+            roomName_UI.Render(target, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(Md.Settings.roomNameDisplayer.displayPosition,
+                new Vc2(Md.Settings.roomNameDisplayer.X, Md.Settings.roomNameDisplayer.Y)));
+        }
     }
 
     public string generalReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
@@ -258,6 +298,17 @@ public class Displayers : HDRenderEntity
     public SerialImageRaw totalDeaths_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
     public SerialImageRaw saveDeaths_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+
+    public SerialImageRaw mapName_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    {
+        segmentOrigin = Vc2.Zero,
+    };
+
+    public SerialImageRaw roomName_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    {
+        segmentOrigin = Vc2.Zero,
+    };
+
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)

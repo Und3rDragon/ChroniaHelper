@@ -194,4 +194,40 @@ public class ChroniaHelperSettings : EverestModuleSettings
     }
 
     public SaveFileDeathsDisplayer saveFileDeathsDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class MapNameDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public bool prefix { get; set; } = false;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 160;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 175;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = -2;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 30;
+        public Aligning aligning { get; set; } = Aligning.Middle;
+    }
+    public MapNameDisplayer mapNameDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class RoomNameDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        public bool prefix { get; set; } = false;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 160;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 168;
+        [SettingRange(-32, 32)]
+        public int letterDistance { get; set; } = 0;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 40;
+        public Aligning aligning { get; set; } = Aligning.Middle;
+    }
+    public RoomNameDisplayer roomNameDisplayer { get; set; } = new();
 }
