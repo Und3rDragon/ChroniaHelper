@@ -56,7 +56,7 @@ public class HUDController : BaseEntity
     
     public static void LevelEnd(On.Celeste.Level.orig_End orig, Level self)
     {
-        for (int i = 0; i < displayers.Count; i++)
+        for (int i = 0; i < Md.Session.HUDPrimaryState.Count && i < displayers.Count; i++)
         {
             displayers[i].enabled = Md.Session.HUDPrimaryState[i];
         }
