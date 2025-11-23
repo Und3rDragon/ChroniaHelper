@@ -9,7 +9,6 @@ controller.name = "ChroniaHelper/HUDController"
 controller.placements = {
     name = "controller",
     data = {
-        flag = "",
         condition = "y < 90",
     },
 }
@@ -20,7 +19,15 @@ controller.ignoredFields = {
 
 controller.fieldInformation = 
 {
-    
+    condition = {
+        options = {
+            "y < 90",
+            "x < 160",
+            "(x < 160) && (y < 90)"
+            "all",
+        },
+        editable = true,
+    },
 }
 
 function controller.sprite(room, entity)

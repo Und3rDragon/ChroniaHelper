@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -19,25 +20,20 @@ public class HUDController : BaseEntity
 {
     public HUDController(EntityData data, Vc2 offset) : base(data, offset)
     {
-        flag = data.Attr("flag");
+        Tag = Tags.Global;
+        
         condition = data.Attr("condition", "y < 90");
-
-        hasFlag = flag.IsNotNullOrEmpty();
     }
-    public string condition, flag;
-    public bool hasFlag;
-    private bool seal = false;
+    public string condition;
 
     [LoadHook]
     public static void Load()
     {
-        On.Celeste.Level.Begin += LevelBegin;
         On.Celeste.Level.End += LevelEnd;
     }
     [UnloadHook]
     public static void Unload()
     {
-        On.Celeste.Level.Begin -= LevelBegin;
         On.Celeste.Level.End -= LevelEnd;
     }
 
@@ -58,18 +54,6 @@ public class HUDController : BaseEntity
         Md.Settings.totalDeathsDisplayer
     };
     
-    public static void LevelBegin(On.Celeste.Level.orig_Begin orig, Celeste.Level self)
-    {
-        orig(self);
-
-        Md.Session.HUDPrimaryState.Clear();
-        for(int i = 0; i < displayers.Count; i++)
-        {
-            Md.Session.HUDPrimaryState.Add(displayers[i].enabled);
-        }
-    }
-    
-    //public static void ScreenWiping(On.Celeste.Level.orig_DoScreenWipe orig, Celeste.Level self, bool wipeIn, Action complete, bool hiResSnow)
     public static void LevelEnd(On.Celeste.Level.orig_End orig, Level self)
     {
         for (int i = 0; i < displayers.Count; i++)
@@ -77,29 +61,27 @@ public class HUDController : BaseEntity
             displayers[i].enabled = Md.Session.HUDPrimaryState[i];
         }
 
-        //orig(self, wipeIn, complete, hiResSnow);
+        Md.Session.HUDPrimaryState.Clear();
+
+        Md.Session.HUDStateRegistered = false;
+        
         orig(self);
     }
 
     protected override void AddedExecute(Scene scene)
     {
-        seal = false;
-    }
-    protected override void UpdateExecute()
-    {
-        if(hasFlag && !flag.GetFlag())
+        if (Md.Session.HUDStateRegistered)
         {
             return;
         }
-
-        if (seal)
-        {
-            return;
-        }
-
-        seal = true;
         
-        for(int i = 0; i < displayers.Count; i++)
+        Md.Session.HUDPrimaryState.Clear();
+        for (int i = 0; i < displayers.Count; i++)
+        {
+            Md.Session.HUDPrimaryState.Add(displayers[i].enabled);
+        }
+
+        for (int i = 0; i < displayers.Count; i++)
         {
             if (condition.ParseMathExpression((v) =>
             {
@@ -120,5 +102,8 @@ public class HUDController : BaseEntity
                 displayers[i].enabled = false;
             }
         }
+
+        Md.Session.HUDStateRegistered = true;
     }
+    
 }

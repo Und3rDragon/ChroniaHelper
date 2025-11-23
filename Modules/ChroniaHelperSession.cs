@@ -164,7 +164,7 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // HUD Controller
     public List<bool> HUDPrimaryState = new();
-
+    public bool HUDStateRegistered = false;
 
     public HashSet<string> flagsPerRoom = new();
     public HashSet<string> flagsPerDeath = new();
