@@ -9,6 +9,7 @@ using Celeste.Mod.MaxHelpingHand.Effects;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Utils.MathExpression;
 using MonoMod.Cil;
 using VivHelper.Entities;
 
@@ -56,9 +57,12 @@ public class ModifiedAnimatedParallax : Parallax
         public bool? PlayOnce { get; set; } = null;
         public string ResetFlag { get; set; } = null;
         public int? ResetFrame { get; set; } = null;
-        public string SpeedFlags { get; set; } = null;
+        public List<string> SpeedFlags { get; set; } = null;
+        public string AlphaExpression { get; set; } = null;
     }
-    private string triggerFlag, resetFlag, speedFlags;
+    private string alphaExpression = null;
+    private string triggerFlag, resetFlag;
+    private List<string> speedFlags;
     private bool playOnce = false;
     private int resetFrame = 0;
 
@@ -143,8 +147,13 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 speedFlags = meta.SpeedFlags;
             }
+            
+            if(meta.AlphaExpression != null)
+            {
+                alphaExpression = meta.AlphaExpression;
+            }
         }
-
+        
         Texture = frames[frameOrder[0]];
         currentFrame = 0;
         currentFrameTimer = 1f / fps;
@@ -154,14 +163,14 @@ public class ModifiedAnimatedParallax : Parallax
         // "parallaxSpeed_flagName"
         // And look like this when setting up:
         // "flagName,1;flagName,2;flagName,3"
-        if (!speedFlags.IsNullOrEmpty())
+        if (speedFlags.IsNotNull() && speedFlags.Count > 0)
         {
-            var _multipliers = speedFlags.ParseSquaredString();
-            for(int i = 0; i < _multipliers.GetLength(0); i++)
+            for(int n = 0; n < speedFlags.Count; n++)
             {
-                if (_multipliers[i].Length < 2) { continue; }
+                var _multipliers = speedFlags[n].Split(',', StringSplitOptions.TrimEntries);
+                if (_multipliers.Length < 2) { continue; }
 
-                multipliers.Enter(_multipliers[i][0], _multipliers[i][1].ParseFloat(1f));
+                multipliers.Enter(_multipliers[0], _multipliers[1].ParseFloat(1));
             }
         }
     }
@@ -212,6 +221,11 @@ public class ModifiedAnimatedParallax : Parallax
                 currentFrame = currentFrame < 0 ? 0 : currentFrame; // For frame index protection
                 currentFrame %= frameOrder.Length;
                 Texture = frames[frameOrder[currentFrame]];
+            }
+
+            if(alphaExpression != null)
+            {
+                Alpha = alphaExpression.ParseMathExpression();
             }
         }
     }

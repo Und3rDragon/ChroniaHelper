@@ -23,14 +23,14 @@ public static class MathExpression
         return parser.Parse();
     }
 
-    public static float ParseMathExpression(this string exp, Func<string, float> getVariable)
+    public static float ParseMathExpression(this string exp, Func<string, float> getVariable = null, Func<string, float> getFlag = null)
     {
         if (string.IsNullOrWhiteSpace(exp) || exp.IsNullOrEmpty())
             throw new ArgumentException("Expression is null or empty.");
 
         var lexer = new Lexer(exp);
         var tokens = lexer.Tokenize();
-        var parser = new Parser(tokens, getVariable);
+        var parser = new Parser(tokens, getVariable, getFlag);
         return parser.Parse();
     }
 
@@ -266,16 +266,24 @@ internal class Parser
     private readonly List<Token> _tokens;
     private int _current = 0;
     private readonly Func<string, float> _getVariableFunc = MathExpression.GetVariable;
+    private readonly Func<string, float> _getFlagFunc = (s) => s.GetFlag().ToFloat();
 
     public Parser(List<Token> tokens)
     {
         _tokens = tokens;
     }
 
-    public Parser(List<Token> tokens, Func<string, float> getVariable)
+    public Parser(List<Token> tokens, Func<string, float> getVariable, Func<string, float> getFlag)
     {
         _tokens = tokens;
-        _getVariableFunc = getVariable;
+        if(getVariable != null)
+        {
+            _getVariableFunc = getVariable;
+        }
+        if(getFlag != null)
+        {
+            _getFlagFunc = getFlag;
+        }
     }
 
     private Token Peek() => _tokens[_current];
@@ -396,7 +404,7 @@ internal class Parser
 
             case TokenType.Flag:
                 Consume();
-                return token.Value.GetFlag().ToFloat(); 
+                return _getFlagFunc(token.Value); 
 
             default:
                 throw new InvalidOperationException($"Unexpected token in factor: {token.Type}");
