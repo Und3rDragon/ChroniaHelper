@@ -57,21 +57,21 @@ public class ModifiedAnimatedParallax : Parallax
         public bool? PlayOnce { get; set; } = null;
         public string ResetFlag { get; set; } = null;
         public int? ResetFrame { get; set; } = null;
-        public List<string> SpeedFlags { get; set; } = null;
+        public string SpeedSlider { get; set; } = null;
         public string AlphaExpression { get; set; } = null;
     }
     private string alphaExpression = null;
     private string triggerFlag, resetFlag;
-    private List<string> speedFlags;
+    private string speedSlider = null;
     private bool playOnce = false;
     private int resetFrame = 0;
 
     private List<MTexture> frames;
     private int[] frameOrder;
-    private float fps, orig_fps;
+    private float fps, orig_fps, last_fps = 12f;
 
     private int currentFrame;
-    private float currentFrameTimer;
+    private float currentFrameTimer, orig_currentFrameTimer;
 
     //public ModifiedAnimatedParallax(BinaryPacker.Element c, MTexture texture) : this(texture)
     //{
@@ -143,9 +143,9 @@ public class ModifiedAnimatedParallax : Parallax
                 resetFrame = meta.ResetFrame.Value;
             }
             
-            if(meta.SpeedFlags != null)
+            if(meta.SpeedSlider != null)
             {
-                speedFlags = meta.SpeedFlags;
+                speedSlider = meta.SpeedSlider;
             }
             
             if(meta.AlphaExpression != null)
@@ -156,25 +156,8 @@ public class ModifiedAnimatedParallax : Parallax
         
         Texture = frames[frameOrder[0]];
         currentFrame = 0;
-        currentFrameTimer = 1f / fps;
-
-        // For speed up flags, we set up a flag system for it
-        // Normally the speed-up flags should look like this in game:
-        // "parallaxSpeed_flagName"
-        // And look like this when setting up:
-        // "flagName,1;flagName,2;flagName,3"
-        if (speedFlags.IsNotNull() && speedFlags.Count > 0)
-        {
-            for(int n = 0; n < speedFlags.Count; n++)
-            {
-                var _multipliers = speedFlags[n].Split(',', StringSplitOptions.TrimEntries);
-                if (_multipliers.Length < 2) { continue; }
-
-                multipliers.Enter(_multipliers[0], _multipliers[1].ParseFloat(1));
-            }
-        }
+        orig_currentFrameTimer = currentFrameTimer = 1f / fps;
     }
-    private Dictionary<string, float> multipliers = new();
 
     public override void Update(Scene scene)
     {
@@ -197,23 +180,23 @@ public class ModifiedAnimatedParallax : Parallax
                     return;
                 }
             }
-            if(multipliers.Count > 0)
+
+            if(speedSlider != null)
             {
-                foreach(var entry in multipliers)
+                float multiplier = (speedSlider.GetSlider() + 1f).ClampMin(0f);
+                fps = orig_fps * multiplier;
+                if (fps != last_fps)
                 {
-                    if ($"parallaxSpeed_{entry.Key}".GetFlag())
-                    {
-                        fps = orig_fps * multipliers[entry.Key];
-                        currentFrameTimer *= multipliers[entry.Key];
-                        currentFrameTimer.Clamp(Engine.DeltaTime, 2592000f); // Preventing overflow
-                        $"parallaxSpeed_{entry.Key}".SetFlag(false);
-                    }
+                    currentFrameTimer *= fps / last_fps;
                 }
             }
+            last_fps = fps;
+            
             currentFrameTimer -= Engine.DeltaTime;
+            
             if (currentFrameTimer < 0f)
             {
-                currentFrameTimer += (1f / fps);
+                currentFrameTimer += (1f / fps).Clamp(Engine.DeltaTime, 2592000f);
                 if (!playOnce || currentFrame != frameOrder.Length - 1)
                 {
                     currentFrame++;
