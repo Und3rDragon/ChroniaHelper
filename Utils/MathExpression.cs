@@ -38,6 +38,10 @@ public static class MathExpression
     {
         if (variable == "e") { return (float)Math.E; }
         if (new string[]{ "pi", "PI", "Pi" }.Contains(variable)) { return (float)Math.PI; }
+        if (variable == "time" || variable == "Time")
+        {
+            return (float)((new DateTime(MaP.level?.Session.Time ?? 0) - new DateTime(0)).TotalMilliseconds / 1000);
+        }
         
         return MaP.level?.Session.GetSlider(variable) ?? 0f; // In progress
     }
