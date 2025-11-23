@@ -144,7 +144,7 @@ namespace ChroniaHelper.Effects {
             if (alpha > 0f && visibleFade > 0f && linearFade > 0f) {
                 Camera camera = (scene as Level).Camera;
                 for (int i = 0; i < particles.Length; i++) {
-                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y, 180f + extY));
+                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, 180f + extY));
                     Draw.Pixel.DrawCentered(position, 
                         particles[i].color * alpha * linearFade * visibleFade, 
                         particles[i].Scale, 

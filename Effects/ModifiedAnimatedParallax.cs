@@ -18,12 +18,12 @@ namespace ChroniaHelper.Effects;
 // The source code is modified from Maddie of Maddie's Helping Hand
 public class ModifiedAnimatedParallax : Parallax
 {
-    [LoadHook]
+    //[LoadHook]
     public static void Load()
     {
         IL.Celeste.MapData.ParseBackdrop += onParseBackdrop;
     }
-    [UnloadHook]
+    //[UnloadHook]
     public static void Unload()
     {
         IL.Celeste.MapData.ParseBackdrop -= onParseBackdrop;
