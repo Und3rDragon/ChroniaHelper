@@ -3,7 +3,7 @@
 
 local drawableText = require("structs.drawable_text")
 local drawableRectangle = require("structs.drawable_rectangle")
-local vivUtilsMig = require('mods').requireFromPlugin('libraries.vivUtilsMig')
+local vivUtilsMig = require('mods').requireFromPlugin('helpers.vivUtilsMig')
 local omniSetups = require("mods").requireFromPlugin("consts.omniSetups")
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")

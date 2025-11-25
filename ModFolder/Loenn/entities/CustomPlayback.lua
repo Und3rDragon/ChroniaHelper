@@ -1,4 +1,4 @@
-local vivUtil = require('mods').requireFromPlugin('libraries.vivUtilsMig')
+local vivUtil = require('mods').requireFromPlugin('helpers.vivUtilsMig')
 
 local playerPlayback = {}
 

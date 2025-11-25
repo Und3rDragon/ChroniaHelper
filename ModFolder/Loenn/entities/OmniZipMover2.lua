@@ -188,13 +188,13 @@ function OmniZipMover.sprite(room, entity)
     local width, height = entity.width or 16, entity.height or 16
     local tileWidth, tileHeight = math.ceil(width / 8), math.ceil(height / 8)
 
-    local rectangle = drawableRectangle.fromRectangle("fill", x + 2, y + 2, width - 4, height - 4, require('mods').requireFromPlugin('libraries.vivUtilsMig').getColorTable(entity.backgroundColor, true, {0,0,0,1}))
+    local rectangle = drawableRectangle.fromRectangle("fill", x + 2, y + 2, width - 4, height - 4, require('mods').requireFromPlugin('helpers.vivUtilsMig').getColorTable(entity.backgroundColor, true, {0,0,0,1}))
     local sprites = {rectangle:getDrawableSprite()}
 
     local themeData = getOmniZipMoverThemeData(entity)
 
     local nodes = entity.nodes or {{x = 0, y = 0}}
-    local nodeSprites = ChroniaHelper.getZipMoverNodeSprites(x, y, width, height, nodes, themeData.cog, {1, 1, 1}, require('mods').requireFromPlugin('libraries.vivUtilsMig').getColorTable(entity.ropeColor, true, {1,1,1,1}))
+    local nodeSprites = ChroniaHelper.getZipMoverNodeSprites(x, y, width, height, nodes, themeData.cog, {1, 1, 1}, require('mods').requireFromPlugin('helpers.vivUtilsMig').getColorTable(entity.ropeColor, true, {1,1,1,1}))
     for _, sprite in ipairs(nodeSprites) do
         table.insert(sprites, sprite)
     end

@@ -254,7 +254,7 @@ function OmniZipMover.sprite(room, entity)
     local sprites = {rectangle}
 
     local nodes = entity.nodes or {{x = 0, y = 0}}
-    local nodeSprites = ChroniaHelper.getZipMoverNodeSprites(x, y, width, height, nodes, "objects/zipmover/cog", {1, 1, 1}, require('mods').requireFromPlugin('libraries.vivUtilsMig').getColorTable(entity.ropeColor, true, {1,1,1,1}))
+    local nodeSprites = ChroniaHelper.getZipMoverNodeSprites(x, y, width, height, nodes, "objects/zipmover/cog", {1, 1, 1}, require('mods').requireFromPlugin('helpers.vivUtilsMig').getColorTable(entity.ropeColor, true, {1,1,1,1}))
     for _, sprite in ipairs(nodeSprites) do
         table.insert(sprites, sprite)
     end

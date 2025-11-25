@@ -5,7 +5,7 @@ local utils = require("utils")
 local connectedEntities = require("helpers.connected_entities")
 local ChroniaHelper = require("mods").requireFromPlugin("helpers.chroniaHelper")
 local fo = require("mods").requireFromPlugin("helpers.field_options")
-local vivUtilsMig = require('mods').requireFromPlugin('libraries.vivUtilsMig')
+local vivUtilsMig = require('mods').requireFromPlugin('helpers.vivUtilsMig')
 
 local boosterzip = {}
 
@@ -44,7 +44,7 @@ function boosterzip.sprite(room, entity)
     }
 
     local nodes = entity.nodes or {{x = 0, y = 0}}
-    local nodeSprites = ChroniaHelper.getZipMoverNodeSprites(x, y, 0, 0, nodes, "objects/zipmover/cog", {1, 1, 1}, require('mods').requireFromPlugin('libraries.vivUtilsMig').getColorTable(entity.ropeColor, true, {1,1,1,1}))
+    local nodeSprites = ChroniaHelper.getZipMoverNodeSprites(x, y, 0, 0, nodes, "objects/zipmover/cog", {1, 1, 1}, require('mods').requireFromPlugin('helpers.vivUtilsMig').getColorTable(entity.ropeColor, true, {1,1,1,1}))
     for _, sprite in ipairs(nodeSprites) do
         table.insert(sprites, sprite)
     end
