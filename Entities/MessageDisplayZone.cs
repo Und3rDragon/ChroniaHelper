@@ -55,8 +55,6 @@ public class MessageDisplayZone : HDRenderEntity
         leaveReset = d.Bool("leaveReset", false);
 
         Collider = new Hitbox(d.Width, d.Height);
-
-        Prepare();
     }
     public SerialImageGroupRaw renderer;
     public string content;
@@ -105,8 +103,8 @@ public class MessageDisplayZone : HDRenderEntity
         {
             if (!renderArg && fadeEnded)
             {
-                progressedText = new();
-                progress = new();
+                progressedText.Clear();
+                progress.Clear();
                 for (int i = 0; i < orig.Count; i++)
                 {
                     progressedText.Add("");
@@ -115,6 +113,16 @@ public class MessageDisplayZone : HDRenderEntity
             }
             else if (renderArg)
             {
+                if(progress.Count == 0 || progressedText.Count == 0)
+                {
+                    progressedText.Clear();
+                    progress.Clear();
+                    for (int i = 0; i < orig.Count; i++)
+                    {
+                        progressedText.Add("");
+                        progress.Add(-1);
+                    }
+                }
                 if (Scene.OnInterval(letterInterval))
                 {
                     for (int i = 0; i < progress.Count; i++)

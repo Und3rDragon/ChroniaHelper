@@ -53,8 +53,6 @@ public class MessageDisplayer : HDRenderEntity
         hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
 
         reference = d.Attr("characterReference", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,");
-
-        Prepare();
     }
     public SerialImageGroupRaw renderer;
     public string content;
@@ -101,8 +99,8 @@ public class MessageDisplayer : HDRenderEntity
         {
             if (!renderArg && fadeEnded)
             {
-                progressedText = new();
-                progress = new();
+                progressedText.Clear();
+                progress.Clear();
                 for (int i = 0; i < orig.Count; i++)
                 {
                     progressedText.Add("");
@@ -111,6 +109,16 @@ public class MessageDisplayer : HDRenderEntity
             }
             else if (renderArg)
             {
+                if(progress.Count == 0 || progressedText.Count == 0)
+                {
+                    progressedText.Clear();
+                    progress.Clear();
+                    for (int i = 0; i < orig.Count; i++)
+                    {
+                        progressedText.Add("");
+                        progress.Add(-1);
+                    }
+                }
                 if (Scene.OnInterval(letterInterval))
                 {
                     for (int i = 0; i < progress.Count; i++)
@@ -139,7 +147,7 @@ public class MessageDisplayer : HDRenderEntity
             ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen));
     }
     
-    public bool renderArg => (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());
+    public bool renderArg => (renderDistance <= 0f && !hasOverrideFlag) || (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());
 
     public bool inRange = false;
     public bool fadeEnded = false;

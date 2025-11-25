@@ -18,7 +18,12 @@ public class HDRenderEntity : BaseEntity
         nodes = d.NodesWithPosition(o);
         ID = d.ID;
 
-        Prepare();
+        Prepare(d, o);
+        
+        Add(new BeforeRenderHook(BeforeRender));
+
+        Tag |= TagsExt.SubHUD;
+        Buffer = VirtualContent.CreateRenderTarget("ChroniaHelper_HDEntity_" + ID.ToString(), 1920, 1080);
     }
     public VirtualRenderTarget Buffer;
     public Vc2 Parallax = Vc2.One;
@@ -26,13 +31,7 @@ public class HDRenderEntity : BaseEntity
     public Vc2 StaticScreen = new Vc2(160f, 90f);
     public CColor DrawColor = new CColor(Color.White);
     
-    public void Prepare()
-    {
-        Add(new BeforeRenderHook(BeforeRender));
-
-        Tag |= TagsExt.SubHUD;
-        Buffer = VirtualContent.CreateRenderTarget("ChroniaHelper_HDEntity_" + ID.ToString(), 1920, 1080);
-    }
+    public virtual void Prepare(EntityData data, Vc2 offset) { }
     public void BeforeRender()
     {
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
