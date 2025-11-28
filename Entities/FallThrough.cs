@@ -26,6 +26,7 @@ public class FallThrough : JumpthruPlatform
         FallTime = data.Float("FallTime", 0.35f);
         collidableOverride = !data.Bool("ignoreAllJumpthrus", false);
         mechanicTime = data.Float("mechanicTime", 0.25f).GetAbs();
+        base.Depth = data.Int("depth", -9000);
     }
 
     public override void Update()

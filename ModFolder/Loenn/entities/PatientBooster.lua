@@ -17,6 +17,7 @@ local patientBooster = {
                 staminaMode = 0,
                 dashesMode = 0,
                 killIfStayed = -1,
+                freeMoveSpeed = -1,
             }
         },
         {
