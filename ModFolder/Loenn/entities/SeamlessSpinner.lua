@@ -44,6 +44,8 @@ seamlessSpinner.placements = {
         
         coldCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/blue/fg_blue_base",
         hotCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/red/fg_red_base",
+        
+        childMode = "",
     },
 }
 seamlessSpinner.depth = function(room,entity) return entity.depth or -8500 end

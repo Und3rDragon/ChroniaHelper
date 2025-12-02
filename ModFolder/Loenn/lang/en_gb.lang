@@ -1099,6 +1099,10 @@ entities.ChroniaHelper/TimeFadeSliderController.placements.name.controller=Time 
 triggers.ChroniaHelper/CounterFadeTrigger.placements.name.trigger=Counter Fade Trigger
 triggers.ChroniaHelper/SliderFadeTrigger.placements.name.trigger=Slider Fade Trigger
 
+# ================= Danger Bubbler
+
+entities.ChroniaHelper/DangerBubbler.placements.name.controller=Danger Bubbler
+
 # ================= HUD Controller
 
 entities.ChroniaHelper/HUDController.placements.name.controller=HUD Controller

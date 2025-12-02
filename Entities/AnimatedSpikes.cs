@@ -171,7 +171,17 @@ public class AnimatedSpikes : Entity
             }
             if (this.lerp >= this.parent.lerpMoveTime)
             {
-                player.Die(outwards);
+                if (parent.childModeParent.IsNotNull())
+                {
+                    if (parent.childModeTriggered) { return true; }
+                    parent.childModeParent.PlayerActivated(player);
+                    parent.childModeTriggered = true;
+                }
+                else
+                {
+                    player.Die(outwards);
+                }
+                
                 return true;
             }
             return false;
@@ -444,7 +454,13 @@ public class AnimatedSpikes : Entity
         }
         base.Depth = data.Int("depth", -50);
         CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
+        
+        childMode = data.Attr("childMode");
     }
+
+    public string childMode;
+    public DangerBubbler childModeParent = null;
+    public bool childModeTriggered = false;
 
     public AnimatedSpikes(EntityData data, Vector2 offset, DirectionMode direction) : this(data.Position + offset, data, direction)
     {
@@ -569,6 +585,19 @@ public class AnimatedSpikes : Entity
     {
         base.Added(scene);
         this.level = base.SceneAs<Level>();
+
+        childModeTriggered = false;
+        if (childMode.IsNotNullOrEmpty())
+        {
+            level.Tracker.GetEntities<DangerBubbler>().ForEach(bubbler =>
+            {
+                if (bubbler.SourceData.ID.ToString() == childMode)
+                {
+                    childModeParent = bubbler as DangerBubbler;
+                }
+            });
+        }
+        
         string direction = this.direction.ToString().ToLower();
         this.disableds = GFX.Game.GetAtlasSubtextures(this.GetTentaclesPath(direction));
         this.enableds = GFX.Game.GetAtlasSubtextures(this.GetTexturesPath(direction));
@@ -706,6 +735,7 @@ public class AnimatedSpikes : Entity
             if (!base.CollideCheck<Player>())
             {
                 this.enterGrouped = false;
+                childModeTriggered = false;
             }
             this.enterFlag = true;
         }

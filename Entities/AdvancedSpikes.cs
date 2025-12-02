@@ -166,7 +166,17 @@ public class AdvancedSpikes : Entity
 
             if (this.lerp >= this.parent.lerpMoveTime)
             {
-                player.Die(outwards);
+                if (parent.childModeParent.IsNotNull())
+                {
+                    if (parent.childModeTriggered) { return true; }
+                    parent.childModeParent.PlayerActivated(player);
+                    parent.childModeTriggered = true;
+                }
+                else
+                {
+                    player.Die(outwards);
+                }
+                
                 return true;
             }
 
@@ -409,7 +419,13 @@ public class AdvancedSpikes : Entity
 
         base.Depth = data.Int("depth", -50);
         CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
+
+        childMode = data.Attr("childMode");
     }
+
+    public string childMode;
+    public DangerBubbler childModeParent = null;
+    public bool childModeTriggered = false;
 
     public AdvancedSpikes(EntityData data, Vector2 offset, DirectionMode direction) : this(data.Position + offset, data, direction)
     {
@@ -565,6 +581,19 @@ public class AdvancedSpikes : Entity
     {
         base.Added(scene);
         this.level = base.SceneAs<Level>();
+
+        childModeTriggered = false;
+        if (childMode.IsNotNullOrEmpty())
+        {
+            level.Tracker.GetEntities<DangerBubbler>().ForEach(bubbler =>
+            {
+                if (bubbler.SourceData.ID.ToString() == childMode)
+                {
+                    childModeParent = bubbler as DangerBubbler;
+                }
+            });
+        }
+        
         this.spikes = new SpikeInfo[this.size / this.singleSize];
         string direction = this.direction.ToString().ToLower();
         this.spikeTextures = GFX.Game.GetAtlasSubtextures(this.GetSpikeSpritePath(direction));
@@ -614,6 +643,7 @@ public class AdvancedSpikes : Entity
             if (!base.CollideCheck<Player>())
             {
                 this.enterGrouped = false;
+                childModeTriggered = false;
             }
 
             this.enterFlag = true;

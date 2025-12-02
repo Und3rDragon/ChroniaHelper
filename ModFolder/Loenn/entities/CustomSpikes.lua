@@ -122,7 +122,8 @@ local upSpikes = {
             attached = true,
             grouped = false,
             rainbow = false,
-            randomTexture = true
+            randomTexture = true,
+            childMode = "",
         }
     },
     fieldInformation =
@@ -161,7 +162,8 @@ local downSpikes = {
             attached = true,
             grouped = false,
             rainbow = false,
-            randomTexture = true
+            randomTexture = true,
+            childMode = "",
         }
     },
     fieldInformation =
@@ -200,7 +202,8 @@ local leftSpikes = {
             attached = true,
             grouped = false,
             rainbow = false,
-            randomTexture = true
+            randomTexture = true,
+            childMode = "",
         }
     },
     fieldInformation =
@@ -239,7 +242,8 @@ local rightSpikes = {
             attached = true,
             grouped = false,
             rainbow = false,
-            randomTexture = true
+            randomTexture = true,
+            childMode = "",
         }
     },
     fieldInformation =

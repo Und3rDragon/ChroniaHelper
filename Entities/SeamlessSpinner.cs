@@ -132,6 +132,9 @@ public class SeamlessSpinner : Entity
     private string coldCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/blue/fg_blue_base";
     private string hotCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/red/fg_red_base";
 
+    private string childMode;
+    private DangerBubbler childModeParent = null;
+    
     public SeamlessSpinner(Vector2 position, EntityData data) : base(position)
     {
         offset = Calc.Random.NextFloat();
@@ -233,6 +236,8 @@ public class SeamlessSpinner : Entity
         int totalFrames = sprite.CurrentAnimationLength();
         int randomChoice = Calc.Random.Range(0, totalFrames);
         sprite.currentFrame = randomChoice;
+        
+        childMode = data.Attr("childMode");
     }
 
     private void SetColliderByHitboxTypeAndData(string hitboxType, string hitboxData)
@@ -312,6 +317,18 @@ public class SeamlessSpinner : Entity
         base.Added(scene);
         
         Add(new CoreModeListener(this));
+
+        if (childMode.IsNotNullOrEmpty())
+        {
+            var bubblers = (scene as Level).Tracker.GetEntities<DangerBubbler>();
+            foreach(var bubbler in bubblers)
+            {
+                if(bubbler.SourceData.ID.ToString() == childMode)
+                {
+                    childModeParent = bubbler as DangerBubbler;
+                }
+            }
+        }
     }
 
     public override void Awake(Scene scene)
@@ -336,8 +353,15 @@ public class SeamlessSpinner : Entity
 
         if (killPlayer)
         {
-            player.Die((player.Position - Position).SafeNormalize());
-
+            if (childModeParent.IsNotNull())
+            {
+                childModeParent.PlayerActivated(player);
+            }
+            else
+            {
+                player.Die((player.Position - Position).SafeNormalize());
+            }
+            
             timer = setTimer;
             timerActive = false;
         }
