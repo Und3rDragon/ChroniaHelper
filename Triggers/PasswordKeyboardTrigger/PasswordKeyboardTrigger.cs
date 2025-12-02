@@ -104,6 +104,7 @@ public sealed partial class PasswordKeyboardTrigger : BaseTrigger
         ui.Clear();
         Scene.Add(ui);
         lastPlayer = player;
+        $"PasswordKeyboard_{config.IDTag}_UIActive".SetFlag(true);
     }
 
     private bool OnTry(string password)
@@ -197,5 +198,6 @@ public sealed partial class PasswordKeyboardTrigger : BaseTrigger
         if (lastPlayer is null) return;
         Scene.Remove(ui);
         lastPlayer.StateMachine.State = Player.StNormal;
+        $"PasswordKeyboard_{config.IDTag}_UIActive".SetFlag(false);
     }
 }
