@@ -11,7 +11,7 @@ namespace ChroniaHelper.Triggers;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/StopclockTrigger")]
-public class StopclockTrigger :BaseTrigger
+public class StopclockTrigger : BaseTrigger
 {
     public StopclockTrigger(EntityData d, Vc2 o) : base(d, o)
     {
@@ -20,11 +20,13 @@ public class StopclockTrigger :BaseTrigger
         countdown = d.Bool("countdown", true);
         operation = d.Int("operation", 0);
         onlyOnce = d.Bool("onlyOnce", true);
+        followLevelPause = d.Bool("followLevelPause", false);
     }
     private string name, time;
     private bool countdown;
     private int operation = 0;
     private enum Operations { Set = 0, Add = 1, Minus = 2, Stop = 3, Resume = 4, }
+    private bool followLevelPause;
 
     protected override void OnEnterExecute(Player player)
     {
@@ -66,7 +68,7 @@ public class StopclockTrigger :BaseTrigger
         }
         else
         {
-            new Stopclock(name, countdown, time);
+            new Stopclock(name, countdown, time, followPause: followLevelPause);
         }
     }
 }

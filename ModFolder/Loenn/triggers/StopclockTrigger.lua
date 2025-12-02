@@ -9,6 +9,7 @@ trigger.placements = {
         operation = 0,
         countdown = true,
         onlyOnce = true,
+        followLevelPause = false,
     },
 }
 

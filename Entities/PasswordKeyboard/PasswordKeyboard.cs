@@ -132,7 +132,7 @@ public sealed partial class PasswordKeyboard : Entity
     private bool globalFlag = false;
     private string[] passwords, flagList; 
     private int passwordCount = 0, flagCount = 0;
-
+    
     private void OnTalk(Player player)
     {
         if (Md.Session.RemainingUses[entityID] is 0)
@@ -144,6 +144,7 @@ public sealed partial class PasswordKeyboard : Entity
         ui.Clear();
         Scene.Add(ui);
         lastPlayer = player;
+        $"PasswordKeyboard_{config.IDTag}_UIActive".SetFlag(true);
     }
 
     private bool OnTry(string password)
@@ -237,5 +238,6 @@ public sealed partial class PasswordKeyboard : Entity
         if (lastPlayer is null) return;
         Scene.Remove(ui);
         lastPlayer.StateMachine.State = Player.StNormal;
+        $"PasswordKeyboard_{config.IDTag}_UIActive".SetFlag(false);
     }
 }

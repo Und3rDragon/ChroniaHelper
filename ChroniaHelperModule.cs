@@ -71,10 +71,9 @@ public class ChroniaHelperModule : EverestModule
 
     public static bool FrostHelperLoaded;
     public static bool CommunalHelperLoaded { get; private set; }
-    public static bool VivHelperLoaded;
-    public static bool MaddieLoaded;
-    public static Assembly CommunalHelperAssembly { get; private set; }
-    public static Assembly VivHelperAssembly { get; private set; }
+    public static bool VivHelperLoaded { get; private set; }
+    public static bool MaddieLoaded { get; private set; }
+    public static bool KoseiHelperLoaded { get; private set; }
 
     public override void Load()
     {
@@ -106,7 +105,7 @@ public class ChroniaHelperModule : EverestModule
         EverestModuleMetadata frostHelperMetadata = new()
         {
             Name = "FrostHelper",
-            Version = new Version(1, 70, 2)
+            Version = new Version("1.70.2")
         };
         FrostHelperLoaded = Everest.Loader.DependencyLoaded(frostHelperMetadata);
 
@@ -118,11 +117,6 @@ public class ChroniaHelperModule : EverestModule
         };
         CommunalHelperLoaded = Everest.Loader.DependencyLoaded(communalHelperMetadata);
 
-        if (Everest.Loader.TryGetDependency(communalHelperMetadata, out var communalModule))
-        {
-            CommunalHelperAssembly = communalModule.GetType().Assembly;
-        }
-
         // Viv Helper load judgement
         EverestModuleMetadata vivHelperMetadata = new()
         {
@@ -131,11 +125,6 @@ public class ChroniaHelperModule : EverestModule
         };
         VivHelperLoaded = Everest.Loader.DependencyLoaded(vivHelperMetadata);
 
-        if (Everest.Loader.TryGetDependency(vivHelperMetadata, out var vivModule))
-        {
-            VivHelperAssembly = vivModule.GetType().Assembly;
-        }
-
         // Max Helping Hand judgement
         EverestModuleMetadata maddieMetadata = new()
         {
@@ -143,7 +132,7 @@ public class ChroniaHelperModule : EverestModule
             Version = new Version("1.38.0"),
         };
         MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
-
+        
         PolygonCollider.Load();
 
         // Map Hider?
