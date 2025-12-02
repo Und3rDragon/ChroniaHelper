@@ -35,9 +35,9 @@ public class CustomCoreBlock : Solid
         public float duration;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public RespawnDebris Init(Vector2 from, Vector2 to, bool ice, float duration)
+        public RespawnDebris Init(Vector2 from, Vector2 to, bool ice, float duration, string iceRubble = "objects/BumpBlockNew/ice_rubble", string fireRubble = "objects/BumpBlockNew/fire_rubble")
         {
-            List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(ice ? "objects/BumpBlockNew/ice_rubble" : "objects/BumpBlockNew/fire_rubble");
+            List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(ice ? iceRubble : fireRubble);
             MTexture texture = Calc.Random.Choose(atlasSubtextures);
             if (sprite == null)
             {
@@ -89,9 +89,9 @@ public class CustomCoreBlock : Solid
         public float duration;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public BreakDebris Init(Vector2 position, Vector2 direction, bool ice)
+        public BreakDebris Init(Vector2 position, Vector2 direction, bool ice, string iceRubble = "objects/BumpBlockNew/ice_rubble", string fireRubble = "objects/BumpBlockNew/fire_rubble")
         {
-            List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(ice ? "objects/BumpBlockNew/ice_rubble" : "objects/BumpBlockNew/fire_rubble");
+            List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(ice ? iceRubble : fireRubble);
             MTexture texture = Calc.Random.Choose(atlasSubtextures);
             if (sprite == null)
             {
@@ -182,6 +182,10 @@ public class CustomCoreBlock : Solid
 
     private bool isIceBlock;
 
+    public string iceRubblePath, fireRubblePath;
+
+    public Tuple<bool, CColor> iceBreak, fireBreak, iceRespawn, fireRespawn;
+
     public CustomCoreBlock(Vector2 position, float width, float height, EntityData data)
         : base(position, width, height, safe: false)
     {
@@ -199,8 +203,16 @@ public class CustomCoreBlock : Solid
         coldCenterSprite.Visible = false;
         Add(coldCenterSprite);
         Add(new CoreModeListener(OnChangeMode));
+        
+        iceRubblePath = data.Attr("iceRubbleTexture", "objects/BumpBlockNew/ice_rubble");
+        fireRubblePath = data.Attr("fireRubbleTexture", "objects/BumpBlockNew/fire_rubble");
+        
+        iceBreak = new(data.Attr("iceBreakParticleColor").IsNullOrEmpty(), data.GetChroniaColor("iceBreakParticleColor"));
+        fireBreak = new(data.Attr("fireBreakParticleColor").IsNullOrEmpty(), data.GetChroniaColor("fireBreakParticleColor"));
+        iceRespawn = new(data.Attr("iceRespawnParticleColor").IsNullOrEmpty(), data.GetChroniaColor("iceRespawnParticleColor"));
+        fireRespawn = new(data.Attr("fireRespawnParticleColor").IsNullOrEmpty(), data.GetChroniaColor("fireRespawnParticleColor"));
     }
-
+    
     public CustomCoreBlock(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Width, data.Height, data)
     {
@@ -434,7 +446,7 @@ public class CustomCoreBlock : Solid
                     for (int j = 0; (float)j < base.Height; j += 8)
                     {
                         Vector2 vector6 = new Vector2(base.X + (float)i + 4f, base.Y + (float)j + 4f);
-                        base.Scene.Add(Engine.Pooler.Create<RespawnDebris>().Init(vector6 + (vector6 - base.Center).SafeNormalize() * 12f, vector6, iceMode, duration));
+                        base.Scene.Add(Engine.Pooler.Create<RespawnDebris>().Init(vector6 + (vector6 - base.Center).SafeNormalize() * 12f, vector6, iceMode, duration, iceRubblePath, fireRubblePath));
                     }
                 }
 
@@ -460,16 +472,36 @@ public class CustomCoreBlock : Solid
     public void ReformParticles()
     {
         Level level = SceneAs<Level>();
-        for (int i = 0; (float)i < base.Width; i += 4)
-        {
-            level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Y), -MathF.PI / 2f);
-            level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Bottom - 1f), MathF.PI / 2f);
-        }
 
-        for (int j = 0; (float)j < base.Height; j += 4)
+        if (!iceRespawn.Item1 || !fireRespawn.Item1)
         {
-            level.Particles.Emit(P_Reform, new Vector2(base.X, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), MathF.PI);
-            level.Particles.Emit(P_Reform, new Vector2(base.Right - 1f, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), 0f);
+            CColor c = iceMode ? (iceBreak.Item1 ? fireBreak.Item2 : iceBreak.Item2) : (fireBreak.Item1 ? iceBreak.Item2 : fireBreak.Item2);
+
+            for (int i = 0; (float)i < base.Width; i += 4)
+            {
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Y), c.Parsed(), -MathF.PI / 2f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Bottom - 1f), c.Parsed(), MathF.PI / 2f);
+            }
+
+            for (int j = 0; (float)j < base.Height; j += 4)
+            {
+                level.Particles.Emit(P_Reform, new Vector2(base.X, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), MathF.PI);
+                level.Particles.Emit(P_Reform, new Vector2(base.Right - 1f, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), 0f);
+            }
+        }
+        else
+        {
+            for (int i = 0; (float)i < base.Width; i += 4)
+            {
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Y), -MathF.PI / 2f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Bottom - 1f), MathF.PI / 2f);
+            }
+
+            for (int j = 0; (float)j < base.Height; j += 4)
+            {
+                level.Particles.Emit(P_Reform, new Vector2(base.X, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), MathF.PI);
+                level.Particles.Emit(P_Reform, new Vector2(base.Right - 1f, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), 0f);
+            }
         }
     }
 
@@ -536,7 +568,7 @@ public class CustomCoreBlock : Solid
                     direction = (new Vector2(base.X + (float)i + 4f, base.Y + (float)j + 4f) - center).SafeNormalize();
                 }
 
-                base.Scene.Add(Engine.Pooler.Create<BreakDebris>().Init(new Vector2(base.X + (float)i + 4f, base.Y + (float)j + 4f), direction, iceMode));
+                base.Scene.Add(Engine.Pooler.Create<BreakDebris>().Init(new Vector2(base.X + (float)i + 4f, base.Y + (float)j + 4f), direction, iceMode, iceRubblePath, fireRubblePath));
             }
         }
 
@@ -548,7 +580,18 @@ public class CustomCoreBlock : Solid
             {
                 Vector2 vector = Position + new Vector2(2 + k, 2 + l) + Calc.Random.Range(-Vector2.One, Vector2.One);
                 float direction2 = (iceMode ? (vector - center).Angle() : num);
-                level.Particles.Emit(iceMode ? P_IceBreak : P_FireBreak, vector, direction2);
+                
+                if(!iceBreak.Item1 || !fireBreak.Item1)
+                {
+                    level.Particles.Emit(iceMode ? P_IceBreak : P_FireBreak, vector,
+                        iceMode ? (iceBreak.Item1 ? fireBreak.Item2 : iceBreak.Item2).Parsed() : (fireBreak.Item1 ? iceBreak.Item2 : fireBreak.Item2).Parsed(),
+                        direction2);
+                }
+                else
+                {
+                    level.Particles.Emit(iceMode ? P_IceBreak : P_FireBreak, vector, direction2);
+                }
+                    
             }
         }
     }

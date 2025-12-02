@@ -15,6 +15,12 @@ CustomCoreBlock.placements = {
             type = 0,
             iceBlockTexture = "objects/BumpBlockNew/ice00",
             fireBlockTexture = "objects/BumpBlockNew/fire00",
+            iceRubbleTexture = "objects/BumpBlockNew/ice_rubble00",
+            fireRubbleTexture = "objects/BumpBlockNew/fire_rubble00",
+            iceBreakParticleColor = "",
+            fireBreakParticleColor = "",
+            iceRespawnParticleColor = "",
+            fireRespawnParticleColor = "",
             notCoreMode = false
         }
     },
@@ -26,6 +32,12 @@ CustomCoreBlock.placements = {
             type = 1,
             iceBlockTexture = "objects/BumpBlockNew/ice00",
             fireBlockTexture = "objects/BumpBlockNew/fire00",
+            iceRubbleTexture = "objects/BumpBlockNew/ice_rubble00",
+            fireRubbleTexture = "objects/BumpBlockNew/fire_rubble00",
+            iceBreakParticleColor = "",
+            fireBreakParticleColor = "",
+            iceRespawnParticleColor = "",
+            fireRespawnParticleColor = "",
             notCoreMode = true
         }
     },
@@ -38,7 +50,27 @@ CustomCoreBlock.fieldInformation = {
             ["ice"] = 1,
         },
         editable = false,
-    }
+    },
+    iceBreakParticleColor = {
+        fieldType = "color",
+        useAlpha = true,
+        allowEmpty = true,
+    },
+    fireBreakParticleColor = {
+        fieldType = "color",
+        useAlpha = true,
+        allowEmpty = true,
+    },
+    iceRespawnParticleColor = {
+        fieldType = "color",
+        useAlpha = true,
+        allowEmpty = true,
+    },
+    fireRespawnParticleColor = {
+        fieldType = "color",
+        useAlpha = true,
+        allowEmpty = true,
+    },
 }
 
 local ninePatchOptions = {
