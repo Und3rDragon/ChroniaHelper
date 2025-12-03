@@ -83,6 +83,12 @@ public class HUDController : BaseEntity
 
         for (int i = 0; i < displayers.Count; i++)
         {
+            if(condition == "all")
+            {
+                displayers[i].enabled = false;
+                continue;
+            }
+            
             if (condition.ParseMathExpression((v) =>
             {
                 if (v.ToLower() == "x")

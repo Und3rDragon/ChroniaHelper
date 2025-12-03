@@ -23,7 +23,7 @@ controller.fieldInformation =
         options = {
             "y < 90",
             "x < 160",
-            "(x < 160) && (y < 90)"
+            "(x < 160) && (y < 90)",
             "all",
         },
         editable = true,
@@ -33,7 +33,7 @@ controller.fieldInformation =
 function controller.sprite(room, entity)
     local sprite = {}
     local rect = drawableRectangle.fromRectangle("fill", entity.x, entity.y, 16, 16, {0.0, 0.0, 0.0})
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/RoomTag", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/HUD", entity)
 
     table.insert(sprite, iconSprite)
     return sprite
