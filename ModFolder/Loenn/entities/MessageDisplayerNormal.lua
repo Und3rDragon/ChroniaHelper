@@ -5,7 +5,7 @@ local drawableLine = require("structs.drawable_line")
 local drawing = require("utils.drawing")
 
 local renderer = {
-    name = "ChroniaHelper/MessageDisplayer"
+    name = "ChroniaHelper/MessageDisplayerNormal"
 }
 
 renderer.depth = -10000000
@@ -13,6 +13,7 @@ renderer.depth = -10000000
 renderer.placements = {
     name = "renderer",
     data = {
+        depth = -10000000,
         textures = "ChroniaHelper/DisplayFonts/font",
         characterReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,",
         dialogID = "",
@@ -45,6 +46,9 @@ renderer.fieldInformation = {
     scale = {
         fieldType = "list",
         minimumElements = 1,
+        elementOptions = {
+            fieldType = "integer",
+        },
     },
     textures = {
         fieldType = "list",

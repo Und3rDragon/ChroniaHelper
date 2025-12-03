@@ -24,7 +24,7 @@ public class MessageDisplayer : HDRenderEntity
 
         template.renderMode = d.Int("renderMode", 0);
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));
-        template.segmentOrigin = Vc2.Zero;
+        template.segmentOrigin = new Vc2(d.Float("letterOriginX", 0f), d.Float("letterOriginY", 0f));
         template.distance = d.Float("letterDistance", 1f);
         template.color = d.GetChroniaColor("fontColor", Color.White);
         primaryAlpha = template.color.alpha;

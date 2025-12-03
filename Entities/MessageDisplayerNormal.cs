@@ -13,12 +13,14 @@ using Microsoft.Build.Framework;
 namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/MessageDisplayZone")]
-public class MessageDisplayZone : HDRenderEntity
+[CustomEntity("ChroniaHelper/MessageDisplayerNormal")]
+public class MessageDisplayerNormal : SerialImageRenderer
 {
-    public MessageDisplayZone(EntityData d, Vc2 o) : base(d, o)
+    public MessageDisplayerNormal(EntityData d, Vc2 o) : base(d, o)
     {
-        SerialImageRaw template = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
+        base.Depth = d.Int("depth", -100000);
+
+        SerialImage template = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
 
         template.renderMode = d.Int("renderMode", 0);
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));
@@ -26,13 +28,12 @@ public class MessageDisplayZone : HDRenderEntity
         template.distance = d.Float("letterDistance", 1f);
         template.color = d.GetChroniaColor("fontColor", Color.White);
         primaryAlpha = template.color.alpha;
-        template.color.alpha = 0f;
 
-        renderer = new SerialImageGroupRaw(template, d.Attr("textures","ChroniaHelper/DisplayFonts/font").Split(',',StringSplitOptions.TrimEntries));
+        renderer = new SerialImageGroup(template, d.Attr("textures","ChroniaHelper/DisplayFonts/font").Split(',',StringSplitOptions.TrimEntries));
         renderer.groupOrigin = new Vc2(d.Float("overallOriginX", 0.5f), d.Float("overallOriginY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);
         string[] _scales = d.Attr("scale", "1").Split(',', StringSplitOptions.TrimEntries);
-        foreach (var scale in _scales)
+        foreach(var scale in _scales)
         {
             renderer.scales.Add(scale.ParseFloat(1f));
         }
@@ -41,7 +42,8 @@ public class MessageDisplayZone : HDRenderEntity
 
         Parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));
         StaticScreen = new Vc2(d.Float("screenX", 160f), d.Float("screenY", 90f));
-        
+
+        renderDistance = d.Float("renderDistance", -1f);
         typingDisplay = d.Bool("typewriterEffect", false);
         fadeInSpeed = d.Float("fadeInSpeed", 4f);
         fadeOutSpeed = d.Float("fadeOutSpeed", 2f);
@@ -51,23 +53,17 @@ public class MessageDisplayZone : HDRenderEntity
         hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
 
         reference = d.Attr("characterReference", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,");
-
-        leaveReset = d.Bool("leaveReset", false);
-
-        Collider = new Hitbox(d.Width, d.Height);
     }
-    public SerialImageGroupRaw renderer;
+    public SerialImageGroup renderer;
     public string content;
     private bool typingDisplay = true;
-    public float fadeInSpeed = 4f, fadeOutSpeed = 2f;
+    public float renderDistance = 256f, fadeInSpeed = 4f, fadeOutSpeed = 2f;
     public float primaryAlpha = 1f;
     public float letterInterval = 0.1f;
     public string overrideFlag;
     private bool hasOverrideFlag = false;
-    public bool leaveReset = false;
 
     public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
-
     public List<string> ParseRenderTarget()
     {
         string text = Dialog.Clean(content, Dialog.Languages["english"]);
@@ -90,10 +86,10 @@ public class MessageDisplayZone : HDRenderEntity
     {
         return reference.Contains(c) ? reference.IndexOf(c) : reference.IndexOf(" ");
     }
-    
+
     List<string> progressedText = new();
     List<int> progress = new();
-    protected override void HDRender()
+    public override void Render()
     {
         List<string> orig = ParseRenderTarget();
 
@@ -148,27 +144,21 @@ public class MessageDisplayZone : HDRenderEntity
         
         renderer.Render(progressedText,
             (c) => Reflection(c),
-            ParseGlobalPositionToHDPosition(nodes[1], Parallax, StaticScreen));
+            Position.InParallax(Parallax, StaticScreen));
     }
-    public bool renderArg => inRange || hasOverrideFlag && overrideFlag.GetFlag();
+    
+    public bool renderArg => (renderDistance <= 0f && !hasOverrideFlag) || (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());
 
-    public bool collided = false;
     public bool inRange = false;
     public bool fadeEnded = false;
     public override void Update()
     {
         base.Update();
-        
+
         if(PUt.TryGetPlayer(out Player player))
         {
-            collided = CollideCheck(player);
+            inRange = renderDistance <= 0f ? true : (player.Center - Position).Length() <= renderDistance; 
         }
-        else
-        {
-            collided = false;
-        }
-
-        inRange = leaveReset ? collided : inRange.TryPositive(collided);
         
         renderer.template.color.alpha = Calc.Approach(renderer.template.color.alpha,
             updateArg ? primaryAlpha : 0f,
@@ -177,5 +167,7 @@ public class MessageDisplayZone : HDRenderEntity
         fadeEnded = renderer.template.color.alpha == (updateArg ? primaryAlpha : 0f);
     }
     
-    public bool updateArg => inRange || hasOverrideFlag && overrideFlag.GetFlag();
+    public bool updateArg => (renderDistance <= 0f && !hasOverrideFlag) ||
+            (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());
+
 }

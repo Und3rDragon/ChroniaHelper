@@ -18,6 +18,8 @@ renderer.placements = {
         textures = "ChroniaHelper/DisplayFonts/font",
         characterReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,",
         dialogID = "",
+        letterOriginX = 0,
+        letterOriginY = 0,
         lineOriginX = 0.5,
         lineOriginY = 0.5,
         overallOriginX = 0.5,

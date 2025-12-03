@@ -1106,6 +1106,32 @@ entities.ChroniaHelper/MessageDisplayZone.attributes.description.letterDisplayIn
 entities.ChroniaHelper/MessageDisplayZone.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
 entities.ChroniaHelper/MessageDisplayZone.attributes.description.renderDistance=When the player is in the radius, the text will appear
 
+entities.ChroniaHelper/MessageDisplayerNormal.placements.name.renderer=Message Displayer (Non-HD)
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+entities.ChroniaHelper/MessageDisplayZoneNormal.placements.name.renderer=Message Display Zone (Non-HD)
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
 # ================= Counter and Slider Fades
 
 entities.ChroniaHelper/TimeFadeCounterController.placements.name.controller=Time Fade Counter Controller

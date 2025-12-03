@@ -14,7 +14,7 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/RealTimeRenderer")]
-public class RealTimeRenderer : SerialImageRenderer
+public class RealTimeRenderer : SerialImageRendererRaw
 {
     public RealTimeRenderer(EntityData d, Vc2 o) : base(d, o)
     {

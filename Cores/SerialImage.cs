@@ -127,7 +127,7 @@ public class SerialImage
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
 
-            texture.Draw(renderPosition + dPos + overallOffset - origin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
+            texture.Draw(renderPosition + dPos + overallOffset - segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
                 Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
             //Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
             //    null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),

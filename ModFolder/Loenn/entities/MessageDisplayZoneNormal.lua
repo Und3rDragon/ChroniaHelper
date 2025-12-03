@@ -5,14 +5,16 @@ local drawableLine = require("structs.drawable_line")
 local drawing = require("utils.drawing")
 
 local renderer = {
-    name = "ChroniaHelper/MessageDisplayer"
+    name = "ChroniaHelper/MessageDisplayZoneNormal"
 }
 
-renderer.depth = -10000000
+renderer.nodeLimits = {1,1}
 
 renderer.placements = {
     name = "renderer",
     data = {
+        width = 16,
+        height = 16,
         textures = "ChroniaHelper/DisplayFonts/font",
         characterReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,",
         dialogID = "",
@@ -29,7 +31,6 @@ renderer.placements = {
         renderMode = 0,
         lineDistance = 0,
         letterDistance = 0,
-        renderDistance = -1,
         fadeInSpeed = 4,
         fadeOutSpeed = 2,
         letterDisplayInterval = 0.1,
@@ -37,6 +38,7 @@ renderer.placements = {
         triggerFlag = "",
         scale = "1",
         typewriterEffect = false,
+        leaveReset = false,
     }, 
     --nodeLimits = {0,2}
 }
@@ -45,6 +47,9 @@ renderer.fieldInformation = {
     scale = {
         fieldType = "list",
         minimumElements = 1,
+        elementOptions = {
+            fieldType = "integer",
+        },
     },
     textures = {
         fieldType = "list",
@@ -125,17 +130,19 @@ renderer.fieldInformation = {
     depth = require('mods').requireFromPlugin('helpers.field_options').depths,
 }
 
-renderer.selection = function (room, entity)
-    return utils.rectangle(entity.x - 12, entity.y - 12, 24, 24)
+renderer.sprite = function(room, entity, viewport)
+    return {
+        require("structs.drawable_rectangle").fromRectangle("bordered", entity.x, entity.y, entity.width, entity.height,
+            {1,1,1,0.3}, {1,1,1,1}),
+    }
 end
 
-function renderer.sprite(room, entity)
-    local sprite = {}
-    
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Stopclock", entity)
-
-    table.insert(sprite, iconSprite)
-    return sprite
+renderer.nodeSprite = function(room, entity, node, nodeIndex, viewport)
+    return {
+        require("structs.drawable_rectangle").fromRectangle("bordered", node.x - 4, node.y - 4, 8, 8,
+            {1,1,1,0.3}, {1,1,1,1}),
+        drawableLine.fromPoints({node.x, node.y, entity.x + entity.width / 2, entity.y + entity.height / 2}, 1)
+    }
 end
 
 return renderer

@@ -13,7 +13,7 @@ namespace ChroniaHelper.Utils.StopwatchSystem;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/StopclockRenderer")]
-public class StopclockRenderer : SerialImageRenderer
+public class StopclockRenderer : SerialImageRendererRaw
 {
     public StopclockRenderer(EntityData d, Vc2 o) : base(d, o)
     {
