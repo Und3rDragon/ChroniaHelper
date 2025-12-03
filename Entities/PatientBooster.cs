@@ -129,7 +129,7 @@ public class PatientBooster : Booster
 		base.Update();
 		var player = Scene.Tracker.GetEntity<Player>();
         
-		if (player?.CollideCheck(this) ?? false)
+		if ((player?.CollideCheck(this) ?? false) && respawnTimer <= 0f)
 		{
 			timerRunning = true;
 		}
