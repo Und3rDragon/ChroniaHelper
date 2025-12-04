@@ -83,14 +83,14 @@ public class InputFlagController : AbstractInputController
         conditions = data.Attr("ifFlagCondition").Split(",", StringSplitOptions.TrimEntries);
         noConditions = string.IsNullOrEmpty(data.Attr("ifFlagCondition"));
         controllerID = data.Attr("controllerIDPrefix", "ChroniaHelper_Input_") + data.ID;
-        if (MaP.session.GetCounter(controllerID) == 0)
+        if (MaP.level.Session.GetCounter(controllerID) == 0)
         {
-            MaP.session.SetCounter(controllerID, 0);
+            MaP.level.Session.SetCounter(controllerID, 0);
         }
         staticCounterID = data.Attr("detectCounterID", "inputListenerCounter");
-        if(MaP.session.GetCounter(staticCounterID) == 0)
+        if(MaP.level.Session.GetCounter(staticCounterID) == 0)
         {
-            MaP.session.SetCounter(staticCounterID, 0);
+            MaP.level.Session.SetCounter(staticCounterID, 0);
         }
 
         resetCounter = data.Bool("resetCounter", false);
@@ -135,7 +135,7 @@ public class InputFlagController : AbstractInputController
             int n = 0;
             int.TryParse(restraintSetup, out n);
 
-            return MaP.session.GetCounter(controllerID).Compare(n, (NumberUtils.Comparator)((int)restraint - 1));
+            return MaP.level.Session.GetCounter(controllerID).Compare(n, (NumberUtils.Comparator)((int)restraint - 1));
         }
 
         else if (restraint == (Restraint)6)
@@ -147,7 +147,7 @@ public class InputFlagController : AbstractInputController
             int.TryParse(r[0], out m);
             if (r.Length >= 2) { int.TryParse(r[1], out n); }
 
-            return MaP.session.GetCounter(controllerID).Compare(m, (NumberUtils.Comparator)((int)restraint - 1), n);
+            return MaP.level.Session.GetCounter(controllerID).Compare(m, (NumberUtils.Comparator)((int)restraint - 1), n);
         }
 
         return true;
@@ -177,8 +177,8 @@ public class InputFlagController : AbstractInputController
 
     public void Activate()
     {
-        MaP.session.SetCounter(controllerID, MaP.session.GetCounter(controllerID) + 1);
-        MaP.session.SetCounter(staticCounterID, MaP.session.GetCounter(staticCounterID) + 1);
+        MaP.level.Session.SetCounter(controllerID, MaP.level.Session.GetCounter(controllerID) + 1);
+        MaP.level.Session.SetCounter(staticCounterID, MaP.level.Session.GetCounter(staticCounterID) + 1);
 
         if (!CheckFlagCondition()) { return; }
         if (!CheckRestraints()) { return; }
@@ -214,7 +214,7 @@ public class InputFlagController : AbstractInputController
                 {
                     string regex = $"^{controllerID}_{i}:\\d+$";
 
-                    foreach(var flag in MaP.session.Flags)
+                    foreach(var flag in MaP.level.Session.Flags)
                     {
                         if (Regex.IsMatch(flag, regex))
                         {
@@ -222,7 +222,7 @@ public class InputFlagController : AbstractInputController
                         }
                     }
 
-                    $"{controllerID}_{i}:{MaP.session.GetCounter(controllerID)}".SetFlag(true);
+                    $"{controllerID}_{i}:{MaP.level.Session.GetCounter(controllerID)}".SetFlag(true);
                 }
             }
         }
@@ -253,7 +253,7 @@ public class InputFlagController : AbstractInputController
                     {
                         string regex = $"^{controllerID}_{i}:\\d+$";
 
-                        foreach (var flag in MaP.session.Flags)
+                        foreach (var flag in MaP.level.Session.Flags)
                         {
                             if (Regex.IsMatch(flag, regex))
                             {
@@ -266,11 +266,11 @@ public class InputFlagController : AbstractInputController
         }
         if (resetCounter)
         {
-            MaP.session.SetCounter(controllerID, 0);
+            MaP.level.Session.SetCounter(controllerID, 0);
         }
         if (resetSession)
         {
-            MaP.session.SetCounter(staticCounterID, 0);
+            MaP.level.Session.SetCounter(staticCounterID, 0);
         }
     }
 }

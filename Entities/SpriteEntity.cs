@@ -172,7 +172,7 @@ public class SpriteEntity : Actor
                 bool shouldSkip = false;
                 foreach (var flag in ignoreFlags.Keys)
                 {
-                    bool flagArg = ignoreFlags[flag] ? !MapProcessor.session.GetFlag(flag) : MapProcessor.session.GetFlag(flag);
+                    bool flagArg = ignoreFlags[flag] ? !MapProcessor.level.Session.GetFlag(flag) : MapProcessor.level.Session.GetFlag(flag);
 
                     if (flagArg && ignoreIndexes[flag].Contains(index)) { shouldSkip = true; }
                 }
@@ -215,7 +215,7 @@ public class SpriteEntity : Actor
                 
                 if (hasOverride)
                 {
-                    if (!MapProcessor.session.GetFlag(overrideFlag))
+                    if (!MapProcessor.level.Session.GetFlag(overrideFlag))
                     {
                         index = newIndex - 1;
                     }
@@ -304,11 +304,11 @@ public class SpriteEntity : Actor
                 if (segs >= 5) { bool.TryParse(commandLine[4], out reset); }
                 if (segs >= 6) { bool.TryParse(commandLine[5], out random); }
 
-                if (inverted && MapProcessor.session.GetFlag(flag))
+                if (inverted && MapProcessor.level.Session.GetFlag(flag))
                 {
                     continue;
                 }
-                if (!inverted && !MapProcessor.session.GetFlag(flag))
+                if (!inverted && !MapProcessor.level.Session.GetFlag(flag))
                 {
                     continue;
                 }
@@ -380,7 +380,7 @@ public class SpriteEntity : Actor
                 // valid syntax: "music, eventName"
                 if (segs < 2) { continue; }
 
-                MapProcessor.session.Audio.Music.Event = SFX.EventnameByHandle(commandLine[1]);
+                MapProcessor.level.Session.Audio.Music.Event = SFX.EventnameByHandle(commandLine[1]);
             }
 
             else if (execute == Command.Hitbox)
@@ -719,7 +719,7 @@ public class SpriteEntity : Actor
             if (segs >= 2) { flagName = commandLine[1]; }
             if (segs >= 3) { bool.TryParse(commandLine[2], out flagValue); }
 
-            MapProcessor.session.SetFlag(flagName, flagValue);
+            MapProcessor.level.Session.SetFlag(flagName, flagValue);
         }
 
         else if (execute == Command.Wait_Flag)
@@ -735,11 +735,11 @@ public class SpriteEntity : Actor
             {
                 if (!inverted)
                 {
-                    if (MapProcessor.session.GetFlag(flag)) { break; }
+                    if (MapProcessor.level.Session.GetFlag(flag)) { break; }
                 }
                 else
                 {
-                    if (!MapProcessor.session.GetFlag(flag)) { break; }
+                    if (!MapProcessor.level.Session.GetFlag(flag)) { break; }
                 }
                 yield return null;
             }

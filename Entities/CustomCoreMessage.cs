@@ -216,7 +216,7 @@ public class ColoredCustomCoreMessage : Entity
     {
         if (useSE && Md.FrostHelperLoaded)
         {
-            fLine = FI.GetIntSessionExpressionValue(se, MaP.session);
+            fLine = FI.GetIntSessionExpressionValue(se, MaP.level.Session);
             if (fLine != line)
             {
                 line = fLine;

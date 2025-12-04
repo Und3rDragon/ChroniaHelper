@@ -39,7 +39,6 @@ public static class MapProcessor
     public static MapData mapdata;
     public static int saveSlotIndex;
     public static Level level;
-    public static Session session;
     public static Dictionary<Type, List<Entity>> entities;
 
     public static Entity globalEntityDummy = new Monocle.Entity();
@@ -68,13 +67,12 @@ public static class MapProcessor
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
-        MaP.session = level.Session;
         entities = level.Tracker.Entities;
         camOffset = level.CameraOffset;
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
 
-        object _slider = new DynamicData(session).Get("_Sliders");
+        object _slider = new DynamicData(level.Session).Get("_Sliders");
         sliders = (Dictionary<string, Session.Slider>)_slider;
 
         // Dummy Entity setup

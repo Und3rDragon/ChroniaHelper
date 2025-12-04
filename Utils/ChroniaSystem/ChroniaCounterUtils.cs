@@ -12,9 +12,9 @@ public static class ChroniaCounterUtils
 {
     public static bool CheckCounter(this string name)
     {
-        if (MaP.session == null) { return false; }
+        if (MaP.level.Session == null) { return false; }
 
-        foreach(var item in MaP.session.Counters)
+        foreach(var item in MaP.level.Session.Counters)
         {
             if(item.Key == name) { return true; }
         }
@@ -24,7 +24,7 @@ public static class ChroniaCounterUtils
     
     public static int GetCounter(this string name)
     {
-        return MaP.session.GetCounter(name);
+        return MaP.level.Session.GetCounter(name);
     }
 
     public static void SetCounter(this string name, int value)

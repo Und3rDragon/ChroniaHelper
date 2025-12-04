@@ -32,7 +32,7 @@ public class RoomTagSessionController : Entity
         {
             if (setFlag)
             {
-                string source = MaP.session.LevelData.Name;
+                string source = MaP.level.Session.LevelData.Name;
                 for(int i = 0; i < Md.Session.rooms.Count; i++)
                 {
                     if (source == Md.Session.rooms[i])
@@ -47,7 +47,7 @@ public class RoomTagSessionController : Entity
             }
             if (!setSlider.IsNullOrEmpty())
             {
-                string source = MaP.session.LevelData.Name;
+                string source = MaP.level.Session.LevelData.Name;
                 for (int i = 0; i < Md.Session.rooms.Count; i++)
                 {
                     if (source == Md.Session.rooms[i])
@@ -58,7 +58,7 @@ public class RoomTagSessionController : Entity
             }
             if (!setCounter.IsNullOrEmpty())
             {
-                string source = MaP.session.LevelData.Name;
+                string source = MaP.level.Session.LevelData.Name;
                 for (int i = 0; i < Md.Session.rooms.Count; i++)
                 {
                     if (source == Md.Session.rooms[i])
