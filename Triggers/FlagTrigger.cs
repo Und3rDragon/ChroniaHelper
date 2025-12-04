@@ -30,7 +30,7 @@ public class FlagTrigger : BaseTrigger
         temp = data.Bool("temporary", false);
         saves = data.Bool("global", false);
         leaveReset = data.Bool("resetOnLeave", false);
-        filtering = data.Bool("ignoreUnchanged", true);
+        filtering = data.Bool("ignoreUnchanged", false);
         onStay = data.Bool("onStay", false);
         
         // flag processing
@@ -47,7 +47,7 @@ public class FlagTrigger : BaseTrigger
             string name = item.TrimStart('!');
             bool defState = revert ? !set : set;
 
-            if (filtering && defState == name.GetFlag()) { continue; }
+            if (filtering && (defState == name.GetFlag())) { continue; }
 
             name.SetFlag(defState, saves, temp);
             records.Enter(name, defState);

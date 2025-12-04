@@ -13,7 +13,7 @@ return{
 			temporary = false,
 			global = false,
 			resetOnLeave = false,
-			ignoreUnchanged = true,
+			ignoreUnchanged = false,
 			onStay = false,
 		}
 	},

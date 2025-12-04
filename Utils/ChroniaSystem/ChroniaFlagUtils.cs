@@ -34,11 +34,25 @@ public static class ChroniaFlagUtils
 
         if (temporary)
         {
-            Md.Session.flagsPerDeath.Add(name);
+            if (active)
+            {
+                Md.Session.flagsPerDeath.Add(name);
+            }
+            else
+            {
+                Md.Session.flagsPerDeath.SafeRemove(name);
+            }
         }
         else if (global)
         {
-            Md.SaveData.flags.Add(name);
+            if (active)
+            {
+                Md.SaveData.flags.Add(name);
+            }
+            else
+            {
+                Md.SaveData.flags.SafeRemove(name);
+            }
         }
     }
 
