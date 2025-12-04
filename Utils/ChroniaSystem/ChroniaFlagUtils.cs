@@ -124,6 +124,6 @@ public static class ChroniaFlagUtils
 
     public static bool GetConditionalInvertedFlag(this string name, bool invertIndicator = false)
     {
-        return invertIndicator ? !MaP.session.GetFlag(name) : MaP.session.GetFlag(name);
+        return invertIndicator ? !MaP.level.Session.GetFlag(name) : MaP.level.Session.GetFlag(name);
     }
 }
