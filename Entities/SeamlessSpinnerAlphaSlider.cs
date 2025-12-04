@@ -42,7 +42,6 @@ public class SeamlessSpinnerAlphaSlider
             var spin = e as SeamlessSpinner;
 
             spin.sprite?.Color = spin.spriteColor.Parsed() * (1 - s);
-            spin.loadSprite?.Color = spin.spriteColor.Parsed() * (1 - s);
             foreach(var i in spin.bgSprites)
             {
                 i.Color = spin.bgSpriteColor.Parsed() * (1 - s);

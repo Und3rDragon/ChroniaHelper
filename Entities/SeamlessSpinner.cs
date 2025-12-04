@@ -392,21 +392,30 @@ public class SeamlessSpinner : Entity
                 timer -= Engine.DeltaTime;
             }
 
-            if (timer <= triggerAnimTime)
+            if (timer <= triggerAnimTime && timer > 0f)
             {
-                loadSprite.Rate = 1f;
+                sprite.Rate = 1f;
             }
 
-            if (timer <= 0f)
+            if (timer <= 0f && timerActive)
             {
                 killPlayer = true;
                 timerActive = false;
 
-                if (loadSprite.CurrentAnimationFrame == loadSprite.GetFrames("").Length - 1)
-                {
-                    loadSprite.Visible = false;
+                sprite.Play("idle");
 
-                    sprite.Visible = true;
+                if (useCoreModeStyle)
+                {
+                    sprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
+                }
+
+                int totalFrames = sprite.CurrentAnimationTotalFrames;
+                int randomChoice = Calc.Random.Range(0, totalFrames);
+                sprite.SetAnimationFrame(randomChoice);
+
+                if (!dynamic)
+                {
+                    sprite.Rate = 0f;
                 }
             }
         }
@@ -494,7 +503,7 @@ public class SeamlessSpinner : Entity
         return false;
     }
 
-    public Sprite sprite, loadSprite;
+    public Sprite sprite;
 
     private void TrySwitchCoreModeSprite()
     {
@@ -504,36 +513,37 @@ public class SeamlessSpinner : Entity
         }
 
         // spinner
-        string path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeSpritePath : hotCoreModeSpritePath;
-        sprite.Reset(GFX.Game, path);
-        sprite.AddLoop("idle", "", fgAnim);
-        sprite.Play("idle");
+        sprite.AddLoop("idle_cold", coldCoreModeSpritePath, fgAnim);
+        sprite.AddLoop("idle_hot", hotCoreModeSpritePath, fgAnim);
+        if(sprite.CurrentAnimationID.StartsWith("idle"))
+        {
+            sprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
 
-        int totalFrames = sprite.GetFrames("").Length;
-        int randomChoice = Calc.Random.Range(0, totalFrames);
-        sprite.SetAnimationFrame(randomChoice);
+            int totalFrames = sprite.CurrentAnimationTotalFrames;
+            int randomChoice = Calc.Random.Range(0, totalFrames);
+            sprite.SetAnimationFrame(randomChoice);
+
+            if (!dynamic) { sprite.Rate = 0f; }
+        }
 
         // bg
         foreach (Sprite bgSprite in bgSprites)
         {
-            path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeBGSpritePath : hotCoreModeBGSpritePath;
-            bgSprite.Reset(GFX.Game, path);
-            bgSprite.AddLoop("idle", "", fgAnim);
-            bgSprite.SetFrame(bgSprite.animations["idle"].Frames[bgSprite.CurrentAnimationFrame]);
-        }
+            bgSprite.AddLoop("idle_cold", coldCoreModeBGSpritePath, bgAnim);
+            bgSprite.AddLoop("idle_hot", hotCoreModeBGSpritePath, bgAnim);
 
-        // loadSprite
-        // 因为如果play完了, currentAnimation就变成null, 所以这里也要判断一下
-        if (loadSprite == null || loadSprite.currentAnimation == null)
-        {
-            return;
-        }
+            if (bgSprite.CurrentAnimationID.StartsWith("idle"))
+            {
+                bgSprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
 
-        path = SceneAs<Level>().coreMode == Session.CoreModes.Cold ? coldCoreModeTriggerSpritePath : hotCoreModeTriggerSpritePath;
-        loadSprite.Path = path;
-        loadSprite.currentAnimation.Frames = loadSprite.GetFrames("");
-        // 重置一下当前帧
-        loadSprite.SetFrame(loadSprite.animations["load"].Frames[loadSprite.CurrentAnimationFrame]);
+                int totalBGFrames = bgSprite.CurrentAnimationTotalFrames;
+                int randomBGChoice = Calc.Random.Range(0, totalBGFrames);
+                bgSprite.SetAnimationFrame(randomBGChoice);
+
+                if (!dynamic) { bgSprite.Rate = 0f; }
+            }
+        }
+        
     }
 
     private void CreateSprites()
@@ -547,9 +557,10 @@ public class SeamlessSpinner : Entity
 
         Calc.PushRandom(randomSeed);
 
-        sprite = new Sprite(GFX.Game, imagePath);
+        sprite = new Sprite(GFX.Game, "");
 
-        sprite.AddLoop("idle", "", fgAnim);
+        sprite.AddLoop("idle", imagePath, fgAnim);
+        sprite.Add("load", imagePath + "_base", triggerAnimDelay);
 
         Add(sprite);
         sprite.Justify = Vector2.One / 2;
@@ -584,7 +595,7 @@ public class SeamlessSpinner : Entity
 
         if (!dynamic)
         {
-            int totalFrames = sprite.GetFrames("").Length;
+            int totalFrames = sprite.CurrentAnimationTotalFrames;
             int randomChoice = Calc.Random.Range(0, totalFrames);
             sprite.Rate = 0f;
             sprite.SetAnimationFrame(randomChoice);
@@ -592,43 +603,11 @@ public class SeamlessSpinner : Entity
 
         if (trigger)
         {
-            sprite.Visible = false;
-
-            loadSprite = new Sprite(GFX.Game, $"{imagePath}_base");
-            loadSprite.Add("load", "", triggerAnimDelay);
-            triggerAnimTime = triggerAnimDelay * loadSprite.GetFrames("").Length;
-            loadSprite.Justify = Vector2.One / 2;
-            loadSprite.Color = spriteColor.Parsed();
-            if (rainbow)
-            {
-                loadSprite.Color = spinner.GetHue(Position);
-            }
-
-            Vector2 loadScale = Vector2.One;
-            if (flipX == Flip.flipped)
-            {
-                loadScale.X = -1;
-            }
-            else if (flipX == Flip.random)
-            {
-                loadScale.X = Calc.Random.Choose(1f, -1f);
-            }
-
-            if (flipY == Flip.flipped)
-            {
-                loadScale.Y = -1;
-            }
-            else if (flipY == Flip.random)
-            {
-                loadScale.Y = Calc.Random.Choose(1f, -1f);
-            }
-
-            loadSprite.Scale = loadScale;
-
-            Add(loadSprite);
-            loadSprite.Play("load");
-            loadSprite.SetAnimationFrame(0);
-            loadSprite.Rate = 0f;
+            sprite.Play("load");
+            sprite.Rate = 0f;
+            sprite.SetAnimationFrame(0);
+            
+            triggerAnimTime = triggerAnimDelay * sprite.CurrentAnimationTotalFrames;
         }
 
         foreach (SeamlessSpinner entity in Scene.Tracker.GetEntities<SeamlessSpinner>())
@@ -658,10 +637,10 @@ public class SeamlessSpinner : Entity
         }
 
         // Create BG Spinner
-        Sprite bgsprite = new Sprite(GFX.Game, bgImagePath);
+        Sprite bgsprite = new Sprite(GFX.Game, "");
         bgSprites.Add(bgsprite);
 
-        bgsprite.AddLoop("idle", "", bgAnim);
+        bgsprite.AddLoop("idle", bgImagePath, bgAnim);
 
         filler.Add(bgsprite);
 

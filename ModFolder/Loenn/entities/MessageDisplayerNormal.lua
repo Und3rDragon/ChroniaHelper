@@ -136,7 +136,7 @@ end
 function renderer.sprite(room, entity)
     local sprite = {}
     
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Stopclock", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Message", entity)
 
     table.insert(sprite, iconSprite)
     return sprite
