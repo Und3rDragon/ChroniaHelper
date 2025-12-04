@@ -18,7 +18,7 @@ public static class ChroniaFlagUtils
     public static void SetFlag(this string name, bool active)
     {
         if ((name.GetSensitivity() & Sens.AllowNoSetFlag) != 0) { return; }
-        MaP.session.SetFlag(name, active);
+        MaP.sLevel?.Session?.SetFlag(name, active);
     }
 
     public static void SetFlag(this string name, bool active, bool global)
@@ -31,7 +31,7 @@ public static class ChroniaFlagUtils
     public static void SetFlag(this string name, bool active, bool global, bool temporary)
     {
         name.SetFlag(active);
-
+        
         if (temporary)
         {
             if (active)
