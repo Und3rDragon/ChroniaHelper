@@ -56,3 +56,4 @@ modoptions_ChroniaHelper_roomNameDisplayer=Room Name
 modoptions_ChroniaHelper_prefix=Prefix
 modoptions_ChroniaHelper_suffixAuthor=Author Name in Suffix
 modoptions_ChroniaHelper_mapAuthorNameDisplayer=Map Author Name
+modoptions_ChroniaHelper_HUDMainControl=Enable HUD

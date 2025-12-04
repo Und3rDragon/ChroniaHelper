@@ -22,6 +22,8 @@ public class Displayers : HDRenderEntity
     
     protected override void HDRender()
     {
+        if (!Md.Settings.HUDMainControl) { return; }
+        
         if (Md.Settings.stateMachineDisplayer.enabled)
         {
             string target = $"{PUt.player?.StateMachine.GetCurrentStateName() ?? "null"}";

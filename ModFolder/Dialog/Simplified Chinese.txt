@@ -57,3 +57,4 @@ modoptions_ChroniaHelper_roomNameDisplayer=房间名称显示
 modoptions_ChroniaHelper_prefix=名称前缀
 modoptions_ChroniaHelper_suffixAuthor=显示作者名称
 modoptions_ChroniaHelper_mapAuthorNameDisplayer=地图作者名称
+modoptions_ChroniaHelper_HUDMainControl=启用HUD

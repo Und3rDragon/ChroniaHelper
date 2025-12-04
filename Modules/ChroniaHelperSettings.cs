@@ -6,6 +6,7 @@ namespace ChroniaHelper.Modules;
 
 public class ChroniaHelperSettings : EverestModuleSettings
 {
+    public bool HUDMainControl { get; set; } = true;
     public enum DisplayPosition { PlayerBased, StaticScreen }
     public enum Aligning { Left, Middle, Right }
     
