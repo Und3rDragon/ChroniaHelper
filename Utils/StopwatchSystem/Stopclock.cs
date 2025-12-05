@@ -16,14 +16,14 @@ public partial class Stopclock : IDisposable
     [LoadHook]
     public static void Load()
     {
-        On.Celeste.Level.UpdateTime += LevelUpdateTime;
+        On.Monocle.Scene.Update += SessionUpdate;
         On.Celeste.Level.LoadLevel += LoadingLevel;
         On.Monocle.Scene.Update += GlobalUpdate;
     }
     [UnloadHook]
     public static void Unload()
     {
-        On.Celeste.Level.UpdateTime -= LevelUpdateTime;
+        On.Monocle.Scene.Update -= SessionUpdate;
         On.Celeste.Level.LoadLevel -= LoadingLevel;
         On.Monocle.Scene.Update -= GlobalUpdate;
     }
@@ -36,7 +36,7 @@ public partial class Stopclock : IDisposable
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
     {
         orig(self);
-
+        
         if (Md.SaveData.IsNull()) { return; }
 
         HashSet<string> toRemove = new();
@@ -54,7 +54,7 @@ public partial class Stopclock : IDisposable
             {
                 if(!watches.Value.followPause || !self.Paused)
                 {
-                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                    watches.Value.UpdateTime(TimeUtils.deltaTicksRaw);
                 }
             }
 
@@ -72,17 +72,22 @@ public partial class Stopclock : IDisposable
 
             //Log.Info(watches.Key, watches.Value.FormattedTime);
         }
+
         foreach (var item in toRemove)
         {
             Md.SaveData.globalStopwatches.SafeRemove(item);
         }
     }
 
-    public static void LevelUpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
+    public static void SessionUpdate(On.Monocle.Scene.orig_Update orig, Scene scene)
     {
-        orig(self);
+        orig(scene);
 
         if (Md.Session.IsNull()) { return; }
+
+        if (scene is not Level) { return; }
+
+        var self = scene as Level;
 
         if (!self.Completed)
         {
@@ -95,7 +100,7 @@ public partial class Stopclock : IDisposable
                     watches.Value.Register(watches.Key);
                     continue;
                 }
-                
+
                 if (Md.SaveData.globalStopwatches.ContainsKey(watches.Key))
                 {
                     toRemove.Add(watches.Key);
@@ -105,7 +110,7 @@ public partial class Stopclock : IDisposable
 
                 if (!watches.Value.isolatedUpdate)
                 {
-                    if (!watches.Value.followPause || !self.Paused)
+                    if (!watches.Value.followPause || !scene.Paused)
                     {
                         watches.Value.UpdateTime(TimeUtils.deltaTicks);
                     }
@@ -131,7 +136,7 @@ public partial class Stopclock : IDisposable
             }
         }
     }
-    
+
     public int year = 0;
     public int month = 0;
     public int day = 0;
