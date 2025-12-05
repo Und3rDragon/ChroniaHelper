@@ -735,7 +735,6 @@ public class AnimatedSpikes : Entity
             if (!base.CollideCheck<Player>())
             {
                 this.enterGrouped = false;
-                childModeTriggered = false;
             }
             this.enterFlag = true;
         }
@@ -760,6 +759,11 @@ public class AnimatedSpikes : Entity
             {
                 this.spikes[i].Update();
             }
+        }
+
+        if (!CollideCheck<Player>())
+        {
+            childModeTriggered = false;
         }
     }
 

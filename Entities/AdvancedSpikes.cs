@@ -643,7 +643,6 @@ public class AdvancedSpikes : Entity
             if (!base.CollideCheck<Player>())
             {
                 this.enterGrouped = false;
-                childModeTriggered = false;
             }
 
             this.enterFlag = true;
@@ -671,6 +670,11 @@ public class AdvancedSpikes : Entity
             {
                 this.spikes[i].Update();
             }
+        }
+
+        if (!CollideCheck<Player>())
+        {
+            childModeTriggered = false;
         }
     }
 
