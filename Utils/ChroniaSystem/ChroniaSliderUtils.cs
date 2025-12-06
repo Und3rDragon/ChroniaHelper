@@ -10,7 +10,12 @@ public static class ChroniaSliderUtils
 {
     public static float GetSlider(this string name)
     {
-        return MaP.level.Session.GetSlider(name);
+        if(MaP.sliders.TryGetValue(name, out var slider))
+        {
+            return slider.Value;
+        }
+        
+        return 0f;
     }
 
     public static void SetSlider(this string name, float value)
