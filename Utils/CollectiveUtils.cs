@@ -649,6 +649,44 @@ public static class CollectiveUtils
     }
 
     /// <summary>
+    /// 将一个列表初始化后，通过转换函数映射元素，并复制成另一个列表。
+    /// </summary>
+    /// <typeparam name="T">源集合元素类型</typeparam>
+    /// <typeparam name="U">目标集合元素类型</typeparam>
+    /// <typeparam name="Target">目标集合类型，必须实现 ICollection<U> 并有无参构造</typeparam>
+    /// <param name="source">被复制并转换的源列表</param>
+    /// <param name="target">输出的目标列表（会被清空并初始化）</param>
+    /// <param name="transmutor">将 T 转换为 U 的函数</param>
+    public static void ApplyTo<T, U, Target>(this ICollection<T> source, out Target target, Func<T, U> transmutor)
+        where Target : ICollection<U>, new()
+    {
+        target = new Target();
+        foreach (var item in source)
+        {
+            target.Add(transmutor(item));
+        }
+    }
+
+    /// <summary>
+    /// 将一个列表通过转换函数映射元素，并复制到一个新的数组中。
+    /// </summary>
+    /// <typeparam name="T">源集合元素类型</typeparam>
+    /// <typeparam name="U">目标数组元素类型</typeparam>
+    /// <param name="source">被复制并转换的源列表</param>
+    /// <param name="target">输出的目标数组</param>
+    /// <param name="transmutor">将 T 转换为 U 的函数</param>
+    public static void ApplyTo<T, U>(this ICollection<T> source, out U[] target, Func<T, U> transmutor)
+    {
+        int count = source.Count;
+        target = new U[count];
+        int index = 0;
+        foreach (var item in source)
+        {
+            target[index++] = transmutor(item);
+        }
+    }
+    
+    /// <summary>
     /// 将字典拆分为键集合和值集合
     /// </summary>
     public static void SplitDictionary<TKey, TValue>(
