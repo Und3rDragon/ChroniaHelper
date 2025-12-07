@@ -368,6 +368,29 @@ public class Displayers : HDRenderEntity
             
             string target = $"Bloom: {float.Round(MaP.level?.Bloom.Base ?? 0, 2)} base x {float.Round(MaP.level?.Bloom.Strength ?? 0, 2)} strength";
 
+            if (Md.FrostHelperLoaded)
+            {
+                target = target + $" (Color: {FI.GetBloomColor().RgbaToHex()})";
+            }
+            
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
+
+            displayUI.Render(target, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
+        }
+
+        if (Md.Settings.levelLightingDisplayer.enabled)
+        {
+            var displayer = Md.Settings.levelLightingDisplayer;
+            var displayUI = lighting_UI;
+
+            string target = $"Lighting Alpha: {float.Round(MaP.level?.Lighting.Alpha ?? 0, 2)} (Color: {MaP.level?.Lighting.BaseColor.RgbaToHex() ?? Color.Black.RgbaToHex()})";
+
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
@@ -460,6 +483,11 @@ public class Displayers : HDRenderEntity
     };
 
     public SerialImageRaw bloom_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    {
+        segmentOrigin = Vc2.Zero,
+    };
+
+    public SerialImageRaw lighting_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };

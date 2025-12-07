@@ -71,4 +71,6 @@ public static class FrostHelperImports
         Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands,
         Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands);
     public static _CreateSessionExpressionContext CreateSessionExpressionContext;
+
+    public static Func<Color> GetBloomColor;
 }
