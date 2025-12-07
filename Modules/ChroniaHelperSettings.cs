@@ -134,7 +134,7 @@ public class ChroniaHelperSettings : EverestModuleSettings
     {
         
     }
-    public LevelBloomDisplayer levelBloomDisplayer = new();
+    public LevelBloomDisplayer levelBloomDisplayer { get; set; } = new();
 
     [SettingSubMenu]
     public class CameraOffsetDisplayer : CommonDisplayer
