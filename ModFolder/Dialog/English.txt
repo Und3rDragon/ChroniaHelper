@@ -62,3 +62,4 @@ modoptions_ChroniaHelper_cameraDisplay=Offset Display
 modoptions_ChroniaHelper_cameraDisplay_CameraX=X Only
 modoptions_ChroniaHelper_cameraDisplay_CameraY=Y Only
 modoptions_ChroniaHelper_cameraDisplay_CameraXY=Both X and Y
+modoptions_ChroniaHelper_levelBloomDisplayer=Bloom

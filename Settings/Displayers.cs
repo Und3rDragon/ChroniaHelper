@@ -8,6 +8,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using FASF2025Helper.Utils;
+using Microsoft.Xna.Framework.Media;
 using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
 namespace ChroniaHelper.Settings;
@@ -26,71 +27,85 @@ public class Displayers : HDRenderEntity
         
         if (Md.Settings.stateMachineDisplayer.enabled)
         {
+            var displayer = Md.Settings.stateMachineDisplayer;
+            var displayUI = stateMachine_UI;
+            
             string target = $"{PUt.player?.StateMachine.GetCurrentStateName() ?? "null"}";
 
-            stateMachine_UI.origin = ((int)Md.Settings.stateMachineDisplayer.aligning + 4).ToJustify();
-            stateMachine_UI.distance = Md.Settings.stateMachineDisplayer.letterDistance;
-            stateMachine_UI.scale = Md.Settings.stateMachineDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            stateMachine_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.stateMachineDisplayer.displayPosition,
-                new Vc2(Md.Settings.stateMachineDisplayer.X, Md.Settings.stateMachineDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.realTimeClock.enabled)
         {
-            string target = Md.Settings.realTimeClock.hasSeconds ?
+            var displayer = Md.Settings.realTimeClock;
+            var displayUI = realTimeClock_UI;
+            
+            string target = displayer.hasSeconds ?
                 $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}" :
                 $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}";
 
-            realTimeClock_UI.origin = ((int)Md.Settings.realTimeClock.aligning + 4).ToJustify();
-            realTimeClock_UI.distance = Md.Settings.realTimeClock.letterDistance;
-            realTimeClock_UI.scale = Md.Settings.realTimeClock.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            realTimeClock_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return $"{c}".ParseInt(c == ':' ? 10 : 0);
-            }, GetRenderPosition(Md.Settings.realTimeClock.displayPosition,
-                new Vc2(Md.Settings.realTimeClock.X, Md.Settings.realTimeClock.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.staminaMeterMenu.enabled)
         {
+            var displayer = Md.Settings.staminaMeterMenu;
+            var displayUI = staminaMeter_UI;
+            
             string target = $"{float.Round(PUt.player?.Stamina ?? 0f).ClampMin(0).ForceTo<int>()}";
 
-            staminaMeter_UI.origin = ((int)Md.Settings.staminaMeterMenu.aligning + 4).ToJustify();
-            staminaMeter_UI.distance = Md.Settings.staminaMeterMenu.letterDistance;
-            staminaMeter_UI.scale = Md.Settings.staminaMeterMenu.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            staminaMeter_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return $"{c}".ParseInt();
-            }, GetRenderPosition(Md.Settings.staminaMeterMenu.displayPosition,
-                new Vc2(Md.Settings.staminaMeterMenu.X, Md.Settings.staminaMeterMenu.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.dashesCounter.enabled)
         {
+            var displayer = Md.Settings.dashesCounter;
+            var displayUI = dashes_UI;
+            
             string target = $"{PUt.player?.Dashes ?? 0}";
 
-            dashes_UI.origin = ((int)Md.Settings.dashesCounter.aligning + 4).ToJustify();
-            dashes_UI.distance = Md.Settings.dashesCounter.letterDistance;
-            dashes_UI.scale = Md.Settings.dashesCounter.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            dashes_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return $"{c}".ParseInt();
-            }, GetRenderPosition(Md.Settings.dashesCounter.displayPosition,
-                new Vc2(Md.Settings.dashesCounter.X, Md.Settings.dashesCounter.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.speedDisplayer.enabled)
         {
+            var displayer = Md.Settings.speedDisplayer;
+            var displayUI = speed_UI;
             string target = string.Empty;
 
-            switch (Md.Settings.speedDisplayer.speedDisplay)
+            switch (displayer.speedDisplay)
             {
                 case Sts.SpeedDisplayer.SpeedDisplay.speedX:
                     target = $"{PUt.player?.Speed.X.ParseInt() ?? 0}";
@@ -106,21 +121,24 @@ public class Displayers : HDRenderEntity
                     break;
             }
 
-            speed_UI.origin = ((int)Md.Settings.speedDisplayer.aligning + 4).ToJustify();
-            speed_UI.distance = Md.Settings.speedDisplayer.letterDistance;
-            speed_UI.scale = Md.Settings.speedDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            speed_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.speedDisplayer.displayPosition,
-                new Vc2(Md.Settings.speedDisplayer.X, Md.Settings.speedDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.playerSpriteDisplayer.enabled)
         {
+            var displayer = Md.Settings.playerSpriteDisplayer;
+            var displayUI = playerSprite_UI;
+            
             string target = string.Empty;
-            switch (Md.Settings.playerSpriteDisplayer.displaySprite)
+            switch (displayer.displaySprite)
             {
                 case Modules.ChroniaHelperSettings.PlayerSpriteDisplayer.DisplaySprite.Animation:
                     target = $"{PUt.player?.Sprite.CurrentAnimationID ?? "null"}";
@@ -133,102 +151,117 @@ public class Displayers : HDRenderEntity
                     break;
             }
 
-            playerSprite_UI.origin = ((int)Md.Settings.playerSpriteDisplayer.aligning + 4).ToJustify();
-            playerSprite_UI.distance = Md.Settings.playerSpriteDisplayer.letterDistance;
-            playerSprite_UI.scale = Md.Settings.playerSpriteDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            playerSprite_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.playerSpriteDisplayer.displayPosition,
-                new Vc2(Md.Settings.playerSpriteDisplayer.X, Md.Settings.playerSpriteDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.playerPositionDisplayer.enabled)
         {
+            var displayer = Md.Settings.playerPositionDisplayer;
+            var displayUI = playerPos_UI;
+            
             string target = string.Empty;
 
             Vc2 playerPos = PUt.player?.Position ?? Vc2.Zero;
 
             Vc2 lvlPos = new Vc2(MaP.level.Bounds.Left, MaP.level.Bounds.Top);
 
-            switch (Md.Settings.playerPositionDisplayer.displayCoordinates)
+            switch (displayer.displayCoordinates)
             {
                 case Sts.PlayerPositionDisplayer.DisplayCoordinates.X:
-                    target = Md.Settings.playerPositionDisplayer.useGlobalCoordinates ?
+                    target = displayer.useGlobalCoordinates ?
                         $"{(playerPos.X - lvlPos.X).ParseInt()}" :
                         $"{playerPos.X.ParseInt()}";
                     break;
                 case Sts.PlayerPositionDisplayer.DisplayCoordinates.Y:
-                    target = Md.Settings.playerPositionDisplayer.useGlobalCoordinates ?
+                    target = displayer.useGlobalCoordinates ?
                         $"{(playerPos.Y - lvlPos.Y).ParseInt()}" :
                         $"{playerPos.Y.ParseInt()}";
                     break;
                 default:
-                    target = Md.Settings.playerPositionDisplayer.useGlobalCoordinates ?
+                    target = displayer.useGlobalCoordinates ?
                         $"({(playerPos.X - lvlPos.X).ParseInt()},{(playerPos.Y - lvlPos.Y).ParseInt()})" :
                         $"({playerPos.X.ParseInt()},{playerPos.Y.ParseInt()})";
                     break;
             }
 
-            playerPos_UI.origin = ((int)Md.Settings.playerPositionDisplayer.aligning + 4).ToJustify();
-            playerPos_UI.distance = Md.Settings.playerPositionDisplayer.letterDistance;
-            playerPos_UI.scale = Md.Settings.playerPositionDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            playerPos_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.playerPositionDisplayer.displayPosition,
-                new Vc2(Md.Settings.playerPositionDisplayer.X, Md.Settings.playerPositionDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.deathsDisplayer.enabled)
         {
+            var displayer = Md.Settings.deathsDisplayer;
+            var displayUI = deaths_UI;
+            
             string target = $"{MaP.level?.Session.DeathsInCurrentLevel ?? 0}";
 
-            deaths_UI.origin = ((int)Md.Settings.deathsDisplayer.aligning + 4).ToJustify();
-            deaths_UI.distance = Md.Settings.deathsDisplayer.letterDistance;
-            deaths_UI.scale = Md.Settings.deathsDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            deaths_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return $"{c}".ParseInt();
-            }, GetRenderPosition(Md.Settings.deathsDisplayer.displayPosition,
-                new Vc2(Md.Settings.deathsDisplayer.X, Md.Settings.deathsDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.totalDeathsDisplayer.enabled)
         {
+            var displayer = Md.Settings.totalDeathsDisplayer;
+            var displayUI = totalDeaths_UI;
+            
             string target = $"{MaP.level?.Session.Deaths ?? 0}";
 
-            totalDeaths_UI.origin = ((int)Md.Settings.totalDeathsDisplayer.aligning + 4).ToJustify();
-            totalDeaths_UI.distance = Md.Settings.totalDeathsDisplayer.letterDistance;
-            totalDeaths_UI.scale = Md.Settings.totalDeathsDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            totalDeaths_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return $"{c}".ParseInt();
-            }, GetRenderPosition(Md.Settings.totalDeathsDisplayer.displayPosition,
-                new Vc2(Md.Settings.totalDeathsDisplayer.X, Md.Settings.totalDeathsDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.saveFileDeathsDisplayer.enabled)
         {
+            var displayer = Md.Settings.saveFileDeathsDisplayer;
+            var displayUI = saveDeaths_UI;
+            
             string target = $"{SaveData.Instance?.TotalDeaths ?? 0}";
 
-            saveDeaths_UI.origin = ((int)Md.Settings.saveFileDeathsDisplayer.aligning + 4).ToJustify();
-            saveDeaths_UI.distance = Md.Settings.saveFileDeathsDisplayer.letterDistance;
-            saveDeaths_UI.scale = Md.Settings.saveFileDeathsDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            saveDeaths_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return $"{c}".ParseInt();
-            }, GetRenderPosition(Md.Settings.saveFileDeathsDisplayer.displayPosition,
-                new Vc2(Md.Settings.saveFileDeathsDisplayer.X, Md.Settings.saveFileDeathsDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.mapNameDisplayer.enabled)
         {
+            var displayer = Md.Settings.mapNameDisplayer;
+            var displayUI = mapName_UI;
+            
             Language lang = Dialog.Languages["english"];
             
             string target = string.Empty;
@@ -253,11 +286,11 @@ public class Displayers : HDRenderEntity
                 }
             }
                 
-            if (Md.Settings.mapNameDisplayer.prefix)
+            if (displayer.prefix)
             {
                 target = "Map Name: " + target;
             }
-            if (Md.Settings.mapNameDisplayer.suffixAuthor)
+            if (displayer.suffixAuthor)
             {
                 string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
                 bool dialogHas = Dialog.Has(ssid + "_author", lang);
@@ -265,38 +298,44 @@ public class Displayers : HDRenderEntity
                 target = target + $" -> {(dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor)}";
             }
 
-            mapName_UI.origin = ((int)Md.Settings.mapNameDisplayer.aligning + 4).ToJustify();
-            mapName_UI.distance = Md.Settings.mapNameDisplayer.letterDistance;
-            mapName_UI.scale = Md.Settings.mapNameDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            mapName_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.mapNameDisplayer.displayPosition,
-                new Vc2(Md.Settings.mapNameDisplayer.X, Md.Settings.mapNameDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
         
         if(Md.Settings.roomNameDisplayer.enabled)
         {
+            var displayer = Md.Settings.roomNameDisplayer;
+            var displayUI = roomName_UI;
+            
             string target = MaP.level?.Session.LevelData.Name ?? "null";
-            if (Md.Settings.roomNameDisplayer.prefix)
+            if (displayer.prefix)
             {
                 target = "Room Name: " + target;
             }
 
-            roomName_UI.origin = ((int)Md.Settings.roomNameDisplayer.aligning + 4).ToJustify();
-            roomName_UI.distance = Md.Settings.roomNameDisplayer.letterDistance;
-            roomName_UI.scale = Md.Settings.roomNameDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            roomName_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.roomNameDisplayer.displayPosition,
-                new Vc2(Md.Settings.roomNameDisplayer.X, Md.Settings.roomNameDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.mapAuthorNameDisplayer.enabled)
         {
+            var displayer = Md.Settings.mapAuthorNameDisplayer;
+            var displayUI = authorName_UI;
+            
             Language lang = Dialog.Languages["english"];
 
             string target = string.Empty;
@@ -306,26 +345,47 @@ public class Displayers : HDRenderEntity
             string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).SafeGet(0, "null");
             target = dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor;
             
-            if (Md.Settings.mapAuthorNameDisplayer.prefix)
+            if (displayer.prefix)
             {
                 target = "Author Name: " + target;
             }
 
-            roomName_UI.origin = ((int)Md.Settings.mapAuthorNameDisplayer.aligning + 4).ToJustify();
-            roomName_UI.distance = Md.Settings.mapAuthorNameDisplayer.letterDistance;
-            roomName_UI.scale = Md.Settings.mapAuthorNameDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            roomName_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.mapAuthorNameDisplayer.displayPosition,
-                new Vc2(Md.Settings.mapAuthorNameDisplayer.X, Md.Settings.mapAuthorNameDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
+        }
+
+        if (Md.Settings.levelBloomDisplayer.enabled)
+        {
+            var displayer = Md.Settings.levelBloomDisplayer;
+            var displayUI = bloom_UI;
+            
+            string target = $"Bloom: {float.Round(MaP.level?.Bloom.Base ?? 0, 2)} base x {float.Round(MaP.level?.Bloom.Strength ?? 0, 2)} strength";
+
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
+
+            displayUI.Render(target, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.cameraOffsetDisplayer.enabled)
         {
+            var displayer = Md.Settings.cameraOffsetDisplayer;
+            var displayUI = camera_UI;
+            
             string target = "Camera: ";
-            switch (Md.Settings.cameraOffsetDisplayer.cameraDisplay)
+            switch (displayer.cameraDisplay)
             {
                 case Modules.ChroniaHelperSettings.CameraOffsetDisplayer.CameraDisplay.CameraX:
                     target = target + $"X= {float.Round(MaP.level?.CameraOffset.X / 48f ?? 0, 2)}";
@@ -338,15 +398,15 @@ public class Displayers : HDRenderEntity
                     break;
             }
 
-            camera_UI.origin = ((int)Md.Settings.cameraOffsetDisplayer.aligning + 4).ToJustify();
-            camera_UI.distance = Md.Settings.cameraOffsetDisplayer.letterDistance;
-            camera_UI.scale = Md.Settings.cameraOffsetDisplayer.scale * 0.1f;
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
 
-            camera_UI.Render(target, (c) =>
+            displayUI.Render(target, (c) =>
             {
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Md.Settings.cameraOffsetDisplayer.displayPosition,
-                new Vc2(Md.Settings.cameraOffsetDisplayer.X, Md.Settings.cameraOffsetDisplayer.Y)));
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
         }
     }
 
@@ -395,6 +455,11 @@ public class Displayers : HDRenderEntity
     };
 
     public SerialImageRaw authorName_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    {
+        segmentOrigin = Vc2.Zero,
+    };
+
+    public SerialImageRaw bloom_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };
