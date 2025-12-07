@@ -321,6 +321,33 @@ public class Displayers : HDRenderEntity
             }, GetRenderPosition(Md.Settings.mapAuthorNameDisplayer.displayPosition,
                 new Vc2(Md.Settings.mapAuthorNameDisplayer.X, Md.Settings.mapAuthorNameDisplayer.Y)));
         }
+
+        if (Md.Settings.cameraOffsetDisplayer.enabled)
+        {
+            string target = "Camera: ";
+            switch (Md.Settings.cameraOffsetDisplayer.cameraDisplay)
+            {
+                case Modules.ChroniaHelperSettings.CameraOffsetDisplayer.CameraDisplay.CameraX:
+                    target = target + $"X= {float.Round(MaP.level?.CameraOffset.X / 48f ?? 0, 2)}";
+                    break;
+                case Modules.ChroniaHelperSettings.CameraOffsetDisplayer.CameraDisplay.CameraY:
+                    target = target + $"Y= {float.Round(MaP.level?.CameraOffset.Y / 32f ?? 0, 2)}";
+                    break;
+                default:
+                    target = target + $"X= {float.Round(MaP.level?.CameraOffset.X / 48f ?? 0, 2)}, Y= {float.Round(MaP.level?.CameraOffset.Y / 32f ?? 0, 2)}";
+                    break;
+            }
+
+            camera_UI.origin = ((int)Md.Settings.cameraOffsetDisplayer.aligning + 4).ToJustify();
+            camera_UI.distance = Md.Settings.cameraOffsetDisplayer.letterDistance;
+            camera_UI.scale = Md.Settings.cameraOffsetDisplayer.scale * 0.1f;
+
+            camera_UI.Render(target, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(Md.Settings.cameraOffsetDisplayer.displayPosition,
+                new Vc2(Md.Settings.cameraOffsetDisplayer.X, Md.Settings.cameraOffsetDisplayer.Y)));
+        }
     }
 
     public string generalReference = Cons.DisplayFontsReference;
@@ -368,6 +395,11 @@ public class Displayers : HDRenderEntity
     };
 
     public SerialImageRaw authorName_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    {
+        segmentOrigin = Vc2.Zero,
+    };
+
+    public SerialImageRaw camera_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {
         segmentOrigin = Vc2.Zero,
     };

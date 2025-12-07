@@ -13,11 +13,11 @@ public class ChroniaHelperSettings : EverestModuleSettings
     public class CommonDisplayer
     {
         public bool enabled { get; set; } = false;
-        public DisplayPosition displayPosition { get; set; } = DisplayPosition.PlayerBased;
+        public DisplayPosition displayPosition { get; set; } = DisplayPosition.StaticScreen;
         [SettingRange(-1000, 1000, true)]
-        public int X { get; set; } = 0;
+        public int X { get; set; } = 160;
         [SettingRange(-1000, 1000, true)]
-        public int Y { get; set; } = -16;
+        public int Y { get; set; } = 168;
         [SettingRange(-32, 32)]
         public int letterDistance { get; set; } = 0;
         [SettingRange(0, 1000, true)]
@@ -128,4 +128,13 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public bool prefix { get; set; } = false;
     }
     public MapAuthorNameDisplayer mapAuthorNameDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class CameraOffsetDisplayer : CommonDisplayer
+    {
+        public enum CameraDisplay { CameraX, CameraY, CameraXY }
+        public CameraDisplay cameraDisplay { get; set; } = CameraDisplay.CameraXY;
+    }
+
+    public CameraOffsetDisplayer cameraOffsetDisplayer { get; set; } = new();
 }
