@@ -22,6 +22,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     private const string VALUE_NODE_NAME = "Value";
     private const string CLASS_NODE_NAME = "Class";
     private const string LIST_NODE_NAME = "List";
+    private const string HASHSET_NODE_NAME = "HashSet";
     private const string DICTIONARY_NODE_NAME = "Dictionary";
     private const string ILIST2_NODE_NAME = "IList2";
     private const string ILIST3_NODE_NAME = "IList3";
@@ -345,15 +346,15 @@ public abstract class ChroniaHelperModuleGlobalSaveData
         return fallbackElem;
     }
 
-    /// <summary>
-    /// 序列化一个 List<T> 或 HashSet<T>。
-    /// </summary>
     private XmlElement SerializeList(XmlDocument doc, string name, object list)
     {
-        var listNode = doc.CreateElement(LIST_NODE_NAME);
-        listNode.SetAttribute("name", name);
         Type listType = list.GetType();
         Type elementType = listType.GetGenericArguments()[0];
+        
+        string nodeName = listType.Name.StartsWith("HashSet") ? HASHSET_NODE_NAME : LIST_NODE_NAME;
+
+        var listNode = doc.CreateElement(nodeName); // 使用动态节点名
+        listNode.SetAttribute("name", name);
         listNode.SetAttribute("elementType", elementType.Name);
 
         foreach (var item in (IEnumerable)list)
@@ -1205,17 +1206,25 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     {
         string elementTypeName = node.Attributes?["elementType"]?.Value ?? "object";
         Type elementType = GetTypeFromName(elementTypeName) ?? typeof(object);
-        Type listType = typeof(List<>).MakeGenericType(elementType);
-        var list = Activator.CreateInstance(listType);
-        var addMethod = listType.GetMethod("Add");
+        
+        Type collectionBaseType = node.Name switch
+        {
+            HASHSET_NODE_NAME => typeof(HashSet<>),
+            _ => typeof(List<>) // 默认为 List
+        };
+
+        Type concreteCollectionType = collectionBaseType.MakeGenericType(elementType);
+        var collection = Activator.CreateInstance(concreteCollectionType);
+
+        var addMethod = concreteCollectionType.GetMethod("Add");
 
         foreach (XmlNode itemNode in node.ChildNodes)
         {
             object item = DeserializeNode(itemNode);
-            addMethod?.Invoke(list, new[] { item });
+            addMethod?.Invoke(collection, new[] { item });
         }
 
-        return list;
+        return collection;
     }
 
     /// <summary>
