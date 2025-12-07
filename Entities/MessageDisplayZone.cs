@@ -50,7 +50,7 @@ public class MessageDisplayZone : HDRenderEntity
         overrideFlag = d.Attr("triggerFlag");
         hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
 
-        reference = d.Attr("characterReference", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,");
+        reference = d.Attr("characterReference", Cons.DisplayFontsReference);
 
         leaveReset = d.Bool("leaveReset", false);
 
@@ -66,7 +66,7 @@ public class MessageDisplayZone : HDRenderEntity
     private bool hasOverrideFlag = false;
     public bool leaveReset = false;
 
-    public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
+    public string reference = Cons.DisplayFontsReference;
 
     public List<string> ParseRenderTarget()
     {

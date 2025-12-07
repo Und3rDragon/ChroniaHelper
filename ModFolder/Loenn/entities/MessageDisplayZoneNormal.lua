@@ -16,7 +16,7 @@ renderer.placements = {
         width = 16,
         height = 16,
         textures = "ChroniaHelper/DisplayFonts/font",
-        characterReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,",
+        characterReference = require('mods').requireFromPlugin('helpers.chroniaHelper').displayFontsReference,
         dialogID = "",
         letterOriginX = 0,
         letterOriginY = 0,

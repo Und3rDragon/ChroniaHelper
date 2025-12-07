@@ -323,7 +323,7 @@ public class Displayers : HDRenderEntity
         }
     }
 
-    public string generalReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
+    public string generalReference = Cons.DisplayFontsReference;
 
     public SerialImageRaw stateMachine_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {

@@ -52,7 +52,7 @@ public class MessageDisplayerNormal : SerialImageRenderer
         overrideFlag = d.Attr("triggerFlag");
         hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
 
-        reference = d.Attr("characterReference", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,");
+        reference = d.Attr("characterReference", Cons.DisplayFontsReference);
     }
     public SerialImageGroup renderer;
     public string content;
@@ -63,7 +63,7 @@ public class MessageDisplayerNormal : SerialImageRenderer
     public string overrideFlag;
     private bool hasOverrideFlag = false;
 
-    public string reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,";
+    public string reference = Cons.DisplayFontsReference;
     public List<string> ParseRenderTarget()
     {
         string text = Dialog.Clean(content, Dialog.Languages["english"]);

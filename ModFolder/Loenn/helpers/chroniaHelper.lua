@@ -408,4 +408,6 @@ chroniaHelper.easers = {
     ["Bounce In Out"] = "BounceInOut",
 }
 
+chroniaHelper.displayFontsReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,_^"
+
 return chroniaHelper
