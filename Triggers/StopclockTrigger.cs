@@ -68,11 +68,14 @@ public class StopclockTrigger : BaseTrigger
         }
         else if(operation == (int)Operations.SetAndStart)
         {
-            new Stopclock(name, countdown, time, followPause: followLevelPause).Start();
+            var clock = new Stopclock(countdown, time, followPause: followLevelPause);
+            clock.Register(name, false);
+            clock.Start();
         }
         else
         {
-            new Stopclock(name, countdown, time, followPause: followLevelPause);
+            var clock = new Stopclock(countdown, time, followPause: followLevelPause);
+            clock.Register(name, false);
         }
     }
 }
