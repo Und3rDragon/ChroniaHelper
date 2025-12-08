@@ -25,7 +25,7 @@ public class StopclockTrigger : BaseTrigger
     private string name, time;
     private bool countdown;
     private int operation = 0;
-    private enum Operations { Set = 0, Add = 1, Minus = 2, Stop = 3, Resume = 4, }
+    private enum Operations { Set = 0, Add = 1, Minus = 2, Stop = 3, Resume = 4, SetAndStart = 5}
     private bool followLevelPause;
 
     protected override void OnEnterExecute(Player player)
@@ -65,6 +65,10 @@ public class StopclockTrigger : BaseTrigger
         {
             if (!name.GetStopclock(out Stopclock clock)) { return; }
             clock.Start();
+        }
+        else if(operation == (int)Operations.SetAndStart)
+        {
+            new Stopclock(name, countdown, time, followPause: followLevelPause).Start();
         }
         else
         {
