@@ -165,6 +165,7 @@ public partial class Stopclock
 
     public void SetTime(int[] time, bool initial = false, bool reset = true)
     {
+        initialMinute = 0;
         for (int i = 0, n = 0; i < time.Length; i++)
         {
             n = time.Length - 1 - i;
