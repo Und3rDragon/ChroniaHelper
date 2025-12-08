@@ -41,11 +41,25 @@ public class SeamlessSpinnerAlphaSlider
         {
             var spin = e as SeamlessSpinner;
 
-            spin.sprite?.Color = spin.spriteColor.Parsed() * (1 - s);
-            foreach(var i in spin.bgSprites)
+            if (spin.rainbow)
             {
-                i.Color = spin.bgSpriteColor.Parsed() * (1 - s);
+                spin.UpdateRainbowHue();
+
+                spin.sprite?.Color *= (1 - s);
+                foreach (var i in spin.bgSprites)
+                {
+                    i.Color *= (1 - s);
+                }
             }
+            else
+            {
+                spin.sprite?.Color = spin.spriteColor.Parsed() * (1 - s);
+                foreach (var i in spin.bgSprites)
+                {
+                    i.Color = spin.bgSpriteColor.Parsed() * (1 - s);
+                }
+            }
+
             spin.border?.imageColor = new CColor(Color.Black, 1 - s);
         }
     }

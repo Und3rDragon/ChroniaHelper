@@ -188,7 +188,7 @@ public class SeamlessSpinner : Entity
 
     private Flip flipX, flipY, bgFlipX, bgFlipY;
 
-    private bool trigger, rainbow;
+    public bool trigger, rainbow;
 
     private float triggerAnimDelay;
 
@@ -468,7 +468,7 @@ public class SeamlessSpinner : Entity
         }
     }
 
-    private void UpdateRainbowHue()
+    public void UpdateRainbowHue()
     {
         foreach (Component component in Components)
         {
