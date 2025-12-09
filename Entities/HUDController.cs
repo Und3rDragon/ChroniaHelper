@@ -51,7 +51,10 @@ public class HUDController : BaseEntity
         Md.Settings.speedDisplayer,
         Md.Settings.staminaMeterMenu,
         Md.Settings.stateMachineDisplayer,
-        Md.Settings.totalDeathsDisplayer
+        Md.Settings.totalDeathsDisplayer,
+        Md.Settings.levelBloomDisplayer,
+        Md.Settings.levelLightingDisplayer,
+        Md.Settings.cameraOffsetDisplayer
     };
     
     public static void LevelEnd(On.Celeste.Level.orig_End orig, Level self)
@@ -64,13 +67,15 @@ public class HUDController : BaseEntity
         Md.Session.HUDPrimaryState.Clear();
 
         Md.Session.HUDStateRegistered = false;
+
+        Md.Session.HUDStateRegister = string.Empty;
         
         orig(self);
     }
 
     protected override void AddedExecute(Scene scene)
     {
-        if (Md.Session.HUDStateRegistered)
+        if (Md.Session.HUDStateRegistered && condition == Md.Session.HUDStateRegister)
         {
             return;
         }
@@ -110,6 +115,8 @@ public class HUDController : BaseEntity
         }
 
         Md.Session.HUDStateRegistered = true;
+
+        Md.Session.HUDStateRegister = condition;
     }
     
 }

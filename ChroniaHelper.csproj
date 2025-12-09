@@ -20,6 +20,12 @@
         <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="ModFolder\Loenn\triggers\debugging\**" />
+      <EmbeddedResource Remove="ModFolder\Loenn\triggers\debugging\**" />
+      <None Remove="ModFolder\Loenn\triggers\debugging\**" />
+    </ItemGroup>
+
 	<ItemGroup>
 		<CelesteModReference Include="CommunalHelper" />
 	</ItemGroup>
@@ -31,11 +37,7 @@
 	<ItemGroup>
 		<CelesteModReference Include="MaxHelpingHand" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="ModFolder\Loenn\triggers\debugging\" />
-	</ItemGroup>
-
+	
     <!--Implement dependencies here in an ItemGroup-->
 
 
