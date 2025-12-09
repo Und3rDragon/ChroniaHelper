@@ -11,6 +11,7 @@ controller.placements = {
     data = {
         Introduction = "",
         PlayerCollidingBGTiles = "ChroniaHelper_PlayerCollidingBGTiles",
+        PlayerCollidingEntityBGTiles = "ChroniaHelper_PlayerCollidingEntityBGTiles",
         PlayerTouchingTriggers = "ChroniaHelper_PlayerTouchingTriggers",
         PlayerCollidingEntitiesWithSameDepth = "ChroniaHelper_PlayerCollidingEntitiesWithSameDepth",
         PlayerCollidingEntitiesAbove = "ChroniaHelper_PlayerCollidingEntitiesAbove",
