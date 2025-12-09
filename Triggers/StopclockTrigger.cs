@@ -9,7 +9,7 @@ using ChroniaHelper.Utils.StopwatchSystem;
 
 namespace ChroniaHelper.Triggers;
 
-[Tracked(true)]
+[Tracked(false)]
 [CustomEntity("ChroniaHelper/StopclockTrigger")]
 public class StopclockTrigger : BaseTrigger
 {

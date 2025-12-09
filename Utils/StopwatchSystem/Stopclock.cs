@@ -12,6 +12,9 @@ public partial class Stopclock : IDisposable
     // 线程计数和限制
     private static int activeIsolatedClocks = 0;
     private static int maxIsolatedClocks = 5;
+
+    private static Dictionary<string, Stopclock> clocksToGlobal = new();
+    private static Dictionary<string, Stopclock> clocksToSession = new();
     [LoadHook]
     public static void Load()
     {
@@ -32,6 +35,11 @@ public partial class Stopclock : IDisposable
         if (Md.SaveData.IsNull()) { return; }
 
         HashSet<string> toRemove = new();
+        foreach(var clock in clocksToGlobal)
+        {
+            Md.SaveData.globalStopwatches.Enter(clock.Key, clock.Value);
+        }
+        clocksToGlobal.Clear();
         foreach (var watches in Md.SaveData.globalStopwatches)
         {
             if (!watches.Value.isolatedUpdate)
@@ -76,6 +84,11 @@ public partial class Stopclock : IDisposable
         if (self.Completed) { return; }
 
         HashSet<string> toRemove = new();
+        foreach(var clock in clocksToSession)
+        {
+            Md.Session.sessionStopwatches.Enter(clock.Key, clock.Value);
+        }
+        clocksToSession.Clear();
         foreach (var watches in Md.Session.sessionStopwatches)
         {
             if (Md.SaveData.globalStopwatches.ContainsKey(watches.Key))
@@ -328,11 +341,11 @@ public partial class Stopclock : IDisposable
     {
         if (global)
         {
-            Md.SaveData.globalStopwatches.Enter(name, this);
+            clocksToGlobal.Enter(name, this);
         }
         else
         {
-            Md.Session.sessionStopwatches.Enter(name, this);
+            clocksToSession.Enter(name, this);
         }
 
         registered = true;

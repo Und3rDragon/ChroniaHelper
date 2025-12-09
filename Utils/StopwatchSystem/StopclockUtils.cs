@@ -8,7 +8,7 @@ namespace ChroniaHelper.Utils.StopwatchSystem;
 
 public static class StopclockUtils
 {
-    public static bool GetStopclock(this string name, out Stopclock? clock)
+    public static bool GetStopclock(this string name, out Stopclock clock)
     {
         if (Md.SaveData.globalStopwatches.ContainsKey(name))
         {
@@ -22,7 +22,7 @@ public static class StopclockUtils
             return true;
         }
 
-        clock = null;
+        clock = new Stopclock();
         return false;
     }
     
