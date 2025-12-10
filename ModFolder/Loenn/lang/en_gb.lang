@@ -1156,6 +1156,10 @@ entities.ChroniaHelper/DangerRangeController.attributes.description.value=World 
 
 entities.ChroniaHelper/DieOutsideCameraController.placements.name.controller=Die Outside Camera Controller
 
+# ================= Condition Delay Trigger
+
+triggers.ChroniaHelper/ConditionDelayTrigger.placements.name.trigger=Condition Delay Trigger
+
 # ================= Operation Codes Listener
 
 entities.ChroniaHelper/OperationCodesListener.placements.name.controller=Operation Codes Listener
