@@ -1,0 +1,30 @@
+# FPS, defining how fast the animated parallax plays
+# FPS: float
+FPS: 2
+
+# Frames, defining how the parallax plays the animation
+# Frames: frames syntax
+Frames: 0-9
+
+# TriggerFlag, the parallax will only play WHEN THE FLAG IS ACTIVE
+# TriggerFlag: flag name
+TriggerFlag: StartCounting
+
+# ResetFlag, once the flag is triggered, the parallax will immediately reset to the Reset Frame, by default the first frame (frame 0)
+# ResetFlag: flag name
+ResetFlag: ResetCounting
+
+# ResetFrame, the frame index that the parallax should reset to
+# ResetFrame: integer
+
+# PlayOnce, whether the parallax should stop playing after the parallax reached the last frame of the animation
+# PlayOnce: bool
+PlayOnce: false
+
+# SpeedSlider, using a slider in-game to control the parallax play speed
+# SpeedSlider: slider name
+SpeedSlider: speedSlider
+
+# AlphaExpression, an expression built-in ChroniaHelper that uses sliders and flags to calculate results
+# AlphaExpression: chronia helper expression
+AlphaExpression: 1 - bgSlider
