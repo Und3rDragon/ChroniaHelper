@@ -1152,6 +1152,10 @@ entities.ChroniaHelper/HUDController.placements.name.controller=HUD Controller
 entities.ChroniaHelper/DangerRangeController.placements.name.controller=Danger Range Controller
 entities.ChroniaHelper/DangerRangeController.attributes.description.value=World Coordinate
 
+# ================= Die Outside Camera Controller
+
+entities.ChroniaHelper/DieOutsideCameraController.placements.name.controller=Die Outside Camera Controller
+
 # ================= Operation Codes Listener
 
 entities.ChroniaHelper/OperationCodesListener.placements.name.controller=Operation Codes Listener
