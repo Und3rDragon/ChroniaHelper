@@ -9,6 +9,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using FMOD;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Monocle;
@@ -33,6 +34,7 @@ public class SpriteEntity : Actor
         Current_Frame, Camera_Offset, Solid, Speed,
         Camera_Position, Camera_Zoom,
         Disable_Movement, Kill_Player, Change_Tag,
+        Random_Flag,
         //done
         Holdable_Collider, Jump, Variable, Random, MoveTo_Node, Kill_On_Collide,
         Player_Collider, Repeat_Times, Set_Random
@@ -47,7 +49,7 @@ public class SpriteEntity : Actor
         Command.Wait, Command.Wait_Flag, Command.Repeat, Command.Ignore, Command.Sound,Command.Music,
         Command.Hitbox, Command.Holdable_Collider, Command.Player_Collider, Command.Current_Frame, Command.Solid, Command.Speed,
         Command.Disable_Movement, Command.Kill_Player, Command.Variable, Command.Random,
-        Command.Change_Tag, Command.Kill_On_Collide, Command.Repeat_Times
+        Command.Change_Tag, Command.Kill_On_Collide, Command.Repeat_Times, Command.Random_Flag
     };
 
     [LoadHook]
@@ -674,6 +676,16 @@ public class SpriteEntity : Actor
                 if (segs < 2) { killOnCollide = false; }
 
                 bool.TryParse(commandLine[1], out killOnCollide);
+            }
+
+            else if(execute == Command.Random_Flag)
+            {
+                // syntax: random_flag, flag1, flag2 ...
+                if (segs < 2) { continue; }
+
+                int n = Calc.Random.Range(1, segs);
+
+                commandLine[n].SetFlag(true);
             }
 
             else

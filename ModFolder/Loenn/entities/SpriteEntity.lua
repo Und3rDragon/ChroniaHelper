@@ -117,6 +117,7 @@ se.fieldInformation = {
 					"kill_on_collide,enable?",
 					"player_collider,width,height,(x),(y),(addOnCurrent?)",
                     "repeat_times,commandIndex,times(-1 = always)",
+                    "random_flag,flag1,(flag2 ...)",
 				}
 			},
 			editable = true,
