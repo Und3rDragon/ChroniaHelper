@@ -165,6 +165,11 @@ public class ModifiedAnimatedParallax : Parallax
 
         if (IsVisible(scene as Level))
         {
+            if (alphaExpression != null)
+            {
+                Alpha = alphaExpression.ParseMathExpression();
+            }
+            
             if (!resetFlag.IsNullOrEmpty())
             {
                 if (resetFlag.GetFlag())
@@ -196,7 +201,10 @@ public class ModifiedAnimatedParallax : Parallax
             
             if (currentFrameTimer < 0f)
             {
-                currentFrameTimer += (1f / fps).Clamp(Engine.DeltaTime, 2592000f);
+                while(currentFrameTimer < 0f)
+                {
+                    currentFrameTimer += (1f / fps).Clamp(Engine.DeltaTime, 2592000f);
+                }
                 if (!playOnce || currentFrame != frameOrder.Length - 1)
                 {
                     currentFrame++;
@@ -204,11 +212,6 @@ public class ModifiedAnimatedParallax : Parallax
                 currentFrame = currentFrame < 0 ? 0 : currentFrame; // For frame index protection
                 currentFrame %= frameOrder.Length;
                 Texture = frames[frameOrder[currentFrame]];
-            }
-
-            if(alphaExpression != null)
-            {
-                Alpha = alphaExpression.ParseMathExpression();
             }
         }
     }
