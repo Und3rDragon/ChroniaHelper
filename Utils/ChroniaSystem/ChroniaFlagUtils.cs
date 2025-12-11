@@ -25,7 +25,17 @@ public static class ChroniaFlagUtils
     {
         name.SetFlag(active);
 
-        if (global) { Md.SaveData.flags.Add(name); }
+        if (global)
+        {
+            if (active)
+            {
+                Md.SaveData.flags.Add(name);
+            }
+            else
+            {
+                Md.SaveData.flags.SafeRemove(name);
+            }
+        }
     }
 
     public static void SetFlag(this string name, bool active, bool global, bool temporary)

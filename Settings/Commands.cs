@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
 using TextCopy;
 using static ChroniaHelper.Entities.PasswordKeyboard.PasswordKeyboard;
@@ -45,6 +46,32 @@ public class Commands
         hash.LogCommand();
         ClipboardService.SetText(hash);
         "Password copied onto your clipboard".LogCommand(Color.Yellow);
+    }
+
+    [Command("chronia_flag", "Set Flag")]
+    public static void CommandFlag(string name, bool state = true, bool global = false, bool temporary = false)
+    {
+        if (Engine.Scene is not Level) { return; }
+        if (!Md.InstanceReady) { return; }
+
+        name.SetFlag(state, global, temporary);
+    }
+
+    [Command("chronia_flag_per_room", "Set up a flag that works only in one room")]
+    public static void CommandRoomFlag(string name, bool state = true)
+    {
+        if (Engine.Scene is not Level) { return; }
+        if (!Md.InstanceReady) { return; }
+
+        name.SetFlag(state);
+        if (state)
+        {
+            Md.Session.flagsPerRoom.Add(name);
+        }
+        else
+        {
+            Md.Session.flagsPerRoom.SafeRemove(name);
+        }
     }
 }
 

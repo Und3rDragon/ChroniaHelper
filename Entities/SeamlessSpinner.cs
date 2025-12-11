@@ -327,7 +327,7 @@ public class SeamlessSpinner : Entity
             var bubblers = (scene as Level).Tracker.GetEntities<DangerBubbler>();
             foreach (var bubbler in bubblers)
             {
-                Log.Info(bubbler.SourceData.ID);
+                //Log.Info(bubbler.SourceData.ID);
                 if (bubbler.SourceData.ID.ToString() == childMode)
                 {
                     childModeParent = bubbler as DangerBubbler;

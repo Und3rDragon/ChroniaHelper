@@ -67,6 +67,8 @@ public class ChroniaHelperModule : EverestModule
         Instance = this;
     }
 
+    public static bool InstanceReady => Session != null && SaveData != null;
+
     public static bool FrostHelperLoaded;
     public static bool CommunalHelperLoaded { get; private set; }
     public static bool VivHelperLoaded;
