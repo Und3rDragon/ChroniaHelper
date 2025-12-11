@@ -14,6 +14,7 @@ public static class MapProcessor
     [LoadHook]
     public static void Load()
     {
+        On.Celeste.SaveData.Start += OnSaveDataStart;
         On.Celeste.Level.LoadLevel += OnLevelLoadLevel;
         On.Celeste.MapData.Load += OnMapDataLoad;
         On.Celeste.LevelLoader.LoadingThread += OnLevelReload;
@@ -26,6 +27,7 @@ public static class MapProcessor
     [UnloadHook]
     public static void Unload()
     {
+        On.Celeste.SaveData.Start -= OnSaveDataStart;
         On.Celeste.Level.LoadLevel -= OnLevelLoadLevel;
         On.Celeste.MapData.Load -= OnMapDataLoad;
         On.Celeste.LevelLoader.LoadingThread -= OnLevelReload;
@@ -63,7 +65,14 @@ public static class MapProcessor
         Collider = bgSolidTilesGrid(level),
     };
     public static bool bgMode = false;
-    
+
+    public static Tuple<int, SaveData> currentSaveData = null;
+    private static void OnSaveDataStart(On.Celeste.SaveData.orig_Start orig, SaveData self, int index)
+    {
+        orig(self, index);
+
+        currentSaveData = new (index, self);
+    }
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
