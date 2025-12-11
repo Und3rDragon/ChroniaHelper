@@ -73,6 +73,108 @@ public class Commands
             Md.Session.flagsPerRoom.SafeRemove(name);
         }
     }
+
+    [Command("chronia_all_flags", "List all flags")]
+    public static void CommandAllFlags()
+    {
+        if (Engine.Scene is not Level) { return; }
+        if (!Md.InstanceReady) { return; }
+
+        Log.title("Listing all the current flags").LogCommand(Color.Yellow);
+        Log.title("Level flags").LogCommand(Color.Cyan);
+        foreach(var i in MaP.level.Session.Flags)
+        {
+            i.LogCommand();
+        }
+
+        Log.title("Flags per room").LogCommand(Color.Cyan);
+        foreach (var i in Md.Session.flagsPerRoom)
+        {
+            i.LogCommand();
+        }
+
+        Log.title("Flags per death").LogCommand(Color.Cyan);
+        foreach (var i in Md.Session.flagsPerDeath)
+        {
+            i.LogCommand();
+        }
+
+        Log.title("Global flags").LogCommand(Color.Cyan);
+        foreach (var i in Md.SaveData.flags)
+        {
+            i.LogCommand();
+        }
+
+        CommandLog.LogDivider();
+    }
+
+    [Command("chronia_all_counters", "List all counters")]
+    public static void CommandAllCounters()
+    {
+        if (Engine.Scene is not Level) { return; }
+        if (!Md.InstanceReady) { return; }
+
+        Log.title("Listing all the current counters").LogCommand(Color.Yellow);
+        Log.title("Level counters").LogCommand(Color.Cyan);
+        foreach (var i in MaP.level.Session.Counters)
+        {
+            $"{i.Key} = {i.Value}".LogCommand();
+        }
+
+        Log.title("Counters per room").LogCommand(Color.Cyan);
+        foreach (var i in Md.Session.countersPerRoom)
+        {
+            $"{i.Key} = {i.Value}".LogCommand();
+        }
+
+        Log.title("Counters per death").LogCommand(Color.Cyan);
+        foreach (var i in Md.Session.countersPerDeath)
+        {
+            $"{i.Key} = {i.Value}".LogCommand();
+        }
+
+        Log.title("Global counters").LogCommand(Color.Cyan);
+        foreach (var i in Md.SaveData.counters)
+        {
+            $"{i.Key} = {i.Value}".LogCommand();
+        }
+
+        CommandLog.LogDivider();
+    }
+
+    [Command("chronia_all_sliders", "List all sliders")]
+    public static void CommandAllSliders()
+    {
+        if (Engine.Scene is not Level) { return; }
+        if (!Md.InstanceReady) { return; }
+
+        Log.title("Listing all the current sliders").LogCommand(Color.Yellow);
+        Log.title("Level sliders").LogCommand(Color.Cyan);
+        foreach (var i in MaP.level.Session.Sliders)
+        {
+            $"{i.Value.Name} = {i.Value.Value}".LogCommand();
+        }
+
+        Log.title("Sliders per room").LogCommand(Color.Cyan);
+        foreach (var i in Md.Session.slidersPerRoom)
+        {
+            $"{i.Key} = {i.Value}".LogCommand();
+        }
+
+        Log.title("Sliders per death").LogCommand(Color.Cyan);
+        foreach (var i in Md.Session.slidersPerDeath)
+        {
+            $"{i.Key} = {i.Value}".LogCommand();
+        }
+
+        Log.title("Global sliders").LogCommand(Color.Cyan);
+        foreach (var i in Md.SaveData.sliders)
+        {
+            $"{i.Key} = {i.Value}".LogCommand();
+        }
+
+        CommandLog.LogDivider();
+    }
 }
 
 public static class CommandLog
@@ -86,6 +188,6 @@ public static class CommandLog
     public static void LogDivider(string title = "", Color? color = null)
     {
         Color c = color ?? Color.White;
-        Engine.Commands.Log(Log.title(title), c);
+        Engine.Commands.Log(title.IsNullOrEmpty() ? Log.divider : Log.title(title), c);
     }
 }
