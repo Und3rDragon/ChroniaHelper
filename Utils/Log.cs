@@ -134,6 +134,7 @@ public static class Log
     }
 
     public static string divider = "________________________________________________";
+    public static string title(this string title) => $"__________________{title}__________________";
     public static void Divider(LogLevel level = LogLevel.Info)
     {
         if (level == LogLevel.Info)
