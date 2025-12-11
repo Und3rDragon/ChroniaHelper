@@ -74,6 +74,7 @@ public class ChroniaHelperModule : EverestModule
     public static bool VivHelperLoaded { get; private set; }
     public static bool MaddieLoaded { get; private set; }
     public static bool KoseiHelperLoaded { get; private set; }
+    public static bool XaphanHelperLoaded { get; private set; }
 
     public override void Load()
     {
@@ -132,7 +133,23 @@ public class ChroniaHelperModule : EverestModule
             Version = new Version("1.38.0"),
         };
         MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
-        
+
+        // Kosei Helper judgement
+        EverestModuleMetadata koseiMetadata = new()
+        {
+            Name = "KoseiHelper",
+            Version = new Version("1.19.0"),
+        };
+        KoseiHelperLoaded = Everest.Loader.DependencyLoaded(koseiMetadata);
+
+        // Xaphan Helper judgement
+        EverestModuleMetadata xaphanMetadata = new()
+        {
+            Name = "XaphanHelper",
+            Version = new Version("1.0.78"),
+        };
+        XaphanHelperLoaded = Everest.Loader.DependencyLoaded(xaphanMetadata);
+
         PolygonCollider.Load();
 
         // Map Hider?

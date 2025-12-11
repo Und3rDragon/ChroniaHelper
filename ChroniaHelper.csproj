@@ -37,7 +37,15 @@
 	<ItemGroup>
 		<CelesteModReference Include="MaxHelpingHand" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<CelesteModReference Include="KoseiHelper" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<CelesteModReference Include="XaphanHelper" />
+	</ItemGroup>
+
     <!--Implement dependencies here in an ItemGroup-->
 
 

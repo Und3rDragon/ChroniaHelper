@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Celeste.Mod.XaphanHelper;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
@@ -103,6 +104,15 @@ public class Commands
         foreach (var i in Md.SaveData.flags)
         {
             i.LogCommand();
+        }
+
+        if (Md.XaphanHelperLoaded)
+        {
+            Log.title("Xaphan Helper Global flags").LogCommand(Color.Cyan);
+            foreach (var i in XaphanModule.ModSaveData.GlobalFlags)
+            {
+                i.LogCommand();
+            }
         }
 
         CommandLog.LogDivider();
