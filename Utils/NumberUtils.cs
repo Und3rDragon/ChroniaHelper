@@ -1179,4 +1179,43 @@ public static class NumberUtils
     {
         return TryGeneralParse(input, out TOut result) ? result : defaultValue;
     }
+    
+    public static float Approach(this float value, float target, float maxMove)
+    {
+        return Calc.Approach(value, target, maxMove.GetAbs());
+    }
+    
+    public static int Approach(this int val, int target, int delta)
+    {
+        var maxMove = delta.GetAbs();
+        
+        if(val < target)
+        {
+            return Math.Min(val + maxMove, target);
+        }
+        
+        return Math.Max(val - maxMove, target);
+    }
+
+    public static double Approach(this double val, double target, double delta)
+    {
+        var maxMove = delta.GetAbs();
+
+        if (val < target)
+        {
+            return Math.Min(val + maxMove, target);
+        }
+
+        return Math.Max(val - maxMove, target);
+    }
+
+    public static Vc2 Approach(this Vc2 val, Vc2 target, Vc2 delta)
+    {
+        var maxMove = new Vc2(delta.X.GetAbs(), delta.Y.GetAbs());
+
+        var x = val.X.Approach(target.X, maxMove.X);
+        var y = val.Y.Approach(target.Y, maxMove.Y);
+
+        return new Vc2(x, y);
+    }
 }

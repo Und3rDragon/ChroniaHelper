@@ -19,17 +19,25 @@ public class DieOutsideCameraController : BaseEntity
         flag = d.Attr("flag", "ChroniaHelper_DieOutsideCamera");
     }
     private string flag;
-    
+
+    private bool dummyProtection = false;
     protected override void UpdateExecute()
     {
         if (!flag.GetFlag()) { return; }
         
         var cam = MaP.level.Camera.GetBounds();
-
+        
         if (!PUt.TryGetPlayer(out Player player)) { return; }
-
+        
+        if(player.StateMachine.State == 11)
+        {
+            dummyProtection = true;
+        }
+        
         bool inBound = player.CollideRect(cam);
 
-        if (!inBound) { player.Die(player.Speed); }
+        if (inBound) { dummyProtection = false; }
+        
+        if (!inBound && !dummyProtection) { player.Die(player.Speed); }
     }
 }
