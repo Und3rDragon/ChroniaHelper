@@ -30,7 +30,7 @@ public class Displayers : HDRenderEntity
             var displayer = Md.Settings.stateMachineDisplayer;
             var displayUI = stateMachine_UI;
             
-            string target = $"{PUt.player?.StateMachine.GetCurrentStateName() ?? "null"}";
+            string target = $"State {PUt.player?.StateMachine.State} {PUt.player?.StateMachine.GetCurrentStateName() ?? "null"}";
 
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
