@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 using ChroniaHelper.Utils;
 using YoctoHelper.Cores;
 
-namespace ChroniaHelper.Cores;
+namespace ChroniaHelper.Cores.Graphical;
 
-public class SerialImageGroupRaw
+public class SerialImageGroup
 {
-    public List<SerialImageRaw> members = new();
+    public List<SerialImage> members = new();
     /// <summary>
     /// An empty template defining member parameters
     /// </summary>
-    public SerialImageRaw template = new SerialImageRaw("ChroniaHelper/DisplayFonts/font");
+    public SerialImage template = new SerialImage("ChroniaHelper/DisplayFonts/font");
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="template">An empty template defining member parameters</param>
     /// <param name="paths"></param>
-    public SerialImageGroupRaw(SerialImageRaw template, params string[] paths)
+    public SerialImageGroup(SerialImage template, params string[] paths)
     {
         this.template = template;
         foreach (var p in paths)
@@ -33,7 +33,7 @@ public class SerialImageGroupRaw
         }
     }
     
-    public SerialImageGroupRaw(params string[] paths)
+    public SerialImageGroup(params string[] paths)
     {
         foreach(var p in paths)
         {
@@ -75,7 +75,7 @@ public class SerialImageGroupRaw
         
         for(int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = new SerialImageRaw(SafeGetPath(i));
+            SerialImage image = new SerialImage(SafeGetPath(i));
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -138,7 +138,7 @@ public class SerialImageGroupRaw
 
         for (int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = new SerialImageRaw(SafeGetPath(i));
+            SerialImage image = new SerialImage(SafeGetPath(i));
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;

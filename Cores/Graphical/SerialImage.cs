@@ -8,12 +8,12 @@ using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using YamlDotNet.Serialization;
 
-namespace ChroniaHelper.Cores;
+namespace ChroniaHelper.Cores.Graphical;
 
 /// <summary>
-/// Alternate SerialImage that renders by Draw.SpriteBatch.Draw(), compatible for HD Renders
+/// An image class that renders by MTexture.Draw()
 /// </summary>
-public class SerialImageRaw
+public class SerialImage
 {
     public List<MTexture> textures = new();
     public Vc2 position = Vc2.Zero;
@@ -38,11 +38,11 @@ public class SerialImageRaw
         return result;
     }
 
-    public SerialImageRaw(string path)
+    public SerialImage(string path)
     {
         GFX.Game.GetAtlasSubtextures(path).ApplyTo(out textures);
     }
-    public SerialImageRaw(List<MTexture> source)
+    public SerialImage(List<MTexture> source)
     {
         source.ApplyTo(out textures);
     }
@@ -66,8 +66,8 @@ public class SerialImageRaw
             
             if (i == 0)
             {
-                p1 = new Vector2(-asset.Width, -asset.Height) * segmentOrigin * scale;
-                p2 = new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
+                p1 = new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
+                p2 = new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
                 segmentPosition.Add(cal);
                 
                 continue;
@@ -84,8 +84,8 @@ public class SerialImageRaw
                 cal.X = cal.X + lastAsset.Width * (1 - segmentOrigin.X) * scale + asset.Width * segmentOrigin.X * scale + distance;
             }
             
-            Vc2 _p1 = cal + new Vector2(-asset.Width, -asset.Height) * segmentOrigin * scale;
-            Vc2 _p2 = cal + new Vector2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
+            Vc2 _p1 = cal + new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
+            Vc2 _p2 = cal + new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
 
             segmentPosition.Add(cal);
 
@@ -127,11 +127,11 @@ public class SerialImageRaw
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
 
-            //texture.Draw(renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero), 
-            //    origin, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
-            Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
-                null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),
-                scale, GetSpriteEffect(), depth);
+            texture.Draw(renderPosition + dPos + overallOffset - segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
+                Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
+            //Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
+            //    null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),
+            //    scale, GetSpriteEffect(), depth);
         }
     }
     

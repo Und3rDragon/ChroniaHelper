@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AsmResolver.DotNet.Serialized;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.Graphical;
 
 namespace ChroniaHelper.Utils.StopwatchSystem;
 

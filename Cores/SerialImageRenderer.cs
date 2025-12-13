@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.StopwatchSystem;
 

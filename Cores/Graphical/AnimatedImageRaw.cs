@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ChroniaHelper.Cores;
+namespace ChroniaHelper.Cores.Graphical;
 
 /// <summary>
 /// Alternate AnimatedImage that renders by Draw.SpriteBatch.Draw(), compatible for HD Renders
