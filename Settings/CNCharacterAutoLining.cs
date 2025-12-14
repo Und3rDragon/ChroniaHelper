@@ -421,11 +421,6 @@ public class CNCharacterAutoLining
                     }
                 }
             }
-            else if (self.currentPosition + num > (float)self.maxLineWidth)
-            {
-                self.AddNewLine();
-                orig(self, word);
-            }
             else
             {
                 orig(self, word);
