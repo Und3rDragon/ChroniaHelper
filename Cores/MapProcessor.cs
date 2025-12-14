@@ -217,6 +217,12 @@ public static class MapProcessor
         level = self;
         entities = level.Tracker.Entities;
 
+        if (self.OnInterval(5f))
+        {
+            self.Session.Flags.RemoveWhere((flag) => flag.StartsWith("ChroniaHelper_Language_"));
+        }
+        $"ChroniaHelper_Language_{Dialog.Language.Id}".SetFlag(true);
+
         // Flag Button Flag setup
         if (Md.Session.flagNames != null)
         {
