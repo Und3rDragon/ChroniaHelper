@@ -28,6 +28,7 @@ public static class SensitiveFlags
         { @"^ChroniaHelper_ConnectedRefill_.*_queue$", Sensitivity.None },
         { @"^ChroniaHelper_ConnectedRefill_.*_collect$" , Sensitivity.None },
         { @"^ChroniaHelper_Stopclock_.*", Sensitivity.None },
+        { @"^ChroniaHelper_Language_.*", Sensitivity.AllowNoRegister }
     };
     
     public static bool SensitiveFlagged(this string name, RegexOptions regexExpansion = RegexOptions.None)
