@@ -64,3 +64,4 @@ modoptions_ChroniaHelper_cameraDisplay_CameraY=Y Only
 modoptions_ChroniaHelper_cameraDisplay_CameraXY=Both X and Y
 modoptions_ChroniaHelper_levelBloomDisplayer=Bloom
 modoptions_ChroniaHelper_levelLightingDisplayer=Lighting
+modoptions_ChroniaHelper_ChineseCharactersAutoLining=CN Characters Auto Lining
