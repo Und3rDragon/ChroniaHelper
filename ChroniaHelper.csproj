@@ -33,10 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<CelesteModReference Include="FrostHelper" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Folder Include="ModFolder\Loenn\triggers\debugging\" />
 	</ItemGroup>
 

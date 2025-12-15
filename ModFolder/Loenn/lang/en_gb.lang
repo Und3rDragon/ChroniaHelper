@@ -1156,6 +1156,10 @@ entities.ChroniaHelper/DangerRangeController.attributes.description.value=World 
 
 entities.ChroniaHelper/DieOutsideCameraController.placements.name.controller=Die Outside Camera Controller
 
+# ================= Chinese Characters Auto-Lining Controller
+
+entities.ChroniaHelper/ChineseCharactersAutoLiningController.placements.name.controller=Chinese Characters Auto-Lining Controller
+
 # ================= Condition Delay Trigger
 
 triggers.ChroniaHelper/ConditionDelayTrigger.placements.name.trigger=Condition Delay Trigger
