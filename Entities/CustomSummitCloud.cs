@@ -153,7 +153,7 @@ public class CustomSummitCloud : Entity
         base.Added(scene);
         
         int count = 0;
-        foreach (var item in MapProcessor.entities[typeof(CustomSummitCloud)])
+        foreach (var item in MaP.entities.FindAll<CustomSummitCloud>())
         {
             CustomSummitCloud cloud = item as CustomSummitCloud;
             if (cloud.id == id)

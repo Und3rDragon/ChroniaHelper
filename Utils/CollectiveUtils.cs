@@ -378,6 +378,26 @@ public static class CollectiveUtils
     }
 
     /// <summary>
+    /// 对集合中的每个元素执行指定操作
+    /// </summary>
+    /// <typeparam name="T">集合元素类型</typeparam>
+    /// <param name="source">源集合</param>
+    /// <param name="action">要执行的操作</param>
+    public static void EachDoWhen<T>(this IEnumerable<T> source, Predicate<T> predicate,Action<T> action)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (action == null) throw new ArgumentNullException(nameof(action));
+
+        foreach (var item in source)
+        {
+            if (predicate(item))
+            {
+                action(item);
+            }
+        }
+    }
+
+    /// <summary>
     /// 对集合中的每个元素执行操作并返回结果集合
     /// </summary>
     /// <typeparam name="TSource">源元素类型</typeparam>

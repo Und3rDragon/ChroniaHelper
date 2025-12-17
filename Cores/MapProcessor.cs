@@ -41,7 +41,7 @@ public static class MapProcessor
     public static MapData mapdata;
     public static int saveSlotIndex;
     public static Level level;
-    public static Dictionary<Type, List<Entity>> entities;
+    public static EntityList entities;
 
     public static Entity globalEntityDummy = new Monocle.Entity();
 
@@ -76,7 +76,7 @@ public static class MapProcessor
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
-        entities = level.Tracker.Entities;
+        entities = level.Entities;
         camOffset = level.CameraOffset;
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
@@ -212,14 +212,20 @@ public static class MapProcessor
         float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inglobalparallax.Y;
         return new Vc2(X, Y);
     }
+    
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
-        level = self;
-        entities = level.Tracker.Entities;
+        orig(self);
         
-        self.Session.Flags.RemoveWhere((flag) => flag.StartsWith("ChroniaHelper_Language_") && flag != $"ChroniaHelper_Language_{Dialog.Language.Id}");
-        $"ChroniaHelper_Language_{Dialog.Language.Id}".SetFlag(true);
+        level = self;
+        entities = level.Entities;
 
+        string languageFlag = $"ChroniaHelper_Language_{Dialog.Language?.Id ?? "english"}";
+        self.Session.Flags.RemoveWhere((flag) =>
+            flag.IsNotNull() && flag.StartsWith("ChroniaHelper_Language_") && flag != languageFlag
+        );
+        languageFlag.SetFlag(true);
+        
         // Flag Button Flag setup
         if (Md.Session.flagNames != null)
         {
@@ -240,8 +246,6 @@ public static class MapProcessor
                 timer.SetFlag(false);
             }
         }
-
-        orig(self);
     }
 
     public static Scene scene;
