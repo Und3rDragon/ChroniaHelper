@@ -367,7 +367,27 @@ public static class StringUtils
         float n = 0;
         return float.TryParse(input, out n);
     }
-    
+
+    public static int ToIntOrCounter(this string input)
+    {
+        if (int.TryParse(input, out int n))
+        {
+            return n;
+        }
+
+        return MaP.level?.Session?.GetCounter(input) ?? 0;
+    }
+
+    public static float ToFloatOrSlider(this string input)
+    {
+        if (float.TryParse(input, out float n))
+        {
+            return n;
+        }
+
+        return MaP.level?.Session?.GetSlider(input) ?? 0;
+    }
+
     public static string[][] ParseSquaredString(this string source, string firstSeparator = ";", string secondSeparator = ",", StringSplitOptions split = StringSplitOptions.TrimEntries)
     {
         string[] _s = source.Split(firstSeparator, split);
