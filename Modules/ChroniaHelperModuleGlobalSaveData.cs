@@ -137,7 +137,7 @@ public abstract class ChroniaHelperModuleGlobalSaveData
     private string GetFullPath(string relativePath)
     {
         string path = relativePath ?? DEFAULT_SAVE_PATH;
-        return Path.Combine(Everest.PathGame, "Saves", "ChroniaHelper", path);
+        return Path.Combine(Everest.PathSettings, "ChroniaHelper", path);
     }
 
     /// <summary>
