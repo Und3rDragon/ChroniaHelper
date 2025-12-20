@@ -114,10 +114,7 @@ public class InputFlagController : AbstractInputController
         bool result = true;
         foreach(var item in conditions)
         {
-            bool inverted = item.StartsWith('!');
-            string name = item.TrimStart('!');
-
-            result.TryNegative(name.GetConditionalInvertedFlag(inverted));
+            result.TryNegative(item.GetGeneralInvertedFlag());
         }
 
         return result;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Formats.Tar;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -64,7 +65,7 @@ public class ColoredCustomCoreMessage : Entity
         if (useSE && Md.FrostHelperLoaded)
         {
             se_line = data.Attr("line");
-            FI.TryCreateSessionExpression(se_line, out se);
+            se = se_line.FrostHelper_TryCreateSessionExpression();
         }
 
         this.wholeDialog = data.Bool("wholeDialog", false);
@@ -216,7 +217,7 @@ public class ColoredCustomCoreMessage : Entity
     {
         if (useSE && Md.FrostHelperLoaded)
         {
-            fLine = FI.GetIntSessionExpressionValue(se, MaP.level.Session);
+            fLine = se.FrostHelper_GetIntSessionExpressionValue();
             if (fLine != line)
             {
                 line = fLine;
