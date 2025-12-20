@@ -122,8 +122,21 @@ public static class ChroniaFlagUtils
         }
     }
     
-    public static bool GetConditionalInvertedFlag(this string name, bool invertIndicator = false)
+    public static bool GetConditionalInvertedFlag(this string name, Func<string, bool> invertCheck)
     {
-        return invertIndicator? !MaP.level.Session.GetFlag(name) : MaP.level.Session.GetFlag(name);
+        return invertCheck(name)? !MaP.level.Session.GetFlag(name) : MaP.level.Session.GetFlag(name);
+    }
+    
+    public static bool GetConditionalInvertedFlag(this string name, Func<string, bool> invertCheck, Func<string, string> invertParser)
+    {
+        return invertCheck(name) ? !MaP.level.Session.GetFlag(invertParser(name)) : MaP.level.Session.GetFlag(name);
+    }
+    
+    public static bool GetGeneralInvertedFlag(this string name)
+    {
+        return name.GetConditionalInvertedFlag(
+            (flag) => flag.StartsWith('!'),
+            (flag) => flag.TrimStart('!')
+            );
     }
 }

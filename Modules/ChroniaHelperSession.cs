@@ -12,6 +12,7 @@ using ChroniaHelper.Components;
 using System.Diagnostics;
 using ChroniaHelper.Utils.StopwatchSystem;
 using ChroniaHelper.Entities;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Modules;
 
@@ -165,6 +166,37 @@ public class ChroniaHelperSession : EverestModuleSession
     // HUD Controller
     public List<bool> HUDPrimaryState = new();
     public bool HUDStateRegistered = false;
+
+    // Condition Listener
+    /// <summary>
+    /// item1: condition, item2: constantly or changed, item3: flag operation
+    /// item4: expression using, item5: target flag
+    /// </summary>
+    public struct ConditionListener
+    {
+        public string condition;
+        /// <summary>
+        /// Constantly = 0, WhenChanged = 1, WhenTrue = 2, WhenFalse = 3
+        /// </summary>
+        public int constant;
+        /// <summary>
+        /// On = 0, Off = 1, Switch = 2
+        /// </summary>
+        public int flagOperation;
+        /// <summary>
+        /// Flags = 0, ChroniaMathExpression = 1, FrostSessionExpression = 2
+        /// </summary>
+        public int usingExpression;
+        /// <summary>
+        /// Delay or Interval
+        /// </summary>
+        public float time;
+        public string flag;
+    }
+    public Dictionary<string, ConditionListener> listeningConditions = new();
+    public Dictionary<string, bool> listeningConditionLastState = new();
+    public Dictionary<string, bool> listeningConditionTimerState = new();
+    public Dictionary<string, float> listeningConditionTimer = new();
 
     public HashSet<string> flagsPerRoom = new();
     public HashSet<string> flagsPerDeath = new();

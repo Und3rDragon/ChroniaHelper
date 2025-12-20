@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ChroniaHelper.Utils;
 using MonoMod.ModInterop;
 
 namespace ChroniaHelper.Imports;
@@ -20,6 +20,11 @@ public static class FrostHelperImports
     /// </summary>
     public delegate bool _TryCreateSessionExpression(string str, [NotNullWhen(true)] out object? expression);
     public static _TryCreateSessionExpression TryCreateSessionExpression;
+    public static object FrostHelper_TryCreateSessionExpression(this string str)
+    {
+        TryCreateSessionExpression(str, out object expression);
+        return expression;
+    }
 
     /// <summary>
     /// Returns the current value of a Session Expression.
@@ -27,6 +32,10 @@ public static class FrostHelperImports
     /// </summary>
     public delegate object _GetSessionExpressionValue(object expression, Session session);
     public static _GetSessionExpressionValue GetSessionExpressionValue;
+    public static object FrostHelper_GetSessionExpressionValue(this object expression)
+    {
+        return GetSessionExpressionValue(expression, MaP.level.Session);
+    }
 
     /// <summary>
     /// Returns the type that the given session expression will return, or typeof(object) if that's unknown.
@@ -34,6 +43,10 @@ public static class FrostHelperImports
     /// </summary>
     public delegate Type _GetSessionExpressionReturnedType(object expression);
     public static _GetSessionExpressionReturnedType GetSessionExpressionReturnedType;
+    public static Type FrostHelper_GetSessionExpressionReturnedType(this object expression)
+    {
+        return GetSessionExpressionReturnedType(expression);
+    }
 
     /// <summary>
     /// Returns the current value of a Session Expression as an integer, coercing it if needed.
@@ -41,6 +54,10 @@ public static class FrostHelperImports
     /// </summary>
     public delegate int _GetIntSessionExpressionValue(object expression, Session session);
     public static _GetIntSessionExpressionValue GetIntSessionExpressionValue;
+    public static int FrostHelper_GetIntSessionExpressionValue(this object expression)
+    {
+        return GetIntSessionExpressionValue(expression, MaP.level.Session);
+    }
 
     /// <summary>
     /// Returns the current value of a Session Expression as a float, coercing it if needed.
@@ -48,13 +65,21 @@ public static class FrostHelperImports
     /// </summary>
     public delegate float _GetFloatSessionExpressionValue(object expression, Session session);
     public static _GetFloatSessionExpressionValue GetFloatSessionExpressionValue;
-
+    public static float FrostHelper_GetFloatSessionExpressionValue(this object expression)
+    {
+        return GetFloatSessionExpressionValue(expression, MaP.level.Session);
+    }
+    
     /// <summary>
     /// Returns the current value of a Session Expression as a boolean, coercing it if needed.
     /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public delegate bool _GetBoolSessionExpressionValue(object expression, Session session);
     public static _GetBoolSessionExpressionValue GetBoolSessionExpressionValue;
+    public static bool FrostHelper_GetBoolSessionExpressionValue(this object expression)
+    {
+        return GetBoolSessionExpressionValue(expression, MaP.level.Session);
+    }
 
     /// <summary>
     /// Creates a Session Expression Context object, which can be passed to <see cref="TryCreateSessionExpression(string,object,out object?)"/>
@@ -73,4 +98,12 @@ public static class FrostHelperImports
     public static _CreateSessionExpressionContext CreateSessionExpressionContext;
 
     public static Func<Color> GetBloomColor;
+    public static Color FrostHelper_GetBloomColor()
+    {
+        return GetBloomColor();
+    }
+    public static CColor FrostHelper_GetBloomChroniaColor()
+    {
+        return GetBloomColor().GetChroniaColor();
+    }
 }
