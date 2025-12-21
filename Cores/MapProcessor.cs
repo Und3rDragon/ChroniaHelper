@@ -3,6 +3,7 @@ using System.Diagnostics;
 using ChroniaHelper.Settings;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
 using YamlDotNet.Core;
 using YoctoHelper.Cores;
@@ -37,6 +38,8 @@ public static class MapProcessor
         On.Monocle.Scene.Update -= GlobalUpdate;
     }
 
+    // Variables
+    
     public static AreaKey areakey;
     public static MapData mapdata;
     public static int saveSlotIndex;
@@ -48,9 +51,12 @@ public static class MapProcessor
     public static bool isRespawning = false;
     public static Vector2 camOffset = Vector2.Zero;
 
+    // Session
+    
     public static Dictionary<string, Session.Slider> sliders = new();
-
+    
     //BG Switch references
+    
     public static Grid bgSolidTilesGrid (Level level) => CreateBgtileGrid(level);
     public static Solid bgModeSolidTiles(Level level) => new Solid(new Vector2((float)level.Bounds.Left, (float)level.Bounds.Top), 1f, 1f, true)
     {
@@ -66,6 +72,8 @@ public static class MapProcessor
     };
     public static bool bgMode = false;
 
+    // Hooks
+    
     public static Tuple<int, SaveData> currentSaveData = null;
     private static void OnSaveDataStart(On.Celeste.SaveData.orig_Start orig, SaveData self, int index)
     {
@@ -73,6 +81,7 @@ public static class MapProcessor
 
         currentSaveData = new (index, self);
     }
+    
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
@@ -132,26 +141,6 @@ public static class MapProcessor
         level.SolidTiles.Collidable = !bgMode;
     }
     
-    public static Grid CreateBgtileGrid(this Level level)
-    {
-        Rectangle rectangle = new Rectangle(level.Bounds.Left / 8, level.Bounds.Y / 8, level.Bounds.Width / 8, level.Bounds.Height / 8);
-        Rectangle tileBounds = level.Session.MapData.TileBounds;
-        bool[,] array = new bool[rectangle.Width, rectangle.Height];
-        for (int i = 0; i < rectangle.Width; i++)
-        {
-            for (int j = 0; j < rectangle.Height; j++)
-            {
-                array[i, j] = (level.BgData[i + rectangle.Left - tileBounds.Left, j + rectangle.Top - tileBounds.Top] != '0');
-            }
-        }
-        return new Grid(8f, 8f, array);
-    }
-
-    private static bool BgEntityInLevel(Level level)
-    {
-        //return level.Entities.Any((Entity e) => e is BGModeToggle || e is BGModeTrigger);
-        return false;
-    }
     
     private static void OnMapDataLoad(On.Celeste.MapData.orig_Load orig, MapData map)
     {
@@ -185,32 +174,6 @@ public static class MapProcessor
     {
         saveSlotIndex = index;
         orig(index);
-    }
-
-    public static Vc2 cameraPos => level?.Camera.Position ?? Vc2.Zero;
-    public static Vc2 cameraCenter => cameraPos + new Vc2(160f, 90f);
-    public static Vc2 levelPos => new Vc2(level?.Bounds.Left ?? 0, level?.Bounds.Top ?? 0);
-    public static Vc2 InParallax(this Vc2 position, Vc2 parallax)
-    {
-        return cameraCenter + (position - cameraCenter) * parallax;
-    }
-    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax)
-    {
-        return position.InParallax(parallax) + levelPos;
-    }
-    public static Vc2 InParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
-    {
-        Vc2 inparallax = position.InParallax(parallax);
-        float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inparallax.X;
-        float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inparallax.Y;
-        return new Vc2(X, Y);
-    }
-    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
-    {
-        Vc2 inglobalparallax = position.InGlobalParallax(parallax);
-        float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inglobalparallax.X;
-        float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inglobalparallax.Y;
-        return new Vc2(X, Y);
     }
     
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
@@ -248,13 +211,11 @@ public static class MapProcessor
         }
     }
 
-    public static Scene scene;
-    public static Level sLevel => scene as Level;
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)
     {
         scene = self;
         orig(self);
-
+        
         if (Md.SaveData.IsNotNull())
         {
             // Flag Timer Trigger
@@ -268,13 +229,50 @@ public static class MapProcessor
         }
     }
 
+    // Shortcuts and Properties
+
+    public static Scene scene;
+    public static Level sLevel => scene as Level;
+    public static MouseState mouseState => Mouse.GetState();
+    public static KeyboardState keyboardState => Keyboard.GetState();
+    public static GamePadState gamePadState => GamePad.GetState(PlayerIndex.One);
+
+    public static Vc2 cameraPos => level?.Camera.Position ?? Vc2.Zero;
+    public static Vc2 cameraCenter => cameraPos + new Vc2(160f, 90f);
+    public static Vc2 levelPos => new Vc2(level?.Bounds.Left ?? 0, level?.Bounds.Top ?? 0);
+    public static Vc2 InParallax(this Vc2 position, Vc2 parallax)
+    {
+        return cameraCenter + (position - cameraCenter) * parallax;
+    }
+    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax)
+    {
+        return position.InParallax(parallax) + levelPos;
+    }
+    public static Vc2 InParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
+    {
+        Vc2 inparallax = position.InParallax(parallax);
+        float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inparallax.X;
+        float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inparallax.Y;
+        return new Vc2(X, Y);
+    }
+    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
+    {
+        Vc2 inglobalparallax = position.InGlobalParallax(parallax);
+        float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inglobalparallax.X;
+        float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inglobalparallax.Y;
+        return new Vc2(X, Y);
+    }
     public static Vc2 CameraPos(this Level level) => level?.Camera.Position ?? Vc2.Zero;
     public static Vc2 CameraCenter(this Level level) => CameraPos(level) + new Vc2(160f, 90f);
     public static Vc2 LevelPos(this Level level) => new Vc2(level?.Bounds.Left ?? 0, level?.Bounds.Top ?? 0);
     public static Vc2 CameraPos(this Scene scene) => (scene as Level)?.Camera.Position ?? Vc2.Zero;
     public static Vc2 CameraCenter(this Scene scene) => CameraPos(scene as Level) + new Vc2(160f, 90f);
     public static Vc2 LevelPos(this Scene scene) => new Vc2((scene as Level)?.Bounds.Left ?? 0, (scene as Level)?.Bounds.Top ?? 0);
-
+    
+    // Methods and functions
+    
+    // Touch Button
+    
     // Check whether the group of touch switches is completed
     public static bool IsSwitchFlagCompleted(string flagIndex)
     {
@@ -295,5 +293,29 @@ public static class MapProcessor
     {
         Md.Session.switchFlag.Add($"ChroniaButtonFlag-{name}-ButtonID-{ID}");
     }
+
+    // BG Tiles related
     
+    public static Grid CreateBgtileGrid(this Level level)
+    {
+        Rectangle rectangle = new Rectangle(level.Bounds.Left / 8, level.Bounds.Y / 8, level.Bounds.Width / 8, level.Bounds.Height / 8);
+        Rectangle tileBounds = level.Session.MapData.TileBounds;
+        bool[,] array = new bool[rectangle.Width, rectangle.Height];
+        for (int i = 0; i < rectangle.Width; i++)
+        {
+            for (int j = 0; j < rectangle.Height; j++)
+            {
+                array[i, j] = (level.BgData[i + rectangle.Left - tileBounds.Left, j + rectangle.Top - tileBounds.Top] != '0');
+            }
+        }
+        return new Grid(8f, 8f, array);
+    }
+
+    private static bool BgEntityInLevel(Level level)
+    {
+        //return level.Entities.Any((Entity e) => e is BGModeToggle || e is BGModeTrigger);
+        return false;
+    }
+
+
 }
