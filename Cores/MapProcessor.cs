@@ -89,7 +89,7 @@ public static class MapProcessor
         camOffset = level.CameraOffset;
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
-
+        
         object _slider = new DynamicData(level.Session).Get("_Sliders");
         sliders = (Dictionary<string, Session.Slider>)_slider;
 
