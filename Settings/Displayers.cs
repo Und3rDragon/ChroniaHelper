@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
-using FASF2025Helper.Utils;
 using Microsoft.Xna.Framework.Media;
 using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 

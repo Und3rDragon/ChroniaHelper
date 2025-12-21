@@ -2,7 +2,6 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using ChroniaHelper.Utils;
-using FASF2025Helper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 
