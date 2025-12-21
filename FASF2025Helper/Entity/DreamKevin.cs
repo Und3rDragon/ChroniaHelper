@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using MonoMod.Utils;
 using MonoMod.RuntimeDetour;
 using System.Reflection;
-using FASF2025Helper.Utils;
 using ChroniaHelper.Cores;
 using static Celeste.CrushBlock;
 using System.Collections;
