@@ -12,6 +12,9 @@ using ChroniaHelper.Cores;
 using static Celeste.CrushBlock;
 using System.Collections;
 using Celeste.Mod.CommunalHelper.Entities;
+using ChroniaHelper.Utils;
+using Celeste.Mod.CommunalHelper;
+using Celeste.Mod.CommunalHelper.DashStates;
 
 namespace FASF2025Helper.Entities;
 
@@ -34,8 +37,17 @@ public class DreamKevin : Solid
     private DreamBlock dreamBlock;
     //public DreamBlock DreamBlock => dreamBlock;
 
-    private bool inDreamBlockState => !(fieldGetter_dreamTunnelDashAttacking != null && (bool)fieldGetter_dreamTunnelDashAttacking(null));
-    private static Func<object, object> fieldGetter_dreamTunnelDashAttacking;
+    //private bool inDreamBlockState => !(fieldGetter_dreamTunnelDashAttacking != null && (bool)fieldGetter_dreamTunnelDashAttacking(null));
+    private bool inDreamBlockState()
+    {
+        if (Md.CommunalHelperLoaded)
+        {
+            return !(bool)new DynamicData(typeof(DreamTunnelDash)).Get("dreamTunnelDashAttacking");
+        }
+
+        return true;
+    }
+    //private static Func<object, object> fieldGetter_dreamTunnelDashAttacking;
 
     private Level level;
     private bool canActivate;
@@ -145,20 +157,20 @@ public class DreamKevin : Solid
     [LoadHook]
     public static void Load()
     {
-        if (Md.CommunalHelperLoaded)
-        {
-            HookCommunalHelper();
-        }
+        //if (Md.CommunalHelperLoaded)
+        //{
+        //    HookCommunalHelper();
+        //}
 
         On.Celeste.DreamBlock.FootstepRipple += DreamBlock_FootstepRipple;
     }
 
-    private static void HookCommunalHelper()
-    {
-        fieldGetter_dreamTunnelDashAttacking = DelegateHelper.CreateFieldGetter(typeof(Celeste.Mod.CommunalHelper.DashStates.DreamTunnelDash), "dreamTunnelDashAttacking");
-        if (fieldGetter_dreamTunnelDashAttacking == null)
-            Logger.Error("FASF2025/DelegateHelper", "Failed to create field getter for CommunalHelper.DashStates.DreamTunnelDash.dreamTunnelDashAttacking");
-    }
+    //private static void HookCommunalHelper()
+    //{
+    //    fieldGetter_dreamTunnelDashAttacking = Utils.DelegateHelper.CreateFieldGetter(typeof(Celeste.Mod.CommunalHelper.DashStates.DreamTunnelDash), "dreamTunnelDashAttacking");
+    //    if (fieldGetter_dreamTunnelDashAttacking == null)
+    //        Logger.Error("FASF2025/DelegateHelper", "Failed to create field getter for CommunalHelper.DashStates.DreamTunnelDash.dreamTunnelDashAttacking");
+    //}
 
     [UnloadHook]
     public static void Unload()
@@ -187,7 +199,7 @@ public class DreamKevin : Solid
             RemoveSelf();
             return;
         }
-
+        
         EntityData data = new()
         {
             Position = Position,
@@ -242,8 +254,8 @@ public class DreamKevin : Solid
     public override void Update()
     {
         base.Update();
-
-        if (inDreamBlockState)
+        
+        if (inDreamBlockState())
         {
             dreamBlock.Collidable = true;
             Collidable = false;
