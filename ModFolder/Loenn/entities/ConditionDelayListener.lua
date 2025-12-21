@@ -6,6 +6,14 @@ local controller = {}
 
 controller.name = "ChroniaHelper/ConditionDelayListener"
 
+controller.associatedMods = function(entity)
+    if entity.usingExpression == 2 then
+        return {"FrostHelper", "ChroniaHelper"}
+    end
+    
+    return {"ChroniaHelper"}
+end
+
 controller.placements = {
     name = "controller",
     data = {
