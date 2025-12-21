@@ -199,10 +199,28 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<string, bool> listeningConditionTimerState = new();
     public Dictionary<string, float> listeningConditionTimer = new();
 
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public HashSet<string> flagsPerRoom = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public HashSet<string> flagsPerDeath = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, int> countersPerRoom = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, int> countersPerDeath = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, float> slidersPerRoom = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, float> slidersPerDeath = new();
 }
