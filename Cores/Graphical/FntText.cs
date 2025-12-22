@@ -36,7 +36,7 @@ public class FntText
 
     public FntText(string fntPath)
     {
-        textures = fntPath.CreateFntFontTextures();
+        fntPath.CreateFntFontTextures(out textures, out segmentOffset);
     }
 
     public Vc2 p1, p2;
@@ -127,156 +127,241 @@ public class FntText
         }
     }
 
-    public void Render(string source, Func<char, int> selector, Vc2 worldPosition)
+    public void Render(string source, Vc2 worldPosition)
     {
-        Render(source.ToArray(), selector, worldPosition);
+        Render(source.ToArray(), (c) => (int)c, worldPosition);
     }
 }
 
 public static class FntUtils
 {
     /// <summary>
-    /// 从指定路径的 BMFont .fnt 文件读取字符信息，并关联对应的 MTexture。
+    /// 从指定虚拟路径的 BMFont .fnt 文件读取字符信息、偏移量，并关联对应的 MTexture。
+    /// 支持多页纹理图集。
     /// </summary>
-    /// <param name="fntPath">相对于 GFX.Game 数据目录的 .fnt 文件路径。</param>
-    /// <returns>一个字典，键是字符 ID (int)，值是对应的 MTexture。</returns>
-    public static Dictionary<int, MTexture> CreateFntFontTextures(this string fntPath)
+    /// <param name="virtualFntPathWithoutExtension">
+    /// 相对于 Mod 内容根目录的 .fnt 文件虚拟路径 (不带 .fnt 扩展名)。
+    /// 例如: "Graphics/Atlases/Gameplay/ChroniaHelper/MinecraftFont/chinese"
+    /// </param>
+    /// <param name="textures">
+    /// 输出参数：一个字典，键是字符 ID (int)，值是该字符对应的 MTexture。
+    /// </param>
+    /// <param name="offsets">
+    /// 输出参数：一个字典，键是字符 ID (int)，值是该字符的渲染偏移量 (Vector2)。
+    /// Vector2.X 对应 xoffset, Vector2.Y 对应 yoffset。
+    /// </param>
+    public static void CreateFntFontTextures(
+        this string virtualFntPathWithoutExtension,
+        out Dictionary<int, MTexture> textures,
+        out Dictionary<int, Vector2> offsets)
     {
-        var result = new Dictionary<int, MTexture>();
+        // 初始化输出参数
+        textures = new Dictionary<int, MTexture>();
+        offsets = new Dictionary<int, Vector2>();
 
         try
         {
-            // 1. 构建完整的 .fnt 文件路径
-            string fullPath = Path.Combine(Path.GetFullPath(GFX.Game.DataPath), fntPath);
+            // 1. 构造 .fnt 文件的虚拟路径 (加上 .fnt 扩展名用于查找)
+            string virtualFntPathWithExt = virtualFntPathWithoutExtension + ".fnt";
 
-            if (!File.Exists(fullPath))
+            // 2. 使用 Everest.Content 获取 .fnt 文件对应的 ModAsset
+            ModAsset fntAsset = null;
+            bool assetFound = Everest.Content.TryGet("Graphics/Atlases/Gameplay/" + virtualFntPathWithExt, out fntAsset, false);
+
+            if (!assetFound || fntAsset == null)
             {
-                Log.Warn($"FNT file not found: {fullPath}");
-                return result; // 或者抛出异常
+                Log.Warn($"[ZIP-SAFE] Could not find FNT asset for virtual path: '{virtualFntPathWithExt}' using Everest.Content.TryGet.");
+                return; // 直接返回，输出字典为空
             }
 
-            // 2. 加载并解析 XML
-            XDocument doc = XDocument.Load(fullPath);
-            XElement root = doc.Root;
+            Log.Info($"[ZIP-SAFE] Found FNT asset for virtual path: {virtualFntPathWithExt}");
 
-            if (root?.Name != "font")
-            {
-                Log.Warn($"Invalid FNT file format or root element is not 'font': {fullPath}");
-                return result;
-            }
+            XDocument doc = null;
 
-            // 3. 获取第一页的纹理文件名 (假设只有一个页面)
-            // 注意：BMFont 可以有多页，这里简化处理，只取第一页。
-            string textureAtlasPath = null;
-            var firstPageElement = root?.Element("pages")?.Elements("page")?.FirstOrDefault();
-            if (firstPageElement != null)
-            {
-                textureAtlasPath = firstPageElement.Attribute("file")?.Value;
-            }
-
-            if (string.IsNullOrEmpty(textureAtlasPath))
-            {
-                Log.Warn($"Could not find texture atlas path in FNT file: {fullPath}");
-                return result;
-            }
-
-            // 4. 从 GFX.Game 获取基础纹理 Atlas (MTexture)
-            // 假设 textureAtlasPath 是相对于 GFX.Game 数据目录的相对路径
-            // 并且该图集已经被加载到 GFX.Game 中。
-            // 通常 BMFont 工具生成的 PNG 会直接放在 Content/Graphics/ 下，
-            // 所以 textureAtlasPath 可能就是 "Graphics/your_font_texture.png"
-            // 你需要确保它能通过 GFX.Game[path] 访问到。
-            MTexture baseTextureAtlas = null;
+            // 3. 直接从 ModAsset.Data 获取字节，然后解析为 XDocument
             try
             {
-                baseTextureAtlas = GFX.Game[textureAtlasPath]; // 尝试获取基础图集
+                byte[] fntData = fntAsset.Data;
+                if (fntData == null || fntData.Length == 0)
+                {
+                    Log.Warn($"[ZIP-SAFE] FNT asset data is null or empty for: '{virtualFntPathWithExt}'");
+                    return;
+                }
+
+                string fntXmlString = Encoding.UTF8.GetString(fntData);
+                doc = XDocument.Parse(fntXmlString);
+                Log.Info($"[ZIP-SAFE] Successfully parsed FNT XML data from asset: {virtualFntPathWithExt}");
             }
-            catch (Exception ex)
+            catch (Exception parseEx)
             {
-                Log.Warn($"Failed to load base texture atlas '{textureAtlasPath}' from GFX.Game: {ex.Message}");
-                // 可能需要更健壮的错误处理，比如检查文件是否存在等
-                return result;
+                Log.Warn($"[ZIP-SAFE] Failed to parse FNT data from asset '{virtualFntPathWithExt}': {parseEx.Message}");
+                return;
             }
 
-            if (baseTextureAtlas == null || baseTextureAtlas.Texture == null)
+            // 4. 验证根元素
+            XElement root = doc?.Root;
+            if (root?.Name != "font")
             {
-                Log.Warn($"Base texture atlas '{textureAtlasPath}' is null or invalid.");
-                return result;
+                Log.Warn($"[ZIP-SAFE] Invalid FNT file format or root element is not 'font' for: '{virtualFntPathWithExt}'");
+                return;
             }
 
+            // 5. 获取 .fnt 文件所在的虚拟目录 (用于定位纹理)
+            // 例如: virtualFntPathWithoutExtension = "Graphics/Atlases/Gameplay/ChroniaHelper/MinecraftFont/chinese"
+            //      fntDirectoryVirtualPath = "Graphics/Atlases/Gameplay/ChroniaHelper/MinecraftFont"
+            string fntDirectoryVirtualPath = Path.GetDirectoryName(virtualFntPathWithoutExtension)?.Replace('\\', '/');
+            if (string.IsNullOrEmpty(fntDirectoryVirtualPath))
+            {
+                // 如果 .fnt 在根目录?
+                fntDirectoryVirtualPath = "";
+            }
 
-            // 5. 遍历字符信息
+            // 6. 加载所有页面纹理 (支持 Multi-Page Atlases)
+            var pagesElement = root.Element("pages");
+            if (pagesElement == null)
+            {
+                Log.Warn($"[ZIP-SAFE] No <pages> section found in FNT file: '{virtualFntPathWithExt}'");
+                return;
+            }
+
+            // 字典缓存: key = page id, value = 对应的 MTexture 图集
+            var pageTextures = new Dictionary<int, MTexture>();
+
+            foreach (var pageElement in pagesElement.Elements("page"))
+            {
+                if (int.TryParse(pageElement.Attribute("id")?.Value, out int pageId))
+                {
+                    string textureRelativeFileName = pageElement.Attribute("file")?.Value;
+
+                    if (!string.IsNullOrEmpty(textureRelativeFileName))
+                    {
+                        // 构造纹理在 GFX.Game 中的虚拟路径
+                        // 例如: fntDirectoryVirtualPath = "Graphics/Atlases/Gameplay/ChroniaHelper/MinecraftFont"
+                        //      textureRelativeFileName = "chinese_233.png"
+                        //      textureVirtualPath = "Graphics/Atlases/Gameplay/ChroniaHelper/MinecraftFont/chinese_233"
+                        string textureFilenameNoExt = Path.GetFileNameWithoutExtension(textureRelativeFileName);
+                        string textureVirtualPath;
+                        if (!string.IsNullOrEmpty(fntDirectoryVirtualPath))
+                        {
+                            textureVirtualPath = $"{fntDirectoryVirtualPath}/{textureFilenameNoExt}";
+                        }
+                        else
+                        {
+                            textureVirtualPath = textureFilenameNoExt;
+                        }
+
+                        Log.Info($"[ZIP-SAFE] Attempting to load texture atlas for page {pageId} from GFX.Game using virtual path: {textureVirtualPath}");
+
+                        try
+                        {
+                            MTexture pageTextureAtlas = GFX.Game[textureVirtualPath];
+
+                            if (pageTextureAtlas != null && pageTextureAtlas.Texture != null)
+                            {
+                                pageTextures[pageId] = pageTextureAtlas;
+                                Log.Info($"[ZIP-SAFE] Successfully loaded texture atlas for page {pageId}.");
+                            }
+                            else
+                            {
+                                Log.Warn($"[ZIP-SAFE] Base texture atlas '{textureVirtualPath}' for page {pageId} is null or invalid in GFX.Game.");
+                                // 可以选择在这里返回错误，或者记录警告并跳过该页的字符
+                                // 这里选择记录警告，让后续找不到纹理的字符处理失败
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Warn($"[ZIP-SAFE] Failed to load base texture atlas '{textureVirtualPath}' for page {pageId} from GFX.Game: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        Log.Warn($"[ZIP-SAFE] Page {pageId} entry has no 'file' attribute in FNT file: '{virtualFntPathWithExt}'");
+                    }
+                }
+                else
+                {
+                    string pageIdStr = pageElement.Attribute("id")?.Value ?? "unknown";
+                    Log.Warn($"[ZIP-SAFE] Skipping page entry with invalid 'id': {pageIdStr} in FNT file: '{virtualFntPathWithExt}'");
+                }
+            }
+
+            if (pageTextures.Count == 0)
+            {
+                Log.Warn($"[ZIP-SAFE] No valid page textures were loaded from FNT file: '{virtualFntPathWithExt}'. Aborting character processing.");
+                return; // 没有可用纹理，无法创建字符纹理
+            }
+
+            // 7. 遍历字符信息
             var charsElement = root.Element("chars");
             if (charsElement != null)
             {
                 foreach (var charElement in charsElement.Elements("char"))
                 {
-                    // 尝试获取必要的属性
+                    // 尝试解析所有必需属性
                     if (int.TryParse(charElement.Attribute("id")?.Value, out int id) &&
                         int.TryParse(charElement.Attribute("x")?.Value, out int x) &&
                         int.TryParse(charElement.Attribute("y")?.Value, out int y) &&
                         int.TryParse(charElement.Attribute("width")?.Value, out int width) &&
-                        int.TryParse(charElement.Attribute("height")?.Value, out int height))
+                        int.TryParse(charElement.Attribute("height")?.Value, out int height) &&
+                        int.TryParse(charElement.Attribute("page")?.Value, out int pageId)) // 新增: 获取 page id
                     {
-                        // 可选：获取 xOffset, yOffset, xAdvance 等用于更精确的渲染
-                        // int xOffset = int.TryParse(charElement.Attribute("xoffset")?.Value, out int tmpXOff) ? tmpXOff : 0;
-                        // int yOffset = int.TryParse(charElement.Attribute("yoffset")?.Value, out int tmpYOff) ? tmpYOff : 0;
-                        // int xAdvance = int.TryParse(charElement.Attribute("xadvance")?.Value, out int tmpXAdv) ? tmpXAdv : width;
+                        // 尝试解析可选的 offset 属性
+                        int.TryParse(charElement.Attribute("xoffset")?.Value ?? "0", out int xoffset);
+                        int.TryParse(charElement.Attribute("yoffset")?.Value ?? "0", out int yoffset);
 
-                        // 6. 创建子纹理 (MTexture)
-                        // MTexture 的构造函数通常接受父 MTexture (atlas) 和裁剪矩形
-                        // Rectangle rect = new Rectangle(x, y, width, height);
-                        // MTexture charTexture = new MTexture(baseTextureAtlas, rect);
+                        // 检查是否有所需页面的纹理
+                        if (!pageTextures.TryGetValue(pageId, out MTexture baseTextureAtlas))
+                        {
+                            Log.Warn($"[ZIP-SAFE] Character ID {id} references unknown or unloaded page {pageId}. Skipping.");
+                            continue; // 跳过此字符
+                        }
 
-                        // 或者使用 MTexture.GetSubtexture 如果可用并且适用
-                        // MTexture charTexture = baseTextureAtlas.GetSubtexture(x, y, width, height);
-
-                        // 最稳妥的方式是使用 MTexture 的裁剪构造函数
-                        MTexture charTexture;
                         try
                         {
-                            // 确保坐标和尺寸在基础纹理范围内
-                            if (x >= 0 && y >= 0 && x + width <= baseTextureAtlas.Width && y + height <= baseTextureAtlas.Height)
+                            // 添加严格的边界检查
+                            if (x >= 0 && y >= 0 && width > 0 && height > 0 &&
+                                x + width <= baseTextureAtlas.Width && y + height <= baseTextureAtlas.Height)
                             {
-                                charTexture = new MTexture(baseTextureAtlas, new Rectangle(x, y, width, height));
-                                result[id] = charTexture;
+                                // 创建字符纹理
+                                MTexture charTexture = new MTexture(baseTextureAtlas, new Rectangle(x, y, width, height));
+
+                                // 存储纹理和偏移量
+                                textures[id] = charTexture;
+                                offsets[id] = new Vector2(xoffset, yoffset); // 存储 offset
+
+                                // Log.Verbose($"[ZIP-SAFE] Created MTexture for char ID {id} from page {pageId}");
                             }
                             else
                             {
-                                Log.Warn($"Character ID {id} has invalid bounds (x:{x}, y:{y}, w:{width}, h:{height}) for atlas size ({baseTextureAtlas.Width}, {baseTextureAtlas.Height}). Skipping.");
+                                Log.Warn($"[ZIP-SAFE] Character ID {id} (page {pageId}) has invalid/out-of-bounds dimensions/position (x:{x}, y:{y}, w:{width}, h:{height}) for atlas size ({baseTextureAtlas.Width}, {baseTextureAtlas.Height}). Skipping.");
                             }
                         }
                         catch (Exception ex)
                         {
-                            Log.Warn($"Failed to create MTexture for character ID {id}: {ex.Message}");
+                            Log.Warn($"[ZIP-SAFE] Failed to create MTexture for character ID {id} (page {pageId}): {ex.Message}");
                         }
-
                     }
                     else
                     {
-                        // 记录警告：无法解析某个字符条目
                         string charIdStr = charElement.Attribute("id")?.Value ?? "unknown";
-                        Log.Warn($"Skipping character entry with invalid data, ID: {charIdStr}");
+                        string pageIdStr = charElement.Attribute("page")?.Value ?? "unknown";
+                        Log.Warn($"[ZIP-SAFE] Skipping character entry with invalid data, ID: {charIdStr}, Page: {pageIdStr}");
                     }
                 }
             }
             else
             {
-                Log.Warn($"No <chars> section found in FNT file: {fullPath}");
+                Log.Warn($"[ZIP-SAFE] No <chars> section found in FNT file: '{virtualFntPathWithExt}'");
             }
 
-
+            Log.Info($"[ZIP-SAFE] Finished processing FNT file '{virtualFntPathWithExt}'. Loaded {textures.Count} characters.");
         }
         catch (Exception ex)
         {
-            // 记录任何未处理的异常
-            Log.Error($"Error loading FNT font textures from '{fntPath}': {ex}");
-            // 可以选择返回空字典或重新抛出异常
-            // return result; // 返回已加载的部分
-            // 或者
-            // throw; // 重新抛出异常
+            Log.Error($"[ZIP-SAFE] Unhandled error in CreateFntFontTextures for virtual path '{virtualFntPathWithoutExtension}': {ex}");
+            // 确保即使发生未处理异常，输出参数也是初始化状态（空字典）
+            textures = new Dictionary<int, MTexture>();
+            offsets = new Dictionary<int, Vector2>();
         }
-
-        return result;
     }
 }

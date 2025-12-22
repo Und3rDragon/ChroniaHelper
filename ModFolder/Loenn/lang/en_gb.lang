@@ -1208,4 +1208,20 @@ entities.ChroniaHelper/FlagPacker.placements.name.controller=Flag Packer
 entities.ChroniaHelper/FlagPacker.attributes.description.flags=Flags start with "!" are temporary flags, "*" are global flags
 
 #================== Flag Listener Stopclock Controller
+
 entities.ChroniaHelper/FlagListenerStopclockController.placements.name.controller=Flag Listener Stopclock Controller
+
+#================== Fnt Displayer
+
+entities.ChroniaHelper/FntDisplayer.placements.name.renderer=Fnt Displayer
+entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayer.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayer.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayer.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayer.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayer.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayer.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayer.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayer.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayer.attributes.description.renderDistance=When the player is in the radius, the text will appear
