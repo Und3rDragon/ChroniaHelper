@@ -15,6 +15,7 @@ global using Sts = ChroniaHelper.Modules.ChroniaHelperSettings;
 global using Vc2 = Microsoft.Xna.Framework.Vector2;
 global using Vc3 = Microsoft.Xna.Framework.Vector3;
 global using Sens = ChroniaHelper.Utils.SensitiveFlags.Sensitivity;
+global using Prm = ChroniaHelper.Cores.Graphical.GraphicalParams;
 using System.Reflection;
 
 namespace ChroniaHelper.Utils;

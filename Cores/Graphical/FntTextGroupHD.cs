@@ -15,21 +15,24 @@ public class FntTextGroupHD
     /// <summary>
     /// An empty template defining member parameters
     /// </summary>
-    public FntTextHD template = new FntTextHD("ChroniaHelper/DisplayFonts/font");
+    public Prm.SerialImageTemplate template = new();
 
+    public Dictionary<string, FntTextHD> cachedText = new();
     /// <summary>
     /// 
     /// </summary>
     /// <param name="template">An empty template defining member parameters</param>
     /// <param name="paths"></param>
-    public FntTextGroupHD(FntTextHD template, params string[] paths)
+    public FntTextGroupHD(Prm.SerialImageTemplate template, params string[] paths)
     {
         this.template = template;
         foreach (var p in paths)
         {
             if (p.IsNullOrEmpty()) { continue; }
-
+            
             path.Add(p);
+
+            cachedText[p] = new FntTextHD(p);
         }
     }
     
@@ -40,6 +43,8 @@ public class FntTextGroupHD
             if (p.IsNullOrEmpty()) { continue;  }
 
             path.Add(p);
+
+            cachedText[p] = new FntTextHD(p);
         }
     }
     public Vc2 groupOrigin = Vc2.Zero;
@@ -75,7 +80,7 @@ public class FntTextGroupHD
         
         for(int i = 0; i < source.Count; i++)
         {
-            FntTextHD image = new FntTextHD(SafeGetPath(i));
+            FntTextHD image = cachedText[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -138,7 +143,7 @@ public class FntTextGroupHD
 
         for (int i = 0; i < source.Count; i++)
         {
-            FntTextHD image = new FntTextHD(SafeGetPath(i));
+            FntTextHD image = cachedText[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;

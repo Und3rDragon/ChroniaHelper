@@ -1213,6 +1213,19 @@ entities.ChroniaHelper/FlagListenerStopclockController.placements.name.controlle
 
 #================== Fnt Displayer
 
+entities.ChroniaHelper/FntDisplayerHD.placements.name.renderer=Fnt Displayer (HD)
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
 entities.ChroniaHelper/FntDisplayer.placements.name.renderer=Fnt Displayer
 entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxX=The text parallax in-game
 entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxY=The text parallax in-game
@@ -1225,3 +1238,29 @@ entities.ChroniaHelper/FntDisplayer.attributes.description.letterDistance=Under 
 entities.ChroniaHelper/FntDisplayer.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
 entities.ChroniaHelper/FntDisplayer.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
 entities.ChroniaHelper/FntDisplayer.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+entities.ChroniaHelper/FntDisplayZone.placements.name.renderer=Fnt Display Zone
+entities.ChroniaHelper/FntDisplayZone.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZone.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZone.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZone.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZone.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayZone.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayZone.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayZone.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayZone.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayZone.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayZone.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+entities.ChroniaHelper/FntDisplayZoneHD.placements.name.renderer=Fnt Display Zone (HD)
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.renderDistance=When the player is in the radius, the text will appear

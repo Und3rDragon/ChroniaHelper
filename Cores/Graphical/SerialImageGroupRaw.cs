@@ -17,6 +17,7 @@ public class SerialImageGroupRaw
     /// </summary>
     public SerialImageRaw template = new SerialImageRaw("ChroniaHelper/DisplayFonts/font");
 
+    public Dictionary<string, SerialImageRaw> cachedMembers = new();
     /// <summary>
     /// 
     /// </summary>
@@ -30,6 +31,8 @@ public class SerialImageGroupRaw
             if (p.IsNullOrEmpty()) { continue; }
 
             path.Add(p);
+
+            cachedMembers[p] = new SerialImageRaw(p);
         }
     }
     
@@ -40,6 +43,8 @@ public class SerialImageGroupRaw
             if (p.IsNullOrEmpty()) { continue;  }
 
             path.Add(p);
+
+            cachedMembers[p] = new SerialImageRaw(p);
         }
     }
     public Vc2 groupOrigin = Vc2.Zero;
@@ -75,7 +80,7 @@ public class SerialImageGroupRaw
         
         for(int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = new SerialImageRaw(SafeGetPath(i));
+            SerialImageRaw image = cachedMembers[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -138,7 +143,7 @@ public class SerialImageGroupRaw
 
         for (int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = new SerialImageRaw(SafeGetPath(i));
+            SerialImageRaw image = cachedMembers[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;

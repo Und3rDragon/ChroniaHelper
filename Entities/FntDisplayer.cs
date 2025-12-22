@@ -15,13 +15,13 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/FntDisplayer")]
-public class FntDisplayer : HDRenderEntity
+public class FntDisplayer : BaseEntity
 {
     public FntDisplayer(EntityData d, Vc2 o) : base(d, o)
     {
         base.Depth = d.Int("depth", -100000);
 
-        FntTextHD template = new FntTextHD("ChroniaHelper/MinecraftFont/chinese");
+        GraphicalParams.SerialImageTemplate template = new();
 
         template.renderMode = d.Int("renderMode", 0);
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));
@@ -30,7 +30,7 @@ public class FntDisplayer : HDRenderEntity
         template.color = d.GetChroniaColor("fontColor", Color.White);
         primaryAlpha = template.color.alpha;
 
-        renderer = new FntTextGroupHD(template, d.Attr("textures", "ChroniaHelper/MinecraftFont/chinese").Split(',',StringSplitOptions.TrimEntries));
+        renderer = new FntTextGroup(template, d.Attr("textures", "ChroniaHelper/MinecraftTestFont/minecraft").Split(',',StringSplitOptions.TrimEntries));
         renderer.groupOrigin = new Vc2(d.Float("overallOriginX", 0.5f), d.Float("overallOriginY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);
         string[] _scales = d.Attr("scale", "1").Split(',', StringSplitOptions.TrimEntries);
@@ -52,10 +52,8 @@ public class FntDisplayer : HDRenderEntity
 
         overrideFlag = d.Attr("triggerFlag");
         hasOverrideFlag = !overrideFlag.IsNullOrEmpty();
-
-        reference = d.Attr("characterReference", Cons.DisplayFontsReference);
     }
-    public FntTextGroupHD renderer;
+    public FntTextGroup renderer;
     public string content;
     private bool typingDisplay = true;
     public float renderDistance = 256f, fadeInSpeed = 4f, fadeOutSpeed = 2f;
@@ -63,11 +61,12 @@ public class FntDisplayer : HDRenderEntity
     public float letterInterval = 0.1f;
     public string overrideFlag;
     private bool hasOverrideFlag = false;
+    public Vc2 Parallax = Vc2.Zero, StaticScreen = Vc2.Zero;
 
     public string reference = Cons.DisplayFontsReference;
     public List<string> ParseRenderTarget()
     {
-        string text = Dialog.Clean(content, Dialog.Languages["english"]);
+        string text = Dialog.Clean(content);
         
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();
@@ -82,15 +81,10 @@ public class FntDisplayer : HDRenderEntity
         
         return result;
     }
-
-    public int Reflection(char c)
-    {
-        return reference.Contains(c) ? reference.IndexOf(c) : reference.IndexOf(" ");
-    }
-
+    
     List<string> progressedText = new();
     List<int> progress = new();
-    protected override void HDRender()
+    public override void Render()
     {
         List<string> orig = ParseRenderTarget();
 
@@ -144,7 +138,7 @@ public class FntDisplayer : HDRenderEntity
         }
         
         renderer.Render(progressedText,
-            ParseGlobalPositionToHDPosition(Position, Parallax, StaticScreen));
+            Position.InParallax(Parallax, StaticScreen));
     }
     
     public bool renderArg => (renderDistance <= 0f && !hasOverrideFlag) || (renderDistance > 0 && inRange) || (hasOverrideFlag && overrideFlag.GetFlag());

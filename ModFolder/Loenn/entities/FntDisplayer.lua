@@ -13,7 +13,7 @@ renderer.depth = -10000000
 renderer.placements = {
     name = "renderer",
     data = {
-        textures = "ChroniaHelper/MinecraftFont/chinese",
+        textures = "ChroniaHelper/MinecraftTestFont/minecraft",
         dialogID = "",
         letterOriginX = 0,
         letterOriginY = 0,
@@ -131,7 +131,7 @@ end
 function renderer.sprite(room, entity)
     local sprite = {}
     
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Message", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Fnt", entity)
 
     table.insert(sprite, iconSprite)
     return sprite

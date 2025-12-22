@@ -19,7 +19,7 @@ public class MessageDisplayZoneNormal : SerialImageRenderer
 {
     public MessageDisplayZoneNormal(EntityData d, Vc2 o) : base(d, o)
     {
-        SerialImage template = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
+        Prm.SerialImageTemplate template = new();
 
         template.renderMode = d.Int("renderMode", 0);
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));

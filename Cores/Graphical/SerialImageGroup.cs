@@ -15,14 +15,15 @@ public class SerialImageGroup
     /// <summary>
     /// An empty template defining member parameters
     /// </summary>
-    public SerialImage template = new SerialImage("ChroniaHelper/DisplayFonts/font");
+    public Prm.SerialImageTemplate template = new();
 
+    public Dictionary<string, SerialImage> cachedMember = new();
     /// <summary>
     /// 
     /// </summary>
     /// <param name="template">An empty template defining member parameters</param>
     /// <param name="paths"></param>
-    public SerialImageGroup(SerialImage template, params string[] paths)
+    public SerialImageGroup(Prm.SerialImageTemplate template, params string[] paths)
     {
         this.template = template;
         foreach (var p in paths)
@@ -30,6 +31,8 @@ public class SerialImageGroup
             if (p.IsNullOrEmpty()) { continue; }
 
             path.Add(p);
+
+            cachedMember[p] = new SerialImage(p);
         }
     }
     
@@ -40,6 +43,8 @@ public class SerialImageGroup
             if (p.IsNullOrEmpty()) { continue;  }
 
             path.Add(p);
+
+            cachedMember[p] = new SerialImage(p);
         }
     }
     public Vc2 groupOrigin = Vc2.Zero;
@@ -75,7 +80,7 @@ public class SerialImageGroup
         
         for(int i = 0; i < source.Count; i++)
         {
-            SerialImage image = new SerialImage(SafeGetPath(i));
+            SerialImage image = cachedMember[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -138,7 +143,7 @@ public class SerialImageGroup
 
         for (int i = 0; i < source.Count; i++)
         {
-            SerialImage image = new SerialImage(SafeGetPath(i));
+            SerialImage image = cachedMember[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
