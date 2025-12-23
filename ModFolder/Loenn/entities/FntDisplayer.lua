@@ -8,12 +8,30 @@ local renderer = {
     name = "ChroniaHelper/FntDisplayer"
 }
 
+local additionalAssets = {
+    "ChroniaHelper/MinecraftTestFont/minecraft",
+    "ChroniaHelper/MinecraftTestFontOutline/minecraftOutline",
+    "ChroniaHelper/FusionPixelTestFont/fusionPixel",
+    "ChroniaHelper/FusionPixelTestFontOutline/fusionPixelOutline",
+}
+
 renderer.associatedMods = function(entity)
+    local base = {"ChroniaHelper"}
+    
     if string.find(entity.textures, "ChroniaHelper/MinecraftTestFont/minecraft") then
-        return {"ChroniaHelper Fnt Asset", "ChroniaHelper"}
+         table.insert(base, "ChroniaHelper Minecraft TestFont")
+    end
+    if string.find(entity.textures, "ChroniaHelper/MinecraftTestFontOutline/minecraftOutline") then
+         table.insert(base, "ChroniaHelper Minecraft TestFont")
+    end
+    if string.find(entity.textures, "ChroniaHelper/FusionPixelTestFont/fusionPixel") then
+         table.insert(base, "ChroniaHelper FusionPixel TestFont")
+    end
+    if string.find(entity.textures, "ChroniaHelper/FusionPixelTestFontOutline/fusionPixelOutline") then
+         table.insert(base, "ChroniaHelper FusionPixel TestFont")
     end
     
-    return {"ChroniaHelper"}
+    return base
 end
 
 renderer.depth = -10000000
@@ -21,7 +39,7 @@ renderer.depth = -10000000
 renderer.placements = {
     name = "renderer",
     data = {
-        textures = "ChroniaHelper/MinecraftTestFont/minecraft",
+        textures = "",
         dialogID = "",
         letterOriginX = 0,
         letterOriginY = 0,
@@ -74,6 +92,9 @@ renderer.fieldInformation = {
     textures = {
         fieldType = "list",
         minimumElements = 1,
+        elementOptions = {
+            options = additionalAssets,
+        },
     },
     screenX = {
         fieldType = "integer",
