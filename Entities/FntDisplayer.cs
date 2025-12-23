@@ -39,6 +39,44 @@ public class FntDisplayer : BaseEntity
             renderer.scales.Add(scale.ParseFloat(1f));
         }
 
+        // offset index setup: pathIndex, charIndex, offsetX, offsetY
+        string[] offsetIndex = d.Attr("offsetPerIndex").Split(';', StringSplitOptions.TrimEntries);
+        foreach (var offset in offsetIndex)
+        {
+            string[] segs = offset.Split(',', StringSplitOptions.TrimEntries);
+            if (segs.Length < 3) { continue; }
+
+            if (segs[0].ParseInt(0) >= renderer.path.Count || segs[0].ParseInt(0) < 0) { continue; }
+
+            Vc2 of = Vc2.Zero;
+            of.X = segs[2].ParseFloat(0);
+            if (segs.Length >= 4) { of.Y = segs[3].ParseFloat(0); }
+
+            renderer.memberIndexOffsets.Create(segs[0].ParseInt(0), new());
+            renderer.memberIndexOffsets[segs[0].ParseInt(0)].Create(segs[1].ParseInt(0), Vc2.Zero);
+            renderer.memberIndexOffsets[segs[0].ParseInt(0)][segs[1].ParseInt(0)] = of;
+        }
+
+        // offset charcode setup: pathIndex, charcode, offsetX, offsetY
+        string[] offsetCharcode = d.Attr("offsetPerCharcode").Split(';', StringSplitOptions.TrimEntries);
+        foreach (var offset in offsetCharcode)
+        {
+            string[] segs = offset.Split(',', StringSplitOptions.TrimEntries);
+            if (segs.Length < 3) { continue; }
+
+            if (segs[0].ParseInt(0) >= renderer.path.Count || segs[0].ParseInt(0) < 0) { continue; }
+
+            Vc2 of = Vc2.Zero;
+            of.X = segs[2].ParseFloat(0);
+            if (segs.Length >= 4) { of.Y = segs[3].ParseFloat(0); }
+
+            renderer.memberCharcodeOffsets.Create(segs[0].ParseInt(0), new());
+            renderer.memberCharcodeOffsets[segs[0].ParseInt(0)].Create(segs[1].ParseInt(0), Vc2.Zero);
+            renderer.memberCharcodeOffsets[segs[0].ParseInt(0)][segs[1].ParseInt(0)] = of;
+        }
+
+        renderer.ApplyAllOffsetSetups();
+
         content = d.Attr("dialogID");
 
         Parallax = new Vc2(d.Float("parallaxX", 1f), d.Float("parallaxY", 1f));

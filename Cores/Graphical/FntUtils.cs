@@ -126,7 +126,7 @@ public static class FntUtils
                             textureVirtualPath = textureFilenameNoExt;
                         }
 
-                        Log.Info($"[ZIP-SAFE] Attempting to load texture atlas for page {pageId} from GFX.Game using virtual path: {textureVirtualPath}");
+                        //Log.Info($"[ZIP-SAFE] Attempting to load texture atlas for page {pageId} from GFX.Game using virtual path: {textureVirtualPath}");
 
                         try
                         {
@@ -135,7 +135,7 @@ public static class FntUtils
                             if (pageTextureAtlas != null && pageTextureAtlas.Texture != null)
                             {
                                 pageTextures[pageId] = pageTextureAtlas;
-                                Log.Info($"[ZIP-SAFE] Successfully loaded texture atlas for page {pageId}.");
+                                //Log.Info($"[ZIP-SAFE] Successfully loaded texture atlas for page {pageId}.");
                             }
                             else
                             {

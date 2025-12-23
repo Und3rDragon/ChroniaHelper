@@ -23,6 +23,8 @@ public class FntText
     public float rotation = 0f;
     public Vc2 overallOffset = Vc2.Zero;
     public Dictionary<int, Vc2> segmentOffset = new();
+    public Dictionary<int, Vc2> offsetPerIndex = new();
+    public Dictionary<int, Vc2> offsetPerCharCode = new();
     public bool flipX = false;
     public bool flipY = false;
     public float depth = 0f;
@@ -118,8 +120,12 @@ public class FntText
             Vc2 dPos = shift + segmentStart + segmentPosition[i];
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
+            bool hasIndexOffset = offsetPerIndex.TryGetValue(i, out Vc2 indexOffset);
+            bool hasCharcodeOffset = offsetPerCharCode.TryGetValue(selector(source[i]), out Vc2 charcodeOffset);
 
-            texture.Draw(renderPosition + dPos + overallOffset - segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
+            texture.Draw(renderPosition + dPos + overallOffset
+                - scale * segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero)
+                + (hasIndexOffset ? indexOffset : Vc2.Zero) + (hasCharcodeOffset ? charcodeOffset : Vc2.Zero),
                 Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
             //Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
             //    null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),

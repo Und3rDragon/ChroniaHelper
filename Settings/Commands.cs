@@ -185,6 +185,25 @@ public class Commands
 
         CommandLog.LogDivider();
     }
+
+    [Command("chronia_get_charcode", "Get the charcode index for a certain character")]
+    public static void CommandGetCharcode(string str)
+    {
+        string result = "";
+        char[] c = str.ToArray();
+        for(int i = 0; i < c.Length; i++)
+        {
+            if( i == 0)
+            {
+                result += $"{(int)c[i]}";
+                continue;
+            }
+
+            result += $" {(int)c[i]}";
+        }
+
+        CommandLog.LogCommand(result, Color.Yellow);
+    }
 }
 
 public static class CommandLog

@@ -17,7 +17,30 @@ public class FntTextGroup
     /// </summary>
     public Prm.SerialImageTemplate template = new();
 
-    public Dictionary<string, FntText> cachedText = new();
+    public Dictionary<int, FntText> cachedText = new();
+
+    public Dictionary<int, Dictionary<int, Vc2>> memberCharcodeOffsets = new();
+    public Dictionary<int, Dictionary<int, Vc2>> memberIndexOffsets = new();
+
+    public void ApplyAllOffsetSetups()
+    {
+        foreach (var offset in memberCharcodeOffsets)
+        {
+            if (cachedText.ContainsKey(offset.Key))
+            {
+                cachedText[offset.Key].offsetPerCharCode = offset.Value;
+            }
+        }
+
+        foreach (var offset in memberIndexOffsets)
+        {
+            if (cachedText.ContainsKey(offset.Key))
+            {
+                cachedText[offset.Key].offsetPerIndex = offset.Value;
+            }
+        }
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -26,25 +49,27 @@ public class FntTextGroup
     public FntTextGroup(Prm.SerialImageTemplate template, params string[] paths)
     {
         this.template = template;
-        foreach (var p in paths)
+        for (int i = 0; i < paths.Length; i++)
         {
+            var p = paths[i];
             if (p.IsNullOrEmpty()) { continue; }
 
             path.Add(p);
 
-            cachedText[p] = new FntText(p);
+            cachedText[i] = new FntText(p);
         }
     }
     
     public FntTextGroup(params string[] paths)
     {
-        foreach(var p in paths)
+        for (int i = 0; i < paths.Length; i++)
         {
-            if (p.IsNullOrEmpty()) { continue;  }
+            var p = paths[i];
+            if (p.IsNullOrEmpty()) { continue; }
 
             path.Add(p);
 
-            cachedText[p] = new FntText(p);
+            cachedText[i] = new FntText(p);
         }
     }
     public Vc2 groupOrigin = Vc2.Zero;
@@ -55,14 +80,6 @@ public class FntTextGroup
     public List<float> scales = new();
     public List<float> depths = new();
     
-    public string SafeGetPath(int i)
-    {
-        if (path.IsNull()) { return "ChroniaHelper/DisplayFonts/font"; }
-        if (path.Count == 0) { return "ChroniaHelper/DisplayFonts/font"; }
-
-        return path[i.Clamp(0, path.Count - 1)];
-    }
-
     public Vc2 groupSize = Vc2.Zero;
     public Vc2 groupTopleft, groupBottomRight;
     public List<Vc2> memberPosition = new();
@@ -80,7 +97,7 @@ public class FntTextGroup
         
         for(int i = 0; i < source.Count; i++)
         {
-            FntText image = cachedText[SafeGetPath(i)];
+            FntText image = cachedText[i.ClampMax(cachedText.Count - 1)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -143,7 +160,7 @@ public class FntTextGroup
 
         for (int i = 0; i < source.Count; i++)
         {
-            FntText image = cachedText[SafeGetPath(i)];
+            FntText image = cachedText[i.ClampMax(cachedText.Count - 1)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;

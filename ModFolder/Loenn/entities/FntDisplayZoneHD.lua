@@ -8,6 +8,14 @@ local renderer = {
     name = "ChroniaHelper/FntDisplayZoneHD"
 }
 
+renderer.associatedMods = function(entity)
+    if string.find(entity.textures, "ChroniaHelper/MinecraftTestFont/minecraft") then
+        return {"ChroniaHelper Fnt Asset", "ChroniaHelper"}
+    end
+    
+    return {"ChroniaHelper"}
+end
+
 renderer.nodeLimits = {1,1}
 
 renderer.placements = {
@@ -36,6 +44,8 @@ renderer.placements = {
         fontColor = "ffffff",
         triggerFlag = "",
         scale = "1",
+        offsetPerIndex = "",
+        offsetPerCharcode = "",
         typewriterEffect = false,
         leaveReset = false,
     }, 
@@ -43,6 +53,22 @@ renderer.placements = {
 }
 
 renderer.fieldInformation = {
+    offsetPerIndex = {
+        fieldType = "list",
+        elementSeparator = ';',
+        elementOptions = {
+            fieldType = "list",
+            minimumElements = 3,
+        },
+    },
+    offsetPerCharcode = {
+        fieldType = "list",
+        elementSeparator = ';',
+        elementOptions = {
+            fieldType = "list",
+            minimumElements = 3,
+        },
+    },
     scale = {
         fieldType = "list",
         minimumElements = 1,

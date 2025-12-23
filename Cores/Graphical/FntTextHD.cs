@@ -1,28 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
+using YamlDotNet.Serialization;
 
 namespace ChroniaHelper.Cores.Graphical;
 
+/// <summary>
+/// Alternate SerialImage that renders by Draw.SpriteBatch.Draw(), compatible for HD Renders
+/// </summary>
 public class FntTextHD
 {
     public Dictionary<int, MTexture> textures = new();
     public Vc2 position = Vc2.Zero;
     public Vc2 segmentOrigin = Vc2.One * 0.5f;
     public Vc2 origin = Vc2.One * 0.5f;
-    public enum RenderMode { Compact = 0, EqualDistance = 1 }
+    public enum RenderMode { Compact = 0, EqualDistance = 1}
     public int renderMode = 0;
     public float distance = 4f;
     public CColor color = new CColor(Color.White, 1f);
     public float scale = 1f;
     public float rotation = 0f;
     public Vc2 overallOffset = Vc2.Zero;
-    public Dictionary<int, Vc2> segmentOffset = new();
+    public Dictionary<int, Vc2> segmentOffset = new(); 
+    public Dictionary<int, Vc2> offsetPerIndex = new();
+    public Dictionary<int, Vc2> offsetPerCharCode = new();
     public bool flipX = false;
     public bool flipY = false;
     public float depth = 0f;
@@ -48,26 +54,26 @@ public class FntTextHD
         p1 = Vc2.Zero; p2 = Vc2.Zero;
         segmentPosition = new();
         overallSize = Vc2.Zero;
-
+        
         Vc2 cal = Vc2.Zero;
-
-        for (int i = 0; i < source.Count; i++)
+        
+        for(int i = 0; i < source.Count; i++)
         {
 
             MTexture asset = textures[selector(source[i])];
-
+            
             if (i == 0)
             {
                 p1 = new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
                 p2 = new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
                 segmentPosition.Add(cal);
-
+                
                 continue;
             }
-
+            
             MTexture lastAsset = textures[selector(source[i - 1])];
 
-            if (renderMode == (int)RenderMode.EqualDistance)
+            if(renderMode == (int)RenderMode.EqualDistance)
             {
                 cal.X = cal.X + distance;
             }
@@ -75,7 +81,7 @@ public class FntTextHD
             {
                 cal.X = cal.X + lastAsset.Width * (1 - segmentOrigin.X) * scale + asset.Width * segmentOrigin.X * scale + distance;
             }
-
+            
             Vc2 _p1 = cal + new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
             Vc2 _p2 = cal + new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
 
@@ -86,9 +92,9 @@ public class FntTextHD
             p2.X = _p2.X > p2.X ? _p2.X : p2.X;
             p2.Y = _p2.Y > p2.Y ? _p2.Y : p2.Y;
         }
-
+        
         overallSize = p2 - p1;
-        segmentStart = -p1;
+        segmentStart = - p1;
     }
 
     public void Measure(string source)
@@ -111,22 +117,26 @@ public class FntTextHD
         Vc2 shift = -overallSize * origin;
 
         //Draw.HollowRect(renderPosition + shift, overallSize.X, overallSize.Y, Color.Orange);
-
-        for (int i = 0; i < source.Count; i++)
+        
+        for(int i = 0; i < source.Count; i++)
         {
             MTexture texture = textures[selector(source[i])];
             Vc2 dPos = shift + segmentStart + segmentPosition[i];
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
+            bool hasIndexOffset = offsetPerIndex.TryGetValue(i, out Vc2 indexOffset);
+            bool hasCharcodeOffset = offsetPerCharCode.TryGetValue(selector(source[i]), out Vc2 charcodeOffset);
 
-            texture.Draw(renderPosition + dPos + overallOffset - segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
+            texture.Draw(renderPosition + dPos + overallOffset
+                - scale * segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero)
+                + (hasIndexOffset ? indexOffset : Vc2.Zero) + (hasCharcodeOffset ? charcodeOffset : Vc2.Zero),
                 Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
             //Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
             //    null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),
             //    scale, GetSpriteEffect(), depth);
         }
     }
-
+    
     public void Render(string source, Vc2 worldPosition)
     {
         Render(source.ToArray(), (c) => (int)c, worldPosition);
