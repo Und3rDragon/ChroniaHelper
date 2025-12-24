@@ -26,6 +26,8 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
     /// </summary>
     public Dictionary<string, float> sliders = new();
 
+    public Dictionary<string, string> globalKeys = new();
+
     // Flag Packer
     public Dictionary<string, List<string>> PackedFlags = new();
     public Dictionary<string, List<string>> CurrentPackedFlags = new();

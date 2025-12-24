@@ -11,6 +11,7 @@ controller.placements = {
     data = {
         stopclockTag = "stopclock",
         setFlag = "",
+        exportToSessionKey = "",
         killPlayer = false,
     },
 }

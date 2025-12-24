@@ -104,7 +104,9 @@ public class FntDisplayer : BaseEntity
     public string reference = Cons.DisplayFontsReference;
     public List<string> ParseRenderTarget()
     {
-        string text = Dialog.Clean(content);
+        string text = content.StartsWith('#') ?
+            Md.Session.sessionKeys.GetValueOrDefault(content.TrimStart('#'), "") :
+            Dialog.Clean(content);
         
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();

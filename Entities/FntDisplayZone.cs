@@ -105,8 +105,10 @@ public class FntDisplayZone : SerialImageRenderer
     
     public List<string> ParseRenderTarget()
     {
-        string text = Dialog.Clean(content);
-        
+        string text = content.StartsWith('#') ?
+            Md.Session.sessionKeys.GetValueOrDefault(content.TrimStart('#'), "") :
+            Dialog.Clean(content);
+
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();
         foreach (string line in lines)

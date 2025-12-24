@@ -223,4 +223,6 @@ public class ChroniaHelperSession : EverestModuleSession
     /// For Chronia Flag-Counter-Slider System
     /// </summary>
     public Dictionary<string, float> slidersPerDeath = new();
+
+    public Dictionary<string, string> sessionKeys = new();
 }
