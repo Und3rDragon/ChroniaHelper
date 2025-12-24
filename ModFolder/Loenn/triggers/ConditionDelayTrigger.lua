@@ -62,6 +62,6 @@ return{
 			return {"FrostHelper", "ChroniaHelper"}
         end
         
-        return {"Chroniahelper"}
+        return {"ChroniaHelper"}
     end
 }

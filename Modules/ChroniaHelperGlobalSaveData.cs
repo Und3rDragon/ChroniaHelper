@@ -16,7 +16,7 @@ public class ChroniaHelperGlobalSaveData : ChroniaHelperModuleGlobalSaveData
     public Dictionary<string, int> counters = new();
     [ChroniaGlobalSavePath]
     public Dictionary<string, float> sliders = new();
-
+    [ChroniaGlobalSavePath]
     public Dictionary<string, string> permaKeys = new();
 
     [ChroniaGlobalSavePath("MapHider.xml")]
