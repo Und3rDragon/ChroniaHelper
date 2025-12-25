@@ -199,6 +199,17 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<string, bool> listeningConditionTimerState = new();
     public Dictionary<string, float> listeningConditionTimer = new();
 
+    // Code Button
+    public struct CodeButtonTarget
+    {
+        public string codeString;
+        public string flag;
+        public bool needsEnterCheck;
+        public bool deactivateFlagWhenNotStaisfied;
+        
+    }
+    public Dictionary<string, CodeButtonTarget> codeButtonTargets = new();
+    
     /// <summary>
     /// For Chronia Flag-Counter-Slider System
     /// </summary>

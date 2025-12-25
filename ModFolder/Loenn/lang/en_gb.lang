@@ -1264,3 +1264,11 @@ entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDistance=Un
 entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
 entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
 entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+# ================= Code Button Target Controller
+
+entities.ChroniaHelper/CodeButtonTargetController.placements.name.controller=Code Button Target Controller
+
+# ================= Code Button
+
+entities.ChroniaHelper/CodeButton.placements.name.codeButton=Code Button

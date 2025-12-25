@@ -204,6 +204,33 @@ public class Commands
 
         CommandLog.LogCommand(result, Color.Yellow);
     }
+    
+    [Command("chronia_all_keys", "Log all session keys")]
+    public static void CommandAllSessionKeys()
+    {
+        CommandLog.LogDivider("Logging every session keys", Color.Yellow);
+        
+        CommandLog.LogDivider("All Session Keys", Color.Yellow);
+        CommandLog.LogCommand("ID => Key Value", Color.Cyan);
+        foreach(var i in Md.Session.sessionKeys)
+        {
+            CommandLog.LogCommand($"{i.Key} => {i.Value}");
+        }
+
+        CommandLog.LogDivider("All Global Keys", Color.Yellow);
+        CommandLog.LogCommand("ID => Key Value", Color.Cyan);
+        foreach (var i in Md.SaveData.globalKeys)
+        {
+            CommandLog.LogCommand($"{i.Key} => {i.Value}");
+        }
+
+        CommandLog.LogDivider("All SaveData Keys", Color.Yellow);
+        CommandLog.LogCommand("ID => Key Value", Color.Cyan);
+        foreach (var i in Md.GlobalData.permaKeys)
+        {
+            CommandLog.LogCommand($"{i.Key} => {i.Value}");
+        }
+    }
 }
 
 public static class CommandLog
