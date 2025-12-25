@@ -61,9 +61,25 @@ public class PressButton : BaseSolid2
             }
         }
 
+        if (currentButtonState)
+        {
+            WhenPressing();
+        }
+        else
+        {
+            WhenReleased();
+        }
+
         if (currentButtonState != previousButtonState)
         {
-            SendOutSignals(currentButtonState);
+            if (currentButtonState)
+            {
+                OnPress();
+            }
+            else
+            {
+                OnRelease();
+            }
         }
 
         button.Image.Position.Y = Calc.Approach(button.Image.Position.Y,
@@ -72,11 +88,14 @@ public class PressButton : BaseSolid2
 
         previousButtonState = currentButtonState;
     }
-
-    protected virtual void SendOutSignals(bool state = true) { }
-
+    
     protected virtual float ButtonImageOffset(bool state = true)
     {
-        return currentButtonState ? button.imageY + 2 : button.imageY;
+        return currentButtonState ? button.imageY + 2f : button.imageY;
     }
+    
+    protected virtual void WhenPressing() { }
+    protected virtual void WhenReleased() { }
+    protected virtual void OnPress() { }
+    protected virtual void OnRelease() { }
 }

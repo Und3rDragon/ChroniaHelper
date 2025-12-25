@@ -40,62 +40,60 @@ public class CodeButton : PressButton
 
     public Image CaseImage { get; private set; }
 
-    protected override void SendOutSignals(bool state)
+    protected override void OnPress()
     {
-        if (state)
+        if (pressSound.IsNotNullOrEmpty())
         {
-            if (pressSound.IsNotNullOrEmpty())
-            {
-                Audio.Play(pressSound);
-            }
-            if (buttonMode == 1)
-            {
-                string result = Md.Session.sessionKeys.GetValueOrDefault(sessionKeyID, "");
-                if (Md.Session.codeButtonTargets.ContainsKey(sessionKeyID))
-                {
-                    if (result == Md.Session.codeButtonTargets[sessionKeyID].codeString)
-                    {
-                        Md.Session.codeButtonTargets[sessionKeyID].flag.SetFlag(true);
-                    }
-                }
-                Md.Session.sessionKeys[sessionKeyID] = "";
-            }
-            else if (buttonMode == 2)
-            {
-                if (Md.Session.sessionKeys.ContainsKey(sessionKeyID))
-                {
-                    var s = Md.Session.sessionKeys[sessionKeyID];
-
-                    if (s.Length > 0)
-                    {
-                        Md.Session.sessionKeys[sessionKeyID] = s.Substring(0, s.Length - 1);
-                    }
-                }
-            }
-            else if (buttonMode == 3)
-            {
-                Md.Session.sessionKeys[sessionKeyID] = "";
-            }
-            else
-            {
-                Md.Session.sessionKeys.Create(sessionKeyID, "");
-                Md.Session.sessionKeys[sessionKeyID] += buttonCode;
-            }
+            Audio.Play(pressSound);
         }
-        else
+        if (buttonMode == 1)
         {
-            if (releaseSound.IsNotNullOrEmpty())
-            {
-                Audio.Play(releaseSound);
-            }
             string result = Md.Session.sessionKeys.GetValueOrDefault(sessionKeyID, "");
             if (Md.Session.codeButtonTargets.ContainsKey(sessionKeyID))
             {
-                if (result != Md.Session.codeButtonTargets[sessionKeyID].codeString &&
-                    Md.Session.codeButtonTargets[sessionKeyID].deactivateFlagWhenNotStaisfied)
+                if (result == Md.Session.codeButtonTargets[sessionKeyID].codeString)
                 {
-                    Md.Session.codeButtonTargets[sessionKeyID].flag.SetFlag(false);
+                    Md.Session.codeButtonTargets[sessionKeyID].flag.SetFlag(true);
                 }
+            }
+            Md.Session.sessionKeys[sessionKeyID] = "";
+        }
+        else if (buttonMode == 2)
+        {
+            if (Md.Session.sessionKeys.ContainsKey(sessionKeyID))
+            {
+                var s = Md.Session.sessionKeys[sessionKeyID];
+
+                if (s.Length > 0)
+                {
+                    Md.Session.sessionKeys[sessionKeyID] = s.Substring(0, s.Length - 1);
+                }
+            }
+        }
+        else if (buttonMode == 3)
+        {
+            Md.Session.sessionKeys[sessionKeyID] = "";
+        }
+        else
+        {
+            Md.Session.sessionKeys.Create(sessionKeyID, "");
+            Md.Session.sessionKeys[sessionKeyID] += buttonCode;
+        }
+    }
+
+    protected override void OnRelease()
+    {
+        if (releaseSound.IsNotNullOrEmpty())
+        {
+            Audio.Play(releaseSound);
+        }
+        string result = Md.Session.sessionKeys.GetValueOrDefault(sessionKeyID, "");
+        if (Md.Session.codeButtonTargets.ContainsKey(sessionKeyID))
+        {
+            if (result != Md.Session.codeButtonTargets[sessionKeyID].codeString &&
+                Md.Session.codeButtonTargets[sessionKeyID].deactivateFlagWhenNotStaisfied)
+            {
+                Md.Session.codeButtonTargets[sessionKeyID].flag.SetFlag(false);
             }
         }
     }
