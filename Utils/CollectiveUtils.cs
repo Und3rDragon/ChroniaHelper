@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using VivHelper.Triggers;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Utils;
@@ -91,7 +92,7 @@ public static class CollectiveUtils
         return false;
     }
 
-    public static void Create<A, B>(this IDictionary<A,B> dic, A key, B value)
+    public static void Create<A, B>(this IDictionary<A, B> dic, A key, B value)
     {
         if (!dic.ContainsKey(key))
         {
@@ -139,9 +140,9 @@ public static class CollectiveUtils
     this ICollection<KeyValuePair<TKey, TValue>> collection,
     TKey key, TValue defaultValue)
     {
-        foreach(var item in collection)
+        foreach (var item in collection)
         {
-            if(item.Key.Equals(key))
+            if (item.Key.Equals(key))
             {
                 return item.Value;
             }
@@ -162,7 +163,7 @@ public static class CollectiveUtils
 
     public static TypeA SafeGet<TypeA>(this IList<TypeA> list, int at, TypeA ifNotExist)
     {
-        if(at < list.Count)
+        if (at < list.Count)
         {
             return list[at];
         }
@@ -226,7 +227,7 @@ public static class CollectiveUtils
 
     public static void Enter<Type>(this ICollection<Type> list, params Type[] items)
     {
-        for(int i = 0; i < items.Length; i++)
+        for (int i = 0; i < items.Length; i++)
         {
             if (!list.Contains(items[i]))
             {
@@ -234,10 +235,10 @@ public static class CollectiveUtils
             }
         }
     }
-    
+
     public static void Enter<Type, TypeB>(this ICollection<Type> target, ICollection<TypeB> source, Func<TypeB, Type> translator)
     {
-        foreach(var item in source)
+        foreach (var item in source)
         {
             target.Enter(translator(item));
         }
@@ -247,13 +248,14 @@ public static class CollectiveUtils
         where MidType : ICollection<TypeB>, new()
     {
         if (key.IsNull() || items.IsNull() || items.Length == 0) { return; }
-        
+
         if (target.ContainsKey(key))
         {
             target[key].Enter(items);
         }
         else
-        {;
+        {
+            ;
             target.Enter(key, new());
         }
     }
@@ -325,7 +327,7 @@ public static class CollectiveUtils
 
     public static T[] SafeSet<T>(ref T[] array, int index, T value)
     {
-        if(array.Length == 0) { return Array.Empty<T>(); }
+        if (array.Length == 0) { return Array.Empty<T>(); }
 
         array[int.Clamp(index, 0, array.Length - 1)] = value;
 
@@ -336,7 +338,7 @@ public static class CollectiveUtils
     {
         if (array.Length == 0) { return Array.Empty<T>(); }
 
-        for(int i = 0; i < array.Length; i++)
+        for (int i = 0; i < array.Length; i++)
         {
             array[i] = value;
         }
@@ -406,7 +408,7 @@ public static class CollectiveUtils
     /// <typeparam name="T">集合元素类型</typeparam>
     /// <param name="source">源集合</param>
     /// <param name="action">要执行的操作</param>
-    public static void EachDoWhen<T>(this IEnumerable<T> source, Predicate<T> predicate,Action<T> action)
+    public static void EachDoWhen<T>(this IEnumerable<T> source, Predicate<T> predicate, Action<T> action)
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
         if (action == null) throw new ArgumentNullException(nameof(action));
@@ -448,7 +450,7 @@ public static class CollectiveUtils
         }
         return r;
     }
-    
+
     /// <summary>
     /// 对集合中的每个元素执行指定操作, 除非干扰条件满足
     /// </summary>
@@ -527,7 +529,7 @@ public static class CollectiveUtils
 
         return result;
     }
-    
+
 
     /// <summary>
     /// 对集合中的每个元素执行指定操作，并传递索引
@@ -585,7 +587,7 @@ public static class CollectiveUtils
 
         var t = source.Select(selector);
         ResultType r = new();
-        foreach(var item in t)
+        foreach (var item in t)
         {
             if (!r.Contains(item))
             {
@@ -620,13 +622,13 @@ public static class CollectiveUtils
     }
 
     public static void Compare<T, ListType, UniqueListA, UniqueListB>(this ICollection<T> source,
-        ListType target, out UniqueListA uniqueInSource, out UniqueListB uniqueInTarget) 
+        ListType target, out UniqueListA uniqueInSource, out UniqueListB uniqueInTarget)
         where ListType : ICollection<T>, new()
         where UniqueListA : ICollection<T>, new()
         where UniqueListB : ICollection<T>, new()
     {
         ListType s = new();
-        foreach(var item in source)
+        foreach (var item in source)
         {
             s.Add(item);
         }
@@ -642,7 +644,7 @@ public static class CollectiveUtils
                 t.Remove(item);
             }
         }
-        foreach(var item in target)
+        foreach (var item in target)
         {
             if (s.Contains(item))
             {
@@ -651,7 +653,7 @@ public static class CollectiveUtils
         }
 
         UniqueListA os = new(); UniqueListB ot = new();
-        foreach(var item in s)
+        foreach (var item in s)
         {
             if (!os.Contains(item))
             {
@@ -665,11 +667,11 @@ public static class CollectiveUtils
                 ot.Add(item);
             }
         }
-        
+
         uniqueInSource = os; uniqueInTarget = ot;
         return;
     }
-    
+
     /// <summary>
     /// 将一个列表初始化后复制成另一个列表
     /// </summary>
@@ -728,7 +730,7 @@ public static class CollectiveUtils
             target[index++] = transmutor(item);
         }
     }
-    
+
     /// <summary>
     /// 将字典拆分为键集合和值集合
     /// </summary>
@@ -770,13 +772,13 @@ public static class CollectiveUtils
 
         return true;
     }
-    
+
     public static bool TryGet<T, Target>(this ICollection<T> source, Predicate<T> condition, out Target result)
         where Target : ICollection<T>, new()
     {
         bool match = false;
         result = new();
-        foreach(var item in source)
+        foreach (var item in source)
         {
             if (condition(item))
             {
@@ -843,12 +845,12 @@ public static class CollectiveUtils
             result = null;
             return false;
         }
-        if(source.Count == 0)
+        if (source.Count == 0)
         {
             result = null;
             return false;
         }
-        if(index >= source.Count)
+        if (index >= source.Count)
         {
             result = null;
             return false;
@@ -910,7 +912,7 @@ public static class CollectiveUtils
         // 其他引用类型：回退到 Equals（或你可抛异常）
         return x.Equals(y);
     }
-    
+
     private static bool ArraysEqual(Array a, Array b)
     {
         if (a.Length != b.Length) return false;
@@ -1099,5 +1101,15 @@ public static class CollectiveUtils
             }
         }
         return null;
+    }
+
+    public static void As<T1, T2, T3>(this IList<T1> orig, out T3 list, Func<T1, T2> convert)
+        where T3 : IList<T2>, new()
+    {
+        list = new();
+        for (int i = 0; i < orig.Count; i++)
+        {
+            list.Add(convert(orig[i]));
+        }
     }
 }

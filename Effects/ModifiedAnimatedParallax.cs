@@ -163,6 +163,22 @@ public class ModifiedAnimatedParallax : Parallax
     {
         base.Update(scene);
 
+        if (!resetFlag.IsNullOrEmpty())
+        {
+            if (resetFlag.GetFlag())
+            {
+                currentFrame = resetFrame - 1; // For calculation priority
+                resetFlag.SetFlag(false);
+            }
+        }
+        if (!triggerFlag.IsNullOrEmpty())
+        {
+            if (!triggerFlag.GetFlag())
+            {
+                return;
+            }
+        }
+        
         if (IsVisible(scene as Level))
         {
             if (alphaExpression != null)
@@ -170,22 +186,6 @@ public class ModifiedAnimatedParallax : Parallax
                 Alpha = alphaExpression.ParseMathExpression();
             }
             
-            if (!resetFlag.IsNullOrEmpty())
-            {
-                if (resetFlag.GetFlag())
-                {
-                    currentFrame = resetFrame - 1; // For calculation priority
-                    resetFlag.SetFlag(false);
-                }
-            }
-            if (!triggerFlag.IsNullOrEmpty())
-            {
-                if (!triggerFlag.GetFlag())
-                {
-                    return;
-                }
-            }
-
             if(speedSlider != null)
             {
                 float multiplier = (speedSlider.GetSlider() + 1f).ClampMin(0f);

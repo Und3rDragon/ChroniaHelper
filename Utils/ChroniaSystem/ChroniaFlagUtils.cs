@@ -139,4 +139,34 @@ public static class ChroniaFlagUtils
             (flag) => flag.TrimStart('!')
             );
     }
+
+    public static void SetGeneralFlags(this string flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#")
+    {
+        flags.Split(separator, StringSplitOptions.TrimEntries).ApplyTo(out string[] list);
+
+        for (int i = 0; i < list.Length; i++)
+        {
+            string item = list[i];
+            bool _invert = item.Contains(invert);
+            bool _global = item.Contains(global);
+            bool _temporary = item.Contains(temporary);
+            string name = item.RemoveAll(invert).RemoveAll(global).RemoveAll(temporary);
+
+            name.SetFlag(!_invert, _global, _temporary);
+        }
+    }
+
+    public static void SetGeneralFlags(this string[] flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#")
+    {
+        for (int i = 0; i < flags.Length; i++)
+        {
+            string item = flags[i];
+            bool _invert = item.Contains(invert);
+            bool _global = item.Contains(global);
+            bool _temporary = item.Contains(temporary);
+            string name = item.RemoveAll(invert).RemoveAll(global).RemoveAll(temporary);
+
+            name.SetFlag(!_invert, _global, _temporary);
+        }
+    }
 }
