@@ -167,15 +167,8 @@ public class ModifiedAnimatedParallax : Parallax
         {
             if (resetFlag.GetFlag())
             {
-                currentFrame = resetFrame - 1; // For calculation priority
+                currentFrame = resetFrame; // For calculation priority
                 resetFlag.SetFlag(false);
-            }
-        }
-        if (!triggerFlag.IsNullOrEmpty())
-        {
-            if (!triggerFlag.GetFlag())
-            {
-                return;
             }
         }
         
@@ -185,33 +178,43 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 Alpha = alphaExpression.ParseMathExpression();
             }
-            
-            if(speedSlider != null)
+        }
+
+        if (speedSlider != null)
+        {
+            float multiplier = (speedSlider.GetSlider() + 1f).ClampMin(0f);
+            fps = orig_fps * multiplier;
+            if (fps != last_fps)
             {
-                float multiplier = (speedSlider.GetSlider() + 1f).ClampMin(0f);
-                fps = orig_fps * multiplier;
-                if (fps != last_fps)
+                currentFrameTimer *= fps / last_fps;
+            }
+        }
+        last_fps = fps;
+
+        currentFrameTimer -= Engine.DeltaTime;
+
+        if (currentFrameTimer < 0f)
+        {
+            while (currentFrameTimer < 0f)
+            {
+                currentFrameTimer += (1f / fps).Clamp(Engine.DeltaTime, 2592000f);
+            }
+            
+            currentFrame = currentFrame.ClampMin(0); // For frame index protection
+            currentFrame %= frameOrder.Length;
+            Texture = frames[frameOrder[currentFrame]];
+
+            if (!triggerFlag.IsNullOrEmpty())
+            {
+                if (!triggerFlag.GetFlag())
                 {
-                    currentFrameTimer *= fps / last_fps;
+                    return;
                 }
             }
-            last_fps = fps;
             
-            currentFrameTimer -= Engine.DeltaTime;
-            
-            if (currentFrameTimer < 0f)
+            if (!playOnce || currentFrame != frameOrder.Length - 1)
             {
-                while(currentFrameTimer < 0f)
-                {
-                    currentFrameTimer += (1f / fps).Clamp(Engine.DeltaTime, 2592000f);
-                }
-                if (!playOnce || currentFrame != frameOrder.Length - 1)
-                {
-                    currentFrame++;
-                }
-                currentFrame = currentFrame < 0 ? 0 : currentFrame; // For frame index protection
-                currentFrame %= frameOrder.Length;
-                Texture = frames[frameOrder[currentFrame]];
+                currentFrame++;
             }
         }
     }
