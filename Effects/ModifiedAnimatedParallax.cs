@@ -167,7 +167,7 @@ public class ModifiedAnimatedParallax : Parallax
         {
             if (resetFlag.GetFlag())
             {
-                currentFrame = resetFrame; // For calculation priority
+                currentFrame = resetFrame >= 0 ? resetFrame : frameOrder.Length + resetFrame; // For calculation priority
                 resetFlag.SetFlag(false);
             }
         }
