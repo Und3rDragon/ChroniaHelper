@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
@@ -11,7 +12,6 @@ using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities;
 
-[WorkingInProgress]
 [CustomEntity("ChroniaHelper/SettingsOverrideOnFlagController")]
 public class SettingsOverrideOnFlagController : BaseEntity
 {
@@ -31,6 +31,10 @@ public class SettingsOverrideOnFlagController : BaseEntity
         Celeste.Settings.Instance.Fullscreen = Md.Session.settingsData.fullScreen;
         Celeste.Settings.Instance.WindowScale = Md.Session.settingsData.windowScale;
         Celeste.Settings.Instance.DisableFlashes = Md.Session.settingsData.photosensitive;
+        Celeste.Settings.Instance.Language = Md.Session.settingsData.language;
+
+        Celeste.Settings.Instance.ApplyScreen();
+        Celeste.Settings.Instance.ApplyLanguage();
 
         orig(self);
     }
@@ -41,6 +45,7 @@ public class SettingsOverrideOnFlagController : BaseEntity
         photosensitive = data.Int("photoSensitiveMode", 0);
         fullScreen = data.Int("fullScreen", 0);
         windowScale = data.Attr("windowScale");
+        language = data.Int("language", -1);
     }
     private string flag;
     /// <summary>
@@ -48,6 +53,7 @@ public class SettingsOverrideOnFlagController : BaseEntity
     /// </summary>
     public int photosensitive = 0, fullScreen = 0;
     public string windowScale;
+    public int language = -1;
     
     public override void Update()
     {
@@ -58,10 +64,16 @@ public class SettingsOverrideOnFlagController : BaseEntity
         switch (photosensitive)
         {
             case 1:
-                Celeste.Settings.Instance.DisableFlashes = true;
+                if (!Celeste.Settings.Instance.DisableFlashes)
+                {
+                    Celeste.Settings.Instance.DisableFlashes = true;
+                }
                 break;
             case 2:
-                Celeste.Settings.Instance.DisableFlashes = false;
+                if (Celeste.Settings.Instance.DisableFlashes)
+                {
+                    Celeste.Settings.Instance.DisableFlashes = false;
+                }
                 break;
             default:
                 break;
@@ -71,10 +83,18 @@ public class SettingsOverrideOnFlagController : BaseEntity
         switch (fullScreen)
         {
             case 1:
-                Celeste.Settings.Instance.Fullscreen = true;
+                if (!Celeste.Settings.Instance.Fullscreen)
+                {
+                    Celeste.Settings.Instance.Fullscreen = true;
+                    Celeste.Settings.Instance.ApplyScreen();
+                }
                 break;
             case 2:
-                Celeste.Settings.Instance.Fullscreen = false;
+                if (Celeste.Settings.Instance.Fullscreen)
+                {
+                    Celeste.Settings.Instance.Fullscreen = false;
+                    Celeste.Settings.Instance.ApplyScreen();
+                }
                 break;
             default:
                 break;
@@ -82,7 +102,20 @@ public class SettingsOverrideOnFlagController : BaseEntity
 
         if (windowScale.IsNotNullOrEmpty() && int.TryParse(windowScale, out int n))
         {
-            Celeste.Settings.Instance.WindowScale = n;
+            if (Celeste.Settings.Instance.WindowScale != n)
+            {
+                Celeste.Settings.Instance.WindowScale = n;
+                Celeste.Settings.Instance.ApplyScreen();
+            }
+        }
+        
+        if(language >= 0 && language <= 9)
+        {
+            if (Celeste.Settings.Instance.Language != Md.LanguageID[(Md.Languages)language])
+            {
+                Celeste.Settings.Instance.Language = Md.LanguageID[(Md.Languages)language];
+                Celeste.Settings.Instance.ApplyLanguage();
+            }
         }
     }
 }

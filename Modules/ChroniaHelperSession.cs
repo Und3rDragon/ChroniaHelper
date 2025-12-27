@@ -198,6 +198,9 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<string, bool> listeningConditionLastState = new();
     public Dictionary<string, bool> listeningConditionTimerState = new();
     public Dictionary<string, float> listeningConditionTimer = new();
+    
+    // Chronia Points Game
+    public HashSet<string> DiscoveredRooms = new();
 
     // Code Button
     public struct CodeButtonTarget
@@ -215,13 +218,15 @@ public class ChroniaHelperSession : EverestModuleSession
     {
         public bool photosensitive; 
         public bool fullScreen; 
-        public int windowScale; 
+        public int windowScale;
+        public string language;
     }
     public SettingsData settingsData = new Ses.SettingsData
     {
         fullScreen = Celeste.Settings.Instance.Fullscreen,
         photosensitive = Celeste.Settings.Instance.DisableFlashes,
-        windowScale = Celeste.Settings.Instance.WindowScale
+        windowScale = Celeste.Settings.Instance.WindowScale,
+        language = Celeste.Settings.Instance.Language,
     };
 
     /// <summary>

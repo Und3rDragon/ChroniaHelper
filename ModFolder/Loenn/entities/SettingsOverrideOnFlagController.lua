@@ -13,6 +13,7 @@ controller.placements = {
         photoSensitiveMode = 0,
         fullScreen = 0,
         windowScale = "",
+        language = -1,
     },
 }
 
@@ -37,6 +38,23 @@ controller.fieldInformation =
             ["Do not change"] = 0,
             ["On"] = 1,
             ["Off"] = 2,
+        },
+        editable = false,
+    },
+    language = {
+        fieldType = "integer",
+        options = {
+            ["No Changes"] = -1,
+            ["English"] = 0,
+            ["Brazilian"] = 1,
+            ["French"] = 2,
+            ["German"] = 3,
+            ["Italian"] = 4,
+            ["Japanese"] = 5,
+            ["Korean"] =6,
+            ["Russian"] = 7,
+            ["Simplified Chinese"] = 8,
+            ["Spanish"] = 9,
         },
         editable = false,
     },
