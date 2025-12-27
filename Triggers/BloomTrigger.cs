@@ -47,10 +47,13 @@ public class BloomTrigger : BaseTrigger
         t = timer;
         if (base.leaveReset || timedFade)
         {
-            this.oldBloom.bloomBase = base.level.Bloom.Base;
-            this.oldBloom.bloomBaseAdd = base.session.BloomBaseAdd;
-            this.oldBloom.bloomStrength = base.level.Bloom.Strength;
-            this.oldBloom.bloomColor = this.GetBloomColor();
+            oldBloom = new OldBloom
+            {
+                bloomBase = base.level.Bloom.Base,
+                bloomBaseAdd = base.session.BloomBaseAdd,
+                bloomStrength = base.level.Bloom.Strength,
+                bloomColor = this.GetBloomColor()
+            };
         }
         if (!timedFade)
         {

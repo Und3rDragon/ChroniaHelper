@@ -10,6 +10,8 @@ return {
         {
             lightingColor = "000000",
             lightingAlpha = 0,
+            lightingAlphaAdd = 0,
+            baseLightingAlpha = 0,
             levelDeath = "-1",
             totalDeath = "-1",
             enterMode = "Any",
@@ -21,8 +23,12 @@ return {
             leaveIfFlag = "",
             leaveSound = "",
             timed = -1,
+            changeLightingColor = true,
+            changeLightingAlpha = true,
+            changeLightingAlphaAdd = false,
+            changeBaseLightingAlpha = false,
             onlyOnce = false,
-            leaveReset = false
+            leaveReset = false,
         }
     },
     fieldInformation =
