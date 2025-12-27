@@ -70,28 +70,7 @@ public class ConditionDelayTrigger : BaseTrigger
 
         if (onEnterCondition.IsNotNullOrEmpty() && useEnter)
         {
-            if(onEnterUseExpression == 2 && Md.FrostHelperLoaded)
-            {
-                onEnter = onEnterCondition.FrostHelper_GetBoolSessionExpressionValue();
-            }
-            else if (onEnterUseExpression == 1)
-            {
-                onEnter = onEnterCondition.ParseMathExpression() != 0f;
-            }
-            else
-            {
-                onEnter = true;
-                onEnterCondition.Split(',', StringSplitOptions.TrimEntries).EachDo((flag) =>
-                {
-                    string name = flag;
-                    bool inverted = false;
-                    if (inverted = flag.StartsWith('!'))
-                    {
-                        name = flag.TrimStart('!');
-                    }
-                    onEnter.TryNegative(inverted ? !name.GetFlag() : name.GetFlag());
-                });
-            }
+            onEnter = onEnterCondition.CheckCondition((ConditionUtils.ConditionMode)onEnterUseExpression);
         }
         else
         {
@@ -100,28 +79,7 @@ public class ConditionDelayTrigger : BaseTrigger
 
         if (onStayCondition.IsNotNullOrEmpty() && useStay)
         {
-            if(onStayUseExpression == 2 && Md.FrostHelperLoaded)
-            {
-                onStay = onStayCondition.FrostHelper_GetBoolSessionExpressionValue();
-            }
-            else if (onStayUseExpression == 1)
-            {
-                onStay = onStayCondition.ParseMathExpression() != 0f;
-            }
-            else
-            {
-                onStay = true;
-                onStayCondition.Split(',', StringSplitOptions.TrimEntries).EachDo((flag) =>
-                {
-                    string name = flag;
-                    bool inverted = false;
-                    if (inverted = flag.StartsWith('!'))
-                    {
-                        name = flag.TrimStart('!');
-                    }
-                    onStay.TryNegative(inverted ? !name.GetFlag() : name.GetFlag());
-                });
-            }
+            onStay = onStayCondition.CheckCondition((ConditionUtils.ConditionMode)onStayUseExpression);
         }
         else
         {
@@ -130,28 +88,7 @@ public class ConditionDelayTrigger : BaseTrigger
 
         if (onLeaveCondition.IsNotNullOrEmpty() && useStay)
         {
-            if(onLeaveUseExpression == 2 && Md.FrostHelperLoaded)
-            {
-                onLeave = onLeaveCondition.FrostHelper_GetBoolSessionExpressionValue();
-            }
-            else if (onLeaveUseExpression == 1)
-            {
-                onLeave = onLeaveCondition.ParseMathExpression() != 0f;
-            }
-            else
-            {
-                onLeave = true;
-                onLeaveCondition.Split(',', StringSplitOptions.TrimEntries).EachDo((flag) =>
-                {
-                    string name = flag;
-                    bool inverted = false;
-                    if (inverted = flag.StartsWith('!'))
-                    {
-                        name = flag.TrimStart('!');
-                    }
-                    onLeave.TryNegative(inverted ? !name.GetFlag() : name.GetFlag());
-                });
-            }
+            onLeave = onLeaveCondition.CheckCondition((ConditionUtils.ConditionMode)onLeaveUseExpression);
         }
         else
         {

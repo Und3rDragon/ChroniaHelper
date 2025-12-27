@@ -34,26 +34,7 @@ public class ConditionDelayListenerOperator
         foreach(var item in Md.Session.listeningConditions)
         {
             var listener = item.Value;
-            bool state = false;
-            
-            if(listener.usingExpression == 2 && Md.FrostHelperLoaded)
-            {
-                state = listener.condition.FrostHelper_TryCreateSessionExpression().FrostHelper_GetBoolSessionExpressionValue();
-            }
-            else if(listener.usingExpression == 1)
-            {
-                state = listener.condition.ParseMathExpression() != 0;
-            }
-            else
-            {
-                listener.condition.Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] condition);
-
-                state = true;
-                foreach(var flag in condition)
-                {
-                    state.TryNegative(flag.GetGeneralInvertedFlag());
-                }
-            }
+            bool state = listener.condition.CheckCondition((ConditionUtils.ConditionMode)listener.usingExpression);
             
             if (listener.constant == 1)
             {

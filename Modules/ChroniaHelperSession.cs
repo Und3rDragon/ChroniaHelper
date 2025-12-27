@@ -210,6 +210,20 @@ public class ChroniaHelperSession : EverestModuleSession
     }
     public Dictionary<string, CodeButtonTarget> codeButtonTargets = new();
     
+    // Settings Override Controller
+    public struct SettingsData
+    {
+        public bool photosensitive; 
+        public bool fullScreen; 
+        public int windowScale; 
+    }
+    public SettingsData settingsData = new Ses.SettingsData
+    {
+        fullScreen = Celeste.Settings.Instance.Fullscreen,
+        photosensitive = Celeste.Settings.Instance.DisableFlashes,
+        windowScale = Celeste.Settings.Instance.WindowScale
+    };
+
     /// <summary>
     /// For Chronia Flag-Counter-Slider System
     /// </summary>

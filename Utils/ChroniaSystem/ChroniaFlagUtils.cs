@@ -169,4 +169,20 @@ public static class ChroniaFlagUtils
             name.SetFlag(!_invert, _global, _temporary);
         }
     }
+    
+    public static bool GetGeneralFlags(this string flags, string separator = ",", string invert = "!")
+    {
+        if (string.IsNullOrEmpty(flags)) { return false; }
+        
+        flags.Split(separator, StringSplitOptions.TrimEntries).ApplyTo(out string[] f);
+
+        bool r = true;
+        foreach(var i in f)
+        {
+            r.TryNegative(i.GetConditionalInvertedFlag((s) => s.Contains(invert), (s) => s.RemoveAll(invert)));
+        }
+
+        return r;
+    }
+
 }

@@ -231,6 +231,12 @@ public class Commands
             CommandLog.LogCommand($"{i.Key} => {i.Value}");
         }
     }
+
+    [Command("chronia_enable_hud", "Set HUD")]
+    public static void CommandSetHUD(bool state = true)
+    {
+        Md.Settings.HUDMainControl = state;
+    }
 }
 
 public static class CommandLog
