@@ -152,4 +152,15 @@ public class ChroniaHelperSettings : EverestModuleSettings
     }
 
     public CameraOffsetDisplayer cameraOffsetDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class CommandStopclockDisplayer : CommonDisplayer
+    {
+        [SettingRange(0,6)]
+        public int minUnit { get; set; } = 0;
+        [SettingRange(0,6)]
+        public int maxUnit { get; set; } = 2;
+        public bool trimZeros { get; set; } = true;
+    }
+    public CommandStopclockDisplayer commandStopclockDisplayer { get; set; } = new();
 }

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.StopwatchSystem;
 using Microsoft.Xna.Framework.Media;
 using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
@@ -431,6 +433,52 @@ public class Displayers : HDRenderEntity
             }, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
+
+        if (Md.Settings.commandStopclockDisplayer.enabled)
+        {
+            var displayer = Md.Settings.commandStopclockDisplayer;
+            var displayUI = commandClock_UI;
+
+            if (Md.Session.commandStopclockTag.IsNotNullOrEmpty())
+            {
+                if (Md.Session.commandStopclockTag.GetStopclock(out Stopclock clock))
+                {
+                    clock.GetClampedTimeData(out int[] data, 
+                        Md.Settings.commandStopclockDisplayer.minUnit,
+                        Md.Settings.commandStopclockDisplayer.maxUnit);
+
+                    string target = "";
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            target = Md.Settings.commandStopclockDisplayer.minUnit == 0 ? 
+                                $"{data[i]:000}" : $"{data[i]:00}";
+                            continue;
+                        }
+                        else
+                        {
+                            target = $"{data[i]:00}:" + target;
+                        }
+                    }
+
+                    if (Md.Settings.commandStopclockDisplayer.trimZeros)
+                    {
+                        target = Regex.Replace(target, "0+:+", "");
+                    }
+
+                    displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+                    displayUI.distance = displayer.letterDistance;
+                    displayUI.scale = displayer.scale * 0.1f;
+
+                    displayUI.Render(target, (c) =>
+                    {
+                        return $"{c}".ParseInt(c == ':' ? 10 : 0);
+                    }, GetRenderPosition(displayer.displayPosition,
+                        new Vc2(displayer.X, displayer.Y)));
+                }
+            }
+        }
     }
 
     public string generalReference = Cons.DisplayFontsReference;
@@ -496,6 +544,8 @@ public class Displayers : HDRenderEntity
     {
         segmentOrigin = Vc2.Zero,
     };
+
+    public SerialImageRaw commandClock_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {

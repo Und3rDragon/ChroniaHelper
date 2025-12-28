@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.XaphanHelper;
@@ -8,6 +9,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
+using ChroniaHelper.Utils.StopwatchSystem;
 using TextCopy;
 using static ChroniaHelper.Entities.PasswordKeyboard.PasswordKeyboard;
 
@@ -15,20 +17,20 @@ namespace ChroniaHelper.Settings;
 
 public class Commands
 {
-    [Command("chronia_fullcheat", "Enable Variant Mode and Cheat Mode for a save")]
+    [Command("chronia_full_cheat", "Enable Variant Mode and Cheat Mode for a save")]
     public static void EnableFullCheat()
     {
         MaP.currentSaveData?.Item2.CheatMode = true;
         MaP.currentSaveData?.Item2.VariantMode = true;
     }
 
-    [Command("chronia_try_math_expression", "Try parsing a string using ChroniaHelper MathExpression")]
+    [Command("chronia_math_expression", "Try parsing a string using ChroniaHelper MathExpression")]
     public static void TryMathExpression(string expression)
     {
         CommandLog.LogDivider($"Math Expression Result to: {expression}");
         expression.ParseMathExpression().LogCommand();
     }
-
+    
     [Command("chronia_get_keyboard_password_hash", "Try getting the encrypted password for PasswordKeyboard")]
     public static void GenerateHashedPassword(string keyboardTag, string password, bool caseSensitive = true)
     {
@@ -37,6 +39,13 @@ public class Commands
         hash.LogCommand();
         ClipboardService.SetText(hash);
         "Password copied onto your clipboard".LogCommand(Color.Yellow);
+    }
+
+    [Command("chronia_help_get_keyboard_password_hash", "")]
+    public static void Help1()
+    {
+        CommandLog.LogCommand("string: keyboardTag, string: password, bool: caseSensitive = true",
+            Color.Yellow);
     }
 
     [Command("chronia_get_password_hash", "Try getting the encrypted keyboard-tag-combined password for PasswordKeyboard")]
@@ -48,8 +57,8 @@ public class Commands
         ClipboardService.SetText(hash);
         "Password copied onto your clipboard".LogCommand(Color.Yellow);
     }
-
-    [Command("chronia_flag", "Set Flag")]
+    
+    [Command("chronia_set_flag", "Set Flag")]
     public static void CommandFlag(string name, bool state = true, bool global = false, bool temporary = false)
     {
         if (Engine.Scene is not Level) { return; }
@@ -58,7 +67,7 @@ public class Commands
         name.SetFlag(state, global, temporary);
     }
 
-    [Command("chronia_flag_per_room", "Set up a flag that works only in one room")]
+    [Command("chronia_set_flag_per_room", "Set up a flag that works only in one room")]
     public static void CommandRoomFlag(string name, bool state = true)
     {
         if (Engine.Scene is not Level) { return; }
@@ -186,7 +195,7 @@ public class Commands
         CommandLog.LogDivider();
     }
 
-    [Command("chronia_get_charcode", "Get the charcode index for a certain character")]
+    [Command("chronia_charcode", "Get the charcode index for a certain character")]
     public static void CommandGetCharcode(string str)
     {
         string result = "";
@@ -203,6 +212,12 @@ public class Commands
         }
 
         CommandLog.LogCommand(result, Color.Yellow);
+    }
+
+    [Command("chronia_help_charcode", "")]
+    public static void Help2()
+    {
+        CommandLog.LogCommand("string: the series of chars you wanna query", Color.Yellow);
     }
     
     [Command("chronia_all_keys", "Log all session keys")]
@@ -232,10 +247,97 @@ public class Commands
         }
     }
 
-    [Command("chronia_enable_hud", "Set HUD")]
+    [Command("chronia_hud_enable", "Set HUD")]
     public static void CommandSetHUD(bool state = true)
     {
         Md.Settings.HUDMainControl = state;
+    }
+
+    [Command("chronia_stopclock", "Set up a custom stopclock")]
+    public static void CommandSetUpStopclock(string name = "commandClock", bool countdown = true, string time = "5:0:0", bool followPause = true)
+    {
+        if (MaP.scene is not Level) { return; }
+
+        Stopclock clock = new Stopclock(countdown, time, followPause, true, false, false);
+        clock.Register(name, false);
+
+        clock.Start();
+    }
+
+    [Command("chronia_help_stopclock", "")]
+    public static void Help3()
+    {
+        CommandLog.LogCommand("string: stopclockTag, bool: countdown, string: time, bool: followLevelPause", 
+            Color.Yellow);
+    }
+
+    [Command("chronia_stopclock_set_render", "Setup the stopclock render target of the Mod Options")]
+    public static void CommandSetCommandClockDisplay(string name = "commandClock")
+    {
+        if( Md.Session.IsNull()) { return; }
+
+        Md.Session.commandStopclockTag = name;
+    }
+
+    [Command("chronia_help_stopclock_set_render", "")]
+    public static void Help4()
+    {
+        CommandLog.LogCommand("string: stopclock tag",
+            Color.Yellow);
+    }
+
+    [Command("chronia_stopclock_set_time", "")]
+    public static void CommandSetStopclock(string name = "commandClock", string time = "5:0:0")
+    {
+        if(Md.Session.IsNull()) { return; }
+        
+        if(name.GetStopclock(out Stopclock clock))
+        {
+            clock.SetTime(time);
+        }
+    }
+
+    [Command("chronia_help_stopclock_set_time", "")]
+    public static void Help5()
+    {
+        CommandLog.LogCommand("string: stopclock tag, string: time formats like \"5:0:0\"",
+            Color.Yellow);
+    }
+
+    [Command("chronia_stopclock_reset", "")]
+    public static void CommandResetStopclock(string name = "commandClock")
+    {
+        if (Md.Session.IsNull()) { return; }
+
+        if (name.GetStopclock(out Stopclock clock))
+        {
+            clock.Reset();
+        }
+    }
+
+    [Command("chronia_help_stopclock_reset", "")]
+    public static void Help6()
+    {
+        CommandLog.LogCommand("string: stopclock tag",
+            Color.Yellow);
+    }
+
+    [Command("chronia_stopclock_start", "")]
+    public static void CommandStartStopclock(string name = "commandClock")
+    {
+        if (Md.Session.IsNull()) { return; }
+
+        if (name.GetStopclock(out Stopclock clock))
+        {
+            clock.Start();
+        }
+    }
+
+    [Command("chronia_help_stopclock_start", "")]
+    public static void Help7()
+    {
+        CommandLog.LogCommand("string: stopclock tag",
+            Color.Yellow);
     }
 }
 
