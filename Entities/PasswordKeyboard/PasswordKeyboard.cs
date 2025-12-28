@@ -1,4 +1,5 @@
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
@@ -6,6 +7,7 @@ namespace ChroniaHelper.Entities.PasswordKeyboard;
 
 [CustomEntity("ChroniaHelper/PasswordKeyboard = LoadKeyboard",
     "ChroniaHelper/InvisiblePasswordKeyboardTrigger = LoadTrigger")]
+[PrivateFor("SSC2025")]
 public sealed partial class PasswordKeyboard : Entity
 {
     public static Entity LoadKeyboard(Level level, LevelData leelData, Vc2 offset, EntityData data)

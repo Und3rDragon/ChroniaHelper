@@ -14,6 +14,7 @@ namespace ChroniaHelper.Triggers;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/RandomPackedFlagTrigger")]
+[PrivateFor("SSC2025")]
 public class RandomPackedFlagTrigger : BaseTrigger
 {
     public RandomPackedFlagTrigger(EntityData e, Vector2 offset):base(e, offset)
