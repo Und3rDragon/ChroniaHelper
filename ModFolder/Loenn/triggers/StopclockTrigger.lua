@@ -27,4 +27,16 @@ trigger.fieldInformation = {
     },
 }
 
+trigger.triggerText = function(room, entity)
+	local base = "Stopclock"
+    
+    if entity.countdown then
+        base = "Countdown " .. base
+    end
+    
+    base = base .. " (tag = " .. entity.stopclockName .. ") (time = " .. entity.time .. ")"
+    
+	return base
+end
+
 return trigger
