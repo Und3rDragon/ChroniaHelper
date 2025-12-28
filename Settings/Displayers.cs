@@ -25,6 +25,52 @@ public class Displayers : HDRenderEntity
     
     protected override void HDRender()
     {
+        if (Md.Settings.commandStopclockDisplayer.enabled)
+        {
+            var displayer = Md.Settings.commandStopclockDisplayer;
+            var displayUI = commandClock_UI;
+
+            if (Md.Session.commandStopclockTag.IsNotNullOrEmpty())
+            {
+                if (Md.Session.commandStopclockTag.GetStopclock(out Stopclock clock))
+                {
+                    clock.GetClampedTimeData(out int[] data,
+                        Md.Settings.commandStopclockDisplayer.minUnit,
+                        Md.Settings.commandStopclockDisplayer.maxUnit);
+
+                    string target = "";
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        if (i == 0)
+                        {
+                            target = Md.Settings.commandStopclockDisplayer.minUnit == 0 ?
+                                $"{data[i]:000}" : $"{data[i]:00}";
+                            continue;
+                        }
+                        else
+                        {
+                            target = $"{data[i]:00}:" + target;
+                        }
+                    }
+
+                    if (Md.Settings.commandStopclockDisplayer.trimZeros)
+                    {
+                        target = Regex.Replace(target, "0+:+", "");
+                    }
+
+                    displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+                    displayUI.distance = displayer.letterDistance;
+                    displayUI.scale = displayer.scale * 0.1f;
+
+                    displayUI.Render(target, (c) =>
+                    {
+                        return $"{c}".ParseInt(c == ':' ? 10 : 0);
+                    }, GetRenderPosition(displayer.displayPosition,
+                        new Vc2(displayer.X, displayer.Y)));
+                }
+            }
+        }
+        
         if (!Md.Settings.HUDMainControl) { return; }
         
         if (Md.Settings.stateMachineDisplayer.enabled)
@@ -432,52 +478,6 @@ public class Displayers : HDRenderEntity
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
             }, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
-        }
-
-        if (Md.Settings.commandStopclockDisplayer.enabled)
-        {
-            var displayer = Md.Settings.commandStopclockDisplayer;
-            var displayUI = commandClock_UI;
-
-            if (Md.Session.commandStopclockTag.IsNotNullOrEmpty())
-            {
-                if (Md.Session.commandStopclockTag.GetStopclock(out Stopclock clock))
-                {
-                    clock.GetClampedTimeData(out int[] data, 
-                        Md.Settings.commandStopclockDisplayer.minUnit,
-                        Md.Settings.commandStopclockDisplayer.maxUnit);
-
-                    string target = "";
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        if (i == 0)
-                        {
-                            target = Md.Settings.commandStopclockDisplayer.minUnit == 0 ? 
-                                $"{data[i]:000}" : $"{data[i]:00}";
-                            continue;
-                        }
-                        else
-                        {
-                            target = $"{data[i]:00}:" + target;
-                        }
-                    }
-
-                    if (Md.Settings.commandStopclockDisplayer.trimZeros)
-                    {
-                        target = Regex.Replace(target, "0+:+", "");
-                    }
-
-                    displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
-                    displayUI.distance = displayer.letterDistance;
-                    displayUI.scale = displayer.scale * 0.1f;
-
-                    displayUI.Render(target, (c) =>
-                    {
-                        return $"{c}".ParseInt(c == ':' ? 10 : 0);
-                    }, GetRenderPosition(displayer.displayPosition,
-                        new Vc2(displayer.X, displayer.Y)));
-                }
-            }
         }
     }
 
