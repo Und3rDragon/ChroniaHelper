@@ -254,20 +254,23 @@ public class Commands
     }
 
     [Command("chronia_stopclock", "Set up a custom stopclock")]
-    public static void CommandSetUpStopclock(string name = "commandClock", bool countdown = true, string time = "5:0:0", bool followPause = true)
+    public static void CommandSetUpStopclock(string name = "commandClock", bool countdown = true, bool start = true, string time = "5:0:0", bool followPause = true)
     {
         if (MaP.scene is not Level) { return; }
 
         Stopclock clock = new Stopclock(countdown, time, followPause, true, false, false);
         clock.Register(name, false);
 
-        clock.Start();
+        if (start)
+        {
+            clock.Start();
+        }
     }
 
     [Command("chronia_help_stopclock", "")]
     public static void Help3()
     {
-        CommandLog.LogCommand("string: stopclockTag, bool: countdown, string: time, bool: followLevelPause", 
+        CommandLog.LogCommand("string: stopclockTag, bool: countdown, bool: start right away, string: time, bool: followLevelPause", 
             Color.Yellow);
     }
 
