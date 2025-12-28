@@ -229,8 +229,6 @@ public class ChroniaHelperSession : EverestModuleSession
         language = Celeste.Settings.Instance.Language,
     };
 
-    public string commandStopclockTag = "";
-
     /// <summary>
     /// For Chronia Flag-Counter-Slider System
     /// </summary>

@@ -253,13 +253,13 @@ public class Commands
         Md.Settings.HUDMainControl = state;
     }
 
-    [Command("chronia_stopclock", "Set up a custom stopclock")]
-    public static void CommandSetUpStopclock(string name = "commandClock", bool countdown = true, bool start = true, string time = "5:0:0", bool followPause = true)
+    [Command("chronia_stopclock", "Set up a countup stopclock")]
+    public static void CommandSetUpStopclock(bool start = true, bool followPause = true)
     {
         if (MaP.scene is not Level) { return; }
 
-        Stopclock clock = new Stopclock(countdown, time, followPause, true, false, false);
-        clock.Register(name, false);
+        Stopclock clock = new Stopclock(false, followPause: followPause);
+        clock.Register("ChroniaHelper_Debug_CommandStopclock", false);
 
         if (start)
         {
@@ -270,31 +270,37 @@ public class Commands
     [Command("chronia_help_stopclock", "")]
     public static void Help3()
     {
-        CommandLog.LogCommand("string: stopclockTag, bool: countdown, bool: start right away, string: time, bool: followLevelPause", 
+        CommandLog.LogCommand("bool: start immediately, bool: follow level pause", 
             Color.Yellow);
     }
 
-    [Command("chronia_stopclock_set_render", "Setup the stopclock render target of the Mod Options")]
-    public static void CommandSetCommandClockDisplay(string name = "commandClock")
+    [Command("chronia_stopclock_countdown", "Set up a countdown stopclock")]
+    public static void CommandSetUpCountdown(string time = "5:0:0", bool start = true, bool followPause = true)
     {
-        if( Md.Session.IsNull()) { return; }
+        if (MaP.scene is not Level) { return; }
 
-        Md.Session.commandStopclockTag = name;
+        Stopclock clock = new Stopclock(true, time: time, followPause: followPause);
+        clock.Register("ChroniaHelper_Debug_CommandStopclock", false);
+
+        if (start)
+        {
+            clock.Start();
+        }
     }
 
-    [Command("chronia_help_stopclock_set_render", "")]
+    [Command("chronia_help_stopclock_countdown", "")]
     public static void Help4()
     {
-        CommandLog.LogCommand("string: stopclock tag",
+        CommandLog.LogCommand("string: time format like \"5:0:0\", bool: start immediately, bool: follow level pause",
             Color.Yellow);
     }
 
     [Command("chronia_stopclock_set_time", "")]
-    public static void CommandSetStopclock(string name = "commandClock", string time = "5:0:0")
+    public static void CommandSetStopclock(string time = "5:0:0")
     {
         if(Md.Session.IsNull()) { return; }
         
-        if(name.GetStopclock(out Stopclock clock))
+        if("ChroniaHelper_Debug_CommandStopclock".GetStopclock(out Stopclock clock))
         {
             clock.SetTime(time);
         }
@@ -303,44 +309,30 @@ public class Commands
     [Command("chronia_help_stopclock_set_time", "")]
     public static void Help5()
     {
-        CommandLog.LogCommand("string: stopclock tag, string: time formats like \"5:0:0\"",
+        CommandLog.LogCommand("string: time formats like \"5:0:0\"",
             Color.Yellow);
     }
 
     [Command("chronia_stopclock_reset", "")]
-    public static void CommandResetStopclock(string name = "commandClock")
+    public static void CommandResetStopclock()
     {
         if (Md.Session.IsNull()) { return; }
 
-        if (name.GetStopclock(out Stopclock clock))
+        if ("ChroniaHelper_Debug_CommandStopclock".GetStopclock(out Stopclock clock))
         {
             clock.Reset();
         }
     }
-
-    [Command("chronia_help_stopclock_reset", "")]
-    public static void Help6()
-    {
-        CommandLog.LogCommand("string: stopclock tag",
-            Color.Yellow);
-    }
-
+    
     [Command("chronia_stopclock_start", "")]
-    public static void CommandStartStopclock(string name = "commandClock")
+    public static void CommandStartStopclock()
     {
         if (Md.Session.IsNull()) { return; }
 
-        if (name.GetStopclock(out Stopclock clock))
+        if ("ChroniaHelper_Debug_CommandStopclock".GetStopclock(out Stopclock clock))
         {
             clock.Start();
         }
-    }
-
-    [Command("chronia_help_stopclock_start", "")]
-    public static void Help7()
-    {
-        CommandLog.LogCommand("string: stopclock tag",
-            Color.Yellow);
     }
 }
 
