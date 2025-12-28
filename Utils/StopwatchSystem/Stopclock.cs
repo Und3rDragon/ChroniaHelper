@@ -20,12 +20,14 @@ public partial class Stopclock : IDisposable
     {
         On.Monocle.Scene.Update += SessionUpdate;
         On.Monocle.Scene.Update += GlobalUpdate;
+        On.Celeste.Level.UpdateTime += SessionPersistent;
     }
     [UnloadHook]
     public static void Unload()
     {
         On.Monocle.Scene.Update -= SessionUpdate;
         On.Monocle.Scene.Update -= GlobalUpdate;
+        On.Celeste.Level.UpdateTime -= SessionPersistent;
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
@@ -82,9 +84,31 @@ public partial class Stopclock : IDisposable
         var self = scene as Level;
 
         if (self.Completed) { return; }
+        
+        // Session Persistent is more frequent than Session Update, so we move the timer check there
+        // Only level paused refresh here
+        foreach (var watches in Md.Session.sessionStopwatches)
+        {
+            if (!watches.Value.isolatedUpdate && watches.Value.followPause)
+            {
+                if (!scene.Paused)
+                {
+                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                }
+            }
+        }
+    }
+    
+    public static void SessionPersistent(On.Celeste.Level.orig_UpdateTime orig, Level self)
+    {
+        orig(self);
+
+        if (Md.Session.IsNull()) { return; }
+
+        if (self.Completed) { return; }
 
         HashSet<string> toRemove = new();
-        foreach(var clock in clocksToSession)
+        foreach (var clock in clocksToSession)
         {
             Md.Session.sessionStopwatches.Enter(clock.Key, clock.Value);
         }
@@ -97,13 +121,10 @@ public partial class Stopclock : IDisposable
                 watches.Value.Stop();
                 continue;
             }
-
-            if (!watches.Value.isolatedUpdate)
+            
+            if (!watches.Value.isolatedUpdate && !watches.Value.followPause)
             {
-                if (!watches.Value.followPause || !scene.Paused)
-                {
-                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
-                }
+                watches.Value.UpdateTime(TimeUtils.deltaTicks);
             }
 
             if (watches.Value.completed && watches.Value.removeWhenCompleted)

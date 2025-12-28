@@ -25,7 +25,25 @@ public static class StopclockUtils
         clock = new Stopclock();
         return false;
     }
-    
+
+    public static bool GetStopclock(this string name, bool fromGlobal, out Stopclock clock)
+    {
+        if (fromGlobal && Md.SaveData.globalStopwatches.ContainsKey(name))
+        {
+            clock = Md.SaveData.globalStopwatches[name];
+            return true;
+        }
+
+        if (!fromGlobal && Md.Session.sessionStopwatches.ContainsKey(name))
+        {
+            clock = Md.Session.sessionStopwatches[name];
+            return true;
+        }
+
+        clock = new Stopclock();
+        return false;
+    }
+
     /// <summary>
     /// 将xxx:xxx:xxx转换为int[]
     /// </summary>
