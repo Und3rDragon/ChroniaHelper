@@ -25,6 +25,7 @@ public static class MapProcessor
         On.Celeste.Level.Update += OnLevelUpdate;
         On.Celeste.Level.Reload += LevelReload;
         On.Monocle.Scene.Update += GlobalUpdate;
+        On.Celeste.Player.IntroRespawnEnd += AfterRespawn;
     }
 
     [UnloadHook]
@@ -40,10 +41,11 @@ public static class MapProcessor
         On.Celeste.Level.Update -= OnLevelUpdate;
         On.Celeste.Level.Reload -= LevelReload;
         On.Monocle.Scene.Update -= GlobalUpdate;
+        On.Celeste.Player.IntroRespawnEnd -= AfterRespawn;
     }
 
     // Variables
-    
+
     public static AreaKey areakey;
     public static MapData mapdata;
     public static int saveSlotIndex;
@@ -51,13 +53,16 @@ public static class MapProcessor
     public static EntityList entities;
 
     /// <summary>
-    /// Entity Dummy for Recycling Components
+    /// Entity Dummies for Recycling Components
     /// </summary>
-    public static Entity recycleDummy = new();
-    /// <summary>
-    /// Entity Dummy for Global Components
-    /// </summary>
-    public static Entity globalDummy = new() { Tag = Tags.Global };
+    public static Entity dummyNormal = new(),
+        dummyGlobal = new() { Tag = Tags.Global },
+        dummyFrozenUpdate = new() { Tag = Tags.FrozenUpdate },
+        dummyHUD = new() { Tag = Tags.HUD },
+        dummyPersistent = new() { Tag = Tags.Persistent },
+        dummyTransitionUpdate = new() { Tag = Tags.TransitionUpdate },
+        dummyPauseUpdate = new() { Tag = Tags.PauseUpdate };
+        
 
     public static bool isRespawning = false;
     public static Vector2 camOffset = Vector2.Zero;
@@ -84,18 +89,24 @@ public static class MapProcessor
     public static bool bgMode = false;
 
     // Hooks
-    
+
+    public static void AfterRespawn(On.Celeste.Player.orig_IntroRespawnEnd orig, Player self)
+    {
+        orig(self);
+
+        level.Add(dummyPersistent);
+    }
+
     public static void OnLevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
     {
         orig(self);
         
-        self.Add(globalDummy);
+        self.Add(dummyGlobal);
     }
     
     public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
     {
-        globalDummy.RemoveSelf();
-        globalDummy = null;
+        dummyGlobal.RemoveSelf();
         
         orig(self);
     }
@@ -119,7 +130,7 @@ public static class MapProcessor
         object _slider = new DynamicData(level.Session).Get("_Sliders");
         sliders = (Dictionary<string, Session.Slider>)_slider;
 
-        level.Add(recycleDummy);
+        level.Add(dummyNormal, dummyHUD, dummyTransitionUpdate, dummyFrozenUpdate, dummyPauseUpdate);
         
         level.Add(new Displayers(new EntityData(), Vc2.Zero));
 
