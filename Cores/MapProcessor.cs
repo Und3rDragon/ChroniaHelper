@@ -15,6 +15,8 @@ public static class MapProcessor
     [LoadHook]
     public static void Load()
     {
+        On.Celeste.Level.Begin += OnLevelBegin;
+        On.Celeste.Level.End += OnLevelEnd;
         On.Celeste.SaveData.Start += OnSaveDataStart;
         On.Celeste.Level.LoadLevel += OnLevelLoadLevel;
         On.Celeste.MapData.Load += OnMapDataLoad;
@@ -28,6 +30,8 @@ public static class MapProcessor
     [UnloadHook]
     public static void Unload()
     {
+        On.Celeste.Level.Begin -= OnLevelBegin;
+        On.Celeste.Level.End -= OnLevelEnd;
         On.Celeste.SaveData.Start -= OnSaveDataStart;
         On.Celeste.Level.LoadLevel -= OnLevelLoadLevel;
         On.Celeste.MapData.Load -= OnMapDataLoad;
@@ -46,7 +50,14 @@ public static class MapProcessor
     public static Level level;
     public static EntityList entities;
 
-    public static Entity globalEntityDummy = new Monocle.Entity();
+    /// <summary>
+    /// Entity Dummy for Recycling Components
+    /// </summary>
+    public static Entity recycleDummy = new();
+    /// <summary>
+    /// Entity Dummy for Global Components
+    /// </summary>
+    public static Entity globalDummy = new() { Tag = Tags.Global };
 
     public static bool isRespawning = false;
     public static Vector2 camOffset = Vector2.Zero;
@@ -74,6 +85,21 @@ public static class MapProcessor
 
     // Hooks
     
+    public static void OnLevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
+    {
+        orig(self);
+        
+        self.Add(globalDummy);
+    }
+    
+    public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
+    {
+        globalDummy.RemoveSelf();
+        globalDummy = null;
+        
+        orig(self);
+    }
+    
     public static Tuple<int, SaveData> currentSaveData = null;
     private static void OnSaveDataStart(On.Celeste.SaveData.orig_Start orig, SaveData self, int index)
     {
@@ -93,8 +119,8 @@ public static class MapProcessor
         object _slider = new DynamicData(level.Session).Get("_Sliders");
         sliders = (Dictionary<string, Session.Slider>)_slider;
 
-        // Dummy Entity setup
-        level.Add(globalEntityDummy);
+        level.Add(recycleDummy);
+        
         level.Add(new Displayers(new EntityData(), Vc2.Zero));
 
         // Apply Flag Timer Trigger flags
