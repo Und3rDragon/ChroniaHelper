@@ -30,7 +30,7 @@ public class Displayers : HDRenderEntity
             var displayer = Md.Settings.commandStopclockDisplayer;
             var displayUI = commandClock_UI;
 
-            if ("ChroniaHelper_Debug_CommandStopclock".GetStopclock(out Stopclock clock))
+            if (Cons.CommandStopclockID.GetStopclock(out Stopclock clock))
             {
                 clock.GetClampedTimeData(out int[] data,
                     Md.Settings.commandStopclockDisplayer.minUnit,

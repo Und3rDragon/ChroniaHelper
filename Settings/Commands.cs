@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -252,46 +253,67 @@ public class Commands
     {
         Md.Settings.HUDMainControl = state;
     }
+    
+    public static IEnumerator DelayStopclockStart(Stopclock clock, float delay)
+    {
+        yield return delay.ClampMin(0);
+
+        clock.Start();
+    }
 
     [Command("chronia_stopclock", "Set up a countup stopclock")]
-    public static void CommandSetUpStopclock(bool start = true, bool followPause = true)
+    public static void CommandSetUpStopclock(bool start = true, bool followPause = true, float delay = 0f)
     {
         if (MaP.scene is not Level) { return; }
 
         Stopclock clock = new Stopclock(false, followPause: followPause);
-        clock.Register("ChroniaHelper_Debug_CommandStopclock", false);
+        clock.Register(Cons.CommandStopclockID, false);
 
         if (start)
         {
-            clock.Start();
+            if(delay <= 0f)
+            {
+                clock.Start();
+            }
+            else
+            {
+                MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, delay)));
+            }
         }
     }
 
     [Command("chronia_help_stopclock", "")]
     public static void Help3()
     {
-        CommandLog.LogCommand("bool: start immediately, bool: follow level pause", 
+        CommandLog.LogCommand("bool: start immediately, bool: follow level pause, float: start delay", 
             Color.Yellow);
     }
 
     [Command("chronia_stopclock_countdown", "Set up a countdown stopclock")]
-    public static void CommandSetUpCountdown(string time = "5:0:0", bool start = true, bool followPause = true)
+    public static void CommandSetUpCountdown(string time = "5:0:0", bool start = true, bool followPause = true, float delay = 0f)
     {
         if (MaP.scene is not Level) { return; }
 
         Stopclock clock = new Stopclock(true, time: time, followPause: followPause);
-        clock.Register("ChroniaHelper_Debug_CommandStopclock", false);
+        clock.Register(Cons.CommandStopclockID, false);
 
         if (start)
         {
-            clock.Start();
+            if (delay <= 0f)
+            {
+                clock.Start();
+            }
+            else
+            {
+                MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, delay)));
+            }
         }
     }
 
     [Command("chronia_help_stopclock_countdown", "")]
     public static void Help4()
     {
-        CommandLog.LogCommand("string: time format like \"5:0:0\", bool: start immediately, bool: follow level pause",
+        CommandLog.LogCommand("string: time format like \"5:0:0\", bool: start immediately, bool: follow level pause, float: start delay",
             Color.Yellow);
     }
 
@@ -300,7 +322,7 @@ public class Commands
     {
         if(Md.Session.IsNull()) { return; }
         
-        if("ChroniaHelper_Debug_CommandStopclock".GetStopclock(out Stopclock clock))
+        if(Cons.CommandStopclockID.GetStopclock(out Stopclock clock))
         {
             clock.SetTime(time);
         }
@@ -318,20 +340,27 @@ public class Commands
     {
         if (Md.Session.IsNull()) { return; }
 
-        if ("ChroniaHelper_Debug_CommandStopclock".GetStopclock(out Stopclock clock))
+        if (Cons.CommandStopclockID.GetStopclock(out Stopclock clock))
         {
             clock.Reset();
         }
     }
     
     [Command("chronia_stopclock_start", "")]
-    public static void CommandStartStopclock()
+    public static void CommandStartStopclock(float delay = 0f)
     {
         if (Md.Session.IsNull()) { return; }
 
-        if ("ChroniaHelper_Debug_CommandStopclock".GetStopclock(out Stopclock clock))
+        if (Cons.CommandStopclockID.GetStopclock(out Stopclock clock))
         {
-            clock.Start();
+            if (delay <= 0f)
+            {
+                clock.Start();
+            }
+            else
+            {
+                MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, delay)));
+            }
         }
     }
 }
