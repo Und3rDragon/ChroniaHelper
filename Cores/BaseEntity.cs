@@ -12,6 +12,7 @@ namespace ChroniaHelper.Cores;
 
 public class BaseEntity : Entity
 {
+    public BaseEntity() { }
     public BaseEntity(EntityData data, Vc2 offset) : base(data.Position + offset)
     {
         nodes = data.NodesWithPosition(offset);
@@ -23,12 +24,15 @@ public class BaseEntity : Entity
     /// </summary>
     public Vc2[] nodes;
     public int ID;
+    public Action onAdded, onAwake, onRemoved, onUpdate, onSceneBegin, onSceneEnd;
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
         level = SceneAs<Level>();
         session = level.Session;
+
+        onAdded?.Invoke();
 
         if(AddedAwait <= 0f && AddedFreeze <= 0f)
         {
@@ -76,6 +80,8 @@ public class BaseEntity : Entity
         level = SceneAs<Level>();
         session = level.Session;
 
+        onAwake?.Invoke();
+
         if(AwakeAwait <= 0f && AwakeFreeze <= 0f)
         {
             AwakeExecute(scene);
@@ -112,7 +118,6 @@ public class BaseEntity : Entity
     
     public override void Removed(Scene scene)
     {
-        base.Removed(scene);
         level = SceneAs<Level>();
         
         if(RemovedAwait <= 0f && RemovedFreeze <= 0f)
@@ -124,6 +129,10 @@ public class BaseEntity : Entity
         {
             Add(new Coroutine(RemovedInterfere(scene), true));
         }
+
+        onRemoved?.Invoke();
+
+        base.Removed(scene);
     }
     public float RemovedAwait = -1f, RemovedFreeze = -1f;
     public string RemovedSound = string.Empty;
@@ -152,6 +161,8 @@ public class BaseEntity : Entity
     public override void Update()
     {
         base.Update();
+
+        onUpdate?.Invoke();
 
         if (!UpdateArg) { return; }
         
@@ -183,6 +194,8 @@ public class BaseEntity : Entity
     public override void SceneBegin(Scene scene)
     {
         base.SceneBegin(scene);
+
+        onSceneBegin?.Invoke();
         
         if(SceneBeginAwait <= 0f && SceneBeginFreeze <= 0f)
         {
@@ -215,8 +228,6 @@ public class BaseEntity : Entity
 
     public override void SceneEnd(Scene scene)
     {
-        base.SceneEnd(scene);
-        
         if(SceneEndAwait <= 0f && SceneEndFreeze <= 0f)
         {
             SceneEndExecute(scene);
@@ -226,6 +237,10 @@ public class BaseEntity : Entity
         {
             Add(new Coroutine(SceneEndInterfere(scene), true));
         }
+
+        onSceneEnd?.Invoke();
+
+        base.SceneEnd(scene);
     }
     public float SceneEndAwait = -1f, SceneEndFreeze = -1f;
     

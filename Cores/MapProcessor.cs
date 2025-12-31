@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ChroniaHelper.Components;
 using ChroniaHelper.Settings;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
@@ -55,7 +56,7 @@ public static class MapProcessor
     /// <summary>
     /// Entity Dummies for Recycling Components
     /// </summary>
-    public static Entity dummyNormal = new(),
+    public static BaseEntity dummyNormal = new(),
         dummyGlobal = new() { Tag = Tags.Global },
         dummyFrozenUpdate = new() { Tag = Tags.FrozenUpdate },
         dummyHUD = new() { Tag = Tags.HUD },
