@@ -84,7 +84,7 @@ public class StopclockRenderer : SerialImageRendererRaw
 
         if (trimZeros)
         {
-            renderTarget = Regex.Replace(renderTarget, "0+:+", "");
+            renderTarget = StopclockUtils.TrimLeadingZeroUnits(renderTarget);
         }
 
         return renderTarget;
