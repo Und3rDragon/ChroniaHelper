@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.CompilerServices;
+using Celeste.Mod.XaphanHelper.Triggers;
 using ChroniaHelper.Cores;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
@@ -177,6 +179,9 @@ public partial class Stopclock : IDisposable
     public int initialMinute = 5;
     public int initialSecond = 0;
     public int initialMillisecond = 0;
+    
+    public DateTime? startTime = null;
+    public DateTime safeStartTime => startTime ?? DateTime.Now;
 
     // 时间累积
     private long _accumulatedTicks;
@@ -418,6 +423,94 @@ public partial class Stopclock : IDisposable
                     break;
                 }
             }
+        }
+    }
+    
+    public class Countdown : Stopclock
+    {
+        public Countdown(int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, 
+            int initialMinute = 5, int initialSecond = 0, int initialMillisecond = 0,
+            bool followPause = false, bool removeWhenCompleted = true,
+            bool removeRequireSignalUsed = true) 
+            : base(countdown: true, initialYear: initialYear, initialMonth: initialMonth,
+                  initialDay: initialDay, initialHour: initialHour, initialMinute: initialMinute,
+                  initialSecond: initialSecond, initialMillisecond: initialMillisecond,
+                  followPause: followPause, removeWhenCompleted: removeWhenCompleted,
+                  isolatedUpdate: false, removeRequireSignalUsed: removeRequireSignalUsed)
+        {
+            
+        }
+        
+        public Countdown(string time, bool followPause = false,
+            bool removeWhenCompleted = true, bool removeRequireSignalUsed = true) 
+            : base(true, time, followPause, removeWhenCompleted, false, removeRequireSignalUsed)
+        {
+            
+        }
+    }
+    
+    public class Stopwatch : Stopclock
+    {
+        public Stopwatch(int year = 0, int month = 0, int day = 0, int hour = 0,
+            int minute = 0, int second = 0, int millisecond = 0, bool followPause = false,
+            bool removeWhenCompleted = true, bool removeRequireSignalUsed = true)
+            : base(countdown: false, year: year, month: month, day: day, hour: hour,
+                  minute: minute, second: second, millisecond: millisecond, followPause: followPause,
+                  removeWhenCompleted: removeWhenCompleted, isolatedUpdate: false,
+                  removeRequireSignalUsed: removeRequireSignalUsed)
+        {
+            
+        }
+        
+        public Stopwatch(string time, bool followPause = false,
+            bool removeWhenCompleted = true, bool removeRequireSignalUsed = true)
+            : base(false, time, followPause, removeWhenCompleted, false, removeRequireSignalUsed)
+        {
+            
+        }
+    }
+
+    public class IsolatedCountdown : Stopclock
+    {
+        public IsolatedCountdown(int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0,
+            int initialMinute = 5, int initialSecond = 0, int initialMillisecond = 0,
+            bool followPause = false, bool removeWhenCompleted = true,
+            bool removeRequireSignalUsed = true)
+            : base(countdown: true, initialYear: initialYear, initialMonth: initialMonth,
+                  initialDay: initialDay, initialHour: initialHour, initialMinute: initialMinute,
+                  initialSecond: initialSecond, initialMillisecond: initialMillisecond,
+                  followPause: followPause, removeWhenCompleted: removeWhenCompleted,
+                  isolatedUpdate: true, removeRequireSignalUsed: removeRequireSignalUsed)
+        {
+
+        }
+
+        public IsolatedCountdown(string time, bool followPause = false,
+            bool removeWhenCompleted = true, bool removeRequireSignalUsed = true)
+            : base(true, time, followPause, removeWhenCompleted, true, removeRequireSignalUsed)
+        {
+
+        }
+    }
+
+    public class IsolatedStopwatch : Stopclock
+    {
+        public IsolatedStopwatch(int year = 0, int month = 0, int day = 0, int hour = 0,
+            int minute = 0, int second = 0, int millisecond = 0, bool followPause = false,
+            bool removeWhenCompleted = true, bool removeRequireSignalUsed = true)
+            : base(countdown: false, year: year, month: month, day: day, hour: hour,
+                  minute: minute, second: second, millisecond: millisecond, followPause: followPause,
+                  removeWhenCompleted: removeWhenCompleted, isolatedUpdate: true,
+                  removeRequireSignalUsed: removeRequireSignalUsed)
+        {
+
+        }
+
+        public IsolatedStopwatch(string time, bool followPause = false,
+            bool removeWhenCompleted = true, bool removeRequireSignalUsed = true)
+            : base(false, time, followPause, removeWhenCompleted, true, removeRequireSignalUsed)
+        {
+
         }
     }
 }

@@ -21,6 +21,8 @@ public partial class Stopclock
         completed = false;
         _accumulatedTicks = 0;
         _lastUpdateTime = DateTime.Now;
+        
+        startTime = DateTime.Now;
 
         // 运行前检查
         if (isolatedUpdate)
