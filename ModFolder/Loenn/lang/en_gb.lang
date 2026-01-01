@@ -1172,3 +1172,10 @@ entities.ChroniaHelper/ConditionDelayListener.attributes.description.chroniaMath
 # ================= Operation Codes Listener
 
 entities.ChroniaHelper/OperationCodesListener.placements.name.controller=Operation Codes Listener
+
+# ================= Omni Switch Gate
+
+entities.ChroniaHelper/OmniSwitchGate.placements.name.block=Omni Switch Gate (Normal)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.mirror=Omni Switch Gate (Mirror)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.temple=Omni Switch Gate (Temple)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.stars=Omni Switch Gate (Stars)

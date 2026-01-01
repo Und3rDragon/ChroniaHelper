@@ -69,11 +69,10 @@ public class ChroniaHelperModule : EverestModule
     public static bool InstanceReady => Session != null && SaveData != null;
 
     public static bool FrostHelperLoaded;
-    public static bool CommunalHelperLoaded { get; private set; }
+    public static bool CommunalHelperLoaded;
     public static bool VivHelperLoaded;
     public static bool MaddieLoaded;
-    public static Assembly CommunalHelperAssembly { get; private set; }
-    public static Assembly VivHelperAssembly { get; private set; }
+    public static bool VortexHelperLoaded;
 
     public override void Load()
     {
@@ -117,11 +116,6 @@ public class ChroniaHelperModule : EverestModule
         };
         CommunalHelperLoaded = Everest.Loader.DependencyLoaded(communalHelperMetadata);
 
-        if (Everest.Loader.TryGetDependency(communalHelperMetadata, out var communalModule))
-        {
-            CommunalHelperAssembly = communalModule.GetType().Assembly;
-        }
-
         // Viv Helper load judgement
         EverestModuleMetadata vivHelperMetadata = new()
         {
@@ -130,11 +124,6 @@ public class ChroniaHelperModule : EverestModule
         };
         VivHelperLoaded = Everest.Loader.DependencyLoaded(vivHelperMetadata);
 
-        if (Everest.Loader.TryGetDependency(vivHelperMetadata, out var vivModule))
-        {
-            VivHelperAssembly = vivModule.GetType().Assembly;
-        }
-
         // Max Helping Hand judgement
         EverestModuleMetadata maddieMetadata = new()
         {
@@ -142,6 +131,15 @@ public class ChroniaHelperModule : EverestModule
             Version = new Version("1.38.0"),
         };
         MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
+
+        // Vortex Helper judgement
+        VortexHelperLoaded = Everest.Loader.DependencyLoaded(
+            new EverestModuleMetadata 
+            { 
+                Name = "VortexHelper", 
+                Version = new Version(1, 1, 0) 
+            }
+            );
 
         PolygonCollider.Load();
 
