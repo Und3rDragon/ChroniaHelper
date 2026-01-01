@@ -10,6 +10,7 @@ using Celeste.Mod.MaxHelpingHand.Entities;
 using Celeste.Mod.MaxHelpingHand.Module;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using IL.MonoMod;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
 using YamlDotNet.Core.Tokens;
@@ -64,54 +65,14 @@ public class OmniSwitchGate : Solid
         canReturn = data.Bool("canReturn", true);
         shakeTime = data.Float("shakeTime", 0.5f);
         
-        data.Attr("moveTime").Split(',',StringSplitOptions.TrimEntries).ApplyTo(out string[] t1);
-        List<float> _t1 = new();
-        for(int i = 0; i < t1.Length; i++)
-        {
-            _t1.Add(t1[i].ParseFloat(0.5f).GetAbs());
-        }
-        moveTime = _t1.ToArray();
-
-        data.Attr("returnMoveTime").Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] t2);
-        List<float> _t2 = new();
-        for (int i = 0; i < t2.Length; i++)
-        {
-            _t2.Add(t2[i].ParseFloat(2f).GetAbs());
-        }
-        moveTime2 = _t2.ToArray();
-
-        data.Attr("pauseTime").Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] t3);
-        List<float> _t3 = new();
-        for (int i = 0; i < t3.Length; i++)
-        {
-            _t3.Add(t3[i].ParseFloat(0.2f).GetAbs());
-        }
-        pauseTimes = _t3.ToArray();
-
-        data.Attr("returnPauseTime").Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] t4);
-        List<float> _t4 = new();
-        for (int i = 0; i < t4.Length; i++)
-        {
-            _t4.Add(t4[i].ParseFloat(0.2f).GetAbs());
-        }
-        pauseTimes2 = _t4.ToArray();
-
-        data.Attr("easers", "CubeOut").Split(',',StringSplitOptions.TrimEntries).ApplyTo(out string[] e);
-        List<Ease.Easer> _e = new();
-        for(int i = 0; i < e.Length; i++)
-        {
-            _e.Add(EaseUtils.StringToEase(e[i]));
-        }
-        easers = _e.ToArray();
+        moveTime = data.FloatArray("moveTime", 0.5f);
+        moveTime2 = data.FloatArray("returnMoveTime", 2f);
+        pauseTimes = data.FloatArray("pauseTime", 0.2f);
+        pauseTimes2 = data.FloatArray("returnPauseTime");
         
-        data.Attr("returnEasers", "CubeOut").Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] e2);
-        List<Ease.Easer> _e2 = new();
-        for (int i = 0; i < e2.Length; i++)
-        {
-            _e2.Add(EaseUtils.StringToEase(e2[i]));
-        }
-        easers2 = _e2.ToArray();
-
+        easers = data.Array("easers", (s) => EaseUtils.StringToEase(s));
+        easers2 = data.Array("returnEasers", (s) => EaseUtils.StringToEase(s));
+        
         inactiveColor = data.GetChroniaColor("inactiveColor", Calc.HexToColor("5fcde4"));
         activeColor = data.GetChroniaColor("activeColor", Color.White);
         finishColor = data.GetChroniaColor("finishColor", Calc.HexToColor("f141df"));
@@ -148,7 +109,7 @@ public class OmniSwitchGate : Solid
         persistent = data.Bool("persistent", true);
 
         currentNodeIndex = 0;
-        targetNodeIndex = 1;
+        targetNodeIndex = 0;
 
         beforeShatter = data.Float("beforeShatterTime", -1f);
 
@@ -161,6 +122,7 @@ public class OmniSwitchGate : Solid
     {
         base.Awake(scene);
 
+        // Switch to final state
         if (flag.GetFlag() && persistent)
         {
             currentNodeIndex = nodes.Length - 1;
@@ -170,8 +132,10 @@ public class OmniSwitchGate : Solid
             icon.SetAnimationFrame(0);
             icon.Color = finishColor.Parsed();
         }
-
-        Add(new Coroutine(activator()));
+        else
+        {
+            Add(new Coroutine(activator()));
+        }
     }
     
     public override void Render()
@@ -207,27 +171,22 @@ public class OmniSwitchGate : Solid
 
         base.Render();
     }
-
-    public override void Update()
-    {
-        base.Update();
-    }
     
     private IEnumerator activator()
     {
         while (true)
         {
-            bool cond1 = currentNodeIndex == 0 && !flag.GetFlag();
-            bool cond2 = currentNodeIndex == nodes.MaxIndex() && flag.GetFlag();
-            bool cond3 = !flag.GetFlag() && !canReturn;
-            while (cond1 || cond2 || cond3)
-            {
-                cond1 = currentNodeIndex == 0 && !flag.GetFlag();
-                cond2 = currentNodeIndex == nodes.MaxIndex() && flag.GetFlag();
-                cond3 = !flag.GetFlag() && !canReturn;
-                
-                yield return null;
-            }
+            // First layer of restraint
+            //while (true)
+            //{
+            //    bool cond1 = currentNodeIndex == 0 && !flag.GetFlag();
+            //    bool cond2 = currentNodeIndex == nodes.MaxIndex() && flag.GetFlag();
+            //    bool cond3 = !flag.GetFlag() && !canReturn;
+
+            //    if (!cond1 && !cond2 && !cond3) { break; }
+
+            //    yield return null;
+            //}
 
             if (shattered) { yield break; }
             
@@ -398,23 +357,35 @@ public class OmniSwitchGate : Solid
 
             Audio.Play(finishedSound, Position);
 
+            //Arrived at destination!
+            currentNodeIndex = targetNodeIndex;
+
             // shake after arriving at destination
             StartShaking(0.2f);
-            while (icon.Rate > 0f && !cancelMoving)
+            Color currentColor, finalColor;
+            float currentRate, finalRate;
+            currentColor = icon.Color;
+            currentRate = icon.Rate;
+            finalRate = currentNodeIndex == 0 || currentNodeIndex == nodes.MaxIndex() ? 0f : 1f;
+            finalColor = currentNodeIndex == nodes.MaxIndex() ? 
+                finishColor.Parsed() : (currentNodeIndex != 0 ? activeColor.Parsed() : inactiveColor.Parsed());
+            float progress = 0f;
+            while (progress < 1f && !cancelMoving)
             {
-                icon.Color = Color.Lerp(activeColor.Parsed(), targetNodeIndex == nodes.MaxIndex() ? finishColor.Parsed() : inactiveColor.Parsed(), 1f - icon.Rate);
-                icon.Rate -= Engine.DeltaTime * 4f;
+                icon.Color = Color.Lerp(currentColor, finalColor, progress);
+                icon.Rate = progress.LerpValue(0f, 1f, currentRate, finalRate);
+                progress += Engine.DeltaTime * 4f;
+                
                 yield return null;
             }
+            icon.SetAnimationFrame(0);
+
             if (cancelMoving)
             {
                 moving = false;
                 yield break;
             }
-
-            icon.Rate = 0f;
-            icon.SetAnimationFrame(0);
-
+            
             // animate the icon with particles
             wiggler.Start();
             wasCollidable = Collidable;
@@ -428,23 +399,43 @@ public class OmniSwitchGate : Solid
                 }
             }
             Collidable = wasCollidable;
-
-            currentNodeIndex = targetNodeIndex;
         }
         else
         {
-            // we are "moving" without changing positions: just animate the icon.
-            icon.Rate = 1f;
-            while (icon.Rate > 0f && !cancelMoving)
+            if(currentNodeIndex == 0)
             {
                 var lastColor = icon.Color;
-                icon.Color = Color.Lerp(lastColor, targetNodeIndex > 0 ? finishColor.Parsed() : inactiveColor.Parsed(), 1f - icon.Rate);
-                icon.Rate -= Engine.DeltaTime * 4f;
-                yield return null;
+                var lastRate = icon.Rate;
+                Color finalColor = flag.GetFlag() ? activeColor.Parsed() : inactiveColor.Parsed();
+                float finalRate = flag.GetFlag() ? 1f : 0f;
+                float progress = 0f;
+                while(progress < 1f)
+                {
+                    icon.Color = Color.Lerp(lastColor, finalColor, progress);
+                    icon.Rate = progress.LerpValue(0f, 1f, lastRate, finalRate);
+                    progress += Engine.DeltaTime * 4f;
+
+                    yield return null;
+                }
+                icon.SetAnimationFrame(0);
             }
-            icon.Color = finishColor.Parsed();
-            icon.Rate = 0f;
-            icon.SetAnimationFrame(0);
+            else if(currentNodeIndex == nodes.MaxIndex())
+            {
+                var lastColor = icon.Color;
+                var lastRate = icon.Rate;
+                Color finalColor = finishColor.Parsed();
+                float finalRate = 0f;
+                float progress = 0f;
+                while (progress < 1f)
+                {
+                    icon.Color = Color.Lerp(lastColor, finalColor, progress);
+                    icon.Rate = progress.LerpValue(0f, 1f, lastRate, finalRate);
+                    progress += Engine.DeltaTime * 4f;
+
+                    yield return null;
+                }
+                icon.SetAnimationFrame(0);
+            }
         }
 
         // check if the block should continue moving, in case it is configured not to skip nodes.
@@ -457,7 +448,7 @@ public class OmniSwitchGate : Solid
             targetNodeIndex = currentNodeIndex - 1;
         }
         
-        if (currentNodeIndex != targetNodeIndex)
+        if (currentNodeIndex > 0 && currentNodeIndex < nodes.MaxIndex())
         {
             // wait at position for the configured time.
             bool forward = targetNodeIndex >= currentNodeIndex;
@@ -477,7 +468,7 @@ public class OmniSwitchGate : Solid
             // then move to the next node.
         }
         
-        if(currentNodeIndex == nodes.MaxIndex() && beforeShatter > 0f)
+        if(currentNodeIndex == nodes.MaxIndex() && beforeShatter >= 0f)
         {
             yield return shatterSequence(beforeShatter);
         }
