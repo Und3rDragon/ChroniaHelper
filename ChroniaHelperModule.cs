@@ -97,11 +97,12 @@ public class ChroniaHelperModule : EverestModule
     public static bool InstanceReady => Session != null && SaveData != null;
 
     public static bool FrostHelperLoaded;
-    public static bool CommunalHelperLoaded { get; private set; }
-    public static bool VivHelperLoaded { get; private set; }
-    public static bool MaddieLoaded { get; private set; }
-    public static bool KoseiHelperLoaded { get; private set; }
-    public static bool XaphanHelperLoaded { get; private set; }
+    public static bool CommunalHelperLoaded;
+    public static bool VivHelperLoaded;
+    public static bool MaddieLoaded;
+    public static bool KoseiHelperLoaded;
+    public static bool XaphanHelperLoaded;
+    public static bool VortexHelperLoaded;
 
     public override void Load()
     {
@@ -176,6 +177,15 @@ public class ChroniaHelperModule : EverestModule
             Version = new Version("1.0.78"),
         };
         XaphanHelperLoaded = Everest.Loader.DependencyLoaded(xaphanMetadata);
+        
+        // Vortex Helper judgement
+        VortexHelperLoaded = Everest.Loader.DependencyLoaded(
+            new EverestModuleMetadata 
+            { 
+                Name = "VortexHelper", 
+                Version = new Version(1, 1, 0) 
+            }
+            );
 
         PolygonCollider.Load();
 

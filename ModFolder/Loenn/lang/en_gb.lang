@@ -1288,3 +1288,10 @@ entities.ChroniaHelper/CameraGrid.attributes.description.Introduction=A small us
 # ================= Settings Override On Flag Controller
 
 entities.ChroniaHelper/SettingsOverrideOnFlagController.placements.name.controller=Settings Override On Flag Controller
+
+# ================= Omni Switch Gate
+
+entities.ChroniaHelper/OmniSwitchGate.placements.name.block=Omni Switch Gate (Normal)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.mirror=Omni Switch Gate (Mirror)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.temple=Omni Switch Gate (Temple)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.stars=Omni Switch Gate (Stars)

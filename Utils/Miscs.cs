@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using AsmResolver.DotNet.Code.Cil;
+using Celeste.Mod.MaxHelpingHand.Module;
 using Microsoft.VisualBasic;
 using YamlDotNet.Serialization;
 using YoctoHelper.Cores;
@@ -227,5 +228,17 @@ public static class Miscs
         }
 
         return false;
+    }
+
+    public static bool InView(this Vc2 pos, Vc2 size, float extension = 16f)
+    {
+        Camera camera = MaP.level.Camera;
+        Vc2 cameraSize = new Vc2(320f, 180f);
+        if (Md.MaddieLoaded)
+        {
+            cameraSize.X = MaxHelpingHandModule.CameraWidth;
+            cameraSize.Y = MaxHelpingHandModule.CameraHeight;
+        }
+        return pos.X + size.X > camera.X - 16f && pos.Y + size.Y > camera.Y - 16f && pos.X < camera.X + cameraSize.X && pos.Y < camera.Y + cameraSize.Y;
     }
 }
