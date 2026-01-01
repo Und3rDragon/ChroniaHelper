@@ -357,5 +357,116 @@ public static class MapDataUtils
         if (min == tags.Length || max == -1) { return string.Empty; }
         return useLastTagAsPossible ? data.Attr(tags[max]) : data.Attr(tags[min]);
     }
+    
+    public static List<T> List<T>(this EntityData data, string tag, Func<string, T> convert, 
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        string[] s = data.Attr(tag).Split(separator, split);
+        List<T> r = new();
+        for(int i = 0; i < s.Length; i++)
+        {
+            r.Add(convert(s[i]));
+        }
+
+        return r;
+    }
+
+    public static T[] Array<T>(this EntityData data, string tag, Func<string, T> convert,
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        return List(data, tag, convert, separator, split).ToArray();
+    }
+
+    public static List<int> IntList(this EntityData data, string tag, int fallback = 0,
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        string[] s = data.Attr(tag).Split(separator, split);
+        List<int> r = new();
+        for (int i = 0; i < s.Length; i++)
+        {
+            r.Add(s[i].ParseInt(fallback));
+        }
+
+        return r;
+    }
+
+    public static int[] IntArray(this EntityData data, string tag, int fallback = 0,
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        return IntList(data, tag, fallback, separator, split).ToArray();
+    }
+
+    public static List<float> FloatList(this EntityData data, string tag, float fallback = 0,
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        string[] s = data.Attr(tag).Split(separator, split);
+        List<float> r = new();
+        for (int i = 0; i < s.Length; i++)
+        {
+            r.Add(s[i].ParseFloat(fallback));
+        }
+
+        return r;
+    }
+
+    public static float[] FloatArray(this EntityData data, string tag, float fallback = 0,
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        return FloatList(data, tag, fallback, separator, split).ToArray();
+    }
+
+    public static List<double> DoubleList(this EntityData data, string tag, double fallback = 0,
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        string[] s = data.Attr(tag).Split(separator, split);
+        List<double> r = new();
+        for (int i = 0; i < s.Length; i++)
+        {
+            r.Add(s[i].ParseDouble(fallback));
+        }
+
+        return r;
+    }
+
+    public static double[] DoubleArray(this EntityData data, string tag, double fallback = 0,
+        char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        return DoubleList(data, tag, fallback, separator, split).ToArray();
+    }
+
+    public static List<Vc2> Vector2List(this EntityData data, string tag, Vc2 fallback,
+        char primarySeparator = ';', char secondarySeparator = ',', 
+        StringSplitOptions split1 = StringSplitOptions.TrimEntries, 
+        StringSplitOptions split2 = StringSplitOptions.TrimEntries)
+    {
+        string[] s = data.Attr(tag).Split(primarySeparator, split1);
+        List<Vc2> r = new();
+        for (int i = 0; i < s.Length; i++)
+        {
+            string[] cords = s[i].Split(secondarySeparator, split2);
+            
+            if (cords.Length == 0) { r.Add(Vc2.Zero); continue; }
+
+            Vc2 member = Vc2.Zero;
+            member.X = cords[0].ParseFloat(fallback.X);
+
+            if (cords.Length > 1)
+            {
+                member.Y = cords[1].ParseFloat(fallback.Y);
+            }
+
+            r.Add(member);
+        }
+
+        return r;
+    }
+
+    public static Vc2[] Vector2Array(this EntityData data, string tag, Vc2 fallback,
+        char primarySeparator = ';', char secondarySeparator = ',',
+        StringSplitOptions split1 = StringSplitOptions.TrimEntries,
+        StringSplitOptions split2 = StringSplitOptions.TrimEntries)
+    {
+        return Vector2List(data, tag, fallback, primarySeparator, secondarySeparator, split1, split2).ToArray();
+    }
 
 }
