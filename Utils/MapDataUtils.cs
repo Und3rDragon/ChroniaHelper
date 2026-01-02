@@ -468,5 +468,10 @@ public static class MapDataUtils
     {
         return Vector2List(data, tag, fallback, primarySeparator, secondarySeparator, split1, split2).ToArray();
     }
+    
+    public static string[] StringArray(this EntityData data, string tag, char separator = ',', StringSplitOptions split = StringSplitOptions.TrimEntries)
+    {
+        return data.Attr(tag).Split(separator, split);
+    }
 
 }
