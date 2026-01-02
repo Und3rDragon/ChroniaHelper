@@ -1179,3 +1179,9 @@ entities.ChroniaHelper/OmniSwitchGate.placements.name.block=Omni Switch Gate (No
 entities.ChroniaHelper/OmniSwitchGate.placements.name.mirror=Omni Switch Gate (Mirror)
 entities.ChroniaHelper/OmniSwitchGate.placements.name.temple=Omni Switch Gate (Temple)
 entities.ChroniaHelper/OmniSwitchGate.placements.name.stars=Omni Switch Gate (Stars)
+
+# ================= Bumper Block
+
+entities.ChroniaHelper/ModifiedBumperBlock.placements.name.both=Bumper Block (Modified, Both)
+entities.ChroniaHelper/ModifiedBumperBlock.placements.name.vertical=Bumper Block (Modified, Vertical)
+entities.ChroniaHelper/ModifiedBumperBlock.placements.name.horizontal=Bumper Block (Modified, Horizontal)
