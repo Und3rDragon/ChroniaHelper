@@ -1,18 +1,21 @@
-﻿using YamlDotNet.Serialization;
-using System.Collections.Generic;
-using Celeste.Mod.ChroniaHelperIndicatorZone;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Celeste.Mod.ChroniaHelperIndicatorZone;
+using ChroniaHelper.Components;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Cores.LiteTeraHelper;
+using ChroniaHelper.Entities;
 using ChroniaHelper.Triggers;
+using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.StopwatchSystem;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.TypeInspectors;
 using YoctoHelper.Components;
 using YoctoHelper.Hooks;
 using static ChroniaHelper.Entities.CustomBooster;
-using System.Runtime.InteropServices;
-using ChroniaHelper.Components;
-using System.Diagnostics;
-using ChroniaHelper.Utils.StopwatchSystem;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Modules;
 
@@ -198,6 +201,10 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<string, bool> listeningConditionLastState = new();
     public Dictionary<string, bool> listeningConditionTimerState = new();
     public Dictionary<string, float> listeningConditionTimer = new();
+
+    // Fnt Textures
+    [YamlIgnore]
+    public Dictionary<string, FntData> cachedFntData = new();
     
     // Chronia Points Game
     public HashSet<string> DiscoveredRooms = new();

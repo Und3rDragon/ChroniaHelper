@@ -38,7 +38,15 @@ public class FntText
 
     public FntText(string fntPath)
     {
-        fntPath.CreateFntFontTextures(out textures, out segmentOffset);
+        if (Md.Session.cachedFntData.ContainsKey(fntPath))
+        {
+            textures = Md.Session.cachedFntData[fntPath].textures;
+            segmentOffset = Md.Session.cachedFntData[fntPath].offsets;
+        }
+        else
+        {
+            fntPath.CreateFntFontTextures(out textures, out segmentOffset);
+        }
     }
 
     public Vc2 p1, p2;

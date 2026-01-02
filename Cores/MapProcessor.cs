@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using ChroniaHelper.Components;
+using ChroniaHelper.Cores.Graphical;
+using ChroniaHelper.Entities;
 using ChroniaHelper.Settings;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
@@ -155,6 +157,14 @@ public static class MapProcessor
             "ChroniaHelper/RealFlagSwitchAlt", 
             "ChroniaHelper/RealFlagSwitch2" 
         };
+        HashSet<string> fntEntities = new()
+        {
+            "ChroniaHelper/FntDisplayZoneHD",
+            "ChroniaHelper/FntDisplayZone",
+            "ChroniaHelper/FntDisplayerHD",
+            "ChroniaHelper/FntDisplayer"
+        };
+        List<string> fntSources = new();
         foreach (var lv in levels)
         {
             foreach (var item in lv.Entities)
@@ -167,7 +177,21 @@ public static class MapProcessor
                     
                     Md.Session.flagNames.Enter(flagName);
                 }
+
+                if (fntEntities.Contains(item.Name))
+                {
+                    string[] paths = item.Values["textures"].ToString().Split(',', StringSplitOptions.TrimEntries);
+                    foreach(var path in paths)
+                    {
+                        fntSources.Add(path);
+                    }
+                }
             }
+        }
+        foreach(var item in fntSources.Distinct())
+        {
+            //Md.Session.cachedFntData.Add(item, new FntData(item));
+            new FntData.SessionData(item);
         }
 
         isRespawning = (intro != Player.IntroTypes.Transition);
