@@ -163,4 +163,28 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public bool trimZeros { get; set; } = true;
     }
     public CommandStopclockDisplayer commandStopclockDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class InputDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 4;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 70;
+        [SettingRange(0, 160, true)]
+        public int letterDistance { get; set; } = 32;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 40;
+        public Aligning aligning { get; set; } = Aligning.Left;
+        [SettingRange(1, 100, true)]
+        public int maxDisplays { get; set; } = 5;
+        [SettingRange(-64, 64)]
+        public int lineDistance { get; set; } = 2;
+        [SettingRange(1, 9)]
+        public int overallAligning { get; set; } = 1;
+
+        public List<string> renderTarget = new();
+    }
+    public InputDisplayer inputDisplayer { get; set; } = new();
 }

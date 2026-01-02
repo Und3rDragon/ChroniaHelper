@@ -20,6 +20,9 @@ public class SerialImageRaw
     public Vc2 segmentOrigin = Vc2.One * 0.5f;
     public Vc2 origin = Vc2.One * 0.5f;
     public enum RenderMode { Compact = 0, EqualDistance = 1}
+    /// <summary>
+    /// Compact = 0, EqualDistance = 1
+    /// </summary>
     public int renderMode = 0;
     public float distance = 4f;
     public CColor color = new CColor(Color.White, 1f);

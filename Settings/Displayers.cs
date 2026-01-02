@@ -476,6 +476,43 @@ public class Displayers : HDRenderEntity
             }, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
+
+        if (Md.Settings.inputDisplayer.enabled)
+        {
+            var displayer = Md.Settings.inputDisplayer;
+            var displayUI = input_UI;
+
+            displayUI.template.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.template.renderMode = 1;
+            displayUI.template.distance = displayer.letterDistance;
+            displayUI.scales = new(){ displayer.scale * 0.1f };
+            displayUI.memberDistance = displayer.lineDistance;
+            displayUI.groupOrigin = displayer.overallAligning.ToJustify();
+
+            //string input = "ZXCUDLR";
+            string input = $"{(Input.Grab.Check ? "Z" : "")}{(Input.Dash.Check ? "X" : "")}{(Input.Jump.Check ? "C" : "")}{(Input.MenuUp.Check ? "U" : "")}{(Input.MenuDown.Check ? "D" : "")}{(Input.MenuLeft.Check ? "L" : "")}{(Input.MenuRight.Check ? "R" : "")}";
+            input = string.IsNullOrEmpty(input) ? " " : input;
+            if (displayer.renderTarget.Count == 0)
+            {
+                displayer.renderTarget.Add(input);
+            }
+            else
+            {
+                if(input != displayer.renderTarget.Last())
+                {
+                    displayer.renderTarget.Add(input);
+                }
+            }
+            if (displayer.renderTarget.Count > displayer.maxDisplays)
+            {
+                displayer.renderTarget.RemoveAt(0);
+            }
+
+            displayUI.Render(displayer.renderTarget, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
+        }
     }
 
     public string generalReference = Cons.DisplayFontsReference;
@@ -544,6 +581,8 @@ public class Displayers : HDRenderEntity
 
     public SerialImageRaw commandClock_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
+    public SerialImageGroupRaw input_UI = new SerialImageGroupRaw("ChroniaHelper/DisplayFonts/font");
+    
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)
