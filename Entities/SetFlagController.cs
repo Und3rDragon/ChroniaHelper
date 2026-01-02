@@ -23,6 +23,7 @@ public class SetFlagController : BaseEntity
     {
         flags = data.Attr("flags").Split(',',StringSplitOptions.TrimEntries);
         paramater = data.Attr("parameters");
+        mode = data.Int("mode", 0);
     }
     private string[] flags;
     private string paramater;
