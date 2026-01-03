@@ -227,6 +227,7 @@ public class ChroniaHelperSession : EverestModuleSession
         public bool fullScreen; 
         public int windowScale;
         public string language;
+        public GrabModes grabMode;
     }
     public SettingsData settingsData = new Ses.SettingsData
     {
@@ -234,6 +235,7 @@ public class ChroniaHelperSession : EverestModuleSession
         photosensitive = Celeste.Settings.Instance.DisableFlashes,
         windowScale = Celeste.Settings.Instance.WindowScale,
         language = Celeste.Settings.Instance.Language,
+        grabMode = Celeste.Settings.Instance.GrabMode,
     };
 
     /// <summary>

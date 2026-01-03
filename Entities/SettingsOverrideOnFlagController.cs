@@ -32,6 +32,7 @@ public class SettingsOverrideOnFlagController : BaseEntity
         Celeste.Settings.Instance.WindowScale = Md.Session.settingsData.windowScale;
         Celeste.Settings.Instance.DisableFlashes = Md.Session.settingsData.photosensitive;
         Celeste.Settings.Instance.Language = Md.Session.settingsData.language;
+        Celeste.Settings.Instance.GrabMode = Md.Session.settingsData.grabMode;
 
         Celeste.Settings.Instance.ApplyScreen();
         Celeste.Settings.Instance.ApplyLanguage();
@@ -46,6 +47,7 @@ public class SettingsOverrideOnFlagController : BaseEntity
         fullScreen = data.Int("fullScreen", 0);
         windowScale = data.Attr("windowScale");
         language = data.Int("language", -1);
+        grabMode = data.Int("grabMode", 0);
     }
     private string flag;
     /// <summary>
@@ -54,7 +56,12 @@ public class SettingsOverrideOnFlagController : BaseEntity
     public int photosensitive = 0, fullScreen = 0;
     public string windowScale;
     public int language = -1;
-    
+    /// <summary>
+    /// Disabled = 0, Hold = 1, Invert = 2, Toggle = 3
+    /// </summary>
+    public int grabMode = 0;
+
+
     public override void Update()
     {
         base.Update();
@@ -94,6 +101,30 @@ public class SettingsOverrideOnFlagController : BaseEntity
                 {
                     Celeste.Settings.Instance.Fullscreen = false;
                     Celeste.Settings.Instance.ApplyScreen();
+                }
+                break;
+            default:
+                break;
+        }
+
+        switch (grabMode)
+        {
+            case 1:
+                if(Celeste.Settings.Instance.GrabMode != GrabModes.Hold)
+                {
+                    Celeste.Settings.Instance.GrabMode = GrabModes.Hold;
+                }
+                break;
+            case 2:
+                if (Celeste.Settings.Instance.GrabMode != GrabModes.Invert)
+                {
+                    Celeste.Settings.Instance.GrabMode = GrabModes.Invert;
+                }
+                break;
+            case 3:
+                if (Celeste.Settings.Instance.GrabMode != GrabModes.Toggle)
+                {
+                    Celeste.Settings.Instance.GrabMode = GrabModes.Toggle;
                 }
                 break;
             default:

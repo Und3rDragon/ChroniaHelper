@@ -14,6 +14,7 @@ controller.placements = {
         fullScreen = 0,
         windowScale = "",
         language = -1,
+        grabMode = 0,
     },
 }
 
@@ -58,6 +59,16 @@ controller.fieldInformation =
         },
         editable = false,
     },
+    grabMode = {
+        fieldType = "integer",
+        options = {
+            ["No Changes"] = 0,
+            ["Hold"] = 1,
+            ["Inverted"] = 2,
+            ["Toggle"] = 3,
+        },
+        editable = false,
+    }
 }
 
 function controller.sprite(room, entity)
