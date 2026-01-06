@@ -91,4 +91,17 @@ public class HDRenderEntity : BaseEntity
         
         return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * HDScale;
     }
+
+    public override void Removed(Scene scene)
+    {
+        Buffer?.Dispose();
+        
+        base.Removed(scene);
+    }
+    public override void SceneEnd(Scene scene)
+    {
+        Buffer?.Dispose();
+        
+        base.SceneEnd(scene);
+    }
 }

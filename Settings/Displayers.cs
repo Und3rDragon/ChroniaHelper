@@ -22,6 +22,13 @@ public class Displayers : HDRenderEntity
     {
         
     }
+
+    public override void SceneEnd(Scene scene)
+    {
+        Buffer?.Dispose();
+        
+        base.SceneEnd(scene);
+    }
     
     protected override void HDRender()
     {
