@@ -17,16 +17,38 @@ public class Displayers : HDRenderEntity
 {
     public Displayers(EntityData d,Vc2 o) : base(d, o)
     {
-        
+        Tag |= Tags.Global;
     }
 
-    public override void SceneEnd(Scene scene)
+    [LoadHook]
+    public static void Load()
     {
-        Buffer?.Dispose();
-        
-        base.SceneEnd(scene);
+        On.Celeste.Level.Begin += OnLevelBegin;
+        On.Celeste.Level.End += OnLevelEnd;
     }
-    
+    [UnloadHook]
+    public static void Unload()
+    {
+        On.Celeste.Level.Begin -= OnLevelBegin;
+        On.Celeste.Level.End -= OnLevelEnd;
+    }
+
+    public static Displayers Instance = null;
+    public static void OnLevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
+    {
+        orig(self);
+
+        self.Add(Instance = new Displayers(new EntityData(), Vc2.Zero));
+    }
+
+    public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
+    {
+        Instance.Buffer?.Dispose();
+        self.Remove(Instance);
+        
+        orig(self);
+    }
+
     protected override void HDRender()
     {
         if (!Md.Settings.HUDMainControl) { return; }

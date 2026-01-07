@@ -86,7 +86,6 @@ public static class MapProcessor
 
         // Dummy Entity setup
         level.Add(globalEntityDummy);
-        level.Add(new Displayers(new EntityData(), Vc2.Zero));
 
         // Apply Flag Timer Trigger flags
         foreach (var flag in Md.SaveData.FlagTimerS.Keys)
