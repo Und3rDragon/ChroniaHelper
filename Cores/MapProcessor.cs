@@ -134,8 +134,6 @@ public static class MapProcessor
         sliders = (Dictionary<string, Session.Slider>)_slider;
 
         level.Add(dummyNormal, dummyHUD, dummyTransitionUpdate, dummyFrozenUpdate, dummyPauseUpdate);
-        
-        level.Add(new Displayers(new EntityData(), Vc2.Zero));
 
         // Apply Flag Timer Trigger flags
         foreach (var flag in Md.SaveData.FlagTimerS.Keys)
