@@ -111,7 +111,7 @@ public class ConditionDelayListener : BaseEntity
         };
     }
     private string conditionTag;
-    Ses.ConditionListener listener;
+    Ses.SessionConditionListener listener;
 
     protected override void AddedExecute(Scene scene)
     {

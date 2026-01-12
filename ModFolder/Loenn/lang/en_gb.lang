@@ -1301,3 +1301,19 @@ entities.ChroniaHelper/OmniSwitchGate.placements.name.stars=Omni Switch Gate (St
 entities.ChroniaHelper/ModifiedBumperBlock.placements.name.both=Bumper Block (Modified, Both)
 entities.ChroniaHelper/ModifiedBumperBlock.placements.name.vertical=Bumper Block (Modified, Vertical)
 entities.ChroniaHelper/ModifiedBumperBlock.placements.name.horizontal=Bumper Block (Modified, Horizontal)
+
+# ================= Balloon
+
+entities.ChroniaHelper/Balloon.placements.name.balloon=Balloon (Customizable)
+
+# ================= SetFlagSequenceController
+
+entities.ChroniaHelper/SetFlagSequenceController.placements.name.controller=Set Flag Sequence Controller
+
+# ================= Grouped Wind Tunnel
+
+entities.ChroniaHelper/GroupedWindTunnel.placements.name.GroupedWindTunnel=Grouped Wind Tunnel
+
+# ================= Grouped Wind Tunnel Controller
+
+entities.ChroniaHelper/GroupedWindTunnelController.placements.name.GroupedWindTunnelController=Grouped Wind Tunnel Controller

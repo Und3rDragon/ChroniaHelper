@@ -176,7 +176,7 @@ public class ChroniaHelperSession : EverestModuleSession
     /// item1: condition, item2: constantly or changed, item3: flag operation
     /// item4: expression using, item5: target flag
     /// </summary>
-    public struct ConditionListener
+    public struct SessionConditionListener
     {
         public string condition;
         /// <summary>
@@ -197,7 +197,7 @@ public class ChroniaHelperSession : EverestModuleSession
         public float time;
         public string flag;
     }
-    public Dictionary<string, ConditionListener> listeningConditions = new();
+    public Dictionary<string, SessionConditionListener> listeningConditions = new();
     public Dictionary<string, bool> listeningConditionLastState = new();
     public Dictionary<string, bool> listeningConditionTimerState = new();
     public Dictionary<string, float> listeningConditionTimer = new();

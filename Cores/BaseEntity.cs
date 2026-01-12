@@ -10,6 +10,7 @@ using VivHelper;
 
 namespace ChroniaHelper.Cores;
 
+[Tracked(true)]
 public class BaseEntity : Entity
 {
     public BaseEntity() { }
