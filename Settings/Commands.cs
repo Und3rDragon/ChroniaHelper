@@ -12,7 +12,6 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
 using ChroniaHelper.Utils.StopwatchSystem;
 using TextCopy;
-using static ChroniaHelper.Entities.PasswordKeyboard.PasswordKeyboard;
 
 namespace ChroniaHelper.Settings;
 

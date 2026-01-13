@@ -328,7 +328,7 @@ namespace ChroniaHelper.Entities
         private static float GetLiftBoost(Actor actor)
         {
             var data = DynamicData.For(actor);
-            return data.Get<bool>("teraBoost") ? Cons.TeraBlockLiftBoostMultipler : 1f;
+            return data.Get<bool?>("teraBoost") ?? false ? Cons.TeraBlockLiftBoostMultipler : 1f;
         }
     }
 }
