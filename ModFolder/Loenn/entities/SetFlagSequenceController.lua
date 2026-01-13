@@ -38,8 +38,13 @@ controller.fieldInformation = {
         },
         editable = false,
     },
-    flags = {
+    flagSequence = {
         fieldType = "list",
+        elementSeparator = ";",
+        elementOptions = {
+            fieldType = "list",
+            minimumElements = 1,
+        },
     },
     parameters = {
         fieldType = "list",

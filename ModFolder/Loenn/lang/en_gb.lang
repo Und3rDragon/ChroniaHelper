@@ -1309,6 +1309,8 @@ entities.ChroniaHelper/Balloon.placements.name.balloon=Balloon (Customizable)
 # ================= SetFlagSequenceController
 
 entities.ChroniaHelper/SetFlagSequenceController.placements.name.controller=Set Flag Sequence Controller
+flagSequence=A sequence representing how this entity should operate flags. The sequence may contain flags or a delay. \nThe sequence should be divided by ";", like "flagA;0.5;flagB". \nFor delay, a single number will do. \nFor flags, it can be multiple flags separated by a comma like "flag1,!flag2,?flag3,*flag4". \n"flag" is to activate a flag. \n"!flag" is to disable a flag. \n"?flag" is to enable a temporary flag. \n"*flag" is to set up a global flag. \nThe example is given in the field.
+parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
 
 # ================= Grouped Wind Tunnel
 
