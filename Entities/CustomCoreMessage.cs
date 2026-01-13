@@ -117,6 +117,12 @@ public class ColoredCustomCoreMessage : Entity
             return;
         }
 
+        if (dialog.StartsWith('#'))
+        {
+            text = Md.Session.sessionKeys.GetValueOrDefault(dialog.TrimStart('#'), "");
+            return;
+        }
+
         if (this.wholeDialog)
         {
             text = Dialog.Clean(t1);

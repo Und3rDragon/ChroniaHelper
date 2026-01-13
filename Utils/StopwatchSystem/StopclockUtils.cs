@@ -8,7 +8,7 @@ namespace ChroniaHelper.Utils.StopwatchSystem;
 
 public static class StopclockUtils
 {
-    public static bool GetStopclock(this string name, out Stopclock? clock)
+    public static bool GetStopclock(this string name, out Stopclock clock)
     {
         if (Md.SaveData.globalStopwatches.ContainsKey(name))
         {
@@ -22,10 +22,28 @@ public static class StopclockUtils
             return true;
         }
 
-        clock = null;
+        clock = new Stopclock();
         return false;
     }
-    
+
+    public static bool GetStopclock(this string name, bool fromGlobal, out Stopclock clock)
+    {
+        if (fromGlobal && Md.SaveData.globalStopwatches.ContainsKey(name))
+        {
+            clock = Md.SaveData.globalStopwatches[name];
+            return true;
+        }
+
+        if (!fromGlobal && Md.Session.sessionStopwatches.ContainsKey(name))
+        {
+            clock = Md.Session.sessionStopwatches[name];
+            return true;
+        }
+
+        clock = new Stopclock();
+        return false;
+    }
+
     /// <summary>
     /// 将xxx:xxx:xxx转换为int[]
     /// </summary>
@@ -50,5 +68,39 @@ public static class StopclockUtils
         }
 
         return n;
+    }
+
+    public static string TrimLeadingZeroUnits(string timeStr)
+    {
+        if (string.IsNullOrEmpty(timeStr))
+            return "0"; // 或抛异常，根据需求
+
+        var units = timeStr.Split(':');
+
+        // 找到第一个“非全零”单位的索引
+        int firstNonZeroIndex = -1;
+        for (int i = 0; i < units.Length; i++)
+        {
+            string unit = units[i];
+            // 判断是否全由 '0' 组成（且非空）
+            if (!string.IsNullOrEmpty(unit) && unit.All(c => c == '0'))
+            {
+                continue; // 是全零，跳过
+            }
+            else
+            {
+                firstNonZeroIndex = i;
+                break;
+            }
+        }
+
+        // 如果全是全零单位
+        if (firstNonZeroIndex == -1)
+        {
+            return "0";
+        }
+
+        // 从第一个非全零单位开始，保留剩余所有部分
+        return string.Join(":", units.Skip(firstNonZeroIndex));
     }
 }

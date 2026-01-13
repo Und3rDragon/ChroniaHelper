@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using IL.MonoMod;
@@ -20,7 +21,7 @@ public class MessageDisplayerNormal : SerialImageRenderer
     {
         base.Depth = d.Int("depth", -100000);
 
-        SerialImage template = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
+        Prm.SerialImageTemplate template = new();
 
         template.renderMode = d.Int("renderMode", 0);
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));
@@ -66,8 +67,10 @@ public class MessageDisplayerNormal : SerialImageRenderer
     public string reference = Cons.DisplayFontsReference;
     public List<string> ParseRenderTarget()
     {
-        string text = Dialog.Clean(content, Dialog.Languages["english"]);
-        
+        string text = content.StartsWith("#") ?
+            Md.Session.sessionKeys.GetValueOrDefault(content.TrimStart('#'), "") :
+            Dialog.Clean(content, Dialog.Languages["english"]);
+
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();
         foreach (string line in lines)

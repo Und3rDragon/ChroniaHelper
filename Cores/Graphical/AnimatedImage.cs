@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ChroniaHelper.Cores;
+namespace ChroniaHelper.Cores.Graphical;
 
 /// <summary>
 /// An image class that renders by MTexture.Draw()

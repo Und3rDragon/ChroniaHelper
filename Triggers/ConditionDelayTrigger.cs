@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Triggers.TriggerExtension;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
@@ -23,9 +24,12 @@ public class ConditionDelayTrigger : BaseTrigger
         onEnterCondition = d.Attr("onEnterCondition");
         onStayCondition = d.Attr("onStayCondition");
         onLeaveCondition = d.Attr("onLeaveCondition");
-        onEnterUseExpression = d.Bool("onEnterUseExpression", false);
-        onStayUseExpression = d.Bool("onStayUseExpression", false);
-        onLeaveUseExpression = d.Bool("onLeaveUseExpression", false);
+        onEnterUseExpression = d.DelegateFetch("onEnterUseExpression", 0,
+            (s) => s.IsBool(), (s) => s.ParseBool()? 1 : 0);
+        onStayUseExpression = d.DelegateFetch("onStayUseExpression", 0,
+            (s) => s.IsBool(), (s) => s.ParseBool() ? 1 : 0);
+        onLeaveUseExpression = d.DelegateFetch("onLeaveUseExpression", 0,
+            (s) => s.IsBool(), (s) => s.ParseBool() ? 1 : 0);
         onEnterDelay = d.Float("onEnterDelay", 0f).GetAbs();
         onStayInterval = d.Float("onStayInterval", 0f).GetAbs();
         onLeaveDelay = d.Float("onLeaveDelay", 0f).GetAbs();
@@ -38,7 +42,10 @@ public class ConditionDelayTrigger : BaseTrigger
     public int ID;
     public string onEnterCondition, onStayCondition, onLeaveCondition;
     public bool useEnter, useStay, useLeave;
-    public bool onEnterUseExpression = false, onStayUseExpression = false, onLeaveUseExpression = false;
+    /// <summary>
+    /// flags = 0, chroniaExpression = 1, frostExpression = 2
+    /// </summary>
+    public int onEnterUseExpression = 0, onStayUseExpression = 0, onLeaveUseExpression = 0;
     public float onEnterDelay = 0f, onStayInterval = 0f, onLeaveDelay = 0f;
     public bool triggerCovered = false;
     public string targetIDs;
@@ -63,24 +70,7 @@ public class ConditionDelayTrigger : BaseTrigger
 
         if (onEnterCondition.IsNotNullOrEmpty() && useEnter)
         {
-            if (onEnterUseExpression)
-            {
-                onEnter = onEnterCondition.ParseMathExpression() != 0f;
-            }
-            else
-            {
-                onEnter = true;
-                onEnterCondition.Split(',', StringSplitOptions.TrimEntries).EachDo((flag) =>
-                {
-                    string name = flag;
-                    bool inverted = false;
-                    if (inverted = flag.StartsWith('!'))
-                    {
-                        name = flag.TrimStart('!');
-                    }
-                    onEnter.TryNegative(inverted ? !name.GetFlag() : name.GetFlag());
-                });
-            }
+            onEnter = onEnterCondition.CheckCondition((ConditionUtils.ConditionMode)onEnterUseExpression);
         }
         else
         {
@@ -89,24 +79,7 @@ public class ConditionDelayTrigger : BaseTrigger
 
         if (onStayCondition.IsNotNullOrEmpty() && useStay)
         {
-            if (onStayUseExpression)
-            {
-                onStay = onStayCondition.ParseMathExpression() != 0f;
-            }
-            else
-            {
-                onStay = true;
-                onStayCondition.Split(',', StringSplitOptions.TrimEntries).EachDo((flag) =>
-                {
-                    string name = flag;
-                    bool inverted = false;
-                    if (inverted = flag.StartsWith('!'))
-                    {
-                        name = flag.TrimStart('!');
-                    }
-                    onStay.TryNegative(inverted ? !name.GetFlag() : name.GetFlag());
-                });
-            }
+            onStay = onStayCondition.CheckCondition((ConditionUtils.ConditionMode)onStayUseExpression);
         }
         else
         {
@@ -115,24 +88,7 @@ public class ConditionDelayTrigger : BaseTrigger
 
         if (onLeaveCondition.IsNotNullOrEmpty() && useStay)
         {
-            if (onLeaveUseExpression)
-            {
-                onLeave = onLeaveCondition.ParseMathExpression() != 0f;
-            }
-            else
-            {
-                onLeave = true;
-                onLeaveCondition.Split(',', StringSplitOptions.TrimEntries).EachDo((flag) =>
-                {
-                    string name = flag;
-                    bool inverted = false;
-                    if (inverted = flag.StartsWith('!'))
-                    {
-                        name = flag.TrimStart('!');
-                    }
-                    onLeave.TryNegative(inverted ? !name.GetFlag() : name.GetFlag());
-                });
-            }
+            onLeave = onLeaveCondition.CheckCondition((ConditionUtils.ConditionMode)onLeaveUseExpression);
         }
         else
         {

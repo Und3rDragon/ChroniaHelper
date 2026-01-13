@@ -1,18 +1,21 @@
-﻿using YamlDotNet.Serialization;
-using System.Collections.Generic;
-using Celeste.Mod.ChroniaHelperIndicatorZone;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Celeste.Mod.ChroniaHelperIndicatorZone;
+using ChroniaHelper.Components;
+using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Cores.LiteTeraHelper;
+using ChroniaHelper.Entities;
 using ChroniaHelper.Triggers;
+using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.StopwatchSystem;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.TypeInspectors;
 using YoctoHelper.Components;
 using YoctoHelper.Hooks;
 using static ChroniaHelper.Entities.CustomBooster;
-using System.Runtime.InteropServices;
-using ChroniaHelper.Components;
-using System.Diagnostics;
-using ChroniaHelper.Utils.StopwatchSystem;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Modules;
 
@@ -166,13 +169,14 @@ public class ChroniaHelperSession : EverestModuleSession
     // HUD Controller
     public List<bool> HUDPrimaryState = new();
     public bool HUDStateRegistered = false;
+    public string HUDStateRegister = string.Empty;
 
     // Condition Listener
     /// <summary>
     /// item1: condition, item2: constantly or changed, item3: flag operation
     /// item4: expression using, item5: target flag
     /// </summary>
-    public struct ConditionListener
+    public struct SessionConditionListener
     {
         public string condition;
         /// <summary>
@@ -193,15 +197,71 @@ public class ChroniaHelperSession : EverestModuleSession
         public float time;
         public string flag;
     }
-    public Dictionary<string, ConditionListener> listeningConditions = new();
+    public Dictionary<string, SessionConditionListener> listeningConditions = new();
     public Dictionary<string, bool> listeningConditionLastState = new();
     public Dictionary<string, bool> listeningConditionTimerState = new();
     public Dictionary<string, float> listeningConditionTimer = new();
 
+    // Fnt Textures
+    [YamlIgnore]
+    public Dictionary<string, FntData> cachedFntData = new();
+    
+    // Chronia Points Game
+    public HashSet<string> DiscoveredRooms = new();
+
+    // Code Button
+    public struct CodeButtonTarget
+    {
+        public string codeString;
+        public string flag;
+        public bool needsEnterCheck;
+        public bool deactivateFlagWhenNotStaisfied;
+        
+    }
+    public Dictionary<string, CodeButtonTarget> codeButtonTargets = new();
+    
+    // Settings Override Controller
+    public struct SettingsData
+    {
+        public bool photosensitive; 
+        public bool fullScreen; 
+        public int windowScale;
+        public string language;
+        public GrabModes grabMode;
+    }
+    public SettingsData settingsData = new Ses.SettingsData
+    {
+        fullScreen = Celeste.Settings.Instance.Fullscreen,
+        photosensitive = Celeste.Settings.Instance.DisableFlashes,
+        windowScale = Celeste.Settings.Instance.WindowScale,
+        language = Celeste.Settings.Instance.Language,
+        grabMode = Celeste.Settings.Instance.GrabMode,
+    };
+
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public HashSet<string> flagsPerRoom = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public HashSet<string> flagsPerDeath = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, int> countersPerRoom = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, int> countersPerDeath = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, float> slidersPerRoom = new();
+    /// <summary>
+    /// For Chronia Flag-Counter-Slider System
+    /// </summary>
     public Dictionary<string, float> slidersPerDeath = new();
+
+    public Dictionary<string, string> sessionKeys = new();
 }

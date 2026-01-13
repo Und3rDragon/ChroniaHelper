@@ -1,0 +1,53 @@
+# ================ Additions : Entities
+
+# Code Button
+A button active to players or holdables, can be used to setup a code sequence for the map, each code of the button can be identical or overlapped
+
+# Code Button Target Controller
+Sets up the correct password for the certain code button group
+
+# Flag Listener Stopclock Controller
+A controller that starts a stopclock counting when a flag is enabled
+
+# Fnt Display series
+Sort of like Custom Core Message, but instead of using the map default font, you can choose your font from the fnt file!
+
+# Set Flag Controller
+Mostly for my personal usages, but feel free to try it, it sets up a series of flags under a certain occassion, supports inverted flags and global flags
+
+# Settings Override Controller
+Ever thinking about forcing the fullscreen or rescale the screen for some reason? Well, here it is
+
+# Camera Grid (Loenn entity)
+A decorative entity that show a grid of camera offset
+
+# BG Tiles Collide Controller
+A controller detecting whether the player is colliding with the BG Tiles
+
+# Comprehensive Controller
+A controller that records data and transform them into session data of the level, inspired from Kosei Helper GameData Controller
+
+# Condition Delay Listener
+When a certain condition is met, either flag sequences or ChroniaHelper Math Expressions, or FrostHelper Session Expressions, the flags will be set after a certain delay
+
+# HUD Controller
+ChroniaHelper contains a loads of HUDs now, which can be seen in the options, but what if the mapper wants some of the HUD area to be clear and the player still wanna keep their HUD active?
+Well use this controller to temporarily hide some of them
+
+# Balloon (Customizable) from GameHelper
+A modified version of GameHelper balloon, including several customizations including textures, hitboxes, etc.
+
+# Grouped Wind Tunnel & Grouped Wind Tunnel Controller
+Since Wind Tunnel sometimes work weird when you connect several individual tunnels together, now we introduce Grouped Wind Tunnel and its controller
+
+# Set Flag Sequence Controller
+So I assume not all of you use trigger trigger network for comprehensive or complicated mechanics, do you?
+I think most of the time mappers simply wanted to activate a chain of flags according to some sort of sequence, the this is your thing!
+
+# ================ Additions : Triggers
+
+# ================ Additions : Features
+
+# ================ Optimizations
+
+Now most message displayer that allows mapper to fill in a Dialog ID now supports session keys, which can be set up by some other entities, to access session keys, use "#" before the Dialog ID to indicate it

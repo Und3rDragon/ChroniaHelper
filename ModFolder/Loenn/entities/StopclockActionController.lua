@@ -11,6 +11,7 @@ controller.placements = {
     data = {
         stopclockTag = "stopclock",
         setFlag = "",
+        exportToSessionKey = "",
         killPlayer = false,
     },
 }
@@ -27,7 +28,7 @@ controller.fieldInformation =
 function controller.sprite(room, entity)
     local sprite = {}
     local rect = drawableRectangle.fromRectangle("fill", entity.x, entity.y, 16, 16, {0.0, 0.0, 0.0})
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/StopclockFlag", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/StopclockAction", entity)
 
     table.insert(sprite, iconSprite)
     return sprite

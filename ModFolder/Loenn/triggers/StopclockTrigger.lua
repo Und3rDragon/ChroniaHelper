@@ -9,6 +9,7 @@ trigger.placements = {
         operation = 0,
         countdown = true,
         onlyOnce = true,
+        followLevelPause = false,
     },
 }
 
@@ -20,9 +21,22 @@ trigger.fieldInformation = {
             ["Minus"] = 2,
             ["Stop"] = 3,
             ["Start/Resume"] = 4,
+            ["Set and Start"] = 5,
         },
         editable = false,
     },
 }
+
+trigger.triggerText = function(room, entity)
+	local base = "Stopclock"
+    
+    if entity.countdown then
+        base = "Countdown " .. base
+    end
+    
+    base = base .. " (tag = " .. entity.stopclockName .. ") (time = " .. entity.time .. ")"
+    
+	return base
+end
 
 return trigger

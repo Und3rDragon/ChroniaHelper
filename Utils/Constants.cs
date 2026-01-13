@@ -6,15 +6,19 @@ global using HSL = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSLColor = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSV = ChroniaHelper.Utils.ColorUtils.HSVColor;
 global using HSVColor = ChroniaHelper.Utils.ColorUtils.HSVColor;
-global using MaP = ChroniaHelper.Cores.MapProcessor;
-global using Md = ChroniaHelper.ChroniaHelperModule;
+global using MaP = ChroniaHelper.Cores.MapProcessor; // usual
+global using Md = ChroniaHelper.ChroniaHelperModule; // usual
 global using PUt = ChroniaHelper.Utils.PlayerUtils;
-global using Sav = ChroniaHelper.Modules.ChroniaHelperSaveData;
-global using Ses = ChroniaHelper.Modules.ChroniaHelperSession;
-global using Sts = ChroniaHelper.Modules.ChroniaHelperSettings;
+global using Sav = ChroniaHelper.Modules.ChroniaHelperSaveData; // usual
+global using Ses = ChroniaHelper.Modules.ChroniaHelperSession; // usual
+global using Sts = ChroniaHelper.Modules.ChroniaHelperSettings; // usual
 global using Vc2 = Microsoft.Xna.Framework.Vector2;
 global using Vc3 = Microsoft.Xna.Framework.Vector3;
 global using Sens = ChroniaHelper.Utils.SensitiveFlags.Sensitivity;
+global using Prm = ChroniaHelper.Cores.Graphical.GraphicalParams;
+global using Clock = ChroniaHelper.Utils.StopwatchSystem.Stopclock;
+global using GSav = ChroniaHelper.Modules.ChroniaHelperGlobalSaveData; // usual
+using static ChroniaHelper.Settings.Commands; // usual
 using System.Reflection;
 
 namespace ChroniaHelper.Utils;
@@ -34,4 +38,6 @@ public static class Constants
     public const BindingFlags DefaultBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
     
     public const string DisplayFontsReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,_^";
+
+    public const string CommandStopclockID = "ChroniaHelper_Debug_CommandStopclock";
 }

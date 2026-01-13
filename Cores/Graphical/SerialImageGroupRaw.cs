@@ -7,22 +7,23 @@ using System.Threading.Tasks;
 using ChroniaHelper.Utils;
 using YoctoHelper.Cores;
 
-namespace ChroniaHelper.Cores;
+namespace ChroniaHelper.Cores.Graphical;
 
-public class SerialImageGroup
+public class SerialImageGroupRaw
 {
-    public List<SerialImage> members = new();
+    public List<SerialImageRaw> members = new();
     /// <summary>
     /// An empty template defining member parameters
     /// </summary>
-    public SerialImage template = new SerialImage("ChroniaHelper/DisplayFonts/font");
+    public SerialImageRaw template = new SerialImageRaw("ChroniaHelper/DisplayFonts/font");
 
+    public Dictionary<string, SerialImageRaw> cachedMembers = new();
     /// <summary>
     /// 
     /// </summary>
     /// <param name="template">An empty template defining member parameters</param>
     /// <param name="paths"></param>
-    public SerialImageGroup(SerialImage template, params string[] paths)
+    public SerialImageGroupRaw(SerialImageRaw template, params string[] paths)
     {
         this.template = template;
         foreach (var p in paths)
@@ -30,16 +31,20 @@ public class SerialImageGroup
             if (p.IsNullOrEmpty()) { continue; }
 
             path.Add(p);
+
+            cachedMembers[p] = new SerialImageRaw(p);
         }
     }
     
-    public SerialImageGroup(params string[] paths)
+    public SerialImageGroupRaw(params string[] paths)
     {
         foreach(var p in paths)
         {
             if (p.IsNullOrEmpty()) { continue;  }
 
             path.Add(p);
+
+            cachedMembers[p] = new SerialImageRaw(p);
         }
     }
     public Vc2 groupOrigin = Vc2.Zero;
@@ -75,7 +80,7 @@ public class SerialImageGroup
         
         for(int i = 0; i < source.Count; i++)
         {
-            SerialImage image = new SerialImage(SafeGetPath(i));
+            SerialImageRaw image = cachedMembers[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -138,7 +143,7 @@ public class SerialImageGroup
 
         for (int i = 0; i < source.Count; i++)
         {
-            SerialImage image = new SerialImage(SafeGetPath(i));
+            SerialImageRaw image = cachedMembers[SafeGetPath(i)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;

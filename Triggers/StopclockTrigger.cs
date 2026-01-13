@@ -9,9 +9,9 @@ using ChroniaHelper.Utils.StopwatchSystem;
 
 namespace ChroniaHelper.Triggers;
 
-[Tracked(true)]
+[Tracked(false)]
 [CustomEntity("ChroniaHelper/StopclockTrigger")]
-public class StopclockTrigger :BaseTrigger
+public class StopclockTrigger : BaseTrigger
 {
     public StopclockTrigger(EntityData d, Vc2 o) : base(d, o)
     {
@@ -20,11 +20,13 @@ public class StopclockTrigger :BaseTrigger
         countdown = d.Bool("countdown", true);
         operation = d.Int("operation", 0);
         onlyOnce = d.Bool("onlyOnce", true);
+        followLevelPause = d.Bool("followLevelPause", false);
     }
     private string name, time;
     private bool countdown;
     private int operation = 0;
-    private enum Operations { Set = 0, Add = 1, Minus = 2, Stop = 3, Resume = 4, }
+    private enum Operations { Set = 0, Add = 1, Minus = 2, Stop = 3, Resume = 4, SetAndStart = 5}
+    private bool followLevelPause;
 
     protected override void OnEnterExecute(Player player)
     {
@@ -64,9 +66,16 @@ public class StopclockTrigger :BaseTrigger
             if (!name.GetStopclock(out Stopclock clock)) { return; }
             clock.Start();
         }
+        else if(operation == (int)Operations.SetAndStart)
+        {
+            var clock = new Stopclock(countdown, time, followPause: followLevelPause);
+            clock.Register(name, false);
+            clock.Start();
+        }
         else
         {
-            new Stopclock(name, countdown, time);
+            var clock = new Stopclock(countdown, time, followPause: followLevelPause);
+            clock.Register(name, false);
         }
     }
 }

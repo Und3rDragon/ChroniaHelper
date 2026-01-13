@@ -11,6 +11,7 @@ controller.placements = {
     data = {
         Introduction = "",
         PlayerCollidingBGTiles = "ChroniaHelper_PlayerCollidingBGTiles",
+        PlayerCollidingEntityBGTiles = "ChroniaHelper_PlayerCollidingEntityBGTiles",
         PlayerTouchingTriggers = "ChroniaHelper_PlayerTouchingTriggers",
         PlayerCollidingEntitiesWithSameDepth = "ChroniaHelper_PlayerCollidingEntitiesWithSameDepth",
         PlayerCollidingEntitiesAbove = "ChroniaHelper_PlayerCollidingEntitiesAbove",
@@ -38,4 +39,4 @@ function controller.sprite(room, entity)
     return sprite
 end
 
---return controller
+return controller

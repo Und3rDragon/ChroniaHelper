@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.CompilerServices;
+using Celeste.Mod.XaphanHelper.Triggers;
 using ChroniaHelper.Cores;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
@@ -13,48 +15,42 @@ public partial class Stopclock : IDisposable
     private static int activeIsolatedClocks = 0;
     private static int maxIsolatedClocks = 5;
 
+    private static Dictionary<string, Stopclock> clocksToGlobal = new();
+    private static Dictionary<string, Stopclock> clocksToSession = new();
     [LoadHook]
     public static void Load()
     {
-        On.Celeste.Level.UpdateTime += LevelUpdateTime;
-        On.Celeste.Level.LoadLevel += LoadingLevel;
+        On.Monocle.Scene.Update += SessionUpdate;
         On.Monocle.Scene.Update += GlobalUpdate;
+        On.Celeste.Level.UpdateTime += SessionPersistent;
     }
     [UnloadHook]
     public static void Unload()
     {
-        On.Celeste.Level.UpdateTime -= LevelUpdateTime;
-        On.Celeste.Level.LoadLevel -= LoadingLevel;
+        On.Monocle.Scene.Update -= SessionUpdate;
         On.Monocle.Scene.Update -= GlobalUpdate;
-    }
-
-    public static void LoadingLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool loader)
-    {
-        orig(self, intro, loader);
+        On.Celeste.Level.UpdateTime -= SessionPersistent;
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
     {
         orig(self);
-
+        
         if (Md.SaveData.IsNull()) { return; }
 
         HashSet<string> toRemove = new();
+        foreach(var clock in clocksToGlobal)
+        {
+            Md.SaveData.globalStopwatches.Enter(clock.Key, clock.Value);
+        }
+        clocksToGlobal.Clear();
         foreach (var watches in Md.SaveData.globalStopwatches)
         {
-            // If not global, migrate the timer to session timers
-            if (!watches.Value.global)
-            {
-                toRemove.Add(watches.Key);
-                watches.Value.Register(watches.Key);
-                continue;
-            }
-
             if (!watches.Value.isolatedUpdate)
             {
                 if(!watches.Value.followPause || !self.Paused)
                 {
-                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                    watches.Value.UpdateTime(TimeUtils.deltaTicksRaw);
                 }
             }
 
@@ -72,66 +68,87 @@ public partial class Stopclock : IDisposable
 
             //Log.Info(watches.Key, watches.Value.FormattedTime);
         }
+
         foreach (var item in toRemove)
         {
             Md.SaveData.globalStopwatches.SafeRemove(item);
         }
     }
 
-    public static void LevelUpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
+    public static void SessionUpdate(On.Monocle.Scene.orig_Update orig, Scene scene)
+    {
+        orig(scene);
+
+        if (Md.Session.IsNull()) { return; }
+
+        if (scene is not Level) { return; }
+
+        var self = scene as Level;
+
+        if (self.Completed) { return; }
+        
+        // Session Persistent is more frequent than Session Update, so we move the timer check there
+        // Only level paused refresh here
+        foreach (var watches in Md.Session.sessionStopwatches)
+        {
+            if (!watches.Value.isolatedUpdate && watches.Value.followPause)
+            {
+                if (!scene.Paused)
+                {
+                    watches.Value.UpdateTime(TimeUtils.deltaTicks);
+                }
+            }
+        }
+    }
+    
+    public static void SessionPersistent(On.Celeste.Level.orig_UpdateTime orig, Level self)
     {
         orig(self);
 
         if (Md.Session.IsNull()) { return; }
 
-        if (!self.Completed)
+        if (self.Completed) { return; }
+
+        HashSet<string> toRemove = new();
+        foreach (var clock in clocksToSession)
         {
-            HashSet<string> toRemove = new();
-            foreach (var watches in Md.Session.sessionStopwatches)
+            Md.Session.sessionStopwatches.Enter(clock.Key, clock.Value);
+        }
+        clocksToSession.Clear();
+        foreach (var watches in Md.Session.sessionStopwatches)
+        {
+            if (Md.SaveData.globalStopwatches.ContainsKey(watches.Key))
             {
-                if (watches.Value.global)
+                toRemove.Add(watches.Key);
+                watches.Value.Stop();
+                continue;
+            }
+            
+            if (!watches.Value.isolatedUpdate && !watches.Value.followPause)
+            {
+                watches.Value.UpdateTime(TimeUtils.deltaTicks);
+            }
+
+            if (watches.Value.completed && watches.Value.removeWhenCompleted)
+            {
+                if (!watches.Value.removeRequireSignalUsed)
                 {
                     toRemove.Add(watches.Key);
-                    watches.Value.Register(watches.Key);
-                    continue;
                 }
-                
-                if (Md.SaveData.globalStopwatches.ContainsKey(watches.Key))
+                else
                 {
-                    toRemove.Add(watches.Key);
-                    watches.Value.Stop();
-                    continue;
+                    if (!watches.Value.HasValidSignal) { toRemove.Add(watches.Key); }
                 }
-
-                if (!watches.Value.isolatedUpdate)
-                {
-                    if (!watches.Value.followPause || !self.Paused)
-                    {
-                        watches.Value.UpdateTime(TimeUtils.deltaTicks);
-                    }
-                }
-
-                if (watches.Value.completed && watches.Value.removeWhenCompleted)
-                {
-                    if (!watches.Value.removeRequireSignalUsed)
-                    {
-                        toRemove.Add(watches.Key);
-                    }
-                    else
-                    {
-                        if (!watches.Value.HasValidSignal) { toRemove.Add(watches.Key); }
-                    }
-                }
-
-                //Log.Info(watches.Key, watches.Value.FormattedTime);
             }
-            foreach (var item in toRemove)
-            {
-                Md.Session.sessionStopwatches.SafeRemove(item);
-            }
+
+            //Log.Info(watches.Key, watches.Value.FormattedTime);
+        }
+        foreach (var item in toRemove)
+        {
+            Md.Session.sessionStopwatches.SafeRemove(item);
         }
     }
-    
+
     public int year = 0;
     public int month = 0;
     public int day = 0;
@@ -141,11 +158,13 @@ public partial class Stopclock : IDisposable
     public int millisecond = 0;
 
     public bool countdown = false;
-    public bool global { get; private set; } = false;
     public bool completed { get; private set; } = false;
     public bool removeWhenCompleted = true;
     public bool removeRequireSignalUsed = true;
     public bool running { get; private set; } = false;
+    /// <summary>
+    /// 脱离所有游戏机制，以任务形式存在
+    /// </summary>
     public bool isolatedUpdate = false;
     public bool registered { get; private set; } = false;
     /// <summary>
@@ -160,6 +179,9 @@ public partial class Stopclock : IDisposable
     public int initialMinute = 5;
     public int initialSecond = 0;
     public int initialMillisecond = 0;
+    
+    public DateTime? startTime = null;
+    public DateTime safeStartTime => startTime ?? DateTime.Now;
 
     // 时间累积
     private long _accumulatedTicks;
@@ -235,7 +257,6 @@ public partial class Stopclock : IDisposable
     public Stopclock()
     {
         countdown = false;
-        global = false;
         followPause = false;
         removeWhenCompleted = true;
         isolatedUpdate = false;
@@ -250,7 +271,7 @@ public partial class Stopclock : IDisposable
     /// 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
     /// </summary>
     public Stopclock(bool countdown, int year = 0, int month = 0, int day = 0, int hour = 0,
-        int minute = 0, int second = 0, int millisecond = 0, bool global = false, bool followPause = false,
+        int minute = 0, int second = 0, int millisecond = 0, bool followPause = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
         int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false,
         bool removeRequireSignalUsed = true)
@@ -263,7 +284,6 @@ public partial class Stopclock : IDisposable
         this.second = second;
         this.millisecond = millisecond;
         this.countdown = countdown;
-        this.global = global;
         this.followPause = followPause;
         this.initialYear = initialYear;
         this.initialMonth = initialMonth;
@@ -278,44 +298,6 @@ public partial class Stopclock : IDisposable
         _lastUpdateTime = DateTime.Now;
 
         registered = false;
-
-        Initialize();
-    }
-
-    /// <summary>
-    /// 创建时自带Register, 如果是倒计时, 倒计时默认事件为5分钟, 设置时注意清零
-    /// </summary>
-    public Stopclock(string regName, bool countdown = false, int year = 0, int month = 0, int day = 0, int hour = 0,
-        int minute = 0, int second = 0, int millisecond = 0, bool global = false, bool followPause = false,
-        int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
-        int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false,
-        bool removeRequireSignalUsed = true)
-    {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
-        this.millisecond = millisecond;
-        this.countdown = countdown;
-        this.global = global;
-        this.followPause = followPause;
-        this.initialYear = initialYear;
-        this.initialMonth = initialMonth;
-        this.initialDay = initialDay;
-        this.initialHour = initialHour;
-        this.initialMinute = initialMinute;
-        this.initialSecond = initialSecond;
-        this.initialMillisecond = initialMillisecond;
-        this.removeWhenCompleted = removeWhenCompleted;
-        this.isolatedUpdate = isolatedUpdate;
-        this.removeRequireSignalUsed = removeRequireSignalUsed;
-        _lastUpdateTime = DateTime.Now;
-
-        registered = false;
-
-        Register(regName);
 
         Initialize();
     }
@@ -325,13 +307,13 @@ public partial class Stopclock : IDisposable
     /// </summary>
     /// <param name="countdown"></param>
     /// <param name="time"></param>
-    /// <param name="global"></param>
     /// <param name="followPause"></param>
     /// <param name="removeWhenCompleted"></param>
     /// <param name="isolatedUpdate"></param>
-    public Stopclock(bool countdown, string time, bool global = false, bool followPause = false,
+    public Stopclock(bool countdown, string time, bool followPause = false,
         bool removeWhenCompleted = true, bool isolatedUpdate = false, bool removeRequireSignalUsed = true)
     {
+        initialMinute = 0;
         time.Split(':', StringSplitOptions.TrimEntries).ApplyTo(out string[] t);
 
         for (int i = 0, n = 0; i < t.Length; i++)
@@ -370,7 +352,6 @@ public partial class Stopclock : IDisposable
         }
         
         this.countdown = countdown;
-        this.global = global;
         this.followPause = followPause;
         this.removeWhenCompleted = removeWhenCompleted;
         this.isolatedUpdate = isolatedUpdate;
@@ -382,96 +363,15 @@ public partial class Stopclock : IDisposable
         Initialize();
     }
 
-    /// <summary>
-    /// 用xxx:xxx:xxx的字符串创建时间, 但是需要带注册名
-    /// </summary>
-    /// <param name="regsiterName"></param>
-    /// <param name="countdown"></param>
-    /// <param name="time"></param>
-    /// <param name="global"></param>
-    /// <param name="followPause"></param>
-    /// <param name="removeWhenCompleted"></param>
-    /// <param name="isolatedUpdate"></param>
-    public Stopclock(string regsiterName, bool countdown, string time, bool global = false, bool followPause = false,
-        bool removeWhenCompleted = true, bool isolatedUpdate = false, bool removeRequireSignalUsed = true)
-    {
-        time.Split(':', StringSplitOptions.TrimEntries).ApplyTo(out string[] t);
-
-        for (int i = 0, n = 0; i < t.Length; i++)
-        {
-            n = t.Length - 1 - i;
-            t[n].ParseInt(out int m);
-            m = m.ClampMin(0);
-
-            switch (i)
-            {
-                case 0:
-                    m.AssignTo(countdown, out initialMillisecond, out millisecond);
-                    break;
-                case 1:
-                    m.AssignTo(countdown, out initialSecond, out second);
-                    break;
-                case 2:
-                    m.AssignTo(countdown, out initialMinute, out minute);
-                    break;
-                case 3:
-                    m.AssignTo(countdown, out initialHour, out hour);
-                    break;
-                case 4:
-                    m.AssignTo(countdown, out initialDay, out day);
-                    break;
-                case 5:
-                    m.AssignTo(countdown, out initialMonth, out month);
-                    break;
-                case 6:
-                    m.AssignTo(countdown, out initialYear, out year);
-                    break;
-                default:
-                    m.AssignTo(countdown, out initialMillisecond, out millisecond);
-                    break;
-            }
-        }
-
-        this.countdown = countdown;
-        this.global = global;
-        this.followPause = followPause;
-        this.removeWhenCompleted = removeWhenCompleted;
-        this.isolatedUpdate = isolatedUpdate;
-        this.removeRequireSignalUsed = removeRequireSignalUsed;
-        _lastUpdateTime = DateTime.Now;
-
-        registered = false;
-
-        Register(regsiterName);
-
-        Initialize();
-    }
-
-    public void Register(string name)
+    public void Register(string name, bool global)
     {
         if (global)
         {
-            Md.SaveData.globalStopwatches.Enter(name, this);
+            clocksToGlobal.Enter(name, this);
         }
         else
         {
-            Md.Session.sessionStopwatches.Enter(name, this);
-        }
-
-        registered = true;
-    }
-
-    public void Register(string name, bool overrideGlobal)
-    {
-        global = overrideGlobal;
-
-        if (global)
-        {
-            Md.SaveData.globalStopwatches.Enter(name, this);
-        }
-        else
-        {
-            Md.Session.sessionStopwatches.Enter(name, this);
+            clocksToSession.Enter(name, this);
         }
 
         registered = true;
@@ -524,25 +424,5 @@ public partial class Stopclock : IDisposable
                 }
             }
         }
-    }
-    
-    public void SetGlobal(bool value)
-    {
-        CheckRegistry(out bool registered, out string registeredAs, out bool globally);
-        
-        if (registered && value != globally)
-        {
-            Register(registeredAs, value);
-            if (globally)
-            {
-                Md.SaveData.globalStopwatches.SafeRemove(registeredAs);
-            }
-            else
-            {
-                Md.Session.sessionStopwatches.SafeRemove(registeredAs);
-            }
-        }
-
-        global = value;
     }
 }

@@ -203,6 +203,13 @@ public class SeamlessSpinner : Entity
 
     private string coldCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/blue/fg_blue_base";
     private string hotCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/red/fg_red_base";
+    
+    public struct DefaultSpinner
+    {
+        public static string fg = "danger/crystal/fg_blue";
+        public static string bg = "danger/crystal/bg_blue";
+        public static string load = "objects/ChroniaHelper/timedSpinner/blue/fg_blue_base";
+    }
 
     public SeamlessSpinner(Vector2 position, EntityData data) : base(position)
     {
@@ -559,8 +566,9 @@ public class SeamlessSpinner : Entity
 
         sprite = new Sprite(GFX.Game, "");
 
-        sprite.AddLoop("idle", imagePath, fgAnim);
-        sprite.Add("load", imagePath + "_base", triggerAnimDelay);
+        sprite.AddLoop("idle", GFX.Game.HasAtlasSubtextures(imagePath) ? imagePath : DefaultSpinner.fg, fgAnim);
+        
+        sprite.Add("load", GFX.Game.HasAtlasSubtextures(imagePath + "_base") ? imagePath + "_base" : DefaultSpinner.load, triggerAnimDelay);
 
         Add(sprite);
         sprite.Justify = Vector2.One / 2;
@@ -640,7 +648,7 @@ public class SeamlessSpinner : Entity
         Sprite bgsprite = new Sprite(GFX.Game, "");
         bgSprites.Add(bgsprite);
 
-        bgsprite.AddLoop("idle", bgImagePath, bgAnim);
+        bgsprite.AddLoop("idle", GFX.Game.HasAtlasSubtextures(bgImagePath) ? bgImagePath : DefaultSpinner.bg, bgAnim);
 
         filler.Add(bgsprite);
 
