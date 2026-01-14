@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AsmResolver.DotNet.Serialized;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.Graphical;
 
 namespace ChroniaHelper.Utils.StopwatchSystem;
 
@@ -83,7 +84,7 @@ public class StopclockRenderer : SerialImageRendererRaw
 
         if (trimZeros)
         {
-            renderTarget = Regex.Replace(renderTarget, "0+:+", "");
+            renderTarget = StopclockUtils.TrimLeadingZeroUnits(renderTarget);
         }
 
         return renderTarget;

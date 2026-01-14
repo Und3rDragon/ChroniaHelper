@@ -26,3 +26,27 @@ public class ChroniaGlobalSavePathAttribute : Attribute
         RelativePath = relativePath;
     }
 }
+
+[AttributeUsage(AttributeTargets.All)]
+public class WorkingInProgressAttribute : Attribute
+{
+    public WorkingInProgressAttribute(string note = "") { }
+}
+
+[AttributeUsage(AttributeTargets.All)]
+public class NoteAttribute : Attribute
+{
+    public NoteAttribute(string note = "") { }
+}
+
+[AttributeUsage(AttributeTargets.All)]
+public class VersionNoteAttribute : Attribute
+{
+    public VersionNoteAttribute(int x, int y, int z, string note = "") { }
+}
+
+[AttributeUsage(AttributeTargets.All)]
+public class PrivateForAttribute : Attribute
+{
+    public PrivateForAttribute(string modOrAuthorName) { }
+}

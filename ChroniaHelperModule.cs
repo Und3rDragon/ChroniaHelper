@@ -53,6 +53,34 @@ public class ChroniaHelperModule : EverestModule
     public ChroniaHelperHandle ChroniaHelperHandle { get; private set; }
 
     public HookManager HookManager { get; private set; }
+    
+    public enum Languages
+    {
+        English = 0,
+        Brazilian = 1,
+        French = 2,
+        German = 3,
+        Italian = 4,
+        Japanese = 5,
+        Korean =6,
+        Russian = 7,
+        SimplifiedChinese = 8,
+        Spanish = 9,
+    }
+
+    public static Dictionary<Languages, string> LanguageID = new()
+    {
+        { Languages.English, "english" },
+        { Languages.Brazilian, "brazilian" },
+        { Languages.French, "french" },
+        { Languages.German, "german" },
+        { Languages.Italian, "italian" },
+        { Languages.Japanese, "japanese" },
+        { Languages.Korean, "korean" },
+        { Languages.Russian, "russian" },
+        { Languages.SimplifiedChinese, "schinese" },
+        { Languages.Spanish, "spanish" },
+    };
 
     public string ModDirectory
     {
@@ -72,6 +100,8 @@ public class ChroniaHelperModule : EverestModule
     public static bool CommunalHelperLoaded;
     public static bool VivHelperLoaded;
     public static bool MaddieLoaded;
+    public static bool KoseiHelperLoaded;
+    public static bool XaphanHelperLoaded;
     public static bool VortexHelperLoaded;
 
     public override void Load()
@@ -104,7 +134,7 @@ public class ChroniaHelperModule : EverestModule
         EverestModuleMetadata frostHelperMetadata = new()
         {
             Name = "FrostHelper",
-            Version = new Version(1, 70, 2)
+            Version = new Version("1.70.2")
         };
         FrostHelperLoaded = Everest.Loader.DependencyLoaded(frostHelperMetadata);
 
@@ -132,6 +162,22 @@ public class ChroniaHelperModule : EverestModule
         };
         MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
 
+        // Kosei Helper judgement
+        EverestModuleMetadata koseiMetadata = new()
+        {
+            Name = "KoseiHelper",
+            Version = new Version("1.19.0"),
+        };
+        KoseiHelperLoaded = Everest.Loader.DependencyLoaded(koseiMetadata);
+
+        // Xaphan Helper judgement
+        EverestModuleMetadata xaphanMetadata = new()
+        {
+            Name = "XaphanHelper",
+            Version = new Version("1.0.78"),
+        };
+        XaphanHelperLoaded = Everest.Loader.DependencyLoaded(xaphanMetadata);
+        
         // Vortex Helper judgement
         VortexHelperLoaded = Everest.Loader.DependencyLoaded(
             new EverestModuleMetadata 

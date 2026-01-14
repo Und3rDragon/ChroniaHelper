@@ -21,6 +21,8 @@ public partial class Stopclock
         completed = false;
         _accumulatedTicks = 0;
         _lastUpdateTime = DateTime.Now;
+        
+        startTime = DateTime.Now;
 
         // 运行前检查
         if (isolatedUpdate)
@@ -165,6 +167,7 @@ public partial class Stopclock
 
     public void SetTime(int[] time, bool initial = false, bool reset = true)
     {
+        initialMinute = 0;
         for (int i = 0, n = 0; i < time.Length; i++)
         {
             n = time.Length - 1 - i;

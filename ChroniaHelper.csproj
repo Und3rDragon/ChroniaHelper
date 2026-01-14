@@ -7,7 +7,7 @@
         <Version>1.0.0</Version>
         <TargetFramework>net8.0</TargetFramework>
 
-        <CelesteRootPath>E:/Steam Games/steamapps/common/Celeste</CelesteRootPath>
+        <CelesteRootPath>E:/Steam platform/steamapps/common/Celeste</CelesteRootPath>
 
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
@@ -19,6 +19,12 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
         <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="ModFolder\Loenn\triggers\debugging\**" />
+      <EmbeddedResource Remove="ModFolder\Loenn\triggers\debugging\**" />
+      <None Remove="ModFolder\Loenn\triggers\debugging\**" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<CelesteModReference Include="CommunalHelper" />
@@ -33,7 +39,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ModFolder\Loenn\triggers\debugging\" />
+		<CelesteModReference Include="KoseiHelper" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<CelesteModReference Include="XaphanHelper" />
 	</ItemGroup>
 
     <!--Implement dependencies here in an ItemGroup-->

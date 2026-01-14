@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Line = ChroniaHelper.Utils.GeometryUtils.Line;
 
@@ -12,6 +13,7 @@ namespace ChroniaHelper.Entities.TrackIndicator;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/TrackIndicator")]
+[WorkingInProgress]
 public class TrackIndicator : Entity
 {
     public TrackIndicator(EntityData data, Vector2 offset) : base(data.Position + offset)

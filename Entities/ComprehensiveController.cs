@@ -16,6 +16,7 @@ public class ComprehensiveController : Entity
     public ComprehensiveController(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
         collidingBGTiles = data.Attr("PlayerCollidingBGTiles", "ChroniaHelper_PlayerCollidingBGTiles");
+        collidingEntityBGTiles = data.Attr("PlayerCollidingEntityBGTiles", "ChroniaHelper_PlayerCollidingEntityBGTiles");
         touchingTriggers = data.Attr("PlayerTouchingTriggers", "ChroniaHelper_PlayerTouchingTriggers");
         collidingEntitiesAbove = data.Attr("PlayerCollidingEntitiesAbove", "ChroniaHelper_PlayerCollidingEntitiesAbove");
         collidingEntitiesBelow = data.Attr("PlayerCollidingEntitiesBelow", "ChroniaHelper_PlayerCollidingEntitiesBelow");
@@ -23,7 +24,8 @@ public class ComprehensiveController : Entity
     }
     private string collidingBGTiles, touchingTriggers;
     private string collidingEntitiesSame, collidingEntitiesAbove, collidingEntitiesBelow;
-
+    private string collidingEntityBGTiles;
+    
     public override void Update()
     {
         base.Update();
@@ -36,35 +38,32 @@ public class ComprehensiveController : Entity
         touchingTriggers.SetFlag(PUt.player.CollideCheck<Trigger>());
 
         // Colliding Different Entities
-        bool colliding_overrideS = false, colliding_overrideA = false, colliding_overrideB = false;
+        bool sameDepth = false, aboveDepth = false, belowDepth = false;
+        bool entityBGTiles = false;
         foreach(var item in MaP.level.Entities)
         {
-            if (item.Depth == PUt.player.Depth && item.CollideCheck<Player>()) { 
-                collidingEntitiesSame.SetFlag(true);
-                colliding_overrideS = true;
+            if (!item.CollideCheck<Player>()) { continue; }
+            
+            if (item.Depth == PUt.player.Depth) {
+                sameDepth = true;
             }
-            if (item.Depth > PUt.player.Depth && item.CollideCheck<Player>())
+            if (item.Depth > PUt.player.Depth)
             {
-                collidingEntitiesAbove.SetFlag(true);
-                colliding_overrideA = true;
+                aboveDepth = true;
             }
-            if (item.Depth < PUt.player.Depth && item.CollideCheck<Player>())
+            if (item.Depth < PUt.player.Depth)
             {
-                collidingEntitiesBelow.SetFlag(true);
-                colliding_overrideB = true;
+                belowDepth = true;
+            }
+            
+            if(item is FloatyBgTile || item is StaticBgTile || item is SeperatedBgTile)
+            {
+                entityBGTiles = true;
             }
         }
-        if (!colliding_overrideA)
-        {
-            collidingEntitiesAbove.SetFlag(false);
-        }
-        if (!colliding_overrideB)
-        {
-            collidingEntitiesBelow.SetFlag(false);
-        }
-        if (!colliding_overrideS)
-        {
-            collidingEntitiesSame.SetFlag(false);
-        }
+        collidingEntitiesAbove.SetFlag(aboveDepth);
+        collidingEntitiesBelow.SetFlag(belowDepth);
+        collidingEntitiesSame.SetFlag(sameDepth);
+        collidingEntityBGTiles.SetFlag(entityBGTiles);
     }
 }

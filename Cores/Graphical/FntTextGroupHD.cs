@@ -7,39 +7,69 @@ using System.Threading.Tasks;
 using ChroniaHelper.Utils;
 using YoctoHelper.Cores;
 
-namespace ChroniaHelper.Cores;
+namespace ChroniaHelper.Cores.Graphical;
 
-public class SerialImageGroupRaw
+public class FntTextGroupHD
 {
-    public List<SerialImageRaw> members = new();
+    public List<FntTextHD> members = new();
     /// <summary>
     /// An empty template defining member parameters
     /// </summary>
-    public SerialImageRaw template = new SerialImageRaw("ChroniaHelper/DisplayFonts/font");
+    public Prm.SerialImageTemplate template = new();
 
+    public Dictionary<int, FntTextHD> cachedText = new();
+
+    public Dictionary<int, Dictionary<int, Vc2>> memberCharcodeOffsets = new();
+    public Dictionary<int, Dictionary<int, Vc2>> memberIndexOffsets = new();
+
+    public void ApplyAllOffsetSetups()
+    {
+        foreach (var offset in memberCharcodeOffsets)
+        {
+            if (cachedText.ContainsKey(offset.Key))
+            {
+                cachedText[offset.Key].offsetPerCharCode = offset.Value;
+            }
+        }
+
+        foreach (var offset in memberIndexOffsets)
+        {
+            if (cachedText.ContainsKey(offset.Key))
+            {
+                cachedText[offset.Key].offsetPerIndex = offset.Value;
+            }
+        }
+    }
+    
     /// <summary>
     /// 
     /// </summary>
     /// <param name="template">An empty template defining member parameters</param>
     /// <param name="paths"></param>
-    public SerialImageGroupRaw(SerialImageRaw template, params string[] paths)
+    public FntTextGroupHD(Prm.SerialImageTemplate template, params string[] paths)
     {
         this.template = template;
-        foreach (var p in paths)
+        for(int i = 0; i <paths.Length; i++)
         {
+            var p = paths[i];
             if (p.IsNullOrEmpty()) { continue; }
-
+            
             path.Add(p);
+
+            cachedText[i] = new FntTextHD(p);
         }
     }
     
-    public SerialImageGroupRaw(params string[] paths)
+    public FntTextGroupHD(params string[] paths)
     {
-        foreach(var p in paths)
+        for (int i = 0; i < paths.Length; i++)
         {
-            if (p.IsNullOrEmpty()) { continue;  }
+            var p = paths[i];
+            if (p.IsNullOrEmpty()) { continue; }
 
             path.Add(p);
+
+            cachedText[i] = new FntTextHD(p);
         }
     }
     public Vc2 groupOrigin = Vc2.Zero;
@@ -50,14 +80,6 @@ public class SerialImageGroupRaw
     public List<float> scales = new();
     public List<float> depths = new();
     
-    public string SafeGetPath(int i)
-    {
-        if (path.IsNull()) { return "ChroniaHelper/DisplayFonts/font"; }
-        if (path.Count == 0) { return "ChroniaHelper/DisplayFonts/font"; }
-
-        return path[i.Clamp(0, path.Count - 1)];
-    }
-
     public Vc2 groupSize = Vc2.Zero;
     public Vc2 groupTopleft, groupBottomRight;
     public List<Vc2> memberPosition = new();
@@ -75,7 +97,7 @@ public class SerialImageGroupRaw
         
         for(int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = new SerialImageRaw(SafeGetPath(i));
+            FntTextHD image = cachedText[i.ClampMax(cachedText.Count - 1)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -132,13 +154,13 @@ public class SerialImageGroupRaw
         memberStart = -groupTopleft;
     }
     
-    public void Measure(IList<string> source, Func<char, int> selector)
+    public void Measure(IList<string> source)
     {
         members = new();
 
         for (int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = new SerialImageRaw(SafeGetPath(i));
+            FntTextHD image = cachedText[i.ClampMax(cachedText.Count - 1)];
             image.origin = template.origin;
             image.segmentOrigin = template.segmentOrigin;
             image.overallOffset = groupOffset;
@@ -161,7 +183,7 @@ public class SerialImageGroupRaw
             {
                 image.depth = 0f;
             }
-            image.Measure(source[i], (item) => selector(item));
+            image.Measure(source[i]);
             members.Add(image);
         }
 
@@ -195,15 +217,15 @@ public class SerialImageGroupRaw
         memberStart = -groupTopleft;
     }
 
-    public void Render(IList<string> source, Func<char, int> selector, Vc2 renderPosition)
+    public void Render(IList<string> source, Vc2 renderPosition)
     {
-        Measure(source, selector);
+        Measure(source);
 
         for (int i = 0; i < members.Count; i++)
         {
             Vc2 dPos = groupSize * groupOrigin * -1f + memberStart + memberPosition[i] + groupOffset;
             
-            members[i].Render(source[i], selector, renderPosition + new Vc2((int)dPos.X, (int)dPos.Y));
+            members[i].Render(source[i], renderPosition + new Vc2((int)dPos.X, (int)dPos.Y));
         }
     }
     

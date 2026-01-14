@@ -228,5 +228,4 @@ public static class FlagUtils
     {
         return (ObjectUtils.IsNotNull(level)) && ((ArrayUtils.IsNullOrEmpty(flags)) || (FlagUtils.Contains(level, flags)));
     }
-
 }

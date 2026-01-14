@@ -439,4 +439,185 @@ public static class ColliderUtils
 
         return safeSetting;
     }
+
+    /// <summary>
+    /// 判断两个 Collider 集合是否完全一致（包括顺序、类型、属性）。
+    /// 支持 IEnumerable<Collider>，因此兼容 ColliderList, List<Collider>, Collider[] 等。
+    /// </summary>
+    public static bool CollidersEqual(this IEnumerable<Collider> a, IEnumerable<Collider> b)
+    {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+
+        var listA = a.ToList();
+        var listB = b.ToList();
+
+        if (listA.Count != listB.Count) return false;
+
+        for (int i = 0; i < listA.Count; i++)
+        {
+            if (!CollidersEqual(listA[i], listB[i]))
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 判断两个 Collider 实例是否完全一致。
+    /// </summary>
+    private static bool CollidersEqual(this Collider c1, Collider c2)
+    {
+        if (c1 == null && c2 == null) return true;
+        if (c1 == null || c2 == null) return false;
+
+        // 类型必须一致
+        if (c1.GetType() != c2.GetType()) return false;
+
+        // 分类型比较
+        switch (c1)
+        {
+            case Hitbox h1 when c2 is Hitbox h2:
+                return h1.Position == h2.Position &&
+                       h1.Width == h2.Width &&
+                       h1.Height == h2.Height;
+
+            case Circle c1Circle when c2 is Circle c2Circle:
+                return c1Circle.Position == c2Circle.Position &&
+                       c1Circle.Radius == c2Circle.Radius;
+
+            // 可根据需要添加更多 Collider 类型（如 GridCollider, PerimeterCollider 等）
+            default:
+                // 对于未知或未实现的类型，回退到引用相等（或抛出异常）
+                // 这里保守处理：仅当引用相同时认为相等
+                return ReferenceEquals(c1, c2);
+        }
+    }
+
+    /// <summary>
+    /// 判断两个 Collider 集合是否在几何上覆盖完全相同的区域（支持 Hitbox 和 Circle）。
+    /// 自动忽略面积为 0 的 Collider。
+    /// 使用整数像素光栅化（每个 (x,y) 代表 [x,x+1) × [y,y+1) 的单位方格）。
+    /// 当 threshold > 0 时，将每个集合的覆盖区域向外膨胀 threshold 像素（切比雪夫距离）。
+    /// </summary>
+    public static bool CollidersGeometricallyEquivalent(
+        this IEnumerable<Collider> a,
+        IEnumerable<Collider> b,
+        int threshold = 0)
+    {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+
+        try
+        {
+            var regionA = ExtractAndDilate(a, threshold);
+            var regionB = ExtractAndDilate(b, threshold);
+            return regionA.SetEquals(regionB);
+        }
+        catch (NotSupportedException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 提取并膨胀区域。
+    /// </summary>
+    private static HashSet<(int x, int y)> ExtractAndDilate(IEnumerable<Collider> colliders, int threshold)
+    {
+        var baseRegion = ExtractCoveredPixels(colliders);
+        return threshold <= 0 ? baseRegion : DilateRegion(baseRegion, threshold);
+    }
+
+    /// <summary>
+    /// 对点集进行方形膨胀（切比雪夫距离 ≤ threshold）。
+    /// </summary>
+    private static HashSet<(int x, int y)> DilateRegion(HashSet<(int x, int y)> region, int threshold)
+    {
+        if (region.Count == 0) return new HashSet<(int, int)>();
+
+        var dilated = new HashSet<(int x, int y)>();
+        foreach (var (x, y) in region)
+        {
+            for (int dx = -threshold; dx <= threshold; dx++)
+            {
+                for (int dy = -threshold; dy <= threshold; dy++)
+                {
+                    dilated.Add((x + dx, y + dy));
+                }
+            }
+        }
+        return dilated;
+    }
+
+    /// <summary>
+    /// 提取所有有效 Collider 覆盖的整数像素点集合。
+    /// 忽略面积 <= 0 的 Collider。
+    /// </summary>
+    private static HashSet<(int x, int y)> ExtractCoveredPixels(this IEnumerable<Collider> colliders)
+    {
+        var pixels = new HashSet<(int x, int y)>();
+
+        foreach (var c in colliders)
+        {
+            if (c == null) continue;
+
+            switch (c)
+            {
+                case Hitbox h:
+                    if (h.Width <= 0f || h.Height <= 0f) continue;
+
+                    // 注意：Celeste 的 Hitbox.Position 是 Vector2
+                    float left = Math.Min(h.Position.X, h.Position.X + h.Width);
+                    float right = Math.Max(h.Position.X, h.Position.X + h.Width);
+                    float top = Math.Min(h.Position.Y, h.Position.Y + h.Height);
+                    float bottom = Math.Max(h.Position.Y, h.Position.Y + h.Height);
+
+                    int minX = (int)Math.Floor(left);
+                    int maxX = (int)Math.Ceiling(right);
+                    int minY = (int)Math.Floor(top);
+                    int maxY = (int)Math.Ceiling(bottom);
+
+                    for (int x = minX; x < maxX; x++)
+                        for (int y = minY; y < maxY; y++)
+                            pixels.Add((x, y));
+
+                    break;
+
+                case Circle circ:
+                    if (circ.Radius <= 0f) continue;
+
+                    float cx = circ.Position.X;
+                    float cy = circ.Position.Y;
+                    float r = circ.Radius;
+                    float rSq = r * r;
+
+                    int boundMinX = (int)Math.Floor(cx - r);
+                    int boundMaxX = (int)Math.Ceiling(cx + r);
+                    int boundMinY = (int)Math.Floor(cy - r);
+                    int boundMaxY = (int)Math.Ceiling(cy + r);
+
+                    for (int x = boundMinX; x < boundMaxX; x++)
+                    {
+                        for (int y = boundMinY; y < boundMaxY; y++)
+                        {
+                            float dx = (x + 0.5f) - cx;
+                            float dy = (y + 0.5f) - cy;
+                            if (dx * dx + dy * dy <= rSq)
+                            {
+                                pixels.Add((x, y));
+                            }
+                        }
+                    }
+
+                    break;
+
+                default:
+                    throw new NotSupportedException(
+                        $"Geometric equivalence only supports Hitbox and Circle. Found: {c.GetType()}");
+            }
+        }
+
+        return pixels;
+    }
 }

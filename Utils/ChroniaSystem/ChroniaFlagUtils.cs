@@ -68,7 +68,7 @@ public static class ChroniaFlagUtils
 
     public static void SetFlag(this string[] list, bool active)
     {
-        foreach(var item in list)
+        foreach (var item in list)
         {
             item.SetFlag(active);
         }
@@ -97,7 +97,7 @@ public static class ChroniaFlagUtils
     {
         name.SetFlag(active, false, true);
     }
-    
+
     public static void SetFlag(this ICollection<string> source, bool state)
     {
         foreach (var item in source)
@@ -108,7 +108,7 @@ public static class ChroniaFlagUtils
 
     public static void SetFlag<Type>(this ICollection<Type> source, Func<Type, string> translator, bool state)
     {
-        foreach(var item in source)
+        foreach (var item in source)
         {
             translator(item).SetFlag(state);
         }
@@ -139,4 +139,50 @@ public static class ChroniaFlagUtils
             (flag) => flag.TrimStart('!')
             );
     }
+
+    public static void SetGeneralFlags(this string flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#")
+    {
+        flags.Split(separator, StringSplitOptions.TrimEntries).ApplyTo(out string[] list);
+
+        for (int i = 0; i < list.Length; i++)
+        {
+            string item = list[i];
+            bool _invert = item.Contains(invert);
+            bool _global = item.Contains(global);
+            bool _temporary = item.Contains(temporary);
+            string name = item.RemoveAll(invert).RemoveAll(global).RemoveAll(temporary);
+
+            name.SetFlag(!_invert, _global, _temporary);
+        }
+    }
+
+    public static void SetGeneralFlags(this string[] flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#")
+    {
+        for (int i = 0; i < flags.Length; i++)
+        {
+            string item = flags[i];
+            bool _invert = item.Contains(invert);
+            bool _global = item.Contains(global);
+            bool _temporary = item.Contains(temporary);
+            string name = item.RemoveAll(invert).RemoveAll(global).RemoveAll(temporary);
+
+            name.SetFlag(!_invert, _global, _temporary);
+        }
+    }
+    
+    public static bool GetGeneralFlags(this string flags, string separator = ",", string invert = "!")
+    {
+        if (string.IsNullOrEmpty(flags)) { return false; }
+        
+        flags.Split(separator, StringSplitOptions.TrimEntries).ApplyTo(out string[] f);
+
+        bool r = true;
+        foreach(var i in f)
+        {
+            r.TryNegative(i.GetConditionalInvertedFlag((s) => s.Contains(invert), (s) => s.RemoveAll(invert)));
+        }
+
+        return r;
+    }
+
 }

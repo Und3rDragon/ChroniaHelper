@@ -341,7 +341,7 @@ public static class MapDataUtils
     /// <param name="tags"></param>
     /// <param name="useLastTagAsPossible"></param>
     /// <returns></returns>
-    public static string Filter(this EntityData data, string[] tags, bool useLastTagAsPossible = true)
+    public static string Filter(this EntityData data, bool useLastTagAsPossible = true, params string[] tags)
     {
         if (tags == null || tags.Length == 0) { return string.Empty; }
 
@@ -356,6 +356,95 @@ public static class MapDataUtils
         }
         if (min == tags.Length || max == -1) { return string.Empty; }
         return useLastTagAsPossible ? data.Attr(tags[max]) : data.Attr(tags[min]);
+    }
+    
+    public static int DelegateFetch(this EntityData data, string tag, int fallback = 0, 
+        Func<string, bool> delegation = null, Func<string, int> delegateFallback = null)
+    {
+        if(delegation != null)
+        {
+            if (delegation(data.Attr(tag)))
+            {
+                if(delegateFallback != null)
+                {
+                    return delegateFallback(data.Attr(tag));
+                }
+            }
+        }
+
+        return data.Int(tag, fallback);
+    }
+
+    public static float DelegateFetch(this EntityData data, string tag, float fallback = 0,
+        Func<string, bool> delegation = null, Func<string, float> delegateFallback = null)
+    {
+        if (delegation != null)
+        {
+            if (delegation(data.Attr(tag)))
+            {
+                if (delegateFallback != null)
+                {
+                    return delegateFallback(data.Attr(tag));
+                }
+            }
+        }
+
+        return data.Float(tag, fallback);
+    }
+
+    public static bool DelegateFetch(this EntityData data, string tag, bool fallback = false,
+        Func<string, bool> delegation = null, Func<string, bool> delegateFallback = null)
+    {
+        if (delegation != null)
+        {
+            if (delegation(data.Attr(tag)))
+            {
+                if (delegateFallback != null)
+                {
+                    return delegateFallback(data.Attr(tag));
+                }
+            }
+        }
+
+        return data.Bool(tag, fallback);
+    }
+
+    public static Color DelegateFetch(this EntityData data, string tag, Color? fallback = null,
+        Func<string, bool> delegation = null, Func<string, Color> delegateFallback = null)
+    {
+        Color _fallback = fallback ?? Color.White;
+
+        if (delegation != null)
+        {
+            if (delegation(data.Attr(tag)))
+            {
+                if (delegateFallback != null)
+                {
+                    return delegateFallback(data.Attr(tag));
+                }
+            }
+        }
+
+        return Calc.HexToColor(data.Attr(tag, _fallback.RgbaToHex()));
+    }
+
+    public static CColor DelegateFetch(this EntityData data, string tag, CColor? fallback = null,
+        Func<string, bool> delegation = null, Func<string, CColor> delegateFallback = null)
+    {
+        CColor _fallback = fallback ?? new(Color.White);
+
+        if (delegation != null)
+        {
+            if (delegation(data.Attr(tag)))
+            {
+                if (delegateFallback != null)
+                {
+                    return delegateFallback(data.Attr(tag));
+                }
+            }
+        }
+
+        return data.Attr(tag, _fallback.Parsed().RgbaToHex()).GetChroniaColor();
     }
     
     public static List<T> List<T>(this EntityData data, string tag, Func<string, T> convert, 

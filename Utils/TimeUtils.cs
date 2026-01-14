@@ -8,7 +8,8 @@ namespace ChroniaHelper.Utils;
 
 public static class TimeUtils
 {
-    public static long deltaTicks => CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
+    public static long deltaTicksRaw => CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
+    public static long deltaTicks => CalculateInterval(Engine.DeltaTime, 1000).Ticks;
     public static TimeSpan CalculateInterval(double value, int scale)
     {
         if (double.IsNaN(value))

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.StopwatchSystem;
 using Microsoft.Xna.Framework.Media;
 using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
@@ -51,6 +54,49 @@ public class Displayers : HDRenderEntity
 
     protected override void HDRender()
     {
+        if (Md.Settings.commandStopclockDisplayer.enabled)
+        {
+            var displayer = Md.Settings.commandStopclockDisplayer;
+            var displayUI = commandClock_UI;
+
+            if (Cons.CommandStopclockID.GetStopclock(out Stopclock clock))
+            {
+                clock.GetClampedTimeData(out int[] data,
+                    Md.Settings.commandStopclockDisplayer.minUnit,
+                    Md.Settings.commandStopclockDisplayer.maxUnit);
+
+                string target = "";
+                for (int i = 0; i < data.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        target = Md.Settings.commandStopclockDisplayer.minUnit == 0 ?
+                            $"{data[i]:000}" : $"{data[i]:00}";
+                        continue;
+                    }
+                    else
+                    {
+                        target = $"{data[i]:00}:" + target;
+                    }
+                }
+
+                if (Md.Settings.commandStopclockDisplayer.trimZeros)
+                {
+                    target = Regex.Replace(target, "0+:+", "");
+                }
+
+                displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+                displayUI.distance = displayer.letterDistance;
+                displayUI.scale = displayer.scale * 0.1f;
+
+                displayUI.Render(target, (c) =>
+                {
+                    return $"{c}".ParseInt(c == ':' ? 10 : 0);
+                }, GetRenderPosition(displayer.displayPosition,
+                    new Vc2(displayer.X, displayer.Y)));
+            }
+        }
+        
         if (!Md.Settings.HUDMainControl) { return; }
         
         if (Md.Settings.stateMachineDisplayer.enabled)
@@ -58,7 +104,7 @@ public class Displayers : HDRenderEntity
             var displayer = Md.Settings.stateMachineDisplayer;
             var displayUI = stateMachine_UI;
             
-            string target = $"{PUt.player?.StateMachine.GetCurrentStateName() ?? "null"}";
+            string target = $"State {PUt.player?.StateMachine.State} {PUt.player?.StateMachine.GetCurrentStateName() ?? "null"}";
 
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
@@ -459,6 +505,43 @@ public class Displayers : HDRenderEntity
             }, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
+
+        if (Md.Settings.inputDisplayer.enabled)
+        {
+            var displayer = Md.Settings.inputDisplayer;
+            var displayUI = input_UI;
+
+            displayUI.template.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.template.renderMode = 1;
+            displayUI.template.distance = displayer.letterDistance;
+            displayUI.scales = new(){ displayer.scale * 0.1f };
+            displayUI.memberDistance = displayer.lineDistance;
+            displayUI.groupOrigin = displayer.overallAligning.ToJustify();
+
+            //string input = "ZXCUDLR";
+            string input = $"{(Input.Grab.Check ? "Z" : "")}{(Input.Dash.Check ? "X" : "")}{(Input.Jump.Check ? "C" : "")}{(Input.MenuUp.Check ? "U" : "")}{(Input.MenuDown.Check ? "D" : "")}{(Input.MenuLeft.Check ? "L" : "")}{(Input.MenuRight.Check ? "R" : "")}";
+            input = string.IsNullOrEmpty(input) ? " " : input;
+            if (displayer.renderTarget.Count == 0)
+            {
+                displayer.renderTarget.Add(input);
+            }
+            else
+            {
+                if(input != displayer.renderTarget.Last())
+                {
+                    displayer.renderTarget.Add(input);
+                }
+            }
+            if (displayer.renderTarget.Count > displayer.maxDisplays)
+            {
+                displayer.renderTarget.RemoveAt(0);
+            }
+
+            displayUI.Render(displayer.renderTarget, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
+        }
     }
 
     public string generalReference = Cons.DisplayFontsReference;
@@ -525,6 +608,10 @@ public class Displayers : HDRenderEntity
         segmentOrigin = Vc2.Zero,
     };
 
+    public SerialImageRaw commandClock_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
+
+    public SerialImageGroupRaw input_UI = new SerialImageGroupRaw("ChroniaHelper/DisplayFonts/font");
+    
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)

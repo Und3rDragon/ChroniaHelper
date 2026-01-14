@@ -604,7 +604,7 @@ triggers.ChroniaHelper/FastFallColliderTrigger.placements.name.FastFallColliderT
 # ================= Custom Core Message
 
 entities.ChroniaHelper/CustomCoreMessage.placements.name.CustomCoreMessage=Custom Core Message
-entities.ChroniaHelper/CustomCoreMessage.attributes.description.dialog=ChroniaHelper CustomCoreMessage supports frame-based timer display\nYou can check the option menu for timer display\nThe Dialog names followed by "Static" will only change per room load\nUse flag "ChroniaHelperTimer.pause" to pause the timer\nUse flag "ChroniaHelperTimer.reset" to reset the timer\nTo display the text you type in ChroniaHelper/PasswordKeyboard, use the built-in Dialog ID "keyboardSync_(tagID)"\nThe "tagID" refers to the "tag" option in the Password Keyboard
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.dialog=ChroniaHelper CustomCoreMessage supports frame-based timer display\nYou can check the option menu for timer display\nThe Dialog names followed by "Static" will only change per room load\nUse flag "ChroniaHelperTimer.pause" to pause the timer\nUse flag "ChroniaHelperTimer.reset" to reset the timer\nTo display the text you type in ChroniaHelper/Keyboard, use the built-in Dialog ID "keyboardSync_(tagID)"\nThe "tagID" refers to the "tag" option in the Password Keyboard
 entities.ChroniaHelper/CustomCoreMessage.attributes.description.wholeDialog=This option will ignore the "line" option and show all Dialogs instead of one line
 entities.ChroniaHelper/CustomCoreMessage.attributes.description.detectSessionExpression=Session Expression is a feature imported from Frost Helper \nWhen enabled, this entity will require FrostHelper as a dependency \nAnd start detecting if the option contains certain syntax that would trigger Frost Helper Session Expression mechanisms
 
@@ -821,6 +821,30 @@ entities.ChroniaHelper/PasswordKeyboard.attributes.description.talkIconPosition=
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.passwordEncrypted=Whether the "password" you put in is already encrypted or if it's the original text\nTo use the encryption, you need to proceed as follows:\n1. Type your set password inside "Password" option, do check "Case Sensitive" before you proceed\n2. Enable "Show Encrypted Password In Console"\n3. Enter the map and check the console for the encrypted password\n4. Copy the encrypted password and paste it inside "Password" option\n5. Disable "Show Encrypted Password In Console"\n6. You're all set!\nAlternatively, Aurora provided a website that can encrypt the password as well, enter:\nhttps://hash.modded-celeste.com/\nThe keygen should be "tag + password"\nFor example, if your keyboard tag is "keyboard", and your password is "password"\nThen you should type "keyboardpassword" in the website to get the correct encryption
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.showEncryptedPasswordInConsole=If enabled, the encrypted password will appear inside the console for you to copy
 entities.ChroniaHelper/PasswordKeyboard.attributes.description.caseSensitive=Whether all the letters would be seen as lower case when checking the password\nIf you're using Aurora's website to generate the encrypted password, tick "Hash input in lowercase" option on the website
+
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.placements.name.normal=Invisible Password Keyboard Trigger
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.mode=Normal Mode: You need to input the correct password to activate the flag\nProgressive Passwords supported, enter several passwords separated by ";" and several flags separated by ","\nPassword 1 unlocks Flag 1, Password 2 unlocks Flag 2\Only when Password 1 is matched, Password 2 will be free for detection\nExclusive Mode:What you input will be stored in the Helper session so that other entities may react to it\nOutput Flag Mode: Whatever you input will be transformed into a flag, it's suggested to use with "Use Times" limit \nSystematic Mode: Enter several passwords separated by ";" and several flags separated by "," \nPassword 1 unlocks Flag 1, Password 2 unlocks Flag 2 etc. The flag unlocks depending on the password you entered
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.flagToEnable=When the password is correct, the flag will be activated
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.accessZone=A relative {X, Y, width, height} settings to define where player can access the keyboard
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.accessZoneIndicator=When enabled, a rectangle will appear in Lonn indicating the current zone\nDoes not have effect in game
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.texture=Texture path relative to "Gameplay/"
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.tag=The label that group or differentiate the password keyboards
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.talkIconPosition=The render position of the bubble icon relative to the entity position
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.passwordEncrypted=Whether the "password" you put in is already encrypted or if it's the original text\nTo use the encryption, you need to proceed as follows:\n1. Type your set password inside "Password" option, do check "Case Sensitive" before you proceed\n2. Enable "Show Encrypted Password In Console"\n3. Enter the map and check the console for the encrypted password\n4. Copy the encrypted password and paste it inside "Password" option\n5. Disable "Show Encrypted Password In Console"\n6. You're all set!\nAlternatively, Aurora provided a website that can encrypt the password as well, enter:\nhttps://hash.modded-celeste.com/\nThe keygen should be "tag + password"\nFor example, if your keyboard tag is "keyboard", and your password is "password"\nThen you should type "keyboardpassword" in the website to get the correct encryption
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.showEncryptedPasswordInConsole=If enabled, the encrypted password will appear inside the console for you to copy
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.caseSensitive=Whether all the letters would be seen as lower case when checking the password\nIf you're using Aurora's website to generate the encrypted password, tick "Hash input in lowercase" option on the website
+
+triggers.ChroniaHelper/PasswordKeyboardTrigger.placements.name.normal=Password Keyboard Trigger
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.mode=Normal Mode: You need to input the correct password to activate the flag\nProgressive Passwords supported, enter several passwords separated by ";" and several flags separated by ","\nPassword 1 unlocks Flag 1, Password 2 unlocks Flag 2\Only when Password 1 is matched, Password 2 will be free for detection\nExclusive Mode:What you input will be stored in the Helper session so that other entities may react to it\nOutput Flag Mode: Whatever you input will be transformed into a flag, it's suggested to use with "Use Times" limit \nSystematic Mode: Enter several passwords separated by ";" and several flags separated by "," \nPassword 1 unlocks Flag 1, Password 2 unlocks Flag 2 etc. The flag unlocks depending on the password you entered
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.flagToEnable=When the password is correct, the flag will be activated
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.accessZone=A relative {X, Y, width, height} settings to define where player can access the keyboard
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.accessZoneIndicator=When enabled, a rectangle will appear in Lonn indicating the current zone\nDoes not have effect in game
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.texture=Texture path relative to "Gameplay/"
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.tag=The label that group or differentiate the password keyboards
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.talkIconPosition=The render position of the bubble icon relative to the entity position
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.passwordEncrypted=Whether the "password" you put in is already encrypted or if it's the original text\nTo use the encryption, you need to proceed as follows:\n1. Type your set password inside "Password" option, do check "Case Sensitive" before you proceed\n2. Enable "Show Encrypted Password In Console"\n3. Enter the map and check the console for the encrypted password\n4. Copy the encrypted password and paste it inside "Password" option\n5. Disable "Show Encrypted Password In Console"\n6. You're all set!\nAlternatively, Aurora provided a website that can encrypt the password as well, enter:\nhttps://hash.modded-celeste.com/\nThe keygen should be "tag + password"\nFor example, if your keyboard tag is "keyboard", and your password is "password"\nThen you should type "keyboardpassword" in the website to get the correct encryption
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.showEncryptedPasswordInConsole=If enabled, the encrypted password will appear inside the console for you to copy
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.caseSensitive=Whether all the letters would be seen as lower case when checking the password\nIf you're using Aurora's website to generate the encrypted password, tick "Hash input in lowercase" option on the website
 
 # ================= Platform Line Controller
 
@@ -1163,15 +1187,107 @@ entities.ChroniaHelper/ChineseCharactersAutoLiningController.placements.name.con
 # ================= Condition Delay Trigger
 
 triggers.ChroniaHelper/ConditionDelayTrigger.placements.name.trigger=Condition Delay Trigger
+triggers.ChroniaHelper/ConditionDelayTrigger.attributes.description.chroniaMathExpession=A formula that looks like: someSlider * 2 + {flagA} * 1 \nOr maybe: mySlider * 2.5 + 34 - exp[anotherSlider] > 12 \nThe "words" inside Chronia Math Expression are treated as the key of the slider to get \nFunctions are all looking like "f[x]" \nAnd if you wanna read a flag, you use "{flag}", returns 1 as enabled and 0 as not \nIf the formula you input is a bool expression like "a == b" \nThe return value would be 1 as true and 0 as false, \nbut basically they follow the same principle when using as an argument: \nWhether the final return value is 0
 
 # ================= Condition Delay Listener
 
 entities.ChroniaHelper/ConditionDelayListener.placements.name.controller=Condition Delay Listener
-entities.ChroniaHelper/ConditionDelayListener.attributes.description.chroniaMathExpession=A formula that looks like: someSlider * 2 + {flagA} * 1 \nOr maybe: mySlider * 2.5 + 34 - exp[anotherSlider] > 12 \nThe "words" inside Chronia Math Epxression are treated as the key of the slider to get \nFunctions are all looking like "f[x]" \nAnd if you wanna read a flag, you use "{flag}", returns 1 as enabled and 0 as not \nIf the formula you input is a bool expression like "a == b" \nThe return value would be 1 as true and 0 as false, \nbut basically they follow the same principle when using as an argument: \nWhether the final return value is 0
+entities.ChroniaHelper/ConditionDelayListener.attributes.description.chroniaMathExpession=A formula that looks like: someSlider * 2 + {flagA} * 1 \nOr maybe: mySlider * 2.5 + 34 - exp[anotherSlider] > 12 \nThe "words" inside Chronia Math Expression are treated as the key of the slider to get \nFunctions are all looking like "f[x]" \nAnd if you wanna read a flag, you use "{flag}", returns 1 as enabled and 0 as not \nIf the formula you input is a bool expression like "a == b" \nThe return value would be 1 as true and 0 as false, \nbut basically they follow the same principle when using as an argument: \nWhether the final return value is 0
 
 # ================= Operation Codes Listener
 
 entities.ChroniaHelper/OperationCodesListener.placements.name.controller=Operation Codes Listener
+
+#================== SSC Random Packed Flag
+
+triggers.ChroniaHelper/RandomPackedFlagTrigger.placements.name.trigger=Random Packed Flag Trigger
+
+triggers.ChroniaHelper/ClearPackedFlagsTrigger.placements.name.trigger=Clear Packed Flags Trigger
+
+entities.ChroniaHelper/FlagPacker.placements.name.controller=Flag Packer
+entities.ChroniaHelper/FlagPacker.attributes.description.flags=Flags start with "!" are temporary flags, "*" are global flags
+
+#================== Flag Listener Stopclock Controller
+
+entities.ChroniaHelper/FlagListenerStopclockController.placements.name.controller=Flag Listener Stopclock Controller
+
+#================== Fnt Displayer
+
+entities.ChroniaHelper/FntDisplayerHD.placements.name.renderer=Fnt Displayer (HD)
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+entities.ChroniaHelper/FntDisplayer.placements.name.renderer=Fnt Displayer
+entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayer.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayer.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayer.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayer.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayer.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayer.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayer.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayer.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayer.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+entities.ChroniaHelper/FntDisplayZone.placements.name.renderer=Fnt Display Zone
+entities.ChroniaHelper/FntDisplayZone.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZone.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZone.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZone.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZone.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayZone.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayZone.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayZone.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayZone.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayZone.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayZone.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+entities.ChroniaHelper/FntDisplayZoneHD.placements.name.renderer=Fnt Display Zone (HD)
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.parallaxX=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.parallaxY=The text parallax in-game
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.screenX=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.screenY=When the parallax is 0, this will be the text coordinate relative to the top-left
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.textures=The source file path starts after Gameplay without suffix numbers
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.characterReference=The character reference that matches with the font file precisely \nNOTICE: You MUST have an empty file as reference for "space" and MUST hit a space in here at the precise index position of "space" \nbecause the index of "space" file is used as the default fallback texture
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.lineDistance=Under Compact mode: The distance between the bottom of one line of sprites and the top of the next line of sprites\nUnder Equal Distance mode: The distance between the center of each line
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDistance=Under Compact mode: The distance of the gap between each font sprite\nUnder Equal Distance mode: The distance between the center of the sprites
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDisplayInterval=Letter appear speed under Typewrite mode
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.triggerFlag=If not empty, this flag is required for the text to appear
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.renderDistance=When the player is in the radius, the text will appear
+
+# ================= Code Button Target Controller
+
+entities.ChroniaHelper/CodeButtonTargetController.placements.name.controller=Code Button Target Controller
+
+# ================= Code Button
+
+entities.ChroniaHelper/CodeButton.placements.name.codeButton=Code Button
+
+# ================= Set Flag Controller
+
+entities.ChroniaHelper/SetFlagController.placements.name.controller=Set Flag Controller
+entities.ChroniaHelper/SetFlagController.attributes.description.flags=Separate flags with a comma \nFlags contain "!" will disable \nFlags contain "*" will be global flag \nFlags contain "?" will be temporary
+entities.ChroniaHelper/SetFlagController.attributes.description.parameters=When mode is "On Interval", this field will be the interval \nWhen mode is "On Flags", enter a series of flags separated by comma \nFlag begins with "!" is inverted
+entities.ChroniaHelper/SetFlagController.attributes.description.chroniaMathExpession=A formula that looks like: someSlider * 2 + {flagA} * 1 \nOr maybe: mySlider * 2.5 + 34 - exp[anotherSlider] > 12 \nThe "words" inside Chronia Math Expression are treated as the key of the slider to get \nFunctions are all looking like "f[x]" \nAnd if you wanna read a flag, you use "{flag}", returns 1 as enabled and 0 as not \nIf the formula you input is a bool expression like "a == b" \nThe return value would be 1 as true and 0 as false, \nbut basically they follow the same principle when using as an argument: \nWhether the final return value is 0
+
+# ================= Camera Grid
+
+entities.ChroniaHelper/CameraGrid.placements.name.grid=Camera Grid
+entities.ChroniaHelper/CameraGrid.attributes.description.Introduction=A small useless entity that indicates a usual camera grid of 320 * 180
+
+# ================= Settings Override On Flag Controller
+
+entities.ChroniaHelper/SettingsOverrideOnFlagController.placements.name.controller=Settings Override On Flag Controller
 
 # ================= Omni Switch Gate
 
@@ -1185,3 +1301,21 @@ entities.ChroniaHelper/OmniSwitchGate.placements.name.stars=Omni Switch Gate (St
 entities.ChroniaHelper/ModifiedBumperBlock.placements.name.both=Bumper Block (Modified, Both)
 entities.ChroniaHelper/ModifiedBumperBlock.placements.name.vertical=Bumper Block (Modified, Vertical)
 entities.ChroniaHelper/ModifiedBumperBlock.placements.name.horizontal=Bumper Block (Modified, Horizontal)
+
+# ================= Balloon
+
+entities.ChroniaHelper/Balloon.placements.name.balloon=Balloon (Customizable)
+
+# ================= SetFlagSequenceController
+
+entities.ChroniaHelper/SetFlagSequenceController.placements.name.controller=Set Flag Sequence Controller
+flagSequence=A sequence representing how this entity should operate flags. The sequence may contain flags or a delay. \nThe sequence should be divided by ";", like "flagA;0.5;flagB". \nFor delay, a single number will do. \nFor flags, it can be multiple flags separated by a comma like "flag1,!flag2,?flag3,*flag4". \n"flag" is to activate a flag. \n"!flag" is to disable a flag. \n"?flag" is to enable a temporary flag. \n"*flag" is to set up a global flag. \nThe example is given in the field.
+parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
+
+# ================= Grouped Wind Tunnel
+
+entities.ChroniaHelper/GroupedWindTunnel.placements.name.GroupedWindTunnel=Grouped Wind Tunnel
+
+# ================= Grouped Wind Tunnel Controller
+
+entities.ChroniaHelper/GroupedWindTunnelController.placements.name.GroupedWindTunnelController=Grouped Wind Tunnel Controller

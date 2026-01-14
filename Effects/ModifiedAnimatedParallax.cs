@@ -18,12 +18,12 @@ namespace ChroniaHelper.Effects;
 // The source code is modified from Maddie of Maddie's Helping Hand
 public class ModifiedAnimatedParallax : Parallax
 {
-    //[LoadHook]
+    [LoadHook]
     public static void Load()
     {
         IL.Celeste.MapData.ParseBackdrop += onParseBackdrop;
     }
-    //[UnloadHook]
+    [UnloadHook]
     public static void Unload()
     {
         IL.Celeste.MapData.ParseBackdrop -= onParseBackdrop;
@@ -163,16 +163,47 @@ public class ModifiedAnimatedParallax : Parallax
     {
         base.Update(scene);
 
+        if (!resetFlag.IsNullOrEmpty())
+        {
+            if (resetFlag.GetFlag())
+            {
+                currentFrame = resetFrame >= 0 ? resetFrame : frameOrder.Length + resetFrame; // For calculation priority
+                resetFlag.SetFlag(false);
+            }
+        }
+        
         if (IsVisible(scene as Level))
         {
-            if (!resetFlag.IsNullOrEmpty())
+            if (alphaExpression != null)
             {
-                if (resetFlag.GetFlag())
-                {
-                    currentFrame = resetFrame - 1; // For calculation priority
-                    resetFlag.SetFlag(false);
-                }
+                Alpha = alphaExpression.ParseMathExpression();
             }
+        }
+
+        if (speedSlider != null)
+        {
+            float multiplier = (speedSlider.GetSlider() + 1f).ClampMin(0f);
+            fps = orig_fps * multiplier;
+            if (fps != last_fps)
+            {
+                currentFrameTimer *= fps / last_fps;
+            }
+        }
+        last_fps = fps;
+
+        currentFrameTimer -= Engine.DeltaTime;
+
+        if (currentFrameTimer < 0f)
+        {
+            while (currentFrameTimer < 0f)
+            {
+                currentFrameTimer += (1f / fps).Clamp(Engine.DeltaTime, 2592000f);
+            }
+            
+            currentFrame = currentFrame.ClampMin(0); // For frame index protection
+            currentFrame %= frameOrder.Length;
+            Texture = frames[frameOrder[currentFrame]];
+
             if (!triggerFlag.IsNullOrEmpty())
             {
                 if (!triggerFlag.GetFlag())
@@ -180,35 +211,10 @@ public class ModifiedAnimatedParallax : Parallax
                     return;
                 }
             }
-
-            if(speedSlider != null)
-            {
-                float multiplier = (speedSlider.GetSlider() + 1f).ClampMin(0f);
-                fps = orig_fps * multiplier;
-                if (fps != last_fps)
-                {
-                    currentFrameTimer *= fps / last_fps;
-                }
-            }
-            last_fps = fps;
             
-            currentFrameTimer -= Engine.DeltaTime;
-            
-            if (currentFrameTimer < 0f)
+            if (!playOnce || currentFrame != frameOrder.Length - 1)
             {
-                currentFrameTimer += (1f / fps).Clamp(Engine.DeltaTime, 2592000f);
-                if (!playOnce || currentFrame != frameOrder.Length - 1)
-                {
-                    currentFrame++;
-                }
-                currentFrame = currentFrame < 0 ? 0 : currentFrame; // For frame index protection
-                currentFrame %= frameOrder.Length;
-                Texture = frames[frameOrder[currentFrame]];
-            }
-
-            if(alphaExpression != null)
-            {
-                Alpha = alphaExpression.ParseMathExpression();
+                currentFrame++;
             }
         }
     }

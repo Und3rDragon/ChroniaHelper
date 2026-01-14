@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Celeste;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.StopwatchSystem;
 using VivHelper.Entities;

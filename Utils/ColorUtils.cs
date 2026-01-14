@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using ChroniaHelper.Triggers.TriggerExtension;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Utils;
@@ -303,9 +304,15 @@ public static class ColorUtils
             return new Color(R, G, B, A);
         }
     }
-
+    
     public struct ChroniaColor
     {
+        public static CColor White = new(Color.White);
+        public static CColor Black = new(Color.Black);
+        public static CColor Red = new(Color.Red);
+        public static CColor Blue = new(Color.Blue);
+        public static CColor Green = new(Color.Green);
+
         public Color color;
         public float alpha;
 
