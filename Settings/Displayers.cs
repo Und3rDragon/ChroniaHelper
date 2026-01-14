@@ -15,14 +15,9 @@ using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
 namespace ChroniaHelper.Settings;
 
-[Tracked(false)]
+[Tracked(true)]
 public class Displayers : HDRenderEntity
 {
-    public Displayers(EntityData d,Vc2 o) : base(d, o)
-    {
-        Tag |= Tags.Global;
-    }
-
     [LoadHook]
     public static void Load()
     {
@@ -48,8 +43,13 @@ public class Displayers : HDRenderEntity
     {
         Instance.Buffer?.Dispose();
         self.Remove(Instance);
-        
+
         orig(self);
+    }
+
+    public Displayers(EntityData d,Vc2 o) : base(d, o)
+    {
+        Tag |= Tags.Global;
     }
 
     protected override void HDRender()

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.UI;
 using ChroniaHelper.Entities;
+using ChroniaHelper.Settings;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -19,11 +20,13 @@ public class HDRenderEntity : BaseEntity
         ID = d.ID;
 
         Prepare(d, o);
-        
-        Add(new BeforeRenderHook(BeforeRender));
 
         Tag |= TagsExt.SubHUD;
+        
+        // Create a new render target for later renders
         Buffer = VirtualContent.CreateRenderTarget("ChroniaHelper_HDEntity_" + ID.ToString(), 1920, 1080);
+
+        Add(new BeforeRenderHook(BeforeRender));
     }
     public VirtualRenderTarget Buffer;
     public Vc2 Parallax = Vc2.One;
@@ -34,20 +37,27 @@ public class HDRenderEntity : BaseEntity
     public virtual void Prepare(EntityData data, Vc2 offset) { }
     public void BeforeRender()
     {
+        // Change the render canvas to my own canvas
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
+        // Clear up the canvas
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
-
+        // Start a new SpriteBatch
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
 
-        HDRender();
+        // Set up the render data
+        HDRender(); 
 
+        // End the Sprite Batch and start rendering
         Draw.SpriteBatch.End();
     }
     
+    /// <summary>
+    /// Process the render data
+    /// </summary>
     protected virtual void HDRender() { }
     
     /// <summary>
-    /// Don't use this if the class is delegated to HDRendererEntity, use BeforeNormalRender() and AfterNormalRender() instead
+    /// Don't use this if the class is delegated to HDRendererEntity, use HDRender() instead
     /// </summary>
     public override void Render()
     {
@@ -62,19 +72,24 @@ public class HDRenderEntity : BaseEntity
             ColorGrade.Set(orDefault2);
         }
         
+        // Normal Render
         base.Render();
 
+        // SubHud SpriteBatch end and start rendering
         SubHudRenderer.EndRender();
 
+        // Start a new SpriteBatch
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
 
-        // Render Zone setup
+        // Send my canvas to the SpriteBatch
         Draw.SpriteBatch.Draw(Buffer, Vc2.Zero, null, DrawColor.Parsed(),
             0, Vector2.Zero, 1,
             SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
 
+        // End the batch and start rendering
         SubHudRenderer.EndRender();
 
+        // Recover to the normal render SpriteBatch
         SubHudRenderer.BeginRender();
     }
     
