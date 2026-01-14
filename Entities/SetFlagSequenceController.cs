@@ -159,7 +159,7 @@ public class SetFlagSequenceController : BaseEntity
         {
             if (Md.FrostHelperLoaded && mode == 11)
             {
-                state = paramater.FrostHelper_GetBoolSessionExpressionValue();
+                state = paramater.GetBoolSessionExpressionValue();
             }
             else
             {

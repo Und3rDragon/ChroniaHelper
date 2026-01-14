@@ -29,7 +29,7 @@ public class ConditionListener : StateListener
         {
             if (Md.FrostHelperLoaded)
             {
-                return condition.FrostHelper_GetBoolSessionExpressionValue();
+                return condition.GetBoolSessionExpressionValue();
             }
             else
             {

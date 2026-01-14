@@ -98,11 +98,8 @@ public class ChroniaHelperModule : EverestModule
 
     public static bool FrostHelperLoaded;
     public static bool CommunalHelperLoaded;
-    public static bool VivHelperLoaded;
     public static bool MaddieLoaded;
-    public static bool KoseiHelperLoaded;
     public static bool XaphanHelperLoaded;
-    public static bool VortexHelperLoaded;
 
     public override void Load()
     {
@@ -146,14 +143,6 @@ public class ChroniaHelperModule : EverestModule
         };
         CommunalHelperLoaded = Everest.Loader.DependencyLoaded(communalHelperMetadata);
 
-        // Viv Helper load judgement
-        EverestModuleMetadata vivHelperMetadata = new()
-        {
-            Name = "VivHelper",
-            Version = new Version("1.14.10"),
-        };
-        VivHelperLoaded = Everest.Loader.DependencyLoaded(vivHelperMetadata);
-
         // Max Helping Hand judgement
         EverestModuleMetadata maddieMetadata = new()
         {
@@ -161,14 +150,6 @@ public class ChroniaHelperModule : EverestModule
             Version = new Version("1.38.0"),
         };
         MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
-
-        // Kosei Helper judgement
-        EverestModuleMetadata koseiMetadata = new()
-        {
-            Name = "KoseiHelper",
-            Version = new Version("1.19.0"),
-        };
-        KoseiHelperLoaded = Everest.Loader.DependencyLoaded(koseiMetadata);
 
         // Xaphan Helper judgement
         EverestModuleMetadata xaphanMetadata = new()
@@ -178,15 +159,6 @@ public class ChroniaHelperModule : EverestModule
         };
         XaphanHelperLoaded = Everest.Loader.DependencyLoaded(xaphanMetadata);
         
-        // Vortex Helper judgement
-        VortexHelperLoaded = Everest.Loader.DependencyLoaded(
-            new EverestModuleMetadata 
-            { 
-                Name = "VortexHelper", 
-                Version = new Version(1, 1, 0) 
-            }
-            );
-
         PolygonCollider.Load();
 
         // Map Hider?
