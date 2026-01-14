@@ -34,4 +34,4 @@ function balloon.texture(room, entity)
     return "objects/ChroniaHelper/balloon/idle00"
 end
 
-return balloon
+--return balloon
