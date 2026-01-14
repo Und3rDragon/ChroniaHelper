@@ -9,10 +9,7 @@ using System.Linq;
 
 namespace ChroniaHelper.Entities;
 
-/// <summary>
-/// The entity is originated from Game Helper, ported for customization purposes
-/// Original source code published by EllaTAS
-/// </summary>
+[Credits("Original source code published by EllaTAS")]
 [CustomEntity("ChroniaHelper/Balloon")]
 public class Balloon : BaseEntity
 {

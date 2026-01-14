@@ -30,23 +30,29 @@ public class ChroniaGlobalSavePathAttribute : Attribute
 [AttributeUsage(AttributeTargets.All)]
 public class WorkingInProgressAttribute : Attribute
 {
-    public WorkingInProgressAttribute(string note = "") { }
+    public WorkingInProgressAttribute(params string[] note) { }
 }
 
 [AttributeUsage(AttributeTargets.All)]
 public class NoteAttribute : Attribute
 {
-    public NoteAttribute(string note = "") { }
+    public NoteAttribute(params string[] note) { }
 }
 
 [AttributeUsage(AttributeTargets.All)]
 public class VersionNoteAttribute : Attribute
 {
-    public VersionNoteAttribute(int x, int y, int z, string note = "") { }
+    public VersionNoteAttribute(int x, int y, int z, params string[] note) { }
 }
 
 [AttributeUsage(AttributeTargets.All)]
 public class PrivateForAttribute : Attribute
 {
-    public PrivateForAttribute(string modOrAuthorName) { }
+    public PrivateForAttribute(params string[] modOrAuthorName) { }
+}
+
+[AttributeUsage(AttributeTargets.All)]
+public class CreditsAttribute : Attribute
+{
+    public CreditsAttribute(params string[] creditsInfo) { }
 }

@@ -12,15 +12,17 @@ using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities;
 
-[CustomEntity("ChroniaHelper/SettingsOverrideOnFlagController")]
+[WorkingInProgress]
+[Note("Conflict with HDRender thing, tabbing when Reloading case the screen to be blank")]
+//[CustomEntity("ChroniaHelper/SettingsOverrideOnFlagController")]
 public class SettingsOverrideOnFlagController : BaseEntity
 {
-    [LoadHook]
+    //[LoadHook]
     public static void Load()
     {
         On.Celeste.Level.End += LevelEnd;
     }
-    [UnloadHook]
+    //[UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.End -= LevelEnd;
