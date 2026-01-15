@@ -90,4 +90,4 @@ function bumperBlock.sprite(room, entity)
     return sprites
 end
 
---return bumperBlock
+return bumperBlock
