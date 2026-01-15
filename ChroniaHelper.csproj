@@ -7,7 +7,7 @@
         <Version>1.0.0</Version>
         <TargetFramework>net8.0</TargetFramework>
 
-        <CelesteRootPath>E:/Steam platform/steamapps/common/Celeste</CelesteRootPath>
+        <CelesteRootPath>E:/Steam Games/steamapps/common/Celeste</CelesteRootPath>
 
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>

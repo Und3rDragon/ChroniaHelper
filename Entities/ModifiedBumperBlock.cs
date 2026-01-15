@@ -106,12 +106,64 @@ public class ModifiedBumperBlock : Solid
             OnCollide += OnCollideWithPlayer;
         }
 
-        //upC = new Hitbox(Width, 2f, 0f, -2f);
-        //downC = new Hitbox(Width, 2f, 0f, Height);
-        //leftC = new Hitbox(2f, Height, -2f, 0);
-        //rightC = new Hitbox(2f, Height, Width, 0f);
+        upC = new Hitbox(Width, 2f, 0f, -2f);
+        downC = new Hitbox(Width, 2f, 0f, Height);
+        leftC = new Hitbox(2f, Height, -2f, 0);
+        rightC = new Hitbox(2f, Height, Width, 0f);
+
+        pcU = new PlayerCollider(CollideUp, upC);
+        pcD = new PlayerCollider(CollideDown, downC);
+        pcL = new PlayerCollider(CollideLeft, leftC);
+        pcR = new PlayerCollider(CollideRight, rightC);
+
+        Add(pcU, pcD, pcL, pcR);
     }
     private Collider upC, downC, leftC, rightC;
+    private PlayerCollider pcU, pcD, pcL, pcR;
+
+    private void CollideUp(Player player)
+    {
+        if (normalCollision == 2)
+        {
+            return;
+        }
+        _OnCollideWithPlayer(player, Vc2.UnitY);
+    }
+
+    private void CollideDown(Player player)
+    {
+        if (normalCollision == 2)
+        {
+            return;
+        }
+        _OnCollideWithPlayer(player, -Vc2.UnitY);
+    }
+
+    private void CollideLeft(Player player)
+    {
+        if (normalCollision == 2)
+        {
+            return;
+        }
+        _OnCollideWithPlayer(player, Vc2.UnitX);
+    }
+
+    private void CollideRight(Player player)
+    {
+        if (normalCollision == 2)
+        {
+            return;
+        }
+        _OnCollideWithPlayer(player, -Vc2.UnitX);
+    }
+
+    private void _OnCollideWithPlayer(Player player, Vc2 dir)
+    {
+        if (player != null && canActivate)
+        {
+            Add(new Coroutine(WaitForOneFrameThenBouncePlayer(player, -dir)));
+        }
+    }
 
     private void OnCollideWithPlayer(Vector2 dir)
     {
@@ -143,44 +195,6 @@ public class ModifiedBumperBlock : Solid
         Draw.Rect(X + 2f, Y + 2f, Width - 4f, Height - 4f, Calc.HexToColor("62222b"));
         base.Render();
         Position = position;
-    }
-
-    public override void Update()
-    {
-        base.Update();
-        Player player = Scene.Tracker.GetEntity<Player>();
-
-        if (player == null) { return; }
-
-        //bool arg = player.Collider.Collide(upC) || player.Collider.Collide(downC)
-        //    || player.Collider.Collide(leftC) || player.Collider.Collide(rightC);
-
-        //if (arg)
-        //{
-        //    OnCollideWithPlayer(player.Center);
-        //}
-
-        bool argL = player.Right >= Left - 2f && player.Right <= Left && player.CenterY >= Math.Min(Top, Bottom) && player.CenterY <= Math.Max(Top, Bottom);
-        bool argU = player.Bottom >= Top - 2f && player.Bottom <= Top && player.CenterX >= Math.Min(Left, Right) && player.CenterX <= Math.Max(Left, Right);
-        bool argD = player.Top >= Bottom && player.Top <= Bottom + 2f && player.CenterX >= Math.Min(Left, Right) && player.CenterX <= Math.Max(Left, Right);
-        bool argR = player.Left >= Right && player.Left <= Right + 2f && player.CenterY >= Math.Min(Top, Bottom) && player.CenterY <= Math.Max(Top, Bottom);
-
-        if (argL)
-        {
-            OnCollideWithPlayer(Vc2.UnitX);
-        }
-        if (argU)
-        {
-            OnCollideWithPlayer(Vc2.UnitY);
-        }
-        if (argR)
-        {
-            OnCollideWithPlayer(-Vc2.UnitX);
-        }
-        if (argD)
-        {
-            OnCollideWithPlayer(-Vc2.UnitY);
-        }
     }
 
     private void AddImage(MTexture idle, int x, int y, int tx, int ty, int borderX = 0, int borderY = 0)
