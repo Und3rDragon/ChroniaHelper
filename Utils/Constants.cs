@@ -2,6 +2,7 @@
 global using ChroniaColor = ChroniaHelper.Utils.ColorUtils.ChroniaColor;
 global using Cons = ChroniaHelper.Utils.Constants;
 global using FI = ChroniaHelper.Imports.FrostHelperImports;
+global using SrI = ChroniaHelper.Imports.SpeedRunToolImports;
 global using HSL = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSLColor = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSV = ChroniaHelper.Utils.ColorUtils.HSVColor;
@@ -18,7 +19,14 @@ global using Sens = ChroniaHelper.Utils.SensitiveFlags.Sensitivity;
 global using Prm = ChroniaHelper.Cores.Graphical.GraphicalParams;
 global using Clock = ChroniaHelper.Utils.StopwatchSystem.Stopclock;
 global using GSav = ChroniaHelper.Modules.ChroniaHelperGlobalSaveData; // usual
+
 using static ChroniaHelper.Settings.Commands; // usual
+using static ChroniaHelper.Cores.NoteAttribute; // marker attributes
+using static ChroniaHelper.Cores.WorkingInProgressAttribute; // marker attributes
+using static ChroniaHelper.Cores.VersionNoteAttribute; // marker attributes
+using static ChroniaHelper.Cores.PrivateForAttribute; // marker attributes
+using static ChroniaHelper.Cores.CreditsAttribute; // marker attributes
+
 using System.Reflection;
 
 namespace ChroniaHelper.Utils;

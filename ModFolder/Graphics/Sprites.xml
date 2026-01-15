@@ -184,11 +184,11 @@
 		<Loop id="right" path="giant_block" frames="6,7"  delay="0.08"/>
 	</big_kevin_face>
 
-	<balloon path="objects/ChroniaHelper/balloon/" start="idle">
+	<ChroniaHelper_balloon path="objects/ChroniaHelper/balloon/" start="idle">
 		<Center/>
 		<Loop id="idle" path="idle" delay="0.15"/>
 		<Anim id="pop" path="pop" delay="0.06"/>
 		<Anim id="spawn" path="spawn" delay="0.06" goto="idle"/>
-	</balloon>
+	</ChroniaHelper_balloon>
 	
 </Sprites>
