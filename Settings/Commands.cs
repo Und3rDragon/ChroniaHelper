@@ -9,6 +9,7 @@ using Celeste.Mod.XaphanHelper;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Utils.LogicExpression;
 using ChroniaHelper.Utils.MathExpression;
 using ChroniaHelper.Utils.StopwatchSystem;
 using TextCopy;
@@ -30,7 +31,14 @@ public class Commands
         CommandLog.LogDivider($"Math Expression Result to: {expression}");
         expression.ParseMathExpression().LogCommand();
     }
-    
+
+    [Command("chronia_logic_expression", "Try parsing a string using ChroniaHelper LogicExpression")]
+    public static void TryLogicExpression(string expression)
+    {
+        CommandLog.LogDivider($"Logic Expression Result to: {expression}");
+        expression.ParseLogicExpression().LogCommand();
+    }
+
     [Command("chronia_get_keyboard_password_hash", "Try getting the encrypted password for PasswordKeyboard")]
     public static void GenerateHashedPassword(string keyboardTag, string password, bool caseSensitive = true)
     {
@@ -361,6 +369,12 @@ public class Commands
                 MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, delay)));
             }
         }
+    }
+
+    [Command("chronia_debug", "")]
+    public static void _test(string inputs)
+    {
+        inputs.LogCommand();
     }
 }
 

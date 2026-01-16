@@ -6,18 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using VivHelper.Triggers;
 
 namespace ChroniaHelper.Components;
 
 [WorkingInProgress]
-public class Passive3DCoordinates : BaseComponent
+public class Passive3D : BaseComponent
 {
     public Vc2 InitialPosition;
     public Vc3 PassiveCoordinates;
     public float Fixation = 8f;
     private float Duration = 1f;
 
-    public Passive3DCoordinates(Vc2 cubeCenter, float width, float height, float thickness, float duration = 1f)
+    public Passive3D(Vc2 cubeCenter, float width, float height, float duration = 1f)
     {
         InitialPosition = Entity.Position;
         Vc2 dP = Entity.Position - cubeCenter;
@@ -31,8 +32,9 @@ public class Passive3DCoordinates : BaseComponent
         PassiveCoordinates.Z = MathF.Log(Entity.Depth) * Fixation;
     }
 
-    private bool rotating = false;
+    private bool rotating = false, flatRotating = false, flatRotateClockwise = false;
     private Vc3 initial, target;
+    private Vc2 flatInitial;
     private float progress = 0f;
     private Ease.Easer easer = Ease.Linear;
     public override void Update()
@@ -43,6 +45,7 @@ public class Passive3DCoordinates : BaseComponent
             {
                 PassiveCoordinates = target;
                 Entity.Position = new Vc2(PassiveCoordinates.X, PassiveCoordinates.Y);
+                Entity.Depth = (int)Math.Pow(10, PassiveCoordinates.Z / Fixation);
                 rotating = false;
                 return;
             }
@@ -57,10 +60,43 @@ public class Passive3DCoordinates : BaseComponent
             {
                 Entity.Position = new Vc2(PassiveCoordinates.X, PassiveCoordinates.Y);
             }
+            Entity.Depth = (int)Math.Pow(10, PassiveCoordinates.Z / Fixation);
 
-            if(progress >= 1f)
+            if (progress >= 1f)
             {
                 rotating = false;
+                return;
+            }
+        }
+
+        if (flatRotating)
+        {
+            if (Duration == 0f)
+            {
+                Vc2 flatTarget = flatInitial.Rotate(flatRotateClockwise ? 90f * Calc.DegToRad : -90f * Calc.DegToRad);
+                PassiveCoordinates = new Vc3(flatTarget.X, flatTarget.Y, PassiveCoordinates.Z);
+                Entity.Position = new Vc2(PassiveCoordinates.X, PassiveCoordinates.Y);
+                Entity.Depth = (int)Math.Pow(10, PassiveCoordinates.Z / Fixation);
+                flatRotating = false;
+                return;
+            }
+
+            progress += Engine.DeltaTime / Duration;
+            Vc2 needle = flatInitial.Rotate(90f * Ease.SineInOut(progress));
+            PassiveCoordinates = new Vc3(needle.X, needle.Y, PassiveCoordinates.Z);
+            if (Entity is Platform p)
+            {
+                p.MoveTo(new Vc2(PassiveCoordinates.X, PassiveCoordinates.Y));
+            }
+            else
+            {
+                Entity.Position = new Vc2(PassiveCoordinates.X, PassiveCoordinates.Y);
+            }
+            Entity.Depth = (int)Math.Pow(10, PassiveCoordinates.Z / Fixation);
+
+            if (progress >= 1f)
+            {
+                flatRotating = false;
                 return;
             }
         }
@@ -73,7 +109,7 @@ public class Passive3DCoordinates : BaseComponent
 
     private IEnumerator AddingDuration(float duration)
     {
-        while (rotating)
+        while (rotating || flatRotating)
         {
             yield return null;
         }
@@ -93,9 +129,15 @@ public class Passive3DCoordinates : BaseComponent
         rotating = true;
     }
 
+    public void StartFlatSpin()
+    {
+        progress = 0f;
+        flatRotating = true;
+    }
+
     public void RotateIn()
     {
-        if (rotating) { return; }
+        if (rotating || flatRotating) { return; }
 
         if(PassiveCoordinates.X == 0f)
         {
@@ -117,7 +159,7 @@ public class Passive3DCoordinates : BaseComponent
 
     public void RotateOut()
     {
-        if (rotating) { return; }
+        if (rotating || flatRotating) { return; }
 
         if (PassiveCoordinates.X == 0f)
         {
@@ -139,7 +181,7 @@ public class Passive3DCoordinates : BaseComponent
 
     public void RotateUp()
     {
-        if (rotating) { return; }
+        if (rotating || flatRotating) { return; }
 
         if (PassiveCoordinates.Y == 0f)
         {
@@ -161,7 +203,7 @@ public class Passive3DCoordinates : BaseComponent
 
     public void RotateDown()
     {
-        if (rotating) { return; }
+        if (rotating || flatRotating) { return; }
 
         if (PassiveCoordinates.Y == 0f)
         {
@@ -179,6 +221,24 @@ public class Passive3DCoordinates : BaseComponent
         initial = PassiveCoordinates;
         target = new Vc3(PassiveCoordinates.X, PassiveCoordinates.Z, -PassiveCoordinates.Y);
         StartSpin();
+    }
+
+    public void RotateClockwise()
+    {
+        if (rotating || flatRotating) { return; }
+
+        flatInitial = new Vc2(PassiveCoordinates.X, PassiveCoordinates.Y);
+        flatRotateClockwise = true;
+        StartFlatSpin();
+    }
+
+    public void RotateCounterclockwise()
+    {
+        if (rotating || flatRotating) { return; }
+
+        flatInitial = new Vc2(PassiveCoordinates.X, PassiveCoordinates.Y);
+        flatRotateClockwise = false;
+        StartFlatSpin();
     }
 
     protected override void AfterEntityRemoved(Scene scene)
