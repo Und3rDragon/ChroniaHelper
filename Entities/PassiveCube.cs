@@ -11,7 +11,6 @@ using ChroniaHelper.Utils.ChroniaSystem;
 namespace ChroniaHelper.Entities;
 
 [WorkingInProgress]
-[CustomEntity("ChroniaHelper/PassiveCube")]
 public class PassiveCube : BaseEntity
 {
     public PassiveCube(EntityData d, Vc2 o) : base(d,o)
