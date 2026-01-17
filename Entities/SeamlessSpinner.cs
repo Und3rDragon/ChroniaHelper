@@ -4,7 +4,7 @@ using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
-[Tracked()]
+[Tracked(true)]
 [CustomEntity("ChroniaHelper/SeamlessSpinner")]
 public class SeamlessSpinner : Entity
 {
@@ -100,8 +100,6 @@ public class SeamlessSpinner : Entity
             Visible = main.Visible;
         }
     }
-
-    public static ParticleType P_Move;
 
     public Dictionary<string, CrystalColor> checkColor = new Dictionary<string, CrystalColor>
     {
