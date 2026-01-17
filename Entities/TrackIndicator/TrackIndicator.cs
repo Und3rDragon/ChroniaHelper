@@ -12,7 +12,6 @@ using Line = ChroniaHelper.Utils.GeometryUtils.Line;
 namespace ChroniaHelper.Entities.TrackIndicator;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/TrackIndicator")]
 [WorkingInProgress]
 public class TrackIndicator : Entity
 {

@@ -9,7 +9,6 @@ using ChroniaHelper.Cores;
 namespace ChroniaHelper.Entities.TrackIndicator;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/TrackProgressBar")]
 [WorkingInProgress]
 public class TrackProgressBar : Entity
 {

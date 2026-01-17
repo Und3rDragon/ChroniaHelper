@@ -9,7 +9,6 @@ using ChroniaHelper.Cores;
 namespace ChroniaHelper.Entities.TrackIndicator;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/TrackIncidentMarker")]
 [WorkingInProgress]
 public class TrackIncidents : Entity
 {

@@ -11,7 +11,6 @@ using ChroniaHelper.Utils.ChroniaSystem;
 namespace ChroniaHelper.Entities;
 
 [WorkingInProgress]
-[CustomEntity("ChroniaHelper/StylegroundController")]
 public class StylegroundController : BaseEntity
 {
     public StylegroundController(EntityData d, Vc2 o) : base(d, o)
