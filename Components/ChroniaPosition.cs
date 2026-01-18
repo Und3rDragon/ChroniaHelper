@@ -24,12 +24,16 @@ public class ChroniaPosition :  BaseComponent
     private Dictionary<string, Vc2> _storedOffsets = new();
 
     // Speeds
+    private Vc2 _speedDisplacement = Vc2.Zero;
     public Vc2 Speed = Vc2.Zero;
     public List<Vc2> Accelerations = new();
     public Dictionary<string, Vc2> StoredSpeedModulations = new();
 
     private List<Vc2> _accelerations = new();
     private Dictionary<string, Vc2> _storedSpeedModulations = new();
+
+    // Parallax
+    public Vc2 Parallax = Vc2.One, StaticScreenPosition = new Vc2(160f, 90f);
 
     public ChroniaPosition()
     {
@@ -65,6 +69,21 @@ public class ChroniaPosition :  BaseComponent
         StoredSpeedModulations.Clear();
         Speed = Vc2.Zero;
         Entity.Position = ResetPosition;
+        _speedDisplacement = Vc2.Zero;
+    }
+
+    public void ResetDynamics()
+    {
+        Accelerations.Clear();
+        StoredSpeedModulations.Clear();
+        Speed = Vc2.Zero;
+    }
+
+    public void ResetOffsets()
+    {
+        AccumulatedOffsets.Clear();
+        StoredOffsets.Clear();
+        _speedDisplacement = Vc2.Zero;
     }
 
     public override void Update()
@@ -81,7 +100,7 @@ public class ChroniaPosition :  BaseComponent
         {
             CurrentSpeed += speed;
         }
-        BasePosition += CurrentSpeed * Engine.DeltaTime;
+        _speedDisplacement += CurrentSpeed * Engine.DeltaTime;
         // Calculate accelerations
         for(int i = 0;  i < _accelerations.Count; i++)
         {
@@ -95,7 +114,7 @@ public class ChroniaPosition :  BaseComponent
         }
 
         // Reposition Entity
-        Vc2 CurrentPosition = BasePosition;
+        Vc2 CurrentPosition = BasePosition + _speedDisplacement;
         foreach(var offset in _accumulatedOffsets)
         {
             CurrentPosition += offset;
@@ -104,7 +123,7 @@ public class ChroniaPosition :  BaseComponent
         {
             CurrentPosition += offset;
         }
-        Entity.Position = CurrentPosition;
+        Entity.Position = CurrentPosition.InParallax(Parallax, StaticScreenPosition);
     }
 
     public void Move(Vc2 delta, float duration, Ease.Easer easer)
@@ -118,6 +137,36 @@ public class ChroniaPosition :  BaseComponent
         if (!MoveRoutineRunning)
         {
             Entity.Add(new Coroutine(MoveRoutine(delta, duration.GetAbs(), easer)));
+        }
+    }
+
+    public void MoveBaseTo(Vc2 target, float duration, Ease.Easer easer)
+    {
+        if (duration.GetAbs() == 0f)
+        {
+            BasePosition = target;
+            return;
+        }
+
+        if (!MoveRoutineRunning)
+        {
+            Entity.Add(new Coroutine(MoveBaseToRoutine(target, duration.GetAbs(), easer)));
+        }
+    }
+
+    public void MoveTo(Vc2 target, float duration, Ease.Easer easer)
+    {
+        if (duration.GetAbs() == 0f)
+        {
+            ResetOffsets();
+            ResetDynamics();
+            BasePosition = target;
+            return;
+        }
+
+        if (!MoveRoutineRunning)
+        {
+            Entity.Add(new Coroutine(MoveToRoutine(target, duration.GetAbs(), easer)));
         }
     }
 
@@ -139,6 +188,59 @@ public class ChroniaPosition :  BaseComponent
             timer = timer.Approach(duration, Engine.DeltaTime);
             Vc2 offset = timer.LerpValue(0f, duration, start, final, EaseUtils.EaseToEaseMode[easer]);
             StoredOffsets["MoveRoutine"] = offset;
+
+            yield return null;
+        }
+
+        BasePosition += delta;
+        StoredOffsets.Remove("MoveRoutine");
+
+        MoveRoutineRunning = false;
+    }
+
+    private IEnumerator MoveBaseToRoutine(Vc2 target, float duration, Ease.Easer easer)
+    {
+        MoveRoutineRunning = true;
+
+        float timer = 0f;
+        if (!StoredOffsets.ContainsKey("MoveBaseToRoutine"))
+        {
+            StoredOffsets.Add("MoveBaseToRoutine", Vc2.Zero);
+        }
+        Vc2 start = StoredOffsets["MoveBaseToRoutine"];
+        Vc2 final = start + target - BasePosition;
+
+        while (timer < duration)
+        {
+            timer = timer.Approach(duration, Engine.DeltaTime);
+            Vc2 offset = timer.LerpValue(0f, duration, start, final, EaseUtils.EaseToEaseMode[easer]);
+            StoredOffsets["MoveBaseToRoutine"] = offset;
+
+            yield return null;
+        }
+
+        BasePosition = target;
+        StoredOffsets.Remove("MoveBaseToRoutine");
+
+        MoveRoutineRunning = false;
+    }
+
+    private IEnumerator MoveToRoutine(Vc2 target, float duration, Ease.Easer easer)
+    {
+        MoveRoutineRunning = true;
+
+        float timer = 0f;
+        Vc2 start = BasePosition = Entity.Position;
+        Vc2 final = target;
+
+        ResetDynamics();
+        ResetOffsets();
+
+        while (timer < duration)
+        {
+            timer = timer.Approach(duration, Engine.DeltaTime);
+            Vc2 _pos = timer.LerpValue(0f, duration, start, final, EaseUtils.EaseToEaseMode[easer]);
+            BasePosition = _pos;
 
             yield return null;
         }
