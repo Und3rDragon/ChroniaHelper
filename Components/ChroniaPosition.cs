@@ -64,8 +64,9 @@ public class ChroniaPosition :  BaseComponent
     // Parallax
     public Vc2 Parallax = Vc2.One, StaticScreenPosition = new Vc2(160f, 90f);
 
-    public ChroniaPosition()
+    public ChroniaPosition(Entity entity)
     {
+        Entity = entity;
         ResetPosition = BasePosition = Entity.Position;
         ProtectiveCheck();
     }
