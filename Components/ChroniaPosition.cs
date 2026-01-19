@@ -30,6 +30,17 @@ public class ChroniaPosition :  BaseComponent
     /// Current calculated Position
     /// </summary>
     public Vc2 CurrentPosition => BasePosition + TotalOffset();
+    
+    public struct PositionLoop
+    {
+        public float? X1;
+        public float? X2;
+        public float? Y1;
+        public float? Y2;
+    }
+    public PositionLoop Limitations = new() { 
+        X1 = null, X2 = null, Y1 = null, Y2 = null 
+    };
 
     // Offsets
 
@@ -67,15 +78,22 @@ public class ChroniaPosition :  BaseComponent
 
     private void ProtectiveCheck()
     {
-        int count = 0;
+        if (Entity is null) { return; }
+
+        List<Component> toRemove = new();
         foreach(var component in Entity.Components)
         {
-            if(component is ChroniaPosition) { count++; }
+            if(component is ChroniaPosition)
+            {
+                toRemove.Add(component);
+            }
         }
-        if(count > 0)
+        foreach(var item in toRemove)
         {
-            RemoveSelf();
+            Entity.Components.Remove(item);
         }
+
+        Entity.Add(this);
     }
 
     public void Reset()
@@ -122,13 +140,15 @@ public class ChroniaPosition :  BaseComponent
 
     public override void Update()
     {
+        if (Entity is null) { return; }
+
         // Replace lists
         _accelerations = Accelerations;
         _accumulatedOffsets = AccumulatedOffsets;
         _storedOffsets = StoredOffsets;
         _storedSpeedModulations = StoredSpeedModulations;
 
-        if (!MoveRoutineRunning)
+        if (!RoutineRunning[RoutineTag.MoveBasePosition])
         {
             // Relocate BasePosition
             Vc2 CurrentSpeed = Speed;
@@ -151,7 +171,38 @@ public class ChroniaPosition :  BaseComponent
         }
 
         // Reposition Entity
-        Entity.Position = CurrentPosition.InParallax(Parallax, StaticScreenPosition);
+        Vc2 calculatedPosition = CurrentPosition.InParallax(Parallax, StaticScreenPosition);
+
+        if(Limitations.X1 != null && Limitations.X2 != null)
+        {
+            float min = float.Min(Limitations.X1 ?? 0, Limitations.X2 ?? 0);
+            float max = float.Max(Limitations.X1 ?? 0, Limitations.X2 ?? 0);
+            float delta = max - min;
+            if (delta > 0f && calculatedPosition.X >= min && calculatedPosition.X <= max)
+            {
+                calculatedPosition.X = NumberUtils.Mod(calculatedPosition.X, delta) + min;
+            }
+        }
+
+        if (Limitations.Y1 != null && Limitations.Y2 != null)
+        {
+            float min = float.Min(Limitations.Y1 ?? 0, Limitations.Y2 ?? 0);
+            float max = float.Max(Limitations.Y1 ?? 0, Limitations.Y2 ?? 0);
+            float delta = max - min;
+            if (delta > 0f && calculatedPosition.Y >= min && calculatedPosition.Y <= max)
+            {
+                calculatedPosition.Y = NumberUtils.Mod(calculatedPosition.Y, delta) + min;
+            }
+        }
+
+        if(Entity is Platform platform)
+        {
+            platform.MoveTo(calculatedPosition);
+        }
+        else
+        {
+            Entity.Position = calculatedPosition;
+        }
     }
 
     public void Move(Vc2 delta, float duration, Ease.Easer easer)
@@ -162,7 +213,7 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        if (!MoveRoutineRunning)
+        if (!RoutineRunning[RoutineTag.MoveBasePosition])
         {
             Entity.Add(new Coroutine(MoveRoutine(delta, duration.GetAbs(), easer)));
         }
@@ -176,7 +227,7 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        if (!MoveRoutineRunning)
+        if (!RoutineRunning[RoutineTag.MoveBasePosition])
         {
             Entity.Add(new Coroutine(MoveBaseToRoutine(target, duration.GetAbs(), easer)));
         }
@@ -191,16 +242,21 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        if (!MoveRoutineRunning)
+        if (!RoutineRunning[RoutineTag.MoveWholePosition])
         {
             Entity.Add(new Coroutine(MoveToRoutine(target, duration.GetAbs(), easer)));
         }
     }
 
-    private bool MoveRoutineRunning = false;
+    private enum RoutineTag { MoveBasePosition, MoveWholePosition}
+    private Dictionary<RoutineTag, bool> RoutineRunning = new()
+    {
+        {RoutineTag.MoveBasePosition, false },
+        {RoutineTag.MoveWholePosition, false }
+    };
     private IEnumerator MoveRoutine(Vc2 delta, float duration, Ease.Easer easer)
     {
-        MoveRoutineRunning = true;
+        RoutineRunning[RoutineTag.MoveBasePosition] = true;
 
         float timer = 0f;
         Vc2 start = BasePosition;
@@ -215,12 +271,12 @@ public class ChroniaPosition :  BaseComponent
             yield return null;
         }
 
-        MoveRoutineRunning = false;
+        RoutineRunning[RoutineTag.MoveBasePosition] = false;
     }
 
     private IEnumerator MoveBaseToRoutine(Vc2 target, float duration, Ease.Easer easer)
     {
-        MoveRoutineRunning = true;
+        RoutineRunning[RoutineTag.MoveBasePosition] = true;
 
         float timer = 0f;
         Vc2 start = BasePosition;
@@ -235,12 +291,12 @@ public class ChroniaPosition :  BaseComponent
             yield return null;
         }
 
-        MoveRoutineRunning = false;
+        RoutineRunning[RoutineTag.MoveBasePosition] = false;
     }
 
     private IEnumerator MoveToRoutine(Vc2 target, float duration, Ease.Easer easer)
     {
-        MoveRoutineRunning = true;
+        RoutineRunning[RoutineTag.MoveWholePosition] = true;
 
         float timer = 0f;
 
@@ -259,6 +315,6 @@ public class ChroniaPosition :  BaseComponent
             yield return null;
         }
 
-        MoveRoutineRunning = false;
+        RoutineRunning[RoutineTag.MoveWholePosition] = false;
     }
 }

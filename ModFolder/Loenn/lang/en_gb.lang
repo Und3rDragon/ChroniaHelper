@@ -808,6 +808,11 @@ entities.ChroniaHelper/SpriteEntity.attributes.description.commands=Check out su
 entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionX=The render position of the sprite when parallax is set to zero
 entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionY=The render position of the sprite when parallax is set to zero
 
+entities.ChroniaHelper/SpriteEntity2.placements.name.SpriteEntity=Sprite Entity 2 (wip)
+entities.ChroniaHelper/SpriteEntity2.attributes.description.commands=Check out submenu for split-up options tooltips, \nthose with a bracket(), meaning that this sub-element can be ignored and deleted if you don't wanna set it up, \nthose end with question marks? meaning that it's supposed to be a boolean value\nthose start with hash tag# ================= meaning that it's a string,\notherwise it's a number\n----------WARNING:----------\nWhen you use the submenu (those options has a "v" icon) looking up commands, \nmake sure there's only one item left on the list (only one option with "v" icon on the right), \notherwise you're gonna get confused.
+entities.ChroniaHelper/SpriteEntity2.attributes.description.camPositionX=The render position of the sprite when parallax is set to zero
+entities.ChroniaHelper/SpriteEntity2.attributes.description.camPositionY=The render position of the sprite when parallax is set to zero
+
 # ================= Password Keyboard
 
 entities.ChroniaHelper/PasswordKeyboard.placements.name.normal=Password Keyboard
