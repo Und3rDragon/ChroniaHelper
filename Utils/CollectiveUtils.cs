@@ -92,7 +92,28 @@ public static class CollectiveUtils
         return false;
     }
 
-    public static void Create<A, B>(this IDictionary<A, B> dic, A key, B value)
+    public static void Create<T>(this List<T> dic, int at, T key, T filler)
+    {
+        if(dic.Count() <= at)
+        {
+            for (int i = dic.Count(); i <= at; i++)
+            {
+                dic.Add(filler);
+            }
+            dic[at] = key;
+        }
+    }
+
+    public static void Enter<T>(this List<T> dic, int at, T key, T filler)
+    {
+        for (int i = dic.Count(); i <= at; i++)
+        {
+            dic.Add(filler);
+        }
+        dic[at] = key;
+    }
+
+    public static void Create<A, B>(this Dictionary<A,B> dic, A key, B value)
     {
         if (!dic.ContainsKey(key))
         {
