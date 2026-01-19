@@ -94,7 +94,7 @@ public class SpriteEntity2 : Actor
         holdable.OnHitSpring = HitSpring;
         holdable.OnHitSeeker = HitSeeker;
 
-        Add(positioner = new(position));
+        Add(positioner = new(this));
         positioner.Parallax = Vc2.One * data.Float("parallax", 1f);
         positioner.StaticScreenPosition.X = data.Float("camPositionX", 160f);
         positioner.StaticScreenPosition.Y = data.Float("camPositionY", 90f);
