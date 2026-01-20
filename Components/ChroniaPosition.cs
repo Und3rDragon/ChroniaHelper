@@ -150,7 +150,7 @@ public class ChroniaPosition :  BaseComponent
         _storedOffsets = StoredOffsets;
         _storedSpeedModulations = StoredSpeedModulations;
 
-        if (!RoutineRunning[RoutineTag.MoveBasePosition])
+        if (!RoutineRunning["move_base"] && !RoutineRunning["move_to"])
         {
             // Relocate BasePosition
             Vc2 CurrentSpeed = Speed;
@@ -215,11 +215,21 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        if (!RoutineRunning[RoutineTag.MoveBasePosition])
+        int id = Calc.Random.Next();
+        RoutineRunning[$"routine_move_{id}"] = true;
+        Entity.Add(new Coroutine(MoveRoutine(id, delta, duration.GetAbs(), easer)));
+    }
+
+    public void Move(int randomID, Vc2 delta, float duration, Ease.Easer easer)
+    {
+        if (duration.GetAbs() == 0f)
         {
-            RoutineRunning[RoutineTag.MoveBasePosition] = true; // Signalling in advance for some detection-purposes
-            Entity.Add(new Coroutine(MoveRoutine(delta, duration.GetAbs(), easer)));
+            BasePosition += delta;
+            return;
         }
+
+        RoutineRunning[$"routine_move_{randomID}"] = true;
+        Entity.Add(new Coroutine(MoveRoutine(randomID, delta, duration.GetAbs(), easer)));
     }
 
     public void MoveBaseTo(Vc2 target, float duration, Ease.Easer easer)
@@ -230,9 +240,9 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        if (!RoutineRunning[RoutineTag.MoveBasePosition])
+        if (!RoutineRunning["move_base"])
         {
-            RoutineRunning[RoutineTag.MoveBasePosition] = true; // Signalling in advance for some detection-purposes
+            RoutineRunning["move_base"] = true; // Signalling in advance for some detection-purposes
             Entity.Add(new Coroutine(MoveBaseToRoutine(target, duration.GetAbs(), easer)));
         }
     }
@@ -246,44 +256,48 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        if (!RoutineRunning[RoutineTag.ModifyWholePosition])
+        if (!RoutineRunning["move_to"])
         {
-            RoutineRunning[RoutineTag.ModifyWholePosition] = true; // Signalling in advance for some detection-purposes
+            RoutineRunning["move_to"] = true; // Signalling in advance for some detection-purposes
             Entity.Add(new Coroutine(MoveToRoutine(target, duration.GetAbs(), easer)));
         }
     }
 
-    private enum RoutineTag { MoveBasePosition, ModifyWholePosition }
-    private Dictionary<RoutineTag, bool> RoutineRunning = new()
+    public Dictionary<string, bool> RoutineRunning { get; private set; } = new()
     {
-        {RoutineTag.MoveBasePosition, false },
-        {RoutineTag.ModifyWholePosition, false }
+        { "move_base", false },
+        { "move_to", false }
     };
-    public bool MoveRoutinesRunning => RoutineRunning.Values.Contains(true);
+    public bool UnfoldableMoveRoutineRunning =>
+        RoutineRunning["move_base"] || RoutineRunning["move_to"];
 
-    private IEnumerator MoveRoutine(Vc2 delta, float duration, Ease.Easer easer)
+    private IEnumerator MoveRoutine(int id, Vc2 delta, float duration, Ease.Easer easer)
     {
-        RoutineRunning[RoutineTag.MoveBasePosition] = true;
+        RoutineRunning[$"routine_move_{id}"] = true;
 
         float timer = 0f;
-        Vc2 start = BasePosition;
-        Vc2 final = start + delta;
+        StoredOffsets.Create($"routine_move_{id}", Vc2.Zero);
+        Vc2 start = Vc2.Zero;
+        Vc2 final = delta;
 
         while(timer < duration)
         {
             timer = timer.Approach(duration, Engine.DeltaTime);
-            Vc2 pos = timer.LerpValue(0f, duration, start, final, EaseUtils.EaseToEaseMode[easer]);
-            BasePosition = pos;
+            Vc2 offset = timer.LerpValue(0f, duration, start, final, EaseUtils.EaseToEaseMode[easer]);
+            StoredOffsets[$"routine_move_{id}"] = offset;
 
             yield return null;
         }
 
-        RoutineRunning[RoutineTag.MoveBasePosition] = false;
+        BasePosition += StoredOffsets[$"routine_move_{id}"];
+        StoredOffsets.SafeRemove($"routine_move_{id}");
+
+        RoutineRunning[$"routine_move_{id}"] = false;
     }
 
     private IEnumerator MoveBaseToRoutine(Vc2 target, float duration, Ease.Easer easer)
     {
-        RoutineRunning[RoutineTag.MoveBasePosition] = true;
+        RoutineRunning["move_base"] = true;
 
         float timer = 0f;
         Vc2 start = BasePosition;
@@ -298,12 +312,12 @@ public class ChroniaPosition :  BaseComponent
             yield return null;
         }
 
-        RoutineRunning[RoutineTag.MoveBasePosition] = false;
+        RoutineRunning["move_base"] = false;
     }
 
     private IEnumerator MoveToRoutine(Vc2 target, float duration, Ease.Easer easer)
     {
-        RoutineRunning[RoutineTag.ModifyWholePosition] = true;
+        RoutineRunning["move_to"] = true;
 
         float timer = 0f;
 
@@ -322,6 +336,6 @@ public class ChroniaPosition :  BaseComponent
             yield return null;
         }
 
-        RoutineRunning[RoutineTag.ModifyWholePosition] = false;
+        RoutineRunning["move_to"] = false;
     }
 }

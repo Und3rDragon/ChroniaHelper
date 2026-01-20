@@ -865,9 +865,10 @@ public class SpriteEntity2 : Actor
                 ease = EaseUtils.StringToEase(commandLine[4].ToLower());
             }
 
-            positioner.Move(new Vc2(dx, dy), timer, ease);
+            int id = Calc.Random.Next();
+            positioner.Move(id, new Vc2(dx, dy), timer, ease);
 
-            while (positioner.MoveRoutinesRunning)
+            while (positioner.RoutineRunning[$"routine_move_{id}"])
             {
                 yield return null;
             }
@@ -957,7 +958,7 @@ public class SpriteEntity2 : Actor
 
             positioner.MoveTo(new Vc2(x, y), timer, ease);
 
-            while (positioner.MoveRoutinesRunning)
+            while (positioner.UnfoldableMoveRoutineRunning)
             {
                 yield return null;
             }
@@ -1697,7 +1698,7 @@ public class SpriteEntity2 : Actor
 
             positioner.MoveTo(nodes[n], timer, ease);
 
-            while (positioner.MoveRoutinesRunning)
+            while (positioner.UnfoldableMoveRoutineRunning)
             {
                 yield return null;
             }
