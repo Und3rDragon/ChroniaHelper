@@ -10,9 +10,9 @@ using ChroniaHelper.Utils;
 namespace ChroniaHelper.Components;
 
 /// <summary>
-/// Adding this Component will make the entity movement locked
+/// Adding this Component will enable a 
 /// </summary>
-public class ChroniaPosition :  BaseComponent
+public class ChroniaGeneralPosition :  BaseComponent
 {
     // Positions
 
@@ -26,11 +26,14 @@ public class ChroniaPosition :  BaseComponent
     /// modulate StoredOffsets as priority.
     /// </summary>
     public Vc2 BasePosition;
-    /// <summary>
-    /// Current calculated Position
-    /// </summary>
+    
     public Vc2 RealPositionWithoutParallax => BasePosition + TotalOffset();
     public Vc2 RealPosition => RealPositionWithoutParallax.InParallax(Parallax, StaticScreenPosition);
+
+    /// <summary>
+    /// The final calculated Position
+    /// </summary>
+    public Vc2 CurrentPosition = Vc2.Zero;
     
     public struct PositionLoop
     {
@@ -65,37 +68,15 @@ public class ChroniaPosition :  BaseComponent
     // Parallax
     public Vc2 Parallax = Vc2.One, StaticScreenPosition = new Vc2(160f, 90f);
 
-    public ChroniaPosition(Entity entity)
+    public ChroniaGeneralPosition(Entity entity)
     {
         Entity = entity;
-        ResetPosition = BasePosition = Entity.Position;
-        ProtectiveCheck();
+        ResetPosition = BasePosition = CurrentPosition;
     }
 
-    public ChroniaPosition(Vc2 position)
+    public ChroniaGeneralPosition(Vc2 position)
     {
-        ResetPosition = BasePosition = position;
-        ProtectiveCheck();
-    }
-
-    private void ProtectiveCheck()
-    {
-        if (Entity is null) { return; }
-
-        List<Component> toRemove = new();
-        foreach(var component in Entity.Components)
-        {
-            if(component is ChroniaPosition)
-            {
-                toRemove.Add(component);
-            }
-        }
-        foreach(var item in toRemove)
-        {
-            Entity.Components.Remove(item);
-        }
-
-        Entity.Add(this);
+        ResetPosition = BasePosition = CurrentPosition = position;
     }
 
     public void Reset()
@@ -106,7 +87,7 @@ public class ChroniaPosition :  BaseComponent
         Accelerations.Clear();
         StoredSpeedModulations.Clear();
         Speed = Vc2.Zero;
-        Entity.Position = ResetPosition;
+        CurrentPosition = ResetPosition;
         _speedDisplacement = Vc2.Zero;
     }
 
@@ -203,7 +184,7 @@ public class ChroniaPosition :  BaseComponent
         }
         else
         {
-            Entity.Position = calculatedPosition;
+            CurrentPosition = calculatedPosition;
         }
     }
 
@@ -217,7 +198,6 @@ public class ChroniaPosition :  BaseComponent
 
         if (!RoutineRunning[RoutineTag.MoveBasePosition])
         {
-            RoutineRunning[RoutineTag.MoveBasePosition] = true; // Signalling in advance for some detection-purposes
             Entity.Add(new Coroutine(MoveRoutine(delta, duration.GetAbs(), easer)));
         }
     }
@@ -232,7 +212,6 @@ public class ChroniaPosition :  BaseComponent
 
         if (!RoutineRunning[RoutineTag.MoveBasePosition])
         {
-            RoutineRunning[RoutineTag.MoveBasePosition] = true; // Signalling in advance for some detection-purposes
             Entity.Add(new Coroutine(MoveBaseToRoutine(target, duration.GetAbs(), easer)));
         }
     }
@@ -246,21 +225,18 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        if (!RoutineRunning[RoutineTag.ModifyWholePosition])
+        if (!RoutineRunning[RoutineTag.MoveWholePosition])
         {
-            RoutineRunning[RoutineTag.ModifyWholePosition] = true; // Signalling in advance for some detection-purposes
             Entity.Add(new Coroutine(MoveToRoutine(target, duration.GetAbs(), easer)));
         }
     }
 
-    private enum RoutineTag { MoveBasePosition, ModifyWholePosition }
+    private enum RoutineTag { MoveBasePosition, MoveWholePosition}
     private Dictionary<RoutineTag, bool> RoutineRunning = new()
     {
         {RoutineTag.MoveBasePosition, false },
-        {RoutineTag.ModifyWholePosition, false }
+        {RoutineTag.MoveWholePosition, false }
     };
-    public bool MoveRoutinesRunning => RoutineRunning.Values.Contains(true);
-
     private IEnumerator MoveRoutine(Vc2 delta, float duration, Ease.Easer easer)
     {
         RoutineRunning[RoutineTag.MoveBasePosition] = true;
@@ -303,11 +279,11 @@ public class ChroniaPosition :  BaseComponent
 
     private IEnumerator MoveToRoutine(Vc2 target, float duration, Ease.Easer easer)
     {
-        RoutineRunning[RoutineTag.ModifyWholePosition] = true;
+        RoutineRunning[RoutineTag.MoveWholePosition] = true;
 
         float timer = 0f;
 
-        BasePosition = Entity.Position;
+        BasePosition = CurrentPosition;
         ResetOffsets();
 
         Vc2 start = BasePosition;
@@ -322,6 +298,6 @@ public class ChroniaPosition :  BaseComponent
             yield return null;
         }
 
-        RoutineRunning[RoutineTag.ModifyWholePosition] = false;
+        RoutineRunning[RoutineTag.MoveWholePosition] = false;
     }
 }
