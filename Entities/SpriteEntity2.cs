@@ -866,6 +866,11 @@ public class SpriteEntity2 : Actor
             }
 
             positioner.Move(new Vc2(dx, dy), timer, ease);
+
+            while (positioner.MoveRoutinesRunning)
+            {
+                yield return null;
+            }
         }
 
         else if (execute == Command.Bloom_Move || execute == Command.Light_Move)
@@ -951,6 +956,11 @@ public class SpriteEntity2 : Actor
             }
 
             positioner.MoveTo(new Vc2(x, y), timer, ease);
+
+            while (positioner.MoveRoutinesRunning)
+            {
+                yield return null;
+            }
         }
 
         else if (execute == Command.Bloom_MoveTo || execute == Command.Light_MoveTo)
@@ -1070,6 +1080,7 @@ public class SpriteEntity2 : Actor
             {
                 positioner.StoredOffsets["move_around"] = Vc2.Zero;
             }
+            Vc2 startOffset = positioner.StoredOffsets["move_around"];
 
             float progress = 0f;
             while (progress < 1f)
@@ -1081,7 +1092,7 @@ public class SpriteEntity2 : Actor
                 switch (execute)
                 {
                     case Command.Move_Around:
-                        positioner.StoredOffsets["move_around"] = obj - start;
+                        positioner.StoredOffsets["move_around"] = startOffset + obj - start;
                         break;
                     case Command.Light_Move_Around: light.Position = obj; break;
                     case Command.Bloom_Move_Around: bloom.Position = obj; break;
@@ -1090,9 +1101,6 @@ public class SpriteEntity2 : Actor
 
                 yield return null;
             }
-
-            positioner.BasePosition += positioner.StoredOffsets["move_around"];
-            positioner.StoredOffsets["move_around"] = Vc2.Zero;
         }
 
         else if (execute == Command.Alpha)
@@ -1688,6 +1696,11 @@ public class SpriteEntity2 : Actor
             }
 
             positioner.MoveTo(nodes[n], timer, ease);
+
+            while (positioner.MoveRoutinesRunning)
+            {
+                yield return null;
+            }
         }
 
         IsRoutineRunning[execute] = false;
