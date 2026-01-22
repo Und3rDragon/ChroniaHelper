@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using ChroniaHelper.Cores;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
 public class EntityTextBox : BaseEntity
