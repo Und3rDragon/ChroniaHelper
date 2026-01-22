@@ -10,7 +10,7 @@ using ChroniaHelper.Settings;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
 [Note("Conflict with HDRender thing, tabbing when Reloading case the screen to be blank")]

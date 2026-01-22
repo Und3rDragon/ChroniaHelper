@@ -8,7 +8,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
 public class StylegroundController : BaseEntity

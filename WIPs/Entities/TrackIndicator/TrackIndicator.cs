@@ -9,7 +9,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Line = ChroniaHelper.Utils.GeometryUtils.Line;
 
-namespace ChroniaHelper.Entities.TrackIndicator;
+namespace ChroniaHelper.WIPs.Entities.TrackIndicator;
 
 [Tracked(true)]
 [WorkingInProgress]

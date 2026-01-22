@@ -7,8 +7,9 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.WIPs.Components;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
 public class PassiveCube : BaseEntity
