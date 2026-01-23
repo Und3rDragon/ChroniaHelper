@@ -623,6 +623,7 @@ entities.ChroniaHelper/CustomTimer.attributes.description.text=The title over th
 
 entities.ChroniaHelper/TileBlock.placements.name.TileBlock=Tile Block
 entities.ChroniaHelper/AlternateTileBlock.placements.name.TileBlock=Tile Block (Nine Patch)
+entities.ChroniaHelper/CustomNegaBlock.placements.name.CustomNegaBlock=Custom Nega Block
 
 # ================= Custom Billboard
 
@@ -1324,3 +1325,7 @@ entities.ChroniaHelper/GroupedWindTunnel.placements.name.GroupedWindTunnel=Group
 # ================= Grouped Wind Tunnel Controller
 
 entities.ChroniaHelper/GroupedWindTunnelController.placements.name.GroupedWindTunnelController=Grouped Wind Tunnel Controller
+
+# ================= Ice Floor
+
+entities.ChroniaHelper/IceFloor.placements.name.IceFloor=Ice Floor

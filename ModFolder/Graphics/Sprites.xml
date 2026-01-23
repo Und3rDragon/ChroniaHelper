@@ -190,5 +190,11 @@
 		<Anim id="pop" path="pop" delay="0.06"/>
 		<Anim id="spawn" path="spawn" delay="0.06" goto="idle"/>
 	</ChroniaHelper_balloon>
+
+	<iceFloor path="objects/ChroniaHelper/iceFloor/" start="top">
+		<Loop id="top" path="top" delay="0.1" frames="0*20,1-4"/>
+		<Loop id="middle" path="mid" delay="0.1" frames="0*20,1-4"/>
+		<Loop id="bottom" path="bottom" delay="0.1" frames="0*20,1-4"/>
+	</iceFloor>
 	
 </Sprites>

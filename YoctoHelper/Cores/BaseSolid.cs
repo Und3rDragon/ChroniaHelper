@@ -154,7 +154,7 @@ public class BaseSolid : Solid
         base.RemoveSelf();
     }
 
-    private PositionDirections GetPlayerOnTouch()
+    public PositionDirections GetPlayerOnTouch()
     {
         foreach (Player player in this.level.Tracker.GetEntities<Player>())
         {

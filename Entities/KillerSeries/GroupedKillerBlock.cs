@@ -50,7 +50,7 @@ class GroupedKillerBlock : BaseSolid
     private bool standFall;
 
     private bool canTrigger, dashRebound, dashReboundRefill;
-    public GroupedKillerBlock(Vector2 position, EntityData data) : base(position, data)
+    public GroupedKillerBlock(Vector2 position, EntityData data) : base(position, data, data.Bool("safe", true))
     {
         this._climbFall = data.Bool("climbFall", true);
         this._tileType = data.Char("tiletype", '3');
