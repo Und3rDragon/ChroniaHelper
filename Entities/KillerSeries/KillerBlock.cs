@@ -36,7 +36,7 @@ public class KillerBlock : BaseSolid
 
     private bool canTrigger, dashRebound, dashReboundRefill;
 
-    public KillerBlock(Vector2 position, EntityData data) : base(position, data)
+    public KillerBlock(Vector2 position, EntityData data) : base(position, data, data.Bool("safe", true))
     {
         char tile = data.Char("tiletype", '3');
         base.topKillTimer = data.Float("topKillTimer", -1);

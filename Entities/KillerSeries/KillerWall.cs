@@ -30,7 +30,7 @@ public class KillerWall : BaseSolid
 
     private bool dashRebound, dashReboundRefill;
 
-    public KillerWall(Vector2 position, EntityData data) : base(position, data)
+    public KillerWall(Vector2 position, EntityData data) : base(position, data, data.Bool("safe", true))
     {
         base.Depth = data.Int("depth");
         this.permanent = data.Bool("permanent");

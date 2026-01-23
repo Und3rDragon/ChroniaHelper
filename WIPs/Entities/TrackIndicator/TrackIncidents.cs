@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 
-namespace ChroniaHelper.Entities.TrackIndicator;
+namespace ChroniaHelper.WIPs.Entities.TrackIndicator;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/TrackIncidentMarker")]
 [WorkingInProgress]
 public class TrackIncidents : Entity
 {

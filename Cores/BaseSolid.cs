@@ -14,6 +14,12 @@ public class BaseSolid : Solid
     {
         
     }
+
+    public BaseSolid(Vector2 position, EntityData data, bool safe) : base(position, data.Width, data.Height, safe)
+    {
+
+    }
+
     public PlayerCollider playerCollider;
     public int playerTouch;
 

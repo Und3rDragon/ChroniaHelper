@@ -24,6 +24,7 @@ return {
             dashRebound = false,
             dashReboundRefill = false,
             --springBlockOverride = false,
+            safe = true,
         }
     },
     fieldInformation =

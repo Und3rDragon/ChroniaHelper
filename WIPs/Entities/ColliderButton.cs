@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
-public class CameraTargetSequence : BaseEntity
+[Note("Undefined working behaviour")]
+public class ColliderButton : ParentedEntity
 {
-    public CameraTargetSequence(EntityData data, Vc2 offset) : base(data, offset)
+    public ColliderButton(EntityData d, Vc2 o) : base(d, o)
     {
         
     }
