@@ -7,23 +7,23 @@ local drawing = require("utils.drawing")
 
 local booster = {}
 
-booster.name="ChroniaHelper/CustomBooster"
+booster.name="ChroniaHelper/CustomBoosterXML"
 
 booster.depth = function(room,entity) return entity.depth or -8500 end
 booster.placements={
 	name = "normal",
 	data = {
 		depth = -8500,
-		directory = "objects/ChroniaHelper/customBoosterPresets/grey",
+		directory = "Default_booster",
 		outlineDirectory = "objects/ChroniaHelper/customBoosterPresets/grey/outline",
 		colorOverlay = "ffffff",
 		ch9_hub_booster = false,
 		redBoostMovingSpeed = 240,
-		appearAnimInterval = 0.8,
-		loopAnimInterval = 0.1,
-		insideAnimInterval = 0.1,
-		spinAnimInterval = 0.06,
-		popAnimInterval = 0.08,
+		--appearAnimInterval = 0.8,
+		--loopAnimInterval = 0.1,
+		--insideAnimInterval = 0.1,
+		--spinAnimInterval = 0.06,
+		--popAnimInterval = 0.08,
 		respawnTime = 1.0,
 		dashes = 1,
 		stamina = 110,
@@ -35,7 +35,7 @@ booster.placements={
 		red = false,
 		setOrRefillDashes = false,
 		setOrRefillStamina = false,
-		XMLOverride = false,
+		XMLOverride = true,
 		burstParticleColorOverride = false,
 		burstParticleColor = "ffffff",
 		appearParticleColorOverride = false,
@@ -63,11 +63,11 @@ booster.fieldInformation = {
 	depth = require("mods").requireFromPlugin("helpers.field_options").depths,
 	directory = {
 		options = {
-			"objects/ChroniaHelper/customBoosterPresets/green",
-			"objects/ChroniaHelper/customBoosterPresets/red",
-			"objects/ChroniaHelper/customBoosterPresets/pink",
-			"objects/ChroniaHelper/customBoosterPresets/grey",
-            "objects/ChroniaHelper/customBoosterPresets/yellow",
+			"Preset_red",
+			"Preset_green",
+			"Preset_pink",
+            "Preset_yellow",
+			"Default_booster",
 		},
 		editable = true,
 	},

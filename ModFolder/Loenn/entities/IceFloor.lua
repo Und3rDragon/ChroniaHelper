@@ -4,17 +4,23 @@ local utils = require("utils")
 local icyFloor = {}
 
 icyFloor.name = "ChroniaHelper/IceFloor"
-icyFloor.depth = -9999
+icyFloor.depth = function(room, entity) return entity.depth or -9999 end
 icyFloor.canResize = {true, false}
 icyFloor.minimumSize = {8, 0}
 icyFloor.placements = {
     name = "IceFloor",
     placementType = "rectangle",
     data = {
+        depth = -9999,
         width = 8,
         spriteXML = "iceFloor",
         createStaticMover = false,
+        onGroundSpriteOffset = false,
     }
+}
+
+icyFloor.fieldInformation = {
+    depth = require("mods").requireFromPlugin("helpers.field_options").depths,
 }
 
 local leftTexture = "objects/wallBooster/iceTop00"

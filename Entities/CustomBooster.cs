@@ -13,13 +13,15 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
+using YamlDotNet.Core;
 
 namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/CustomBooster")]
+[CustomEntity("ChroniaHelper/CustomBooster", "ChroniaHelper/CustomBoosterXML")]
 public class CustomBooster : Booster
 {
+    private static ILHook redDashCoroutineHook;
     private static ILHook dashCoroutineHook;
 
     [LoadHook]
@@ -48,6 +50,8 @@ public class CustomBooster : Booster
         // On.Celeste.Player.RefillStamina += RefillS;
         
         On.Celeste.Player.BoostUpdate += PlayerOnBoostUpdate;
+
+        redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), Player_RedDashHook);
     }
 
     [UnloadHook]
@@ -74,6 +78,8 @@ public class CustomBooster : Booster
         // On.Celeste.Player.RefillDash -= RefillD;
         // On.Celeste.Player.RefillStamina -= RefillS;
         On.Celeste.Player.BoostUpdate -= PlayerOnBoostUpdate;
+
+        redDashCoroutineHook.Dispose();
     }
 
     private float appearTime, loopTime, insideTime, spinTime, popTime, tr;
@@ -97,6 +103,8 @@ public class CustomBooster : Booster
     public bool DisableFastBubble, allowDashout, onlyOnce;
     
     public bool playerFollow;
+
+    public float redBoostMovingSpeed = 240f;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -122,8 +130,8 @@ public class CustomBooster : Booster
         setStamina = data.Int("stamina", 110);
         setDashes = data.Bool("setOrRefillDashes", false);
         setupStamina = data.Bool("setOrRefillStamina", false);
-        //moveSpeed = Math.Abs(data.Float("moveSpeed", 1f));
-        //setOutSpeed = data.Bool("setOutSpeed", false);
+
+        redBoostMovingSpeed = data.Float("redBoostMovingSpeed", 240f);
 
         // process old data
         if (!string.IsNullOrEmpty(data.Attr("setOutSpeed")))
@@ -322,6 +330,28 @@ public class CustomBooster : Booster
             cursor.EmitRet();
 
             cursor.MarkLabel(label);
+        }
+    }
+
+    private static void Player_RedDashHook(ILContext il)
+    {
+        ILCursor c = new ILCursor(il);
+
+        if(c.TryGotoNext(ins => ins.MatchLdcR4(240f)))
+        {
+            c.Index += 1;
+
+            c.EmitDelegate<Func<float, float>>(fallback =>
+            {
+                if(PUt.TryGetPlayer(out var p))
+                {
+                    if(p.CurrentBooster is CustomBooster b)
+                    {
+                        return b.redBoostMovingSpeed;
+                    }
+                }
+                return fallback;
+            });
         }
     }
 
