@@ -8,7 +8,7 @@ using MonoMod.Cil;
 namespace ChroniaHelper.Entities;
 
 [Tracked(false)]
-[CustomEntity("ChroniaHelper/CustomGlider")]
+[CustomEntity("ChroniaHelper/CustomGlider", "ChroniaHelper/CustomGliderXML")]
 public class CustomGlider : Actor
 {
     
@@ -59,7 +59,7 @@ public class CustomGlider : Actor
     private ChroniaColor GlideC1, GlideC2, GlowC1, GlowC2;
     private string GlidePath, GlowPath;
 
-    
+    private bool outline = true;
 
     public string idlePath, heldPath, fallPath, fallLoopPath, deathPath, respawnPath;
     public float idleTime, heldTime, fallTime, fallLoopTime, deathTime, respawnAnimTime;
@@ -67,6 +67,7 @@ public class CustomGlider : Actor
     public CustomGlider(EntityData e, Vector2 offset)
         : base(e.Position + offset)
     {
+        outline = e.Bool("outline", true);
         bubble = e.Bool("bubble");
         this.tutorial = e.Bool("tutorial");
         startPos = Position;
@@ -451,7 +452,7 @@ public class CustomGlider : Actor
 
     public override void Render()
     {
-        if (!destroyed)
+        if (!destroyed && outline)
         {
             sprite.DrawSimpleOutline();
         }

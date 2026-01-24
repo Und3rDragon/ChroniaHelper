@@ -5,7 +5,7 @@ local drawableLine = require("structs.drawable_line")
 local drawing = require("utils.drawing")
 
 local reskinJelly = {
-    name = "ChroniaHelper/CustomGlider",
+    name = "ChroniaHelper/CustomGliderXML",
     fieldOrder = {
         "x","y",
         'Directory','Depth',
@@ -72,23 +72,23 @@ reskinJelly.placements = {
         GlidePath = "particles/rect", GlowPath = "",
         GlideColor1="4FFFF3", GlideColor2="FFF899",
         GlowColor1="B7F3FF", GlowColor2="F4FDFF",
-        Directory = "objects/ChroniaHelper/customJelly",
+        Directory = "glider",
         --idlePath = "idle",
-        idleAnimInterval = 0.1,
+        --idleAnimInterval = 0.1,
         --heldPath = "held",
-        heldAnimInterval = 0.1,
+        --heldAnimInterval = 0.1,
         --fallPath = "fall",
-        fallAnimInterval = 0.06,
+        --fallAnimInterval = 0.06,
         --fallLoopPath = "fallLoop",
-        fallLoopAnimInterval = 0.06,
+        --fallLoopAnimInterval = 0.06,
         --deathPath = "death",
-        deathAnimInterval = 0.06,
+        --deathAnimInterval = 0.06,
         --respawnPath = "respawn",
         --respawnAnimInterval = 0.03,
         hitboxParameters = "8,10,-4,-10",
         holdableParameters = "20,22,-10,-16",
         droppingSpeedXMultiplier = false,
-        XMLOverride = false,
+        XMLOverride = true,
         outline = true,
     }
 }
