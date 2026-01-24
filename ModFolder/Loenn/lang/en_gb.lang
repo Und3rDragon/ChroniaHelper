@@ -665,6 +665,15 @@ entities.ChroniaHelper/CustomBooster.attributes.description.holdTime=The time th
 entities.ChroniaHelper/CustomBooster.attributes.description.playerFollow=The player will move with the booster if the booster position is somehow changed while player's inside
 entities.ChroniaHelper/CustomBooster.attributes.description..keepPlayerSpeed=The booster will record player's speed when player gets in and keep it when it releases player. \nWill be affected by the out speed multiplier.
 
+entities.ChroniaHelper/CustomBoosterXML.placements.name.normal=Custom Booster (XML Sprite)
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.directory=The XML tag in Sprites.xml
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.setOrRefillDashes=If enabled, this booster will set up the player dashes instead of refilling it
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.setOrRefillStamina=If enabled, this booster will set up the player stamina instead of refilling it
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.XMLOverride=If enabled, the "directory" will work as the XML object tag\nAnd all the animation parameters in the options will be ignored
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.holdTime=The time that player stays inside before it activates and start moving
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.playerFollow=The player will move with the booster if the booster position is somehow changed while player's inside
+entities.ChroniaHelper/CustomBoosterXML.attributes.description..keepPlayerSpeed=The booster will record player's speed when player gets in and keep it when it releases player. \nWill be affected by the out speed multiplier.
+
 # ================= Custom Glider
 
 entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Glider
@@ -675,6 +684,15 @@ entities.ChroniaHelper/CustomGlider.attributes.description.XMLOverride=If enable
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedY=The maximum falling speed of the glider when there are no winds or else
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedX=After you throw the glider, the glider will decelerate on its Speed X\nAnd this option will set up the final Speed X of this glider
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedXMultiplier=If enabled, the value filled in "dropping speed x" will be a multiplier to the throwing speed\ninstead of a certain value
+
+entities.ChroniaHelper/CustomGliderXML.placements.name.glider=Custom Glider (XML Sprite)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.Directory=The XML tag in Sprites.xml
+entities.ChroniaHelper/CustomGliderXML.attributes.description.hitboxParameters=A series of numbers representing\nHitbox Width, Hitbox Height, Hitbox X, and Hitbox Y
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdableParameters=A series of nmbers representing\nHoldable Hitbox Width, Holdable Hitbox Height,\nHoldable Hitbox X, and Holdable Hitbox Y
+entities.ChroniaHelper/CustomGliderXML.attributes.description.XMLOverride=If enabled, the "directory" will work as the XML object tag\nAnd all the animation parameters in the options will be ignored
+entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedY=The maximum falling speed of the glider when there are no winds or else
+entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedX=After you throw the glider, the glider will decelerate on its Speed X\nAnd this option will set up the final Speed X of this glider
+entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedXMultiplier=If enabled, the value filled in "dropping speed x" will be a multiplier to the throwing speed\ninstead of a certain value
 
 # ================= Real Flag Switch
 

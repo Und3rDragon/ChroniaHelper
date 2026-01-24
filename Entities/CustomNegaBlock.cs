@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
-using ChroniaHelper.Entities;
 using YoctoHelper.Cores;
 
-namespace ChroniaHelper.WIPs.Entities;
+namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/CustomNegaBlock")]
@@ -40,6 +39,7 @@ public class CustomNegaBlock : NegaBlock
 
     public CustomNegaBlock(EntityData data, Vc2 offset) : base(data.Position + offset, data.Width, data.Height)
     {
+        Depth = data.Int("depth", -9000);
         tileType = data.Char("tileType", '3');
         lightOcclude = data.Float("lightOcclude", 1F, 0F, 1F);
         blendIn = data.Bool("blendIn", false);

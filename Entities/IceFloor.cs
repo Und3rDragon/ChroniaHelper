@@ -39,9 +39,10 @@ public class IceFloor : BaseEntity
     public IceFloor(EntityData data, Vector2 offset)
         : base(data, offset)
     {
-        base.Depth = 1999;
+        base.Depth = data.Int("depth", -9999);
         base.Collider = new Hitbox((float)data.Width, 2f, 0f, 6f);
         xml = data.Attr("spriteXML", "iceFloor");
+        onGroundSpriteOffset = data.Bool("onGroundSpriteOffset", false);
         this.tiles = this.BuildSprite();
         createStaticMover = data.Bool("createStaticMover", false);
         
@@ -52,6 +53,7 @@ public class IceFloor : BaseEntity
     }
     private string xml;
     private bool createStaticMover = false;
+    private bool onGroundSpriteOffset = false;
 
     //public override void Added(Scene scene)
     //{
@@ -87,7 +89,7 @@ public class IceFloor : BaseEntity
                 }
             }
             Sprite sprite = GFX.SpriteBank.Create(xml);
-            sprite.Position = new Vector2((float)num, 0f);
+            sprite.Position = new Vector2((float)num, onGroundSpriteOffset? 8f: 0f);
             sprite.Play(text);
             list.Add(sprite);
             Add(sprite);
