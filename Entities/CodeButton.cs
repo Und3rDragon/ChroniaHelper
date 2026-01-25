@@ -48,7 +48,7 @@ public class CodeButton : PressButton
         }
         if (buttonMode == 1)
         {
-            string result = Md.Session.sessionKeys.GetValueOrDefault(sessionKeyID, "");
+            string result = Md.Session.keystrings.GetValueOrDefault(sessionKeyID, "");
             if (Md.Session.codeButtonTargets.ContainsKey(sessionKeyID))
             {
                 if (result == Md.Session.codeButtonTargets[sessionKeyID].codeString)
@@ -56,28 +56,28 @@ public class CodeButton : PressButton
                     Md.Session.codeButtonTargets[sessionKeyID].flag.SetFlag(true);
                 }
             }
-            Md.Session.sessionKeys[sessionKeyID] = "";
+            Md.Session.keystrings[sessionKeyID] = "";
         }
         else if (buttonMode == 2)
         {
-            if (Md.Session.sessionKeys.ContainsKey(sessionKeyID))
+            if (Md.Session.keystrings.ContainsKey(sessionKeyID))
             {
-                var s = Md.Session.sessionKeys[sessionKeyID];
+                var s = Md.Session.keystrings[sessionKeyID];
 
                 if (s.Length > 0)
                 {
-                    Md.Session.sessionKeys[sessionKeyID] = s.Substring(0, s.Length - 1);
+                    Md.Session.keystrings[sessionKeyID] = s.Substring(0, s.Length - 1);
                 }
             }
         }
         else if (buttonMode == 3)
         {
-            Md.Session.sessionKeys[sessionKeyID] = "";
+            Md.Session.keystrings[sessionKeyID] = "";
         }
         else
         {
-            Md.Session.sessionKeys.Create(sessionKeyID, "");
-            Md.Session.sessionKeys[sessionKeyID] += buttonCode;
+            Md.Session.keystrings.Create(sessionKeyID, "");
+            Md.Session.keystrings[sessionKeyID] += buttonCode;
         }
     }
 
@@ -87,7 +87,7 @@ public class CodeButton : PressButton
         {
             Audio.Play(releaseSound);
         }
-        string result = Md.Session.sessionKeys.GetValueOrDefault(sessionKeyID, "");
+        string result = Md.Session.keystrings.GetValueOrDefault(sessionKeyID, "");
         if (Md.Session.codeButtonTargets.ContainsKey(sessionKeyID))
         {
             if (result != Md.Session.codeButtonTargets[sessionKeyID].codeString &&

@@ -145,8 +145,8 @@ public static class MapProcessor
         }
 
         // Check all the switches and save the flags
-        Md.Session.flagNames = new();
-        Md.Session.switchFlag = new();
+        Md.Session.FlagButtonTargetFlags = new();
+        Md.Session.FlagButtonStates = new();
         var levels = level.Session.MapData.Levels;
         string flagName;
         HashSet<string> switches = new()
@@ -173,7 +173,7 @@ public static class MapProcessor
                     flagName = item.Values["flag"].ToString().Trim();
                     RegisterSwitchFlags(flagName, item.ID);
                     
-                    Md.Session.flagNames.Enter(flagName);
+                    Md.Session.FlagButtonTargetFlags.Enter(flagName);
                 }
 
                 if (fntEntities.Contains(item.Name))
@@ -216,9 +216,9 @@ public static class MapProcessor
         orig(self);
 
         // Flag Carousel Trigger State reset
-        foreach (var item in Md.Session.CarouselState.Keys)
+        foreach (var item in Md.Session.FlagCarouselState.Keys)
         {
-            Md.Session.CarouselState[item] = false;
+            Md.Session.FlagCarouselState[item] = false;
         }
     }
 
@@ -250,9 +250,9 @@ public static class MapProcessor
         languageFlag.SetFlag(true);
         
         // Flag Button Flag setup
-        if (Md.Session.flagNames != null)
+        if (Md.Session.FlagButtonTargetFlags != null)
         {
-            foreach (var item in Md.Session.flagNames)
+            foreach (var item in Md.Session.FlagButtonTargetFlags)
             {
                 if (IsSwitchFlagCompleted(item))
                 {
@@ -337,7 +337,7 @@ public static class MapProcessor
     public static bool IsSwitchFlagCompleted(string flagIndex)
     {
         bool b = true;
-        foreach (string key in Md.Session.switchFlag)
+        foreach (string key in Md.Session.FlagButtonStates)
         {
             if (key.StartsWith($"ChroniaButtonFlag-{flagIndex}-ButtonID-"))
             {
@@ -351,7 +351,7 @@ public static class MapProcessor
     // Creating slots for the flags
     public static void RegisterSwitchFlags(string name, int ID)
     {
-        Md.Session.switchFlag.Add($"ChroniaButtonFlag-{name}-ButtonID-{ID}");
+        Md.Session.FlagButtonStates.Add($"ChroniaButtonFlag-{name}-ButtonID-{ID}");
     }
 
     // BG Tiles related

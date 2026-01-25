@@ -77,11 +77,11 @@ public class HookManager
         {
             return;
         }
-        if (!Md.Session.HookData.ContainsKey(hookId))
+        if (!Md.Session.HookManagerData.ContainsKey(hookId))
         {
-            Md.Session.HookData[hookId] = new HookData();
+            Md.Session.HookManagerData[hookId] = new HookData();
         }
-        Md.Session.HookData[hookId].SetValue(value);
+        Md.Session.HookManagerData[hookId].SetValue(value);
     }
 
     private void SetHookDataRoomValue<T>(HookId hookId, T value)
@@ -90,11 +90,11 @@ public class HookManager
         {
             return;
         }
-        if (!Md.Session.HookData.ContainsKey(hookId))
+        if (!Md.Session.HookManagerData.ContainsKey(hookId))
         {
-            Md.Session.HookData[hookId] = new HookData(this.HookDataDefaultValue[hookId]);
+            Md.Session.HookManagerData[hookId] = new HookData(this.HookDataDefaultValue[hookId]);
         }
-        Md.Session.HookData[hookId].roomValue = value;
+        Md.Session.HookManagerData[hookId].roomValue = value;
     }
 
     public T GetHookDataValue<T>(HookId hookId)
@@ -103,7 +103,7 @@ public class HookManager
         {
             return default(T);
         }
-        if ((ObjectUtils.IsNotNull(ChroniaHelperModule.Session)) && (Engine.Scene is not Overworld) && (Md.Session.HookData.TryGetValue(hookId, out HookData hookData)))
+        if ((ObjectUtils.IsNotNull(ChroniaHelperModule.Session)) && (Engine.Scene is not Overworld) && (Md.Session.HookManagerData.TryGetValue(hookId, out HookData hookData)))
         {
             if (ObjectUtils.IsNotNull(hookData.roomValue))
             {
@@ -119,13 +119,13 @@ public class HookManager
 
     public void ResetHookDataRoomValue()
     {
-        if (DictionaryUtils.IsNullOrEmpty(Md.Session.HookData))
+        if (DictionaryUtils.IsNullOrEmpty(Md.Session.HookManagerData))
         {
             return;
         }
-        foreach (HookId hookId in Md.Session.HookData.Keys)
+        foreach (HookId hookId in Md.Session.HookManagerData.Keys)
         {
-            Md.Session.HookData[hookId].roomValue = null;
+            Md.Session.HookManagerData[hookId].roomValue = null;
         }
     }
 

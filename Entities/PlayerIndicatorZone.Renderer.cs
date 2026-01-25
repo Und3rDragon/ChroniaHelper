@@ -30,10 +30,10 @@ partial class PlayerIndicatorZone
             base.Added(scene);
             var session = ChroniaHelperModule.Session;
             session.ProcessZoneSaves();
-            icons = session.Icons;
-            iconOffsets = session.IconOffsets;
-            iconColors = session.IconColors;
-            Depth = session.ZoneDepth;
+            icons = session.PIZ_Icons;
+            iconOffsets = session.PIZ_IconOffsets;
+            iconColors = session.PIZ_IconColors;
+            Depth = session.PIZ_ZoneDepth;
         }
 
         public void SwitchToHandle(PlayerIndicatorZone zone)

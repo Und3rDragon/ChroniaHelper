@@ -29,10 +29,10 @@ public class ActiveTera : Entity
 
         ChroniaHelperModule.teraMode = active;
 
-        if (session.ActiveTera != active)
+        if (session.TeraActive != active)
         {
             var player = level.Tracker.GetEntity<Player>();
-            session.ActiveTera = active;
+            session.TeraActive = active;
             if (!active)
             {
                 player.RemoveTera();
@@ -71,7 +71,7 @@ public class ActiveTera : Entity
         {
             orig(self, position, spriteMode);
         }
-        if (Md.Session.ActiveTera)
+        if (Md.Session.TeraActive)
         {
             self.InitTera();
         }
@@ -81,7 +81,7 @@ public class ActiveTera : Entity
         orig(self);
         if (Engine.Scene is not Level level)
             return;
-        if (Md.Session.ActiveTera)
+        if (Md.Session.TeraActive)
         {
             var player = level.Tracker.GetEntity<Player>();
             if (player != null)

@@ -235,14 +235,14 @@ public class Commands
         
         CommandLog.LogDivider("All Session Keys", Color.Yellow);
         CommandLog.LogCommand("ID => Key Value", Color.Cyan);
-        foreach(var i in Md.Session.sessionKeys)
+        foreach(var i in Md.Session.keystrings)
         {
             CommandLog.LogCommand($"{i.Key} => {i.Value}");
         }
 
         CommandLog.LogDivider("All Global Keys", Color.Yellow);
         CommandLog.LogCommand("ID => Key Value", Color.Cyan);
-        foreach (var i in Md.SaveData.globalKeys)
+        foreach (var i in Md.SaveData.keystrings)
         {
             CommandLog.LogCommand($"{i.Key} => {i.Value}");
         }

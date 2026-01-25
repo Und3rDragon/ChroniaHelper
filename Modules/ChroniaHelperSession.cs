@@ -22,80 +22,80 @@ namespace ChroniaHelper.Modules;
 public class ChroniaHelperSession : EverestModuleSession
 {
 
-    [YamlIgnore] public readonly Dictionary<HookId, HookData> HookData = new Dictionary<HookId, HookData>();
+    [YamlIgnore] public readonly Dictionary<HookId, HookData> HookManagerData = new Dictionary<HookId, HookData>();
 
-    [YamlIgnore] public readonly Dictionary<Color, List<DustBunnyEdge>> EdgeColorDictionary = new Dictionary<Color, List<DustBunnyEdge>>();
+    [YamlIgnore] public readonly Dictionary<Color, List<DustBunnyEdge>> DustBunnyEdgeColor = new Dictionary<Color, List<DustBunnyEdge>>();
 
-    [YamlIgnore] public Dictionary<string, FlagCarouselTrigger> CarouselDictionary { get; private set; } = new Dictionary<string, FlagCarouselTrigger>();
+    [YamlIgnore] public Dictionary<string, FlagCarouselTrigger> FlagCarouselDictionary { get; private set; } = new Dictionary<string, FlagCarouselTrigger>();
     
-    public bool ActiveTera = false;
+    public bool TeraActive = false;
     
     public TeraType StartTera = TeraType.Any;
 
-    //timer
+    // Frame Count Timer
     
-    public int timerD = 0, timerC = 0, timerB = 0, timerA = 0, timerFrames = 0;
+    public int FrameTimer_Hours = 0, FrameTimer_Minutes = 0, FrameTimer_Seconds = 0, FrameTimer_timerFrames = 0, FrameTimer_Frames = 0;
     
-    public string timer;
+    public string FrameTimer_Output;
 
-    //AppleSheep Timer
-    public Dictionary<string, long> TimeRecords { get; set; } = new Dictionary<string, long>();
+    // AppleSheep Custom Timer
+    public Dictionary<string, long> CustomTimer_TimeRecords { get; set; } = new Dictionary<string, long>();
     
-    public long RawTime;
+    public long CustomTimer_RawTime;
     
-    public long Time;
+    public long CustomTimer_Time;
     
-    public bool TimerStarted;
+    public bool CustomTimer_TimerStarted;
     
-    public bool TimerPauseed;
+    public bool CustomTimer_TimerPaused;
     
-    public bool TimerCompleted;
+    public bool CustomTimer_TimerCompleted;
 
-    [YamlIgnore] public List<MTexture> Icons { get; set; }
-    [YamlIgnore] public List<Vector2> IconOffsets { get; set; }
-    [YamlIgnore] public List<Color> IconColors { get; set; }
-    public List<string> IconsSave { get; set; }
-    public List<Vector2> IconOffsetsSave { get; set; }
-    public List<string> IconColorsSave { get; set; }
-    public int ZoneDepth { get; set; }
+    [YamlIgnore] public List<MTexture> PIZ_Icons { get; set; }
+    [YamlIgnore] public List<Vector2> PIZ_IconOffsets { get; set; }
+    [YamlIgnore] public List<Color> PIZ_IconColors { get; set; }
+    public List<string> PIZ_IconsSave { get; set; }
+    public List<Vector2> PIZ_IconOffsetsSave { get; set; }
+    public List<string> PIZ_IconColorsSave { get; set; }
+    public int PIZ_ZoneDepth { get; set; }
 
     public void ProcessZoneSaves()
     {
-        if (Icons is not null) return;
-        Icons = IconsSave?.Select(s => GFX.Game[s]).ToList();
-        IconOffsets = IconOffsetsSave;
-        IconColors = IconColorsSave?.Select(Calc.HexToColor).ToList();
+        if (PIZ_Icons is not null) return;
+        PIZ_Icons = PIZ_IconsSave?.Select(s => GFX.Game[s]).ToList();
+        PIZ_IconOffsets = PIZ_IconOffsetsSave;
+        PIZ_IconColors = PIZ_IconColorsSave?.Select(Calc.HexToColor).ToList();
     }
 
     public void RecordZoneSave(PlayerIndicatorZone zone)
     {
         if (zone is null)
         {
-            Icons = null;
-            IconOffsets = null;
-            IconColors = null;
-            IconsSave = null;
-            IconOffsetsSave = null;
-            IconColorsSave = null;
+            PIZ_Icons = null;
+            PIZ_IconOffsets = null;
+            PIZ_IconColors = null;
+            PIZ_IconsSave = null;
+            PIZ_IconOffsetsSave = null;
+            PIZ_IconColorsSave = null;
             return;
         }
-        Icons = zone.Icons;
-        IconsSave = zone.Icons.Select(t => t.AtlasPath).ToList();
-        IconOffsets = zone.IconOffsets;
-        IconOffsetsSave = zone.IconOffsets;
-        IconColors = zone.IconColors;
-        IconColorsSave = zone.IconColors.Select(c => $"{c.R:X2}{c.G:X2}{c.B:X2}").ToList();
-        ZoneDepth = zone.Depth;
+        PIZ_Icons = zone.Icons;
+        PIZ_IconsSave = zone.Icons.Select(t => t.AtlasPath).ToList();
+        PIZ_IconOffsets = zone.IconOffsets;
+        PIZ_IconOffsetsSave = zone.IconOffsets;
+        PIZ_IconColors = zone.IconColors;
+        PIZ_IconColorsSave = zone.IconColors.Select(c => $"{c.R:X2}{c.G:X2}{c.B:X2}").ToList();
+        PIZ_ZoneDepth = zone.Depth;
     }
 
     // Flag Button Data
     // Can be migrated but not necessary?
-    public HashSet<string> switchFlag = new();
-    public HashSet<string> flagNames = new HashSet<string>();
-    public Dictionary<int, int> touchSwitchFrame = new Dictionary<int, int>();
+    public HashSet<string> FlagButtonStates = new();
+    public HashSet<string> FlagButtonTargetFlags = new HashSet<string>();
+    public Dictionary<int, int> FlagButtonFrameIndex = new Dictionary<int, int>();
 
     // Flag Carousel Trigger extended
-    public Dictionary<string, bool> CarouselState { get; set; } = new Dictionary<string, bool>();
+    public Dictionary<string, bool> FlagCarouselState { get; set; } = new Dictionary<string, bool>();
 
     // Music Trigger Update
     public bool musicReset = false, musicStored = false;
@@ -114,10 +114,10 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<string, object> se_Variables = new Dictionary<string, object>();
 
     // Password Keyboard
-    public Dictionary<EntityID, int> RemainingUses { get; set; } = new();
-    public Dictionary<EntityID, int> PasswordQueue { get; set; } = new();
+    public Dictionary<EntityID, int> Passkeyboard_RemainingUses { get; set; } = new();
+    public Dictionary<EntityID, int> Passkeyboard_PasswordQueue { get; set; } = new();
 
-    public Dictionary<string,string> Passwords { get; set; } = new();
+    public Dictionary<string,string> Passkeyboard_Passwords { get; set; } = new();
 
     // Platform Line Controller
 
@@ -152,7 +152,7 @@ public class ChroniaHelperSession : EverestModuleSession
     public HashSet<string> flagsWhenEnter = new();
 
     // Room Tag
-    public List<string> rooms = new();
+    public List<string> roomTags_Rooms = new();
     public List<string> roomTags = new();
     public bool roomTagLoaded = false;
 
@@ -161,10 +161,10 @@ public class ChroniaHelperSession : EverestModuleSession
     public SolidModifierComponent currentActiveSolidModifier = null;
 
     // Stopwatch
-    public Dictionary<string, Stopclock> sessionStopwatches = new();
+    public Dictionary<string, Stopclock> Stopclocks = new();
 
     // OperationCode Listener
-    public Dictionary<int, OperationCodesListener.OperationCodeData> operationCodeListeners = new();
+    public Dictionary<int, OperationCodesListener.OperationCodeData> OperationCodeListeners = new();
 
     // HUD Controller
     public List<bool> HUDPrimaryState = new();
@@ -197,10 +197,10 @@ public class ChroniaHelperSession : EverestModuleSession
         public float time;
         public string flag;
     }
-    public Dictionary<string, SessionConditionListener> listeningConditions = new();
-    public Dictionary<string, bool> listeningConditionLastState = new();
-    public Dictionary<string, bool> listeningConditionTimerState = new();
-    public Dictionary<string, float> listeningConditionTimer = new();
+    public Dictionary<string, SessionConditionListener> SessionConditionListeners = new();
+    public Dictionary<string, bool> SessionConditionListener_LastState = new();
+    public Dictionary<string, bool> SessionConditionListener_TimerState = new();
+    public Dictionary<string, float> SessionConditionListener_Timer = new();
 
     // Fnt Textures
     [YamlIgnore]
@@ -263,5 +263,5 @@ public class ChroniaHelperSession : EverestModuleSession
     /// </summary>
     public Dictionary<string, float> slidersPerDeath = new();
 
-    public Dictionary<string, string> sessionKeys = new();
+    public Dictionary<string, string> keystrings = new();
 }

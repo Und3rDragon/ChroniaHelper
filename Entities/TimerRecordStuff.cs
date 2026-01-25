@@ -50,7 +50,7 @@ public class TimerRecordStuff : Entity
         Vector2 vector = position + new Vector2(Width / 2f * 6f, Height * 6f - 12f);
         Vector2 vector2 = position + new Vector2(Width / 2f * 6f, 12f);
 
-        string time = Md.Session.TimeRecords.ContainsKey(recordID) ? ConvertTimeToString(TimeSpan.FromTicks(recordTIme), showMilliseconds, showUnits) : "--:--";
+        string time = Md.Session.CustomTimer_TimeRecords.ContainsKey(recordID) ? ConvertTimeToString(TimeSpan.FromTicks(recordTIme), showMilliseconds, showUnits) : "--:--";
 
         //DrawTimer
         ActiveFont.DrawOutline(time, vector, new Vector2(0.5f, 0.5f), Vector2.One * 1.5f, Color.Black, 1.5f, Color.Black);
@@ -64,7 +64,7 @@ public class TimerRecordStuff : Entity
     public void LoadRecords()
     {
         long time;
-        Md.Session.TimeRecords.TryGetValue(recordID, out time);
+        Md.Session.CustomTimer_TimeRecords.TryGetValue(recordID, out time);
         if (time != default)
             recordTIme = time;
     }

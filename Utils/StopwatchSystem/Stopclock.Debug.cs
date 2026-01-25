@@ -10,11 +10,11 @@ public partial class Stopclock
 {
     public static void Debug(string additionalTagInfo = "")
     {
-        Md.Session.sessionStopwatches.EachDo((e) =>
+        Md.Session.Stopclocks.EachDo((e) =>
         {
             Log.Info($"[{additionalTagInfo}] Session ({e.Key}): {e.Value.completed}, {e.Value.FormattedTime}");
         });
-        Md.SaveData.globalStopwatches.EachDo((e) =>
+        Md.SaveData.stopclocks.EachDo((e) =>
         {
             Log.Info($"[{additionalTagInfo}] Global ({e.Key}): {e.Value.completed}, {e.Value.FormattedTime}");
         });

@@ -103,7 +103,7 @@ public class FntDisplayerHD : HDRenderEntity
     public List<string> ParseRenderTarget()
     {
         string text = content.StartsWith('#') ?
-            Md.Session.sessionKeys.GetValueOrDefault(content.TrimStart('#'), "") :
+            Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "") :
             Dialog.Clean(content);
 
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);

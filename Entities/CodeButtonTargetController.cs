@@ -32,7 +32,7 @@ public class CodeButtonTargetController : BaseEntity
         {
             if (!item.Value.needsEnterCheck)
             {
-                if (Md.Session.sessionKeys.GetValueOrDefault(item.Key, "") == item.Value.codeString)
+                if (Md.Session.keystrings.GetValueOrDefault(item.Key, "") == item.Value.codeString)
                 {
                     item.Value.flag.SetFlag(true);
                 }
