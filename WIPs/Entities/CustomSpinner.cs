@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress("Current Seamless Spinner is working fine, so this is not a urgent work",
     "but the fact is there are many useless paths and some features are hard to optimize",
