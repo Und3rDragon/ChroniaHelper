@@ -21,7 +21,7 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/CustomBooster", "ChroniaHelper/CustomBoosterXML")]
 public class CustomBooster : Booster
 {
-    private static ILHook redDashCoroutineHook;
+    private static ILHook redDashCoroutineHook, greenDashCoroutineHook;
     private static ILHook dashCoroutineHook;
 
     [LoadHook]
@@ -52,6 +52,7 @@ public class CustomBooster : Booster
         On.Celeste.Player.BoostUpdate += PlayerOnBoostUpdate;
 
         redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), Player_RedDashHook);
+        greenDashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), Player_GreenDashHook);
     }
 
     [UnloadHook]
@@ -80,6 +81,7 @@ public class CustomBooster : Booster
         On.Celeste.Player.BoostUpdate -= PlayerOnBoostUpdate;
 
         redDashCoroutineHook.Dispose();
+        greenDashCoroutineHook.Dispose();
     }
 
     private float appearTime, loopTime, insideTime, spinTime, popTime, tr;
@@ -104,7 +106,7 @@ public class CustomBooster : Booster
     
     public bool playerFollow;
 
-    public float redBoostMovingSpeed = 240f;
+    public float redBoostMovingSpeed = 240f, greenBoostMovingSpeed = 240f;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -132,6 +134,7 @@ public class CustomBooster : Booster
         setupStamina = data.Bool("setOrRefillStamina", false);
 
         redBoostMovingSpeed = data.Float("redBoostMovingSpeed", 240f);
+        greenBoostMovingSpeed = data.Float("greenBoostMovingSpeed", 240f);
 
         // process old data
         if (!string.IsNullOrEmpty(data.Attr("setOutSpeed")))
@@ -348,6 +351,28 @@ public class CustomBooster : Booster
                     if(p.CurrentBooster is CustomBooster b)
                     {
                         return b.redBoostMovingSpeed;
+                    }
+                }
+                return fallback;
+            });
+        }
+    }
+
+    private static void Player_GreenDashHook(ILContext il)
+    {
+        ILCursor c = new ILCursor(il);
+
+        if (c.TryGotoNext(ins => ins.MatchLdcR4(240f)))
+        {
+            c.Index += 1;
+
+            c.EmitDelegate<Func<float, float>>(fallback =>
+            {
+                if (PUt.TryGetPlayer(out var p))
+                {
+                    if (p.CurrentBooster is CustomBooster b)
+                    {
+                        return b.greenBoostMovingSpeed;
                     }
                 }
                 return fallback;

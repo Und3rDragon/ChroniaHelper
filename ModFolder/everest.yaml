@@ -1,9 +1,9 @@
 - Name: ChroniaHelper
-  Version: 1.43.1
+  Version: 1.43.2
   DLL: Code/ChroniaHelper.dll
   Dependencies:
     - Name: Everest
-      Version: 1.6088.0
+      Version: 1.6157.0
   OptionalDependencies:
     - Name: FrostHelper
       Version: 1.70.2
