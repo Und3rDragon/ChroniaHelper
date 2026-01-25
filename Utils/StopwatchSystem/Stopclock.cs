@@ -41,10 +41,10 @@ public partial class Stopclock : IDisposable
         HashSet<string> toRemove = new();
         foreach(var clock in clocksToGlobal)
         {
-            Md.SaveData.globalStopwatches.Enter(clock.Key, clock.Value);
+            Md.SaveData.stopclocks.Enter(clock.Key, clock.Value);
         }
         clocksToGlobal.Clear();
-        foreach (var watches in Md.SaveData.globalStopwatches)
+        foreach (var watches in Md.SaveData.stopclocks)
         {
             if (!watches.Value.isolatedUpdate)
             {
@@ -71,7 +71,7 @@ public partial class Stopclock : IDisposable
 
         foreach (var item in toRemove)
         {
-            Md.SaveData.globalStopwatches.SafeRemove(item);
+            Md.SaveData.stopclocks.SafeRemove(item);
         }
     }
 
@@ -89,7 +89,7 @@ public partial class Stopclock : IDisposable
         
         // Session Persistent is more frequent than Session Update, so we move the timer check there
         // Only level paused refresh here
-        foreach (var watches in Md.Session.sessionStopwatches)
+        foreach (var watches in Md.Session.Stopclocks)
         {
             if (!watches.Value.isolatedUpdate && watches.Value.followPause)
             {
@@ -112,12 +112,12 @@ public partial class Stopclock : IDisposable
         HashSet<string> toRemove = new();
         foreach (var clock in clocksToSession)
         {
-            Md.Session.sessionStopwatches.Enter(clock.Key, clock.Value);
+            Md.Session.Stopclocks.Enter(clock.Key, clock.Value);
         }
         clocksToSession.Clear();
-        foreach (var watches in Md.Session.sessionStopwatches)
+        foreach (var watches in Md.Session.Stopclocks)
         {
-            if (Md.SaveData.globalStopwatches.ContainsKey(watches.Key))
+            if (Md.SaveData.stopclocks.ContainsKey(watches.Key))
             {
                 toRemove.Add(watches.Key);
                 watches.Value.Stop();
@@ -145,7 +145,7 @@ public partial class Stopclock : IDisposable
         }
         foreach (var item in toRemove)
         {
-            Md.Session.sessionStopwatches.SafeRemove(item);
+            Md.Session.Stopclocks.SafeRemove(item);
         }
     }
 
@@ -397,14 +397,14 @@ public partial class Stopclock : IDisposable
     
     public void CheckRegistry(out bool registered, out string registeredAs, out bool globally)
     {
-        registered = Md.Session.sessionStopwatches.ContainsValue(this)
-            || Md.SaveData.globalStopwatches.ContainsValue(this);
+        registered = Md.Session.Stopclocks.ContainsValue(this)
+            || Md.SaveData.stopclocks.ContainsValue(this);
         this.registered = registered;
-        globally = Md.SaveData.globalStopwatches.ContainsValue(this);
+        globally = Md.SaveData.stopclocks.ContainsValue(this);
         registeredAs = "";
         if (globally)
         {
-            foreach(var item in Md.SaveData.globalStopwatches)
+            foreach(var item in Md.SaveData.stopclocks)
             {
                 if(item.Value == this)
                 {
@@ -415,7 +415,7 @@ public partial class Stopclock : IDisposable
         }
         else
         {
-            foreach(var item in Md.Session.sessionStopwatches)
+            foreach(var item in Md.Session.Stopclocks)
             {
                 if(item.Value == this)
                 {

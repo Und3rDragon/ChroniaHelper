@@ -20,20 +20,20 @@ public class DustBunnyEdge : Component
     {
         base.Added(entity);
         Color edgeColor = (entity as CustomDustBunny).borderColor;
-        if (Md.Session.EdgeColorDictionary.TryGetValue(edgeColor, out List<DustBunnyEdge> list))
+        if (Md.Session.DustBunnyEdgeColor.TryGetValue(edgeColor, out List<DustBunnyEdge> list))
         {
             list.Add(this);
         }
         else
         {
-            Md.Session.EdgeColorDictionary[edgeColor] = new List<DustBunnyEdge>() { this };
+            Md.Session.DustBunnyEdgeColor[edgeColor] = new List<DustBunnyEdge>() { this };
         }
     }
 
     public override void SceneEnd(Scene scene)
     {
         base.SceneEnd(scene);
-        Md.Session.EdgeColorDictionary.Clear();
+        Md.Session.DustBunnyEdgeColor.Clear();
     }
 
 }
