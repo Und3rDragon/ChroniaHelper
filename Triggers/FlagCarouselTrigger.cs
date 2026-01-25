@@ -70,9 +70,9 @@ public class FlagCarouselTrigger : FlagManageTrigger
             yield break;
         }
 
-        if (Md.Session.CarouselState.ContainsKey(regID))
+        if (Md.Session.FlagCarouselState.ContainsKey(regID))
         {
-            if (Md.Session.CarouselState[regID])
+            if (Md.Session.FlagCarouselState[regID])
             {
                 yield break;
             }
@@ -84,7 +84,7 @@ public class FlagCarouselTrigger : FlagManageTrigger
             if (this.onPause)
             {
                 this.loopStartup = false;
-                Md.Session.CarouselState[regID] = false;
+                Md.Session.FlagCarouselState[regID] = false;
                 break;
             }
             foreach (string[] flag in this.flagList)
@@ -183,14 +183,14 @@ public class FlagCarouselTrigger : FlagManageTrigger
     public void Pause()
     {
         this.onPause = true;
-        Md.Session.CarouselState[regID] = false;
+        Md.Session.FlagCarouselState[regID] = false;
     }
 
     public void Resume()
     {
         this.onPause = false;
         this.loopStartup = true;
-        Md.Session.CarouselState[regID] = true;
+        Md.Session.FlagCarouselState[regID] = true;
     }
 
     public void Cancel()
@@ -201,7 +201,7 @@ public class FlagCarouselTrigger : FlagManageTrigger
         {
             base.Remove(flag);
         }
-        Md.Session.CarouselState.Remove(regID);
+        Md.Session.FlagCarouselState.Remove(regID);
     }
 
     public void Remove()

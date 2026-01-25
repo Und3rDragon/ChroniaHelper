@@ -55,12 +55,12 @@ public class DustBunnyEdges : Entity
         DustBunnyEdges.FxDust.Parameters["noiseFromPos"].SetValue(this.noiseFromPos + new Vector2(vector.X / 320F, vector.Y / 180F));
         DustBunnyEdges.FxDust.Parameters["noiseToPos"].SetValue(this.noiseToPos + new Vector2(vector.X / 320F, vector.Y / 180F));
         DustBunnyEdges.FxDust.Parameters["pixel"].SetValue(new Vector2(0.003125F, 1F / 180F));
-        foreach (Color color in Md.Session.EdgeColorDictionary.Keys)
+        foreach (Color color in Md.Session.DustBunnyEdgeColor.Keys)
         {
             Engine.Graphics.GraphicsDevice.SetRenderTarget(GameplayBuffers.TempA);
             Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
             Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, (base.Scene as Level).Camera.Matrix);
-            foreach (DustBunnyEdge dustBunnyEdge in Md.Session.EdgeColorDictionary[color])
+            foreach (DustBunnyEdge dustBunnyEdge in Md.Session.DustBunnyEdgeColor[color])
             {
                 if ((dustBunnyEdge.Visible) && (dustBunnyEdge.Entity.Visible))
                 {

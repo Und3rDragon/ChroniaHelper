@@ -99,7 +99,7 @@ public sealed partial class PasswordKeyboard : Entity
         talkComponent.PlayerMustBeFacing = identifier == 0;
 
         ui = new(config, OnExit, OnTry);
-        var dic = Md.Session.RemainingUses;
+        var dic = Md.Session.Passkeyboard_RemainingUses;
         if (!dic.ContainsKey(entityID))
             dic[entityID] = config.UseTimes;
 
@@ -127,7 +127,7 @@ public sealed partial class PasswordKeyboard : Entity
                 }
             }
         }
-        Md.Session.PasswordQueue.Enter(entityID, 0);
+        Md.Session.Passkeyboard_PasswordQueue.Enter(entityID, 0);
 
         base.Depth = data.Int("depth", 9000);
     }
@@ -137,7 +137,7 @@ public sealed partial class PasswordKeyboard : Entity
     
     private void OnTalk(Player player)
     {
-        if (Md.Session.RemainingUses[entityID] is 0)
+        if (Md.Session.Passkeyboard_RemainingUses[entityID] is 0)
         {
             talkComponent.Active = false;
             return;
@@ -151,16 +151,16 @@ public sealed partial class PasswordKeyboard : Entity
 
     private bool OnTry(string password)
     {
-        var dic = Md.Session.RemainingUses;
+        var dic = Md.Session.Passkeyboard_RemainingUses;
         bool feedback = true; // when feedback is true, the keyboard will exit after input
         switch (config.Mode)
         {
             case Mode.Exclusive:
-                Md.Session.Passwords.Enter(config.IDTag, password);
+                Md.Session.Passkeyboard_Passwords.Enter(config.IDTag, password);
 
                 feedback = true; break;
             case Mode.Normal:
-                int nextPassword = Math.Min(Md.Session.PasswordQueue[entityID], passwordCount - 1);
+                int nextPassword = Math.Min(Md.Session.Passkeyboard_PasswordQueue[entityID], passwordCount - 1);
 
                 string passIn = config.CaseSensitive ? password : password.ToLower();
                 string passOut = config.CaseSensitive ? passwords[nextPassword] : passwords[nextPassword].ToLower();
@@ -170,7 +170,7 @@ public sealed partial class PasswordKeyboard : Entity
                     passOut = passwords[nextPassword];
                 }
 
-                string currentFlag = flagList[Math.Min(Md.Session.PasswordQueue[entityID], flagCount - 1)];
+                string currentFlag = flagList[Math.Min(Md.Session.Passkeyboard_PasswordQueue[entityID], flagCount - 1)];
                 if(passIn == passOut && (dic[entityID] > 0 || dic[entityID] == -1))
                 {
                     if (config.Toggle)
@@ -182,7 +182,7 @@ public sealed partial class PasswordKeyboard : Entity
                         ChroniaFlagUtils.SetFlag(currentFlag, true, config.Global);
                     }
 
-                    Md.Session.PasswordQueue[entityID]++;
+                    Md.Session.Passkeyboard_PasswordQueue[entityID]++;
                     feedback = true; break;
                 }
                 

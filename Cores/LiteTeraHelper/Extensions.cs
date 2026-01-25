@@ -11,7 +11,7 @@ internal static class Extensions
     public static bool ChangeTera(this Player player, TeraType newTera)
     {
         if (player == null) return false;
-        if (!Md.Session.ActiveTera) return false;
+        if (!Md.Session.TeraActive) return false;
         var playerData = DynamicData.For(player);
         if (playerData.TryGet("tera", out TeraType oldTera))
         {
@@ -69,7 +69,7 @@ internal static class Extensions
     public static TeraType GetTera(this Player player, bool ignoreBooster = false)
     {
         if (player == null) return TeraType.Any;
-        if (!Md.Session.ActiveTera) return TeraType.Any;
+        if (!Md.Session.TeraActive) return TeraType.Any;
         if (!ignoreBooster && player.InTeraBooster())
         {
             if (player.LastBooster is TeraBooster teraBooster)

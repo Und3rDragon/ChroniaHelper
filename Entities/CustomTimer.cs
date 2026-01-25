@@ -85,7 +85,7 @@ public class CustomTimer : Entity
 
     public override void Update()
     {
-        if (!Md.Session.TimerStarted || Md.Session.TimerCompleted)
+        if (!Md.Session.CustomTimer_TimerStarted || Md.Session.CustomTimer_TimerCompleted)
             return;
 
         if (checkIsValidRun && !isValidRun)
@@ -115,7 +115,7 @@ public class CustomTimer : Entity
         Vector2 vector = position + new Vector2(Width / 2f * 6f, Height * 6f - 12f);
         Vector2 vector2 = position + new Vector2(Width / 2f * 6f, 12f);
 
-        TimeSpan timeSpan = useRawTime ? TimeSpan.FromTicks(Md.Session.RawTime) : TimeSpan.FromTicks(Md.Session.Time);
+        TimeSpan timeSpan = useRawTime ? TimeSpan.FromTicks(Md.Session.CustomTimer_RawTime) : TimeSpan.FromTicks(Md.Session.CustomTimer_Time);
         string time = ConvertTimeToString(timeSpan, showMilliseconds, showUnits);
 
         //DrawTimer
@@ -141,13 +141,13 @@ public class CustomTimer : Entity
 
     private static void Level_UpdateTime(On.Celeste.Level.orig_UpdateTime orig, Level self)
     {
-        if (Md.Session.TimerCompleted || !Md.Session.TimerStarted)
+        if (Md.Session.CustomTimer_TimerCompleted || !Md.Session.CustomTimer_TimerStarted)
         {
             orig(self);
             return;
         }
 
-        if (self.InCredits || self.Session.Area.ID == 8 || Md.Session.TimerPauseed)
+        if (self.InCredits || self.Session.Area.ID == 8 || Md.Session.CustomTimer_TimerPaused)
         {
             orig(self);
             return;
@@ -155,11 +155,11 @@ public class CustomTimer : Entity
 
         orig(self);
 
-        if (!self.Completed && Md.Session.TimerStarted)
+        if (!self.Completed && Md.Session.CustomTimer_TimerStarted)
         {
             long ticks = TimeUtils.CalculateInterval(Engine.RawDeltaTime, 1000).Ticks;
-            Md.Session.RawTime += ticks;
-            Md.Session.Time += ticks;
+            Md.Session.CustomTimer_RawTime += ticks;
+            Md.Session.CustomTimer_Time += ticks;
         }
     }
 
@@ -198,7 +198,7 @@ public class CustomTimer : Entity
     private bool IsUnderTimeLimit()
     {
         Level obj = level;
-        return obj != null && Md.Session.Time < timeLimit;
+        return obj != null && Md.Session.CustomTimer_Time < timeLimit;
     }
 
     private bool CheckIsValidRun()

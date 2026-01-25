@@ -57,12 +57,12 @@ public class OperationCodesListener : BaseEntity
 
     protected override void AddedExecute(Scene scene)
     {
-        Md.Session.operationCodeListeners.Enter(ID, data);
+        Md.Session.OperationCodeListeners.Enter(ID, data);
     }
 
     protected override void RemovedExecute(Scene scene)
     {
-        Md.Session.operationCodeListeners.SafeRemove(this.ID);
+        Md.Session.OperationCodeListeners.SafeRemove(this.ID);
     }
     
     public class OperationCodeData
@@ -175,7 +175,7 @@ public class OperationCodesListener : BaseEntity
     {
         orig(self);
         
-        foreach (var op in Md.Session.operationCodeListeners.Values)
+        foreach (var op in Md.Session.OperationCodeListeners.Values)
         {
             op.opCode1 = op.opCode2 = OPC.None;
 

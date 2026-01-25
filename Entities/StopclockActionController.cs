@@ -57,7 +57,7 @@ public class StopclockActionController : Entity
                 }
             }
 
-            Md.Session.sessionKeys[sessionKey] = sessionData;
+            Md.Session.keystrings[sessionKey] = sessionData;
         }
         
         if (clock.FetchSignal())

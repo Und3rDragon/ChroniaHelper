@@ -261,8 +261,8 @@ public class FlagButton : Entity {
     {
         if (passwordProtected)
         {
-            if (!Md.Session.Passwords.ContainsKey(passwordID)) { return; }
-            else if (Md.Session.Passwords[passwordID] != password) { return; }
+            if (!Md.Session.Passkeyboard_Passwords.ContainsKey(passwordID)) { return; }
+            else if (Md.Session.Passkeyboard_Passwords[passwordID] != password) { return; }
         }
         if (toggle)
         {
@@ -377,7 +377,7 @@ public class FlagButton : Entity {
 
         base.Update();
 
-        Md.Session.touchSwitchFrame.Enter(ID, icon.CurrentAnimationFrame);
+        Md.Session.FlagButtonFrameIndex.Enter(ID, icon.CurrentAnimationFrame);
     }
 
     public Vector2 EdgePosition()

@@ -99,8 +99,8 @@ public class TimerControlTrigger : Trigger
         long usedTime;
         if (useRecordAsInput)
         {
-            long record = session.TimeRecords.ContainsKey(recordID)
-            ? session.TimeRecords[recordID] : throw new Exception($"{recordID} not exist in current time record!");
+            long record = session.CustomTimer_TimeRecords.ContainsKey(recordID)
+            ? session.CustomTimer_TimeRecords[recordID] : throw new Exception($"{recordID} not exist in current time record!");
             usedTime = record;
         }
         else
@@ -114,25 +114,25 @@ public class TimerControlTrigger : Trigger
             break;
 
         case TimerControlType.Start:
-            session.TimerStarted = true;
+            session.CustomTimer_TimerStarted = true;
             break;
 
         case TimerControlType.Pause:
-            session.TimerPauseed = true;
+            session.CustomTimer_TimerPaused = true;
             //Console.WriteLine(session.TimerPauseed);
             break;
 
         case TimerControlType.Unpause:
-            session.TimerPauseed = false;
+            session.CustomTimer_TimerPaused = false;
             //Console.WriteLine(session.TimerPauseed);
             break;
 
         case TimerControlType.Reset:
-            session.TimerStarted = false;
-            session.TimerPauseed = false;
-            session.TimerCompleted = false;
-            session.RawTime = 0L;
-            session.Time = 0L;
+            session.CustomTimer_TimerStarted = false;
+            session.CustomTimer_TimerPaused = false;
+            session.CustomTimer_TimerCompleted = false;
+            session.CustomTimer_RawTime = 0L;
+            session.CustomTimer_Time = 0L;
             var timers = Scene.Tracker.GetEntities<CustomTimer>();
             foreach (var timer in timers)
                 if (timer is CustomTimer customTimer)
@@ -140,19 +140,19 @@ public class TimerControlTrigger : Trigger
             break;
 
         case TimerControlType.Complete:
-            session.TimerCompleted = true;
+            session.CustomTimer_TimerCompleted = true;
             break;
 
         case TimerControlType.Set:
-            session.Time = usedTime;
+            session.CustomTimer_Time = usedTime;
             break;
 
         case TimerControlType.Add:
-            session.Time += usedTime;
+            session.CustomTimer_Time += usedTime;
             break;
 
         case TimerControlType.Subtract:
-            session.Time -= usedTime;
+            session.CustomTimer_Time -= usedTime;
             break;
 
         default:
@@ -161,7 +161,7 @@ public class TimerControlTrigger : Trigger
 
         if (recordTime)
         {
-            Md.Session.TimeRecords[recordID] = Md.Session.Time;
+            Md.Session.CustomTimer_TimeRecords[recordID] = Md.Session.CustomTimer_Time;
             var entities = Scene.Tracker.GetEntities<TimerRecordStuff>();
             foreach (var entity in entities)
                 if (entity is TimerRecordStuff recordEntity)
@@ -175,22 +175,22 @@ public class TimerControlTrigger : Trigger
             condition = true;
             break;
         case ConditionType.Equel:
-            condition = session.Time == usedTime ? true : false;
+            condition = session.CustomTimer_Time == usedTime ? true : false;
             break;
         case ConditionType.NotEqual:
-            condition = session.Time != usedTime ? true : false;
+            condition = session.CustomTimer_Time != usedTime ? true : false;
             break;
         case ConditionType.Less:
-            condition = session.Time < usedTime ? true : false;
+            condition = session.CustomTimer_Time < usedTime ? true : false;
             break;
         case ConditionType.LessEqual:
-            condition = session.Time <= usedTime ? true : false;
+            condition = session.CustomTimer_Time <= usedTime ? true : false;
             break;
         case ConditionType.Greater:
-            condition = session.Time > usedTime ? true : false;
+            condition = session.CustomTimer_Time > usedTime ? true : false;
             break;
         case ConditionType.GreaterEqual:
-            condition = session.Time >= usedTime ? true : false;
+            condition = session.CustomTimer_Time >= usedTime ? true : false;
             break;
         }
 

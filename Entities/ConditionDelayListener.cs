@@ -31,48 +31,48 @@ public class ConditionDelayListenerOperator
     {
         orig(self);
         
-        foreach(var item in Md.Session.listeningConditions)
+        foreach(var item in Md.Session.SessionConditionListeners)
         {
             var listener = item.Value;
             bool state = listener.condition.CheckCondition((ConditionUtils.ConditionMode)listener.usingExpression);
             
             if (listener.constant == 1)
             {
-                if(state != Md.Session.listeningConditionLastState.SafeGet(item.Key, false))
+                if(state != Md.Session.SessionConditionListener_LastState.SafeGet(item.Key, false))
                 {
-                    Md.Session.listeningConditionTimerState[item.Key] = true;
+                    Md.Session.SessionConditionListener_TimerState[item.Key] = true;
                 }
             }
             else if(listener.constant == 2)
             {
-                if (state && !Md.Session.listeningConditionLastState.SafeGet(item.Key, false))
+                if (state && !Md.Session.SessionConditionListener_LastState.SafeGet(item.Key, false))
                 {
-                    Md.Session.listeningConditionTimerState[item.Key] = true;
+                    Md.Session.SessionConditionListener_TimerState[item.Key] = true;
                 }
             }
             else if(listener.constant == 3)
             {
-                if (!state && Md.Session.listeningConditionLastState.SafeGet(item.Key, false))
+                if (!state && Md.Session.SessionConditionListener_LastState.SafeGet(item.Key, false))
                 {
-                    Md.Session.listeningConditionTimerState[item.Key] = true;
+                    Md.Session.SessionConditionListener_TimerState[item.Key] = true;
                 }
             }
             else
             {
-                Md.Session.listeningConditionTimerState[item.Key] = state;
+                Md.Session.SessionConditionListener_TimerState[item.Key] = state;
             }
 
-            if (Md.Session.listeningConditionTimerState.SafeGet(item.Key, false))
+            if (Md.Session.SessionConditionListener_TimerState.SafeGet(item.Key, false))
             {
-                Md.Session.listeningConditionTimer.Create(item.Key, 0f);
-                Md.Session.listeningConditionTimer[item.Key] += Engine.DeltaTime;
+                Md.Session.SessionConditionListener_Timer.Create(item.Key, 0f);
+                Md.Session.SessionConditionListener_Timer[item.Key] += Engine.DeltaTime;
             }
             
-            if (Md.Session.listeningConditionTimer.SafeGet(item.Key, 0f) >= listener.time.GetAbs() &&
-                Md.Session.listeningConditionTimerState.SafeGet(item.Key, false))
+            if (Md.Session.SessionConditionListener_Timer.SafeGet(item.Key, 0f) >= listener.time.GetAbs() &&
+                Md.Session.SessionConditionListener_TimerState.SafeGet(item.Key, false))
             {
-                Md.Session.listeningConditionTimerState[item.Key] = false;
-                Md.Session.listeningConditionTimer[item.Key] = 0f;
+                Md.Session.SessionConditionListener_TimerState[item.Key] = false;
+                Md.Session.SessionConditionListener_Timer[item.Key] = 0f;
 
                 if (listener.flagOperation == 1)
                 {
@@ -88,7 +88,7 @@ public class ConditionDelayListenerOperator
                 }
             }
 
-            Md.Session.listeningConditionLastState[item.Key] = state;
+            Md.Session.SessionConditionListener_LastState[item.Key] = state;
         }
     }
 }
@@ -115,6 +115,6 @@ public class ConditionDelayListener : BaseEntity
 
     protected override void AddedExecute(Scene scene)
     {
-        Md.Session.listeningConditions[conditionTag] = listener;
+        Md.Session.SessionConditionListeners[conditionTag] = listener;
     }
 }

@@ -27,12 +27,12 @@ public class RoomTagCreator : Entity
     {
         if(forceLoad || !Md.Session.roomTagLoaded)
         {
-            Md.Session.rooms = new();
+            Md.Session.roomTags_Rooms = new();
             Md.Session.roomTags = new();
             for (int i = 0; i < MaP.mapdata.Levels.Count; i++)
             {
                 string name = MaP.mapdata.Levels[i].Name;
-                Md.Session.rooms.Add(name);
+                Md.Session.roomTags_Rooms.Add(name);
                 Md.Session.roomTags.Add(tagExpression.Replace("#", $"{i}").Replace("&", name));
             }
             Md.Session.roomTagLoaded = true;

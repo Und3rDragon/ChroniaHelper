@@ -33,9 +33,9 @@ public class RoomTagSessionController : Entity
             if (setFlag)
             {
                 string source = MaP.level.Session.LevelData.Name;
-                for(int i = 0; i < Md.Session.rooms.Count; i++)
+                for(int i = 0; i < Md.Session.roomTags_Rooms.Count; i++)
                 {
-                    if (source == Md.Session.rooms[i])
+                    if (source == Md.Session.roomTags_Rooms[i])
                     {
                         Md.Session.roomTags[i].SetFlag(true);
                     }
@@ -48,9 +48,9 @@ public class RoomTagSessionController : Entity
             if (!setSlider.IsNullOrEmpty())
             {
                 string source = MaP.level.Session.LevelData.Name;
-                for (int i = 0; i < Md.Session.rooms.Count; i++)
+                for (int i = 0; i < Md.Session.roomTags_Rooms.Count; i++)
                 {
-                    if (source == Md.Session.rooms[i])
+                    if (source == Md.Session.roomTags_Rooms[i])
                     {
                         Md.Session.roomTags[i].SetSlider(setSlider.ParseFloat(0f));
                     }
@@ -59,9 +59,9 @@ public class RoomTagSessionController : Entity
             if (!setCounter.IsNullOrEmpty())
             {
                 string source = MaP.level.Session.LevelData.Name;
-                for (int i = 0; i < Md.Session.rooms.Count; i++)
+                for (int i = 0; i < Md.Session.roomTags_Rooms.Count; i++)
                 {
-                    if (source == Md.Session.rooms[i])
+                    if (source == Md.Session.roomTags_Rooms[i])
                     {
                         Md.Session.roomTags[i].SetCounter(setSlider.ParseInt(0));
                     }

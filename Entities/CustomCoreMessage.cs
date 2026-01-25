@@ -119,7 +119,7 @@ public class ColoredCustomCoreMessage : Entity
 
         if (dialog.StartsWith('#'))
         {
-            text = Md.Session.sessionKeys.GetValueOrDefault(dialog.TrimStart('#'), "");
+            text = Md.Session.keystrings.GetValueOrDefault(dialog.TrimStart('#'), "");
             return;
         }
 
@@ -150,8 +150,8 @@ public class ColoredCustomCoreMessage : Entity
     {
         base.Added(scene);
         this.level = base.SceneAs<Level>();
-        timerStatic = Md.Session.timer;
-        framesStatic = Md.Session.timerFrames.ToString();
+        timerStatic = Md.Session.FrameTimer_Output;
+        framesStatic = Md.Session.FrameTimer_Frames.ToString();
     }
 
     public override void Update()
@@ -237,11 +237,11 @@ public class ColoredCustomCoreMessage : Entity
         }
         if (dialog == "ChroniaHelperTimer")
         {
-            text = Md.Session.timer;
+            text = Md.Session.FrameTimer_Output;
         }
         if (dialog == "ChroniaHelperFrames")
         {
-            text = Md.Session.timerFrames.ToString();
+            text = Md.Session.FrameTimer_Frames.ToString();
         }
         if (dialog == "ChroniaHelperFramesStatic")
         {
@@ -266,8 +266,8 @@ public class ColoredCustomCoreMessage : Entity
         if (dialog.StartsWith("keyboardSync_"))
         {
             string tag = dialog.Remove(0, "keyboardSync_".Length);
-            bool valid = Md.Session.Passwords.ContainsKey(tag);
-            text = valid ? Md.Session.Passwords[tag] : string.Empty;
+            bool valid = Md.Session.Passkeyboard_Passwords.ContainsKey(tag);
+            text = valid ? Md.Session.Passkeyboard_Passwords[tag] : string.Empty;
         }
 
         Vector2 position = ((Level)base.Scene).Camera.Position;
@@ -291,34 +291,34 @@ public class ColoredCustomCoreMessage : Entity
     {
         if (!level.Session.GetFlag("ChroniaHelperTimer.pause"))
         {
-            Md.Session.timerA++;
-            Md.Session.timerFrames++;
+            Md.Session.FrameTimer_timerFrames++;
+            Md.Session.FrameTimer_Frames++;
         }
 
-        if (Md.Session.timerA >= 1 / Engine.DeltaTime)
+        if (Md.Session.FrameTimer_timerFrames >= 1 / Engine.DeltaTime)
         {
-            Md.Session.timerA = 0;
-            Md.Session.timerB++;
+            Md.Session.FrameTimer_timerFrames = 0;
+            Md.Session.FrameTimer_Seconds++;
         }
-        if (Md.Session.timerB >= 60)
+        if (Md.Session.FrameTimer_Seconds >= 60)
         {
-            Md.Session.timerB = 0;
-            Md.Session.timerC++;
+            Md.Session.FrameTimer_Seconds = 0;
+            Md.Session.FrameTimer_Minutes++;
         }
-        if (Md.Session.timerC >= 60)
+        if (Md.Session.FrameTimer_Minutes >= 60)
         {
-            Md.Session.timerC = 0;
-            Md.Session.timerD++;
+            Md.Session.FrameTimer_Minutes = 0;
+            Md.Session.FrameTimer_Hours++;
         }
-        Md.Session.timer = $"{Md.Session.timerD}:{Md.Session.timerC}:{Md.Session.timerB}:{Md.Session.timerA}";
+        Md.Session.FrameTimer_Output = $"{Md.Session.FrameTimer_Hours}:{Md.Session.FrameTimer_Minutes}:{Md.Session.FrameTimer_Seconds}:{Md.Session.FrameTimer_timerFrames}";
     }
 
     private void TimerReset()
     {
-        Md.Session.timerA = 0;
-        Md.Session.timerB = 0;
-        Md.Session.timerC = 0;
-        Md.Session.timerD = 0;
-        Md.Session.timerFrames = 0;
+        Md.Session.FrameTimer_timerFrames = 0;
+        Md.Session.FrameTimer_Seconds = 0;
+        Md.Session.FrameTimer_Minutes = 0;
+        Md.Session.FrameTimer_Hours = 0;
+        Md.Session.FrameTimer_Frames = 0;
     }
 }
