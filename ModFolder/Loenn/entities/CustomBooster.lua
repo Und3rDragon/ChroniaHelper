@@ -18,6 +18,7 @@ booster.placements={
 		outlineDirectory = "objects/ChroniaHelper/customBoosterPresets/grey/outline",
 		colorOverlay = "ffffff",
 		ch9_hub_booster = false,
+		greenBoostMovingSpeed = 240,
 		redBoostMovingSpeed = 240,
 		appearAnimInterval = 0.8,
 		loopAnimInterval = 0.1,
