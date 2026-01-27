@@ -34,6 +34,8 @@ public class SessionSliderSync : BaseComponent
     private const float threshold = 0.00001f;
     public override void Update()
     {
+        if (syncing) return;
+
         float value = SessionValue;
         float data = GetData();
 
@@ -82,6 +84,8 @@ public class SessionFlagSync : BaseComponent
 
     public override void Update()
     {
+        if (syncing) return;
+
         bool value = SessionValue;
         bool data = GetData();
 
@@ -130,6 +134,8 @@ public class SessionCounterSync : BaseComponent
 
     public override void Update()
     {
+        if (syncing) return;
+
         int value = SessionValue;
         int data = GetData();
 
@@ -178,6 +184,8 @@ public class SessionKeySync : BaseComponent
 
     public override void Update()
     {
+        if (syncing) return;
+
         string value = SessionValue;
         string data = GetData();
 
