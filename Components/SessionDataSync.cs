@@ -23,8 +23,8 @@ public class SessionSliderSync : BaseComponent
         Key = key;
         SetData = setter;
         GetData = getter;
-
-        _data = GetData();
+        
+        _data = GetData.Invoke();
         _sessionValue = SessionValue;
     }
 
@@ -37,7 +37,7 @@ public class SessionSliderSync : BaseComponent
         if (syncing) return;
 
         float value = SessionValue;
-        float data = GetData();
+        float data = GetData.Invoke();
 
         bool diffData = (_data - data).GetAbs() > threshold;
         bool diffSession = (_sessionValue - value).GetAbs() > threshold;
@@ -45,7 +45,7 @@ public class SessionSliderSync : BaseComponent
         if(diffSession)
         {
             syncing = true;
-            SetData(value);
+            SetData.Invoke(value);
             syncing = false;
         }
         else if (diffData)
@@ -56,7 +56,7 @@ public class SessionSliderSync : BaseComponent
         }
 
         _sessionValue = SessionValue;
-        _data = GetData();
+        _data = GetData.Invoke();
     }
 }
 
@@ -75,7 +75,7 @@ public class SessionFlagSync : BaseComponent
         SetData = setter;
         GetData = getter;
 
-        _data = GetData();
+        _data = GetData.Invoke();
         _sessionValue = SessionValue;
     }
 
@@ -87,7 +87,7 @@ public class SessionFlagSync : BaseComponent
         if (syncing) return;
 
         bool value = SessionValue;
-        bool data = GetData();
+        bool data = GetData.Invoke();
 
         bool diffData = _data != data;
         bool diffSession = _sessionValue != value;
@@ -95,7 +95,7 @@ public class SessionFlagSync : BaseComponent
         if (diffSession)
         {
             syncing = true;
-            SetData(value);
+            SetData.Invoke(value);
             syncing = false;
         }
         else if (diffData)
@@ -106,7 +106,7 @@ public class SessionFlagSync : BaseComponent
         }
 
         _sessionValue = SessionValue;
-        _data = GetData();
+        _data = GetData.Invoke();
     }
 }
 
@@ -125,7 +125,7 @@ public class SessionCounterSync : BaseComponent
         SetData = setter;
         GetData = getter;
 
-        _data = GetData();
+        _data = GetData.Invoke();
         _sessionValue = SessionValue;
     }
 
@@ -137,7 +137,7 @@ public class SessionCounterSync : BaseComponent
         if (syncing) return;
 
         int value = SessionValue;
-        int data = GetData();
+        int data = GetData.Invoke();
 
         bool diffData = _data != data;
         bool diffSession = _sessionValue != value;
@@ -145,7 +145,7 @@ public class SessionCounterSync : BaseComponent
         if (diffSession)
         {
             syncing = true;
-            SetData(value);
+            SetData.Invoke(value);
             syncing = false;
         }
         else if (diffData)
@@ -156,7 +156,7 @@ public class SessionCounterSync : BaseComponent
         }
 
         _sessionValue = SessionValue;
-        _data = GetData();
+        _data = GetData.Invoke();
     }
 }
 
@@ -175,7 +175,7 @@ public class SessionKeySync : BaseComponent
         SetData = setter;
         GetData = getter;
 
-        _data = GetData();
+        _data = GetData.Invoke();
         _sessionValue = SessionValue;
     }
 
@@ -187,7 +187,7 @@ public class SessionKeySync : BaseComponent
         if (syncing) return;
 
         string value = SessionValue;
-        string data = GetData();
+        string data = GetData.Invoke();
 
         bool diffData = _data != data;
         bool diffSession = _sessionValue != value;
@@ -195,7 +195,7 @@ public class SessionKeySync : BaseComponent
         if (diffSession)
         {
             syncing = true;
-            SetData(value);
+            SetData.Invoke(value);
             syncing = false;
         }
         else if (diffData)
@@ -206,6 +206,6 @@ public class SessionKeySync : BaseComponent
         }
 
         _sessionValue = SessionValue;
-        _data = GetData();
+        _data = GetData.Invoke();
     }
 }
