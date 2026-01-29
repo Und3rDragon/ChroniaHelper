@@ -2,6 +2,7 @@
 using System;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Entities;
 
@@ -317,6 +318,8 @@ public class AnimatedSpikes : Entity
 
     public void Old(EntityData data)
     {
+        return;
+
         //this.spritingMode = data.Enum<SpritingMode>("spritingMode", SpritingMode.MoveDisabledSprite);
         string oldMode = data.Attr("tentacleMode");
         if (oldMode == "OnlyTentacle") { this.spritingMode = SpritingMode.MoveDisabledSprite; }
@@ -346,7 +349,7 @@ public class AnimatedSpikes : Entity
             enabledExteriors = "0";
         }
         this.enabledExteriors = StringUtils.SplitToIntArray(enabledExteriors);
-        this.singleSize = data.Int("singleSize"); //  8);
+        this.singleSize = data.Int("singleSize", 8); //  8);
         this.lerpMoveTime = data.Float("lerpMoveTime"); //  1F);
         this.triggerFlag = FlagUtils.Parse(data.Attr("triggerFlag")); //  null));
         this.triggerLerpMove = data.Float("triggerLerpMove"); //  8F);
@@ -401,7 +404,7 @@ public class AnimatedSpikes : Entity
         this.grouped = data.Bool("grouped", false);
         this.rainbow = data.Bool("rainbow", false);
 
-        Old(data);
+        Old(data); // Disabled?
 
         if (this.triggerDelay <= 0F)
         {
