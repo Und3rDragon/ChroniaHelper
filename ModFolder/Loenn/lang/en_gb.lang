@@ -1347,3 +1347,9 @@ entities.ChroniaHelper/GroupedWindTunnelController.placements.name.GroupedWindTu
 # ================= Ice Floor
 
 entities.ChroniaHelper/IceFloor.placements.name.IceFloor=Ice Floor
+
+# ================= Solid Modifier
+
+entities.ChroniaHelper/SolidModifier.placements.name.main=Solid Modifier
+entities.ChroniaHelper/SolidModifier.placements.name.cb=Solid Modifier (Cornerboost on Speed)
+entities.ChroniaHelper/SolidModifier.placements.name.touch=Solid Modifier (Trigger on Touch)

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using AsmResolver.DotNet.Code.Cil;
 using Celeste.Mod.MaxHelpingHand.Module;
+using ChroniaHelper.Components;
+using ChroniaHelper.Cores;
 using Microsoft.VisualBasic;
 using YamlDotNet.Serialization;
 using YoctoHelper.Cores;
@@ -240,5 +242,97 @@ public static class Miscs
             cameraSize.Y = MaxHelpingHandModule.CameraHeight;
         }
         return pos.X + size.X > camera.X - 16f && pos.Y + size.Y > camera.Y - 16f && pos.X < camera.X + cameraSize.X && pos.Y < camera.Y + cameraSize.Y;
+    }
+
+    [Credits("VivHelper")]
+    public static bool GridRectIntersection(Grid grid, Rectangle rect, out Grid ret, out Rectangle scope)
+    {
+        ret = null;
+        scope = new Rectangle();
+        if (!rect.Intersects(grid.Bounds))
+            return false;
+        int x = (int)(((float)rect.Left - grid.AbsoluteLeft) / grid.CellWidth);
+        int y = (int)(((float)rect.Top - grid.AbsoluteTop) / grid.CellHeight);
+        int width = (int)(((float)rect.Right - grid.AbsoluteLeft - 1f) / grid.CellWidth) - x + 1;
+        int height = (int)(((float)rect.Bottom - grid.AbsoluteTop - 1f) / grid.CellHeight) - y + 1;
+        if (x < 0)
+        {
+            width += x;
+            x = 0;
+        }
+        if (y < 0)
+        {
+            height += y;
+            y = 0;
+        }
+        if (x + width > grid.CellsX)
+        {
+            width = grid.CellsX - x;
+        }
+        if (y + height > grid.CellsY)
+        {
+            height = grid.CellsY - y;
+        }
+        bool[,] map = new bool[width, height];
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                map[i, j] = grid.Data[x + i, y + j];
+            }
+        }
+        ret = new Grid(grid.CellWidth, grid.CellHeight, map);
+        scope = new Rectangle((int)(x * grid.CellWidth + grid.AbsoluteLeft), (int)(y * grid.CellHeight + grid.AbsoluteTop), width, height);
+        return true;
+    }
+
+    [Credits("VivHelper")]
+    public static void AddOrAddToSolidModifierComponent(this Solid entity, SolidModifierComponent smc, out SolidModifierComponent smc2)
+    {
+        if (entity.Get<SolidModifierComponent>() == null)
+        {
+            smc2 = smc;
+            entity.Add(smc);
+            return;
+        }
+        SolidModifierComponent main = entity.Get<SolidModifierComponent>();
+        main.bufferClimbJump |= smc.bufferClimbJump;
+        main.triggerClimbOnTouch |= smc.triggerClimbOnTouch;
+        // If A has default and B doesn't, prioritize B (A|B)
+        // If A has a specific integer value (positive) and B has a behavior integer value (negative), prioritize the negative
+        // If A and B have specific integer values (positive), choose the greater of the two
+        // If A and B have behavior integer values (negative), behavior is A|B
+        if (main.CornerBoostBlock == 0)
+        {
+            main.CornerBoostBlock = smc.CornerBoostBlock; // functionally 0|B === B
+        }
+        else if (smc.CornerBoostBlock != 0)
+        {
+            if (main.CornerBoostBlock < 0)
+            { // if A is behavioral
+                if (smc.CornerBoostBlock < 0)
+                {
+                    main.CornerBoostBlock = main.CornerBoostBlock | smc.CornerBoostBlock; // A | B
+                } // else do nothing, because A is already prioritized over B
+            }
+            else
+            { // if A is specific integer value (positive)
+                if (smc.CornerBoostBlock > 0)
+                { // if both A and B are specific integer values, choose the greater of the two
+                    main.CornerBoostBlock = Math.Max(main.CornerBoostBlock, smc.CornerBoostBlock); // choose the greater leniency
+                }
+                else
+                { // if A is specific integer value and B is behavior integer value, prioritize B
+                    main.CornerBoostBlock = smc.CornerBoostBlock;
+                }
+            }
+        }
+        smc2 = main;
+    }
+
+    [Credits("VivHelper")]
+    public static void AddOrAddToSolidModifierComponent(this Solid entity, SolidModifierComponent smc)
+    {
+        AddOrAddToSolidModifierComponent(entity, smc, out SolidModifierComponent _);
     }
 }
