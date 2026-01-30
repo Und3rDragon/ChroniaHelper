@@ -2,7 +2,7 @@ local drawableRectangle = require("structs.drawable_rectangle")
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
 local connectedEntities = require("helpers.connected_entities")
-local ChroniaHelper = require("mods").requireFromPlugin("helpers.chroniaHelper")
+local ChroniaHelper = require("mods").requireFromPlugin("helpers.chroniaHelper_old")
 local fo = require("mods").requireFromPlugin("helpers.field_options")
 
 local omniSetups = {}
