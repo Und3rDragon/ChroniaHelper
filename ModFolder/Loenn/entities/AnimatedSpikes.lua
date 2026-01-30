@@ -6,7 +6,7 @@ local drawableSprite = require("structs.drawable_sprite")
 local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local fieldTable = {
-    chileMode = {
+    childMode = {
         data = "",
     },
     depth = {

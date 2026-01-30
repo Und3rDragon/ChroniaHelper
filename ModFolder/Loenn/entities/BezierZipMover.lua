@@ -4,7 +4,7 @@ local drawableLine = require("structs.drawable_line")
 local drawableNinePatch = require("structs.drawable_nine_patch")
 local utils = require("utils")
 local connectedEntities = require("helpers.connected_entities")
-local ChroniaHelper = require("mods").requireFromPlugin("helpers.chroniaHelper")
+local ChroniaHelper = require("mods").requireFromPlugin("helpers.chroniaHelper_old")
 local fo = require("mods").requireFromPlugin("helpers.field_options")
 local drawableText = require("structs.drawable_text")
 
@@ -26,11 +26,11 @@ zip.fieldInformation = {
         editable = true,
     },
     moveEase = {
-        options = require("mods").requireFromPlugin("helpers.chroniaHelper").easers,
+        options = require("mods").requireFromPlugin("helpers.chroniaHelper_old").easers,
         editable = false,
     },
     returnEase = {
-        options = require("mods").requireFromPlugin("helpers.chroniaHelper").easers,
+        options = require("mods").requireFromPlugin("helpers.chroniaHelper_old").easers,
         editable = false,
     },
     baseColor = {

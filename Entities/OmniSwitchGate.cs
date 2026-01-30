@@ -248,8 +248,8 @@ public class OmniSwitchGate : Solid
             // move and emit particles
             int particleAt = 0;
             Tween tween = Tween.Create(Tween.TweenMode.Oneshot, 
-                forward? easers.TryGet(currentNodeIndex, Ease.CubeOut) : easers2.TryGet(nodes.MaxIndex() - currentNodeIndex, Ease.CubeOut), 
-                forward? moveTime.TryGet(currentNodeIndex, 0.5f) : moveTime2.TryGet(nodes.MaxIndex() - currentNodeIndex, 2f), 
+                forward? easers.TryGet(currentNodeIndex, easers.Last()) : easers2.TryGet(nodes.MaxIndex() - currentNodeIndex, easers2.First()), 
+                forward? moveTime.TryGet(currentNodeIndex, moveTime.Last()) : moveTime2.TryGet(nodes.MaxIndex() - currentNodeIndex, moveTime2.First()), 
                 start: true);
             bool waiting = true;
             tween.OnUpdate = delegate (Tween t) {
@@ -452,7 +452,7 @@ public class OmniSwitchGate : Solid
         {
             // wait at position for the configured time.
             bool forward = targetNodeIndex >= currentNodeIndex;
-            float delay = forward ? pauseTimes.TryGet(currentNodeIndex, 0.2f) : pauseTimes2.TryGet(nodes.MaxIndex() - currentNodeIndex, 0.2f);
+            float delay = forward ? pauseTimes.TryGet(currentNodeIndex, pauseTimes.Last()) : pauseTimes2.TryGet(nodes.MaxIndex() - currentNodeIndex, pauseTimes2.First());
             while (delay > 0f && !cancelMoving)
             {
                 delay -= Engine.DeltaTime;
