@@ -2,6 +2,7 @@
 global using ChroniaColor = ChroniaHelper.Utils.ColorUtils.ChroniaColor;
 global using Cons = ChroniaHelper.Utils.Constants;
 global using FI = ChroniaHelper.Imports.FrostHelperImports;
+global using CmI = ChroniaHelper.Imports.CommunalHelperImports;
 global using SrI = ChroniaHelper.Imports.SpeedRunToolImports;
 global using HSL = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSLColor = ChroniaHelper.Utils.ColorUtils.HSLColor;

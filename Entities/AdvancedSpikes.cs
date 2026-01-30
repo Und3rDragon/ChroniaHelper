@@ -6,6 +6,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using static ChroniaHelper.Entities.SeamlessSpinner;
 
 namespace ChroniaHelper.Entities;
 
@@ -724,4 +725,38 @@ public class AdvancedSpikes : Entity
         this.GetPlayerCollideIndex(player, out var minIndex, out var maxIndex);
         return (minIndex <= spikeIndex + 1) && (maxIndex >= spikeIndex - 1);
     }
+
+    //private readonly Action<Player> origOnCollide;
+
+    //private void OnPlayer(Player player)
+    //{
+    //    if (((player.StateMachine.State == Player.StDash
+    //          || player.DashAttacking && player.StateMachine.State != Player.StRedDash
+    //          || player.StateMachine.State == Player.StDreamDash
+    //          || player.StateMachine.State == CmI.GetDreamTunnelDashState
+    //          || CmI.IsSeekerDashAttacking
+    //          || player.StateMachine.State == Player.StRedDash && player.CurrentBooster.red)
+    //         && (player.Speed.Equals(Vector2.Zero))
+    //         && CheckDir(player.DashDir)))
+    //    {
+    //        return;
+    //    }
+    //    origOnCollide(player);
+    //}
+
+    //private bool directionUp, directionDown, along, into, diag;
+    //private bool CheckDir(Vector2 dashDir)
+    //{
+    //    if (directionUp || directionDown)
+    //    {
+    //        return dashDir.X != 0 && dashDir.Y == 0 && along
+    //               || dashDir.X == 0 && dashDir.Y != 0 && into
+    //               || dashDir.X != 0 && dashDir.Y != 0 && diag
+    //               || dashDir.Equals(Vector2.Zero);
+    //    }
+    //    return dashDir.X != 0 && dashDir.Y == 0 && into
+    //           || dashDir.X == 0 && dashDir.Y != 0 && along
+    //           || dashDir.X != 0 && dashDir.Y != 0 && diag
+    //           || dashDir.Equals(Vector2.Zero);
+    //}
 }
