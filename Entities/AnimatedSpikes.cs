@@ -459,11 +459,13 @@ public class AnimatedSpikes : Entity
         CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
         
         childMode = data.Attr("childMode");
+        defragmentFrameOffset = data.Bool("defragmentFrameOffset", false);
     }
 
     public string childMode;
     public DangerBubbler childModeParent = null;
     public bool childModeTriggered = false;
+    private bool defragmentFrameOffset;
 
     public AnimatedSpikes(EntityData data, Vector2 offset, DirectionMode direction) : this(data.Position + offset, data, direction)
     {
@@ -471,6 +473,28 @@ public class AnimatedSpikes : Entity
 
     private bool UpSafeBlockCheck(Player player)
     {
+        bool triggered = true;
+        for (int i = 0; i < spikes.Length; i++)
+        {
+            if (!spikes[i].triggered)
+            {
+                triggered = false;
+                break;
+            }
+        }
+
+        if (trigger && !triggered)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+        // Overwritten Original Logic
+        // The codes below is ignored
+        // --> Migrated from Advanced Spikes
+
         int dir = 8 * (int)player.Facing;
         int left = (int)((player.Left + dir - base.Left) / 4F);
         int right = (int)((player.Right + dir - base.Left) / 4F);
@@ -615,7 +639,15 @@ public class AnimatedSpikes : Entity
             this.spikes[i].lerp = (this.trigger ? 0F : this.lerpMoveTime);
             this.spikes[i].disabledColor = this.disabledColors[Calc.Random.Next(this.disabledColors.Length)];
             this.spikes[i].disabledFrame = Calc.Random.NextFloat(this.disableds.Count);
+            if (defragmentFrameOffset)
+            {
+                this.spikes[i].disabledFrame = float.Round(this.spikes[i].disabledFrame);
+            }
             this.spikes[i].enabledFrame = Calc.Random.NextFloat(this.enableds.Count);
+            if (defragmentFrameOffset)
+            {
+                this.spikes[i].enabledFrame = float.Round(this.spikes[i].enabledFrame);
+            }
             this.spikes[i].enabledColor = this.enabledColor;
             this.spikes[i].enabledExterior = Calc.Random.Choose(this.enabledExteriors);
             this.spikes[i].position = (this.direction) switch

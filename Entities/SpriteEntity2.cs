@@ -22,6 +22,7 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/SpriteEntity2")]
+[Note("Test project, if executing well, this will be replacing Sprite Entity 1")]
 public class SpriteEntity2 : Actor
 {
     public enum Command

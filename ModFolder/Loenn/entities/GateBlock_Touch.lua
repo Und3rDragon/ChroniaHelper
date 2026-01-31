@@ -89,7 +89,7 @@ touchGateBlock.fieldInformation = {
     ease = {
         fieldType = "list",
         elementOptions = {
-            options = require("mods").requireFromPlugin("helpers.chroniaHelper").easers,
+            options = require("mods").requireFromPlugin("helpers.chroniaHelper_old").easers,
             editable = false,
         },
         allowEmpty = false,
