@@ -167,6 +167,15 @@ public class AdvancedSpikes : Entity
 
             if (this.lerp >= this.parent.lerpMoveTime)
             {
+                
+                if (parent.dream)
+                {
+                    bool dashing = player.StateMachine.State == Player.StDash || (player.DashAttacking && player.StateMachine.State == Player.StRedDash) ||
+                                   player.StateMachine.State == Player.StDreamDash;
+                    if (dashing)
+                        return false;
+                }
+                
                 if (parent.childModeParent.IsNotNull())
                 {
                     if (parent.childModeTriggered) { return true; }
@@ -175,7 +184,9 @@ public class AdvancedSpikes : Entity
                 }
                 else
                 {
-                    player.Die(outwards);
+                    bool canDie = !parent.enterGrouped || parent.CouldKillPlayerOnGroupMode();
+                    if (canDie)
+                        player.Die(outwards);
                 }
                 
                 return true;
@@ -302,6 +313,9 @@ public class AdvancedSpikes : Entity
 
     private bool enterFlag;
 
+    // dash through
+    private bool dream;
+
     public static string DefaultTouchSound;
 
     public static string DefaultTriggerSound;
@@ -321,6 +335,7 @@ public class AdvancedSpikes : Entity
         Outline,
         Cliffside,
         Reflection,
+        Dream,
         Custom
     }
 
@@ -368,6 +383,7 @@ public class AdvancedSpikes : Entity
         this.grouped = data.Bool("grouped", false);
         this.rainbow = data.Bool("rainbow", false);
         this.randomTexture = data.Bool("randomTexture", true);
+        this.dream = data.Bool("dream", false);
         if (this.triggerDelay <= 0F)
         {
             this.triggerDelay = Engine.DeltaTime;
@@ -624,8 +640,25 @@ public class AdvancedSpikes : Entity
         SpikeType.Outline => "danger/spikes/outline_" + direction,
         SpikeType.Cliffside => "danger/spikes/cliffside_" + direction,
         SpikeType.Reflection => "danger/spikes/reflection_" + direction,
+        SpikeType.Dream => "ChroniaHelper/danger/spikes/dream_" + direction,
         _ => this.sprite + "_" + direction
     };
+
+    private bool CouldKillPlayerOnGroupMode()
+    {
+        Player player = Scene.Tracker.GetEntity<Player>();
+        if (player == null)
+        {
+            return false;
+        }
+        GetPlayerCollideIndex(player, out var minIndex, out var maxIndex);
+        if (maxIndex < 0 || minIndex >= this.spikes.Length)
+        {
+            return false;
+        }
+
+        return true;
+    }
 
     public override void Update()
     {

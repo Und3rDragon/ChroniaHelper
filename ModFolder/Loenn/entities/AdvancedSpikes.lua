@@ -30,6 +30,7 @@ local fieldTable = {
                 "Outline",
                 "Cliffside",
                 "Reflection",
+                "Dream",
                 "Custom"
             },
             editable = false
@@ -281,6 +282,15 @@ local fieldTable = {
             fieldType = "boolean",
             allowEmpty = false
         }
+    },
+    dream =
+    {
+        data = false,
+        info =
+        {
+            fieldType = "boolean",
+            allowEmpty = false
+        }
     }
 }
 
@@ -329,7 +339,8 @@ local spikePath = {
     Default = "danger/spikes/default",
     Outline = "danger/spikes/outline",
     Cliffside = "danger/spikes/cliffside",
-    Reflection = "danger/spikes/reflection"
+    Reflection = "danger/spikes/reflection",
+    Dream = "ChroniaHelper/danger/spikes/dream"
 }
 
 local spikeTexture = function(entity, direction)
