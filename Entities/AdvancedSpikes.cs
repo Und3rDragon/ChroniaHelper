@@ -438,6 +438,8 @@ public class AdvancedSpikes : Entity
         CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
 
         childMode = data.Attr("childMode");
+
+        Tag |= Tags.TransitionUpdate;
     }
 
     public string childMode;

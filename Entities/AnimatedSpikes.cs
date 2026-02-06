@@ -460,6 +460,8 @@ public class AnimatedSpikes : Entity
         
         childMode = data.Attr("childMode");
         defragmentFrameOffset = data.Bool("defragmentFrameOffset", false);
+
+        Tag |= Tags.TransitionUpdate;
     }
 
     public string childMode;
