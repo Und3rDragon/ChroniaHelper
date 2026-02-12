@@ -444,7 +444,8 @@ public class Displayers : HDRenderEntity
 
             if (Md.FrostHelperLoaded)
             {
-                target = target + $" (Color: {FI._getBloomColor().RgbaToHex()})";
+                Color? getBloom = FI.GetBloomColor?.Invoke();
+                target = target + $" (Color: {(getBloom is null ? "Not Available" : ((Color)getBloom).RgbaToHex())})";
             }
             
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();

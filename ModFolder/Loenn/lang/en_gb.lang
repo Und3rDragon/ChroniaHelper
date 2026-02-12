@@ -455,6 +455,7 @@ entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.triggerDelay=If "
 entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
 entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
 
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -462,6 +463,7 @@ entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.triggerDelay=If
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
 
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -469,6 +471,7 @@ entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.triggerDelay=If
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
 
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -476,6 +479,7 @@ entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.triggerDelay=I
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
 
 # ================= Animated Spikes
 
