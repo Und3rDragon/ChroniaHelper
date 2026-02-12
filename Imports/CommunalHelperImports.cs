@@ -14,18 +14,18 @@ public static class CommunalHelperImports
 {
     #region DreamTunnel
 
-    public static Func<int> _GetDreamTunnelDashState;
-    public static int GetDreamTunnelDashState => _GetDreamTunnelDashState();
+    public static Func<int> GetDreamTunnelDashState;
+    public static int dreamTunnelDashState => GetDreamTunnelDashState();
 
-    public static Func<bool> _HasDreamTunnelDash;
-    public static bool HasDreamTunnelDash => _HasDreamTunnelDash();
+    public static Func<bool> HasDreamTunnelDash;
+    public static bool hasDreamTunnelDash => HasDreamTunnelDash();
 
-    public static Func<int> _GetDreamTunnelDashCount;
-    public static int GetDreamTunnelDashCount => _GetDreamTunnelDashCount();
+    public static Func<int> GetDreamTunnelDashCount;
+    public static int getDreamTunnelDashCount => GetDreamTunnelDashCount();
 
-    public delegate Component _DreamTunnelInteraction(Action<Player> onPlayerEnter, Action<Player> onPlayerExit);
-    public static _DreamTunnelInteraction _dreamTunnelInteraction;
-    public static Component DreamTunnelInteraction(Action<Player> onPlayerEnter, Action<Player> onPlayerExit)
+    public delegate Component DreamTunnelInteraction(Action<Player> onPlayerEnter, Action<Player> onPlayerExit);
+    public static DreamTunnelInteraction _dreamTunnelInteraction;
+    public static Component dreamTunnelInteraction(Action<Player> onPlayerEnter, Action<Player> onPlayerExit)
     {
         return _dreamTunnelInteraction(onPlayerEnter, onPlayerExit);
     }
@@ -34,11 +34,11 @@ public static class CommunalHelperImports
 
     #region Seeker
 
-    public static Func<bool> _HasSeekerDash;
-    public static bool HasSeekerDash => _HasSeekerDash();
+    public static Func<bool> HasSeekerDash;
+    public static bool hasSeekerDash => HasSeekerDash();
 
-    public static Func<bool> _IsSeekerDashAttacking;
-    public static bool IsSeekerDashAttacking => _IsSeekerDashAttacking();
+    public static Func<bool> IsSeekerDashAttacking;
+    public static bool isSeekerDashAttacking => IsSeekerDashAttacking();
 
     #endregion
 }
