@@ -30,7 +30,7 @@ public class ConditionListener : StateListener
         {
             if (Md.FrostHelperLoaded)
             {
-                return condition.GetBoolSessionExpressionValue();
+                return condition.getBoolSessionExpressionValue();
             }
             else
             {

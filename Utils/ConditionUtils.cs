@@ -18,7 +18,7 @@ public static class ConditionUtils
         {
             if (Md.FrostHelperLoaded)
             {
-                return condition.GetBoolSessionExpressionValue();
+                return condition.getBoolSessionExpressionValue();
             }
             else
             {
