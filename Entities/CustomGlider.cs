@@ -64,6 +64,8 @@ public class CustomGlider : Actor
     public string idlePath, heldPath, fallPath, fallLoopPath, deathPath, respawnPath;
     public float idleTime, heldTime, fallTime, fallLoopTime, deathTime, respawnAnimTime;
 
+    public string tutorialTitle, tutorialText;
+
     public CustomGlider(EntityData e, Vector2 offset)
         : base(e.Position + offset)
     {
@@ -212,6 +214,10 @@ public class CustomGlider : Actor
         acc = new Vector2(Math.Abs(e.Float("accelerationX", 1f)),
                           Math.Abs(e.Float("accelerationY", 1f))
                           );
+
+        // Tutorial Text
+        tutorialTitle = e.Attr("tutorialTitle");
+        tutorialText = e.Attr("tutorialText");
     }
     private Vector2 droppingSpeed;
     private bool droppingSpeedXMultiplier;
@@ -223,7 +229,7 @@ public class CustomGlider : Actor
         level = SceneAs<Level>();
         if (tutorial)
         {
-            tutorialGui = new BirdTutorialGui(this, new Vector2(0f, -24f), Dialog.Clean("tutorial_carry"), Dialog.Clean("tutorial_hold"), Input.Grab);
+            tutorialGui = this.CreateBirdGUI(tutorialTitle: tutorialTitle, tutorialText: tutorialText);
             tutorialGui.Open = true;
             base.Scene.Add(tutorialGui);
         }

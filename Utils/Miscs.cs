@@ -335,4 +335,135 @@ public static class Miscs
     {
         AddOrAddToSolidModifierComponent(entity, smc, out SolidModifierComponent _);
     }
+
+    /// <summary>
+    /// Create a bird tutorial GUI for a certain entity
+    /// </summary>
+    /// <param name="entity">The entity that it appears on</param>
+    /// <param name="offsetX">Tutorial Display offset</param>
+    /// <param name="offsetY">Tutorial Display offset</param>
+    /// <param name="tutorialTitle">The Dialog ID of the tutorial title</param>
+    /// <param name="tutorialText">The commands of the tutorial to display</param>
+    /// <returns></returns>
+    public static BirdTutorialGui CreateBirdGUI(this Entity entity, float offsetX = 0f, float offsetY = -24f, string tutorialTitle = "", string tutorialText = "")
+    {
+        string title = string.Empty;
+        if (string.IsNullOrEmpty(tutorialTitle))
+        {
+            title = Dialog.Clean("tutorial_carry");
+        }
+        else
+        {
+            title = Dialog.Clean(tutorialTitle);
+        }
+
+        List<object> texts = new();
+        if (string.IsNullOrEmpty(tutorialText))
+        {
+            texts.Add(Dialog.Clean("tutorial_hold"));
+            texts.Add(Input.Grab);
+        }
+        else
+        {
+            string[] contents = tutorialText.Split(',', StringSplitOptions.TrimEntries);
+            for (int i = 0; i < contents.Length; i++)
+            {
+                if (ButtonReferences.ContainsKey(contents[i].ToLower()))
+                {
+                    VirtualButton selected = InputButtons[ButtonReferences[contents[i].ToLower()]];
+                    //for(int j = 0; j < selected.Nodes.Count; j++)
+                    //{
+                    //    if (selected.Nodes[j] is VirtualButton.KeyboardKey)
+                    //    {
+                    //        string path = (selected.Nodes[j] as VirtualButton.KeyboardKey).Key.ToString();
+
+                    //        texts.Add(GFX.Gui["controls/keyboard/" + path]);
+                    //    }
+                    //}
+                    texts.Add(selected);
+                }
+                else if (GFX.Gui.Has(contents[i]))
+                {
+                    texts.Add(GFX.Gui[contents[i]]);
+                }
+                else if (GFX.Game.Has(contents[i]))
+                {
+                    texts.Add(GFX.Game[contents[i]]);
+                }
+                else if (contents[i].Contains(';'))
+                {
+                    var o = contents[i].Split(';', StringSplitOptions.TrimEntries);
+                    Vc2 v = Vc2.Zero;
+                    if (o.Length >= 1)
+                    {
+                        float.TryParse(o[0], out v.X);
+                    }
+                    if (o.Length >= 2)
+                    {
+                        float.TryParse(o[1], out v.Y);
+                    }
+
+                    texts.Add(v);
+                }
+                else
+                {
+                    texts.Add(Dialog.Clean(contents[i]));
+                }
+            }
+        }
+
+        return new BirdTutorialGui(entity, new Vc2(offsetX, offsetY), title, texts.ToArray());
+    }
+
+    public static Dictionary<string, int> ButtonReferences = new()
+    {
+        {"esc", 0 },
+        {"pause", 1 },
+        {"left", 2 },
+        {"menuleft", 2 },
+        {"menu_left", 2 },
+        {"right", 3 },
+        {"menuright", 3 },
+        {"menu_right", 3 },
+        {"up", 4 },
+        {"menuup", 4 },
+        {"menu_up", 4 },
+        {"down", 5 },
+        {"menu_down", 5 },
+        {"menudown", 5 },
+        {"confirm", 6 },
+        {"menuconfirm", 6 },
+        {"menu_confirm", 6 },
+        {"journal", 7 },
+        {"menujournal", 7 },
+        {"menu_journal", 7 },
+        {"restart", 8 },
+        {"quickrestart", 8 },
+        {"quick_restart", 8 },
+        {"jump", 9 },
+        {"dash", 10 },
+        {"grab", 11 },
+        {"talk", 12 },
+        {"crouch", 13 },
+        {"crouchdash", 13 },
+        {"crouch_dash", 13 },
+    };
+
+    public static List<VirtualButton> InputButtons = new()
+    {
+        Input.ESC,
+        Input.Pause,
+        Input.MenuLeft,
+        Input.MenuRight,
+        Input.MenuUp,
+        Input.MenuDown,
+        Input.MenuConfirm,
+        Input.MenuJournal,
+        Input.QuickRestart,
+        Input.Jump,
+        Input.Dash,
+        Input.Grab,
+        Input.Talk,
+        Input.CrouchDash,
+    };
 }
