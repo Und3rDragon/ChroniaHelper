@@ -6,6 +6,7 @@ using AsmResolver.DotNet.Code.Cil;
 using Celeste.Mod.MaxHelpingHand.Module;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
+using FMOD;
 using Microsoft.VisualBasic;
 using YamlDotNet.Serialization;
 using YoctoHelper.Cores;
@@ -335,4 +336,112 @@ public static class Miscs
     {
         AddOrAddToSolidModifierComponent(entity, smc, out SolidModifierComponent _);
     }
+
+    /// <summary>
+    /// Create a bird tutorial GUI for a certain entity
+    /// </summary>
+    /// <param name="entity">The entity that it appears on</param>
+    /// <param name="offsetX">Tutorial Display offset</param>
+    /// <param name="offsetY">Tutorial Display offset</param>
+    /// <param name="tutorialTitle">The Dialog ID of the tutorial title</param>
+    /// <param name="tutorialText">The commands of the tutorial to display</param>
+    /// <returns></returns>
+    public static BirdTutorialGui CreateBirdGUI(this Entity entity, float offsetX = 0f, float offsetY = -24f, string tutorialTitle = "", string tutorialText = "")
+    {
+        string title = string.Empty;
+        if (string.IsNullOrEmpty(tutorialTitle))
+        {
+            title = Dialog.Clean("tutorial_carry");
+        }
+        else
+        {
+            title = Dialog.Clean(tutorialTitle);
+        }
+
+        List<object> texts = new();
+        if (string.IsNullOrEmpty(tutorialText))
+        {
+            texts.Add(Dialog.Clean("tutorial_hold"));
+            texts.Add(Input.Grab);
+        }
+        else
+        {
+            string[] contents = tutorialText.Split(',', StringSplitOptions.TrimEntries);
+            for (int i = 0; i < contents.Length; i++)
+            {
+                if (CustomBirdGUIAssets.ContainsKey(contents[i].ToLower()))
+                {
+                    texts.Add(CustomBirdGUIAssets[contents[i].ToLower()]);
+                }
+                else if (GFX.Gui.Has(contents[i]))
+                {
+                    texts.Add(GFX.Gui[contents[i]]);
+                }
+                else if (GFX.Game.Has(contents[i]))
+                {
+                    texts.Add(GFX.Game[contents[i]]);
+                }
+                else if (contents[i].Contains(';'))
+                {
+                    var o = contents[i].Split(';', StringSplitOptions.TrimEntries);
+                    Vc2 v = Vc2.Zero;
+                    if (o.Length >= 1)
+                    {
+                        float.TryParse(o[0], out v.X);
+                    }
+                    if (o.Length >= 2)
+                    {
+                        float.TryParse(o[1], out v.Y);
+                    }
+
+                    texts.Add(v);
+                }
+                else
+                {
+                    texts.Add(Dialog.Clean(contents[i]));
+                }
+            }
+        }
+
+        return new BirdTutorialGui(entity, new Vc2(offsetX, offsetY), title, texts.ToArray());
+    }
+
+    public static BirdTutorialGui CreateBirdGUI(this Entity entity, Vc2 offset, string tutorialTitle = "", string tutorialText = "")
+    {
+        return CreateBirdGUI(entity, offset.X, offset.Y, tutorialTitle, tutorialText);
+    }
+
+    public static Dictionary<string, object> CustomBirdGUIAssets = new()
+    {
+        {"esc", Input.ESC },
+        {"pause", Input.Pause },
+        {"left", -Vc2.UnitX },
+        {"menuleft", -Vc2.UnitX },
+        {"menu_left", -Vc2.UnitX },
+        {"right", Vc2.UnitX },
+        {"menuright", Vc2.UnitX },
+        {"menu_right", Vc2.UnitX },
+        {"up", -Vc2.UnitY },
+        {"menuup", -Vc2.UnitY },
+        {"menu_up", -Vc2.UnitY },
+        {"down", Vc2.UnitY },
+        {"menu_down", Vc2.UnitY },
+        {"menudown", Vc2.UnitY },
+        {"confirm", Input.MenuConfirm },
+        {"menuconfirm", Input.MenuConfirm },
+        {"menu_confirm", Input.MenuConfirm },
+        {"journal", Input.MenuJournal },
+        {"menujournal", Input.MenuJournal },
+        {"menu_journal", Input.MenuJournal },
+        {"restart", Input.QuickRestart },
+        {"quickrestart", Input.QuickRestart },
+        {"quick_restart", Input.QuickRestart },
+        {"jump", Input.Jump },
+        {"dash", Input.Dash },
+        {"grab", Input.Grab },
+        {"talk", Input.Talk },
+        {"crouch", Input.CrouchDash },
+        {"crouchdash", Input.CrouchDash },
+        {"crouch_dash", Input.CrouchDash },
+    };
 }
