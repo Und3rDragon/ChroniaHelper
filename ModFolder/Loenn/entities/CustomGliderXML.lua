@@ -19,7 +19,9 @@ local reskinJelly = {
         "fallPath","fallAnimInterval",
         "fallLoopPath","fallLoopAnimInterval",
         "deathPath","deathAnimInterval",
-        --"respawnPath","respawnAnimInterval",
+        "respawnPath","respawnAnimInterval",
+        "hitboxParameters","holdableParameters",
+        "tutorialTitle","tutorialText",
         'bubble','tutorial',
     },
     fieldInformation = {
@@ -36,6 +38,9 @@ local reskinJelly = {
         },
         accelerationY = {
             minimumValue = 0,
+        },
+        tutorialText = {
+            fieldType = "list",
         },
     }
 }
@@ -87,6 +92,8 @@ reskinJelly.placements = {
         --respawnAnimInterval = 0.03,
         hitboxParameters = "8,10,-4,-10",
         holdableParameters = "20,22,-10,-16",
+        tutorialTitle = "",
+        tutorialText = "",
         droppingSpeedXMultiplier = false,
         XMLOverride = true,
         outline = true,
