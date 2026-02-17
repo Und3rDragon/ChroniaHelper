@@ -6,6 +6,7 @@ using AsmResolver.DotNet.Code.Cil;
 using Celeste.Mod.MaxHelpingHand.Module;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
+using FMOD;
 using Microsoft.VisualBasic;
 using YamlDotNet.Serialization;
 using YoctoHelper.Cores;
@@ -368,19 +369,9 @@ public static class Miscs
             string[] contents = tutorialText.Split(',', StringSplitOptions.TrimEntries);
             for (int i = 0; i < contents.Length; i++)
             {
-                if (ButtonReferences.ContainsKey(contents[i].ToLower()))
+                if (CustomBirdGUIAssets.ContainsKey(contents[i].ToLower()))
                 {
-                    VirtualButton selected = InputButtons[ButtonReferences[contents[i].ToLower()]];
-                    //for(int j = 0; j < selected.Nodes.Count; j++)
-                    //{
-                    //    if (selected.Nodes[j] is VirtualButton.KeyboardKey)
-                    //    {
-                    //        string path = (selected.Nodes[j] as VirtualButton.KeyboardKey).Key.ToString();
-
-                    //        texts.Add(GFX.Gui["controls/keyboard/" + path]);
-                    //    }
-                    //}
-                    texts.Add(selected);
+                    texts.Add(CustomBirdGUIAssets[contents[i].ToLower()]);
                 }
                 else if (GFX.Gui.Has(contents[i]))
                 {
@@ -415,55 +406,42 @@ public static class Miscs
         return new BirdTutorialGui(entity, new Vc2(offsetX, offsetY), title, texts.ToArray());
     }
 
-    public static Dictionary<string, int> ButtonReferences = new()
+    public static BirdTutorialGui CreateBirdGUI(this Entity entity, Vc2 offset, string tutorialTitle = "", string tutorialText = "")
     {
-        {"esc", 0 },
-        {"pause", 1 },
-        {"left", 2 },
-        {"menuleft", 2 },
-        {"menu_left", 2 },
-        {"right", 3 },
-        {"menuright", 3 },
-        {"menu_right", 3 },
-        {"up", 4 },
-        {"menuup", 4 },
-        {"menu_up", 4 },
-        {"down", 5 },
-        {"menu_down", 5 },
-        {"menudown", 5 },
-        {"confirm", 6 },
-        {"menuconfirm", 6 },
-        {"menu_confirm", 6 },
-        {"journal", 7 },
-        {"menujournal", 7 },
-        {"menu_journal", 7 },
-        {"restart", 8 },
-        {"quickrestart", 8 },
-        {"quick_restart", 8 },
-        {"jump", 9 },
-        {"dash", 10 },
-        {"grab", 11 },
-        {"talk", 12 },
-        {"crouch", 13 },
-        {"crouchdash", 13 },
-        {"crouch_dash", 13 },
-    };
+        return CreateBirdGUI(entity, offset.X, offset.Y, tutorialTitle, tutorialText);
+    }
 
-    public static List<VirtualButton> InputButtons = new()
+    public static Dictionary<string, object> CustomBirdGUIAssets = new()
     {
-        Input.ESC,
-        Input.Pause,
-        Input.MenuLeft,
-        Input.MenuRight,
-        Input.MenuUp,
-        Input.MenuDown,
-        Input.MenuConfirm,
-        Input.MenuJournal,
-        Input.QuickRestart,
-        Input.Jump,
-        Input.Dash,
-        Input.Grab,
-        Input.Talk,
-        Input.CrouchDash,
+        {"esc", Input.ESC },
+        {"pause", Input.Pause },
+        {"left", -Vc2.UnitX },
+        {"menuleft", -Vc2.UnitX },
+        {"menu_left", -Vc2.UnitX },
+        {"right", Vc2.UnitX },
+        {"menuright", Vc2.UnitX },
+        {"menu_right", Vc2.UnitX },
+        {"up", -Vc2.UnitY },
+        {"menuup", -Vc2.UnitY },
+        {"menu_up", -Vc2.UnitY },
+        {"down", Vc2.UnitY },
+        {"menu_down", Vc2.UnitY },
+        {"menudown", Vc2.UnitY },
+        {"confirm", Input.MenuConfirm },
+        {"menuconfirm", Input.MenuConfirm },
+        {"menu_confirm", Input.MenuConfirm },
+        {"journal", Input.MenuJournal },
+        {"menujournal", Input.MenuJournal },
+        {"menu_journal", Input.MenuJournal },
+        {"restart", Input.QuickRestart },
+        {"quickrestart", Input.QuickRestart },
+        {"quick_restart", Input.QuickRestart },
+        {"jump", Input.Jump },
+        {"dash", Input.Dash },
+        {"grab", Input.Grab },
+        {"talk", Input.Talk },
+        {"crouch", Input.CrouchDash },
+        {"crouchdash", Input.CrouchDash },
+        {"crouch_dash", Input.CrouchDash },
     };
 }
