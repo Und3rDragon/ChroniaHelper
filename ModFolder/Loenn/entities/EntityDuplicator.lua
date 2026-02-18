@@ -45,4 +45,4 @@ e.sprite = function(room, entity, viewport)
     }
 end
 
-return e
+--return e
