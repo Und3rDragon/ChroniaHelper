@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using AsmResolver.DotNet.Code.Cil;
+using Celeste.Mod.Helpers;
+using Celeste.Mod.KoseiHelper;
 using Celeste.Mod.MaxHelpingHand.Module;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
@@ -444,4 +447,322 @@ public static class Miscs
         {"crouchdash", Input.CrouchDash },
         {"crouch_dash", Input.CrouchDash },
     };
+
+    /// <summary>
+    /// Reference from Kosei Helper, the function that process data and
+    /// generate an entity based on the inputs
+    /// </summary>
+    /// <param name="spawnAt"></param>
+    /// <param name="node"></param>
+    /// <param name="data"></param>
+    /// <param name="noNode"></param>
+    /// <param name="asBlockWidth"></param>
+    /// <param name="asBlockHeight"></param>
+    /// <param name="fullEntityClassName"></param>
+    /// <param name="entityDataKeys"></param>
+    /// <param name="entityDataValues"></param>
+    /// <param name="currentLastEntityID"></param>
+    /// <returns></returns>
+    [Credits("KoseiHelper")]
+    public static Entity CreateEntity(Vector2 spawnAt, Vector2 node, LevelData data, 
+        bool noNode, int asBlockWidth, int asBlockHeight, string fullEntityClassName,
+        List<string> entityDataKeys, List<string> entityDataValues,
+        int currentLastEntityID)
+    {
+        Log.Info($"Spawning entity at position: {spawnAt}");
+        EntityData entityData;
+        if (noNode)
+        {
+            entityData = new()
+            {
+                Position = spawnAt,
+                Width = asBlockWidth,
+                Height = asBlockHeight,
+                Level = data,
+                Values = new()
+            };
+        }
+        else
+        {
+            entityData = new()
+            {
+                Position = spawnAt,
+                Width = asBlockWidth,
+                Height = asBlockHeight,
+                Nodes = new Vector2[] { node },
+                Level = data,
+                Values = new()
+            };
+        }
+        for (int i = 0; i < entityDataKeys.Count; i++)
+        {
+            entityData.Values[entityDataKeys[i]] = entityDataValues.ElementAtOrDefault(i);
+        }
+        EntityID newID = new EntityID(data.Name, currentLastEntityID++);
+        Type entityType;
+        try
+        {
+            entityType = FakeAssembly.GetFakeEntryAssembly().GetType(fullEntityClassName); // This is where it gets the type, like Celeste.Strawberry
+        }
+        catch
+        {
+            Log.Error("Failed to get entity: Requested type does not exist");
+            return null;
+        }
+
+        ConstructorInfo[] ctors = entityType.GetConstructors();
+        try
+        {
+            foreach (ConstructorInfo ctor in ctors)
+            {
+                ParameterInfo[] parameters = ctor.GetParameters();
+                List<object> ctorParams = new List<object>();
+
+                foreach (ParameterInfo param in parameters)
+                {
+                    if (param.ParameterType == typeof(EntityData))
+                    {
+                        ctorParams.Add(entityData);
+                    }
+                    else if (param.ParameterType == typeof(Vector2))
+                    { //Needs to check if the entity has just the position or position + offset
+                        if (param.Name.Contains("position", StringComparison.OrdinalIgnoreCase))
+                        {
+                            ctorParams.Add(spawnAt);
+                        }
+                        else
+                        {
+                            Vector2 vec = Vector2.Zero;
+                            if (entityData.Values.TryGetValue(param.Name, out object val) && val is string s)
+                            {
+                                s = s.Trim();
+                                if ((s.StartsWith("[") && s.EndsWith("]")) || (s.StartsWith("(") && s.EndsWith(")")))
+                                    s = s.Substring(1, s.Length - 2);
+
+                                string[] parts = s.Split(',');
+                                if (parts.Length == 2 &&
+                                    float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float x) &&
+                                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float y))
+                                {
+                                    vec = new Vector2(x, y);
+                                }
+                            }
+                            if (vec == Vector2.Zero)
+                            {
+                                float x = entityData.Float(param.Name + "X", 0f);
+                                float y = entityData.Float(param.Name + "Y", 0f);
+                                vec = new Vector2(x, y);
+                            }
+
+                            ctorParams.Add(vec);
+                        }
+                    }
+                    else if (param.ParameterType.IsEnum)
+                    {
+                        if (entityData.Values.FirstOrDefault(kv => kv.Key == param.Name).Value is string enumValue)
+                        {
+                            Type enumType = param.ParameterType;
+                            Object enumParsed = Enum.Parse(enumType, enumValue);
+                            ctorParams.Add(enumParsed);
+                        }
+                        else
+                        {
+                            ctorParams.Add(Enum.GetValues(param.ParameterType).GetValue(0));
+                        }
+                    }
+                    else if (param.ParameterType == typeof(bool))
+                    {
+                        ctorParams.Add(entityData.Bool(param.Name, defaultValue: false));
+                    }
+                    else if (param.ParameterType == typeof(int))
+                    {
+                        ctorParams.Add(entityData.Int(param.Name, defaultValue: 0));
+                    }
+                    else if (param.ParameterType == typeof(float))
+                    {
+                        ctorParams.Add(entityData.Float(param.Name, defaultValue: 0f));
+                    }
+                    else if (param.ParameterType == typeof(EntityID))
+                    {
+                        ctorParams.Add(new EntityID(data.Name, currentLastEntityID++));
+                    }
+                    else if (param.ParameterType == typeof(string))
+                    {
+                        ctorParams.Add(entityData.Attr(param.Name, ""));
+                    }
+                    else if (param.ParameterType == typeof(Vector2[])) // hope the naming is correct but idk might work for a few entities
+                    {
+                        ctorParams.Add(entityData.Nodes != null && entityData.Nodes.Length > 0
+                            ? new Vector2[] { entityData.Position }.Concat(entityData.Nodes).ToArray() : new Vector2[] { entityData.Position });
+                    }
+                    else if (param.ParameterType == typeof(Hitbox)) // hope the naming is correct but idk might work for a few entities
+                    {
+                        string prefix = param.Name;
+
+                        float width = entityData.Float($"{prefix}Width", 16f);
+                        float height = entityData.Float($"{prefix}Height", 16f);
+                        float x = entityData.Float($"{prefix}X", 0f);
+                        float y = entityData.Float($"{prefix}Y", 0f);
+                        if (!entityData.Values.ContainsKey($"{prefix}X") && entityData.Values.ContainsKey($"{prefix}XOffset"))
+                            x = entityData.Float($"{prefix}XOffset", 0f);
+
+                        if (!entityData.Values.ContainsKey($"{prefix}Y") && entityData.Values.ContainsKey($"{prefix}YOffset"))
+                            y = entityData.Float($"{prefix}YOffset", 0f);
+
+                        ctorParams.Add(new Hitbox(width, height, x, y));
+                    }
+                    else
+                    {
+                        Log.Warn($"Unhandled parameter type: {param.ParameterType}");
+                        ctorParams.Add(param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null);
+                    }
+                }
+                return (Entity)ctor.Invoke(ctorParams.ToArray());
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"Failed to instantiate entity: {ex.Message}");
+        }
+        return null;
+    }
+
+    public static Entity CreateEntity(this Entity originalEntity, 
+        Vector2 spawnAt, LevelData data)
+    {
+        Log.Info($"Spawning entity at position: {spawnAt}");
+
+        EntityData entityData = originalEntity.SourceData;
+        int currentLastEntityID = originalEntity.SourceData.ID;
+
+        EntityID newID = new EntityID(data.Name, currentLastEntityID++);
+        //Type entityType;
+        //try
+        //{
+        //    entityType = FakeAssembly.GetFakeEntryAssembly().GetType(fullEntityClassName); // This is where it gets the type, like Celeste.Strawberry
+        //}
+        //catch
+        //{
+        //    Log.Error("Failed to get entity: Requested type does not exist");
+        //    return null;
+        //}
+        
+        Type entityType = originalEntity.GetType();
+
+        ConstructorInfo[] ctors = entityType.GetConstructors();
+        try
+        {
+            foreach (ConstructorInfo ctor in ctors)
+            {
+                ParameterInfo[] parameters = ctor.GetParameters();
+                List<object> ctorParams = new List<object>();
+
+                foreach (ParameterInfo param in parameters)
+                {
+                    if (param.ParameterType == typeof(EntityData))
+                    {
+                        ctorParams.Add(entityData);
+                    }
+                    else if (param.ParameterType == typeof(Vector2))
+                    { //Needs to check if the entity has just the position or position + offset
+                        if (param.Name.Contains("position", StringComparison.OrdinalIgnoreCase))
+                        {
+                            ctorParams.Add(spawnAt);
+                        }
+                        else
+                        {
+                            Vector2 vec = Vector2.Zero;
+                            if (entityData.Values.TryGetValue(param.Name, out object val) && val is string s)
+                            {
+                                s = s.Trim();
+                                if ((s.StartsWith("[") && s.EndsWith("]")) || (s.StartsWith("(") && s.EndsWith(")")))
+                                    s = s.Substring(1, s.Length - 2);
+
+                                string[] parts = s.Split(',');
+                                if (parts.Length == 2 &&
+                                    float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float x) &&
+                                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float y))
+                                {
+                                    vec = new Vector2(x, y);
+                                }
+                            }
+                            if (vec == Vector2.Zero)
+                            {
+                                float x = entityData.Float(param.Name + "X", 0f);
+                                float y = entityData.Float(param.Name + "Y", 0f);
+                                vec = new Vector2(x, y);
+                            }
+
+                            ctorParams.Add(vec);
+                        }
+                    }
+                    else if (param.ParameterType.IsEnum)
+                    {
+                        if (entityData.Values.FirstOrDefault(kv => kv.Key == param.Name).Value is string enumValue)
+                        {
+                            Type enumType = param.ParameterType;
+                            Object enumParsed = Enum.Parse(enumType, enumValue);
+                            ctorParams.Add(enumParsed);
+                        }
+                        else
+                        {
+                            ctorParams.Add(Enum.GetValues(param.ParameterType).GetValue(0));
+                        }
+                    }
+                    else if (param.ParameterType == typeof(bool))
+                    {
+                        ctorParams.Add(entityData.Bool(param.Name, defaultValue: false));
+                    }
+                    else if (param.ParameterType == typeof(int))
+                    {
+                        ctorParams.Add(entityData.Int(param.Name, defaultValue: 0));
+                    }
+                    else if (param.ParameterType == typeof(float))
+                    {
+                        ctorParams.Add(entityData.Float(param.Name, defaultValue: 0f));
+                    }
+                    else if (param.ParameterType == typeof(EntityID))
+                    {
+                        ctorParams.Add(new EntityID(data.Name, currentLastEntityID++));
+                    }
+                    else if (param.ParameterType == typeof(string))
+                    {
+                        ctorParams.Add(entityData.Attr(param.Name, ""));
+                    }
+                    else if (param.ParameterType == typeof(Vector2[])) // hope the naming is correct but idk might work for a few entities
+                    {
+                        ctorParams.Add(entityData.Nodes != null && entityData.Nodes.Length > 0
+                            ? new Vector2[] { entityData.Position }.Concat(entityData.Nodes).ToArray() : new Vector2[] { entityData.Position });
+                    }
+                    else if (param.ParameterType == typeof(Hitbox)) // hope the naming is correct but idk might work for a few entities
+                    {
+                        string prefix = param.Name;
+
+                        float width = entityData.Float($"{prefix}Width", 16f);
+                        float height = entityData.Float($"{prefix}Height", 16f);
+                        float x = entityData.Float($"{prefix}X", 0f);
+                        float y = entityData.Float($"{prefix}Y", 0f);
+                        if (!entityData.Values.ContainsKey($"{prefix}X") && entityData.Values.ContainsKey($"{prefix}XOffset"))
+                            x = entityData.Float($"{prefix}XOffset", 0f);
+
+                        if (!entityData.Values.ContainsKey($"{prefix}Y") && entityData.Values.ContainsKey($"{prefix}YOffset"))
+                            y = entityData.Float($"{prefix}YOffset", 0f);
+
+                        ctorParams.Add(new Hitbox(width, height, x, y));
+                    }
+                    else
+                    {
+                        Log.Warn($"Unhandled parameter type: {param.ParameterType}");
+                        ctorParams.Add(param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null);
+                    }
+                }
+                return (Entity)ctor.Invoke(ctorParams.ToArray());
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"Failed to instantiate entity: {ex.Message}");
+        }
+        return null;
+    }
 }

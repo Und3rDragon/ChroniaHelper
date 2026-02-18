@@ -17,7 +17,7 @@ public class BaseEntity : Entity
     public BaseEntity(EntityData data, Vc2 offset) : base(data.Position + offset)
     {
         nodes = data.NodesWithPosition(offset);
-
+        
         ID = data.ID;
     }
     /// <summary>
