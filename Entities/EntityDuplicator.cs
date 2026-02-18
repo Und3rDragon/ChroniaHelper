@@ -20,15 +20,17 @@ public class EntityDuplicator : BaseEntity
 {
     public EntityDuplicator(EntityData data, Vc2 offset) : base(data, offset)
     {
-        generateFlag = data.Attr("generateFlag", "generate");
-        Add(listener = new FlagListener(generateFlag));
+        generateCondition = data.Attr("generateCondition", "generate");
+        Add(listener = new ConditionListener(generateCondition,
+            (ConditionListener.ConditionType)data.Int("usingExpression", 0)
+            ));
 
         duplicatorTargetTag = data.Attr("duplicatorTag", "duplicator");
         
         Collider = new Hitbox(data.Width, data.Height);
     }
-    private string generateFlag;
-    private FlagListener listener;
+    private string generateCondition;
+    private ConditionListener listener;
     private string duplicatorTargetTag;
 
     private List<Entity> colliding = new();
