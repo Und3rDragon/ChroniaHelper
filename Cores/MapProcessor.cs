@@ -121,7 +121,8 @@ public static class MapProcessor
 
         currentSaveData = new (index, self);
     }
-    
+
+    public static int totalMaxID = -1;
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
@@ -167,6 +168,8 @@ public static class MapProcessor
         {
             foreach (var item in lv.Entities)
             {
+                totalMaxID = int.Max(totalMaxID, item.ID);
+
                 if (switches.Contains(item.Name))
                 {
                     // Can get the Entity ID here

@@ -1337,8 +1337,8 @@ entities.ChroniaHelper/Balloon.placements.name.balloon=Balloon (Customizable)
 # ================= SetFlagSequenceController
 
 entities.ChroniaHelper/SetFlagSequenceController.placements.name.controller=Set Flag Sequence Controller
-flagSequence=A sequence representing how this entity should operate flags. The sequence may contain flags or a delay. \nThe sequence should be divided by ";", like "flagA;0.5;flagB". \nFor delay, a single number will do. \nFor flags, it can be multiple flags separated by a comma like "flag1,!flag2,?flag3,*flag4". \n"flag" is to activate a flag. \n"!flag" is to disable a flag. \n"?flag" is to enable a temporary flag. \n"*flag" is to set up a global flag. \nThe example is given in the field.
-parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
+entities.ChroniaHelper/SetFlagSequenceController.attributes.description.flagSequence=A sequence representing how this entity should operate flags. The sequence may contain flags or a delay. \nThe sequence should be divided by ";", like "flagA;0.5;flagB". \nFor delay, a single number will do. \nFor flags, it can be multiple flags separated by a comma like "flag1,!flag2,?flag3,*flag4". \n"flag" is to activate a flag. \n"!flag" is to disable a flag. \n"?flag" is to enable a temporary flag. \n"*flag" is to set up a global flag. \nThe example is given in the field.
+entities.ChroniaHelper/SetFlagSequenceController.attributes.description.parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
 
 # ================= Grouped Wind Tunnel
 
@@ -1357,3 +1357,12 @@ entities.ChroniaHelper/IceFloor.placements.name.IceFloor=Ice Floor
 entities.ChroniaHelper/SolidModifier.placements.name.main=Solid Modifier
 entities.ChroniaHelper/SolidModifier.placements.name.cb=Solid Modifier (Cornerboost on Speed)
 entities.ChroniaHelper/SolidModifier.placements.name.touch=Solid Modifier (Trigger on Touch)
+
+# ================= Entity Duplicator
+
+entities.ChroniaHelper/EntityDuplicator.placements.name.duplicator=Entity Duplicator
+entities.ChroniaHelper/EntityDuplicator.attributes.description.duplicatorTag=The tag that matches an Entity Duplicator Target
+entities.ChroniaHelper/EntityDuplicator.attributes.description.generateFlag=Each time this flag turns from false to true, the entity will be generated
+entities.ChroniaHelper/EntityDuplicator.attributes.description.chroniaMathExpession=A formula that looks like: someSlider * 2 + {flagA} * 1 \nOr maybe: mySlider * 2.5 + 34 - exp[anotherSlider] > 12 \nThe "words" inside Chronia Math Expression are treated as the key of the slider to get \nFunctions are all looking like "f[x]" \nAnd if you wanna read a flag, you use "{flag}", returns 1 as enabled and 0 as not \nIf the formula you input is a bool expression like "a == b" \nThe return value would be 1 as true and 0 as false, \nbut basically they follow the same principle when using as an argument: \nWhether the final return value is 0
+entities.ChroniaHelper/EntityDuplicatorTarget.placements.name.target=Entity Duplicator Target
+entities.ChroniaHelper/EntityDuplicatorTarget.attributes.description.duplicatorTag=The tag that matches target with duplicators
