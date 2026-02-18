@@ -630,27 +630,27 @@ public static class Miscs
     [Credits("KoseiHelper")]
     public static Entity DuplicateEntity(this Entity original, Vector2 spawnAt, LevelData levelData)
     {
-        Log.Info($"=== 开始复制实体: {original.GetType().Name} ===");
+        Log.Info($"=== Duplicating: {original.GetType().Name} ===");
         Log.Info($"Spawning entity at position: {spawnAt}");
 
         EntityData entityData = original.SourceData;
         if (entityData == null)
         {
-            Log.Error("SourceData 为 null");
+            //Log.Error("SourceData 为 null");
             return null;
         }
 
         EntityID newID = new EntityID(levelData.Name, ++MaP.totalMaxID);
         Type entityType = original.GetType();
 
-        Log.Info($"Successfully get type: {entityType}");
+        //Log.Info($"Successfully get type: {entityType}");
 
         ConstructorInfo[] ctors = entityType.GetConstructors();
-        Log.Info($"找到 {ctors.Length} 个构造函数:");
+        //Log.Info($"找到 {ctors.Length} 个构造函数:");
         foreach (var c in ctors)
         {
             var parameters = c.GetParameters();
-            Log.Info($"  - {string.Join(", ", parameters.Select(p => $"{p.ParameterType.Name} {p.Name}"))}");
+            //Log.Info($"  - {string.Join(", ", parameters.Select(p => $"{p.ParameterType.Name} {p.Name}"))}");
         }
 
         foreach (ConstructorInfo ctor in ctors)
@@ -659,30 +659,30 @@ public static class Miscs
             List<object> ctorParams = new List<object>();
             bool canConstruct = true;
 
-            Log.Info($"--- 尝试构造函数: {ctor.Name} ---");
+            //Log.Info($"--- 尝试构造函数: {ctor.Name} ---");
 
             foreach (ParameterInfo param in parameters)
             {
-                Log.Info($"Parsing Parameter: {param.ParameterType} - {param.Name}");
+                //Log.Info($"Parsing Parameter: {param.ParameterType} - {param.Name}");
 
                 if (param.ParameterType == typeof(EntityData))
                 {
                     ctorParams.Add(entityData);
-                    Log.Info($"  添加 EntityData");
+                    //Log.Info($"  添加 EntityData");
                 }
                 else if (param.ParameterType == typeof(Vector2))
                 {
                     if (param.Name.Contains("position", StringComparison.OrdinalIgnoreCase))
                     {
                         ctorParams.Add(spawnAt);
-                        Log.Info($"  → 添加 position: {spawnAt}");
+                        //Log.Info($"  → 添加 position: {spawnAt}");
                     }
                     else if (param.Name.Contains("offset", StringComparison.OrdinalIgnoreCase))
                     {
                         // 正确计算 offset：让 entityData.Position + offset = spawnAt
                         Vector2 offset = spawnAt - entityData.Position;
                         ctorParams.Add(offset);
-                        Log.Info($"  → 添加 offset: {offset} (spawnAt - entityData.Position)");
+                        //Log.Info($"  → 添加 offset: {offset} (spawnAt - entityData.Position)");
                     }
                     else
                     {
@@ -698,11 +698,11 @@ public static class Miscs
                     if (player != null)
                     {
                         ctorParams.Add(player);
-                        Log.Info($"  添加 Player: {player}");
+                        //Log.Info($"  添加 Player: {player}");
                     }
                     else
                     {
-                        Log.Error($"  Player 为 null，跳过此构造函数");
+                        //Log.Error($"  Player 为 null，跳过此构造函数");
                         canConstruct = false;
                         break;
                     }
@@ -710,36 +710,36 @@ public static class Miscs
                 else if (param.ParameterType.IsEnum)
                 {
                     ctorParams.Add(Enum.GetValues(param.ParameterType).GetValue(0));
-                    Log.Info($"  添加 Enum 默认值");
+                    //Log.Info($"  添加 Enum 默认值");
                 }
                 else if (param.ParameterType == typeof(bool))
                 {
                     ctorParams.Add(entityData.Bool(param.Name, false));
-                    Log.Info($"  添加 bool: {entityData.Bool(param.Name, false)}");
+                    //Log.Info($"  添加 bool: {entityData.Bool(param.Name, false)}");
                 }
                 else if (param.ParameterType == typeof(int))
                 {
                     ctorParams.Add(entityData.Int(param.Name, 0));
-                    Log.Info($"  添加 int: {entityData.Int(param.Name, 0)}");
+                    //Log.Info($"  添加 int: {entityData.Int(param.Name, 0)}");
                 }
                 else if (param.ParameterType == typeof(float))
                 {
                     ctorParams.Add(entityData.Float(param.Name, 0f));
-                    Log.Info($"  添加 float: {entityData.Float(param.Name, 0f)}");
+                    //Log.Info($"  添加 float: {entityData.Float(param.Name, 0f)}");
                 }
                 else if (param.ParameterType == typeof(EntityID))
                 {
                     ctorParams.Add(newID);
-                    Log.Info($"  添加 EntityID");
+                    //Log.Info($"  添加 EntityID");
                 }
                 else if (param.ParameterType == typeof(string))
                 {
                     ctorParams.Add(entityData.Attr(param.Name, ""));
-                    Log.Info($"  添加 string: {entityData.Attr(param.Name, "")}");
+                    //Log.Info($"  添加 string: {entityData.Attr(param.Name, "")}");
                 }
                 else
                 {
-                    Log.Warn($"  未处理类型: {param.ParameterType}");
+                    Log.Warn($"Unprocessed Type: {param.ParameterType}");
                     ctorParams.Add(param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null);
                 }
             }
@@ -748,21 +748,21 @@ public static class Miscs
             {
                 try
                 {
-                    Log.Info($"调用构造函数，参数: {string.Join(", ", ctorParams.Select(p => p?.GetType().Name ?? "null"))}");
+                    //Log.Info($"调用构造函数，参数: {string.Join(", ", ctorParams.Select(p => p?.GetType().Name ?? "null"))}");
                     Entity entity = (Entity)ctor.Invoke(ctorParams.ToArray());
-                    Log.Info($"成功创建实体: {entity.GetType().Name}");
+                    Log.Info($"Entity duplicated successfully: {entity.GetType().Name}");
                     return entity;
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"构造函数调用失败: {ex.Message}");
-                    Log.Error($"堆栈: {ex.StackTrace}");
+                    Log.Error($"ctor function error: {ex.Message}");
+                    Log.Error($"stack trace: {ex.StackTrace}");
                     // 继续尝试下一个构造函数
                 }
             }
         }
 
-        Log.Error($"所有构造函数都失败了，返回 null");
+        Log.Error($"All ctor failed, return null");
         return null;
     }
 
