@@ -1357,3 +1357,11 @@ entities.ChroniaHelper/IceFloor.placements.name.IceFloor=Ice Floor
 entities.ChroniaHelper/SolidModifier.placements.name.main=Solid Modifier
 entities.ChroniaHelper/SolidModifier.placements.name.cb=Solid Modifier (Cornerboost on Speed)
 entities.ChroniaHelper/SolidModifier.placements.name.touch=Solid Modifier (Trigger on Touch)
+
+# ================= Entity Duplicator
+
+entities.ChroniaHelper/EntityDuplicator.placements.name.duplicator=Entity Duplicator
+entities.ChroniaHelper/EntityDuplicator.attributes.description.duplicatorTag=The tag that matches an Entity Duplicator Target
+entities.ChroniaHelper/EntityDuplicator.attributes.description.generateFlag=Each time this flag turns from false to true, the entity will be generated
+entities.ChroniaHelper/EntityDuplicatorTarget.placements.name.target=Entity Duplicator Target
+entities.ChroniaHelper/EntityDuplicatorTarget.attributes.description.duplicatorTag=The tag that matches target with duplicators

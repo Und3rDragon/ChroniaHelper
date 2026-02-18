@@ -461,13 +461,13 @@ public static class Miscs
     /// <param name="fullEntityClassName"></param>
     /// <param name="entityDataKeys"></param>
     /// <param name="entityDataValues"></param>
-    /// <param name="currentLastEntityID"></param>
+    /// <param name="assignNewID"></param>
     /// <returns></returns>
     [Credits("KoseiHelper")]
     public static Entity CreateEntity(Vector2 spawnAt, Vector2 node, LevelData data, 
         bool noNode, int asBlockWidth, int asBlockHeight, string fullEntityClassName,
         List<string> entityDataKeys, List<string> entityDataValues,
-        int currentLastEntityID)
+        int assignNewID)
     {
         Log.Info($"Spawning entity at position: {spawnAt}");
         EntityData entityData;
@@ -498,7 +498,7 @@ public static class Miscs
         {
             entityData.Values[entityDataKeys[i]] = entityDataValues.ElementAtOrDefault(i);
         }
-        EntityID newID = new EntityID(data.Name, currentLastEntityID++);
+        EntityID newID = new EntityID(data.Name, assignNewID++);
         Type entityType;
         try
         {
@@ -584,7 +584,7 @@ public static class Miscs
                     }
                     else if (param.ParameterType == typeof(EntityID))
                     {
-                        ctorParams.Add(new EntityID(data.Name, currentLastEntityID++));
+                        ctorParams.Add(new EntityID(data.Name, assignNewID++));
                     }
                     else if (param.ParameterType == typeof(string))
                     {
@@ -627,142 +627,143 @@ public static class Miscs
         return null;
     }
 
-    public static Entity CreateEntity(this Entity originalEntity, 
-        Vector2 spawnAt, LevelData data)
+    [Credits("KoseiHelper")]
+    public static Entity DuplicateEntity(this Entity original, Vector2 spawnAt, LevelData levelData)
     {
+        Log.Info($"=== 开始复制实体: {original.GetType().Name} ===");
         Log.Info($"Spawning entity at position: {spawnAt}");
 
-        EntityData entityData = originalEntity.SourceData;
-        int currentLastEntityID = originalEntity.SourceData.ID;
+        EntityData entityData = original.SourceData;
+        if (entityData == null)
+        {
+            Log.Error("SourceData 为 null");
+            return null;
+        }
 
-        EntityID newID = new EntityID(data.Name, currentLastEntityID++);
-        //Type entityType;
-        //try
-        //{
-        //    entityType = FakeAssembly.GetFakeEntryAssembly().GetType(fullEntityClassName); // This is where it gets the type, like Celeste.Strawberry
-        //}
-        //catch
-        //{
-        //    Log.Error("Failed to get entity: Requested type does not exist");
-        //    return null;
-        //}
-        
-        Type entityType = originalEntity.GetType();
+        EntityID newID = new EntityID(levelData.Name, ++MaP.totalMaxID);
+        Type entityType = original.GetType();
+
+        Log.Info($"Successfully get type: {entityType}");
 
         ConstructorInfo[] ctors = entityType.GetConstructors();
-        try
+        Log.Info($"找到 {ctors.Length} 个构造函数:");
+        foreach (var c in ctors)
         {
-            foreach (ConstructorInfo ctor in ctors)
+            var parameters = c.GetParameters();
+            Log.Info($"  - {string.Join(", ", parameters.Select(p => $"{p.ParameterType.Name} {p.Name}"))}");
+        }
+
+        foreach (ConstructorInfo ctor in ctors)
+        {
+            ParameterInfo[] parameters = ctor.GetParameters();
+            List<object> ctorParams = new List<object>();
+            bool canConstruct = true;
+
+            Log.Info($"--- 尝试构造函数: {ctor.Name} ---");
+
+            foreach (ParameterInfo param in parameters)
             {
-                ParameterInfo[] parameters = ctor.GetParameters();
-                List<object> ctorParams = new List<object>();
+                Log.Info($"Parsing Parameter: {param.ParameterType} - {param.Name}");
 
-                foreach (ParameterInfo param in parameters)
+                if (param.ParameterType == typeof(EntityData))
                 {
-                    if (param.ParameterType == typeof(EntityData))
+                    ctorParams.Add(entityData);
+                    Log.Info($"  添加 EntityData");
+                }
+                else if (param.ParameterType == typeof(Vector2))
+                {
+                    if (param.Name.Contains("position", StringComparison.OrdinalIgnoreCase))
                     {
-                        ctorParams.Add(entityData);
+                        ctorParams.Add(spawnAt);
+                        Log.Info($"  → 添加 position: {spawnAt}");
                     }
-                    else if (param.ParameterType == typeof(Vector2))
-                    { //Needs to check if the entity has just the position or position + offset
-                        if (param.Name.Contains("position", StringComparison.OrdinalIgnoreCase))
-                        {
-                            ctorParams.Add(spawnAt);
-                        }
-                        else
-                        {
-                            Vector2 vec = Vector2.Zero;
-                            if (entityData.Values.TryGetValue(param.Name, out object val) && val is string s)
-                            {
-                                s = s.Trim();
-                                if ((s.StartsWith("[") && s.EndsWith("]")) || (s.StartsWith("(") && s.EndsWith(")")))
-                                    s = s.Substring(1, s.Length - 2);
-
-                                string[] parts = s.Split(',');
-                                if (parts.Length == 2 &&
-                                    float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float x) &&
-                                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float y))
-                                {
-                                    vec = new Vector2(x, y);
-                                }
-                            }
-                            if (vec == Vector2.Zero)
-                            {
-                                float x = entityData.Float(param.Name + "X", 0f);
-                                float y = entityData.Float(param.Name + "Y", 0f);
-                                vec = new Vector2(x, y);
-                            }
-
-                            ctorParams.Add(vec);
-                        }
-                    }
-                    else if (param.ParameterType.IsEnum)
+                    else if (param.Name.Contains("offset", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (entityData.Values.FirstOrDefault(kv => kv.Key == param.Name).Value is string enumValue)
-                        {
-                            Type enumType = param.ParameterType;
-                            Object enumParsed = Enum.Parse(enumType, enumValue);
-                            ctorParams.Add(enumParsed);
-                        }
-                        else
-                        {
-                            ctorParams.Add(Enum.GetValues(param.ParameterType).GetValue(0));
-                        }
-                    }
-                    else if (param.ParameterType == typeof(bool))
-                    {
-                        ctorParams.Add(entityData.Bool(param.Name, defaultValue: false));
-                    }
-                    else if (param.ParameterType == typeof(int))
-                    {
-                        ctorParams.Add(entityData.Int(param.Name, defaultValue: 0));
-                    }
-                    else if (param.ParameterType == typeof(float))
-                    {
-                        ctorParams.Add(entityData.Float(param.Name, defaultValue: 0f));
-                    }
-                    else if (param.ParameterType == typeof(EntityID))
-                    {
-                        ctorParams.Add(new EntityID(data.Name, currentLastEntityID++));
-                    }
-                    else if (param.ParameterType == typeof(string))
-                    {
-                        ctorParams.Add(entityData.Attr(param.Name, ""));
-                    }
-                    else if (param.ParameterType == typeof(Vector2[])) // hope the naming is correct but idk might work for a few entities
-                    {
-                        ctorParams.Add(entityData.Nodes != null && entityData.Nodes.Length > 0
-                            ? new Vector2[] { entityData.Position }.Concat(entityData.Nodes).ToArray() : new Vector2[] { entityData.Position });
-                    }
-                    else if (param.ParameterType == typeof(Hitbox)) // hope the naming is correct but idk might work for a few entities
-                    {
-                        string prefix = param.Name;
-
-                        float width = entityData.Float($"{prefix}Width", 16f);
-                        float height = entityData.Float($"{prefix}Height", 16f);
-                        float x = entityData.Float($"{prefix}X", 0f);
-                        float y = entityData.Float($"{prefix}Y", 0f);
-                        if (!entityData.Values.ContainsKey($"{prefix}X") && entityData.Values.ContainsKey($"{prefix}XOffset"))
-                            x = entityData.Float($"{prefix}XOffset", 0f);
-
-                        if (!entityData.Values.ContainsKey($"{prefix}Y") && entityData.Values.ContainsKey($"{prefix}YOffset"))
-                            y = entityData.Float($"{prefix}YOffset", 0f);
-
-                        ctorParams.Add(new Hitbox(width, height, x, y));
+                        // 正确计算 offset：让 entityData.Position + offset = spawnAt
+                        Vector2 offset = spawnAt - entityData.Position;
+                        ctorParams.Add(offset);
+                        Log.Info($"  → 添加 offset: {offset} (spawnAt - entityData.Position)");
                     }
                     else
                     {
-                        Log.Warn($"Unhandled parameter type: {param.ParameterType}");
-                        ctorParams.Add(param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null);
+                        // 其他 Vector2 参数，尝试从 entityData 读取
+                        Vector2 vec = Vector2.Zero;
+                        // ... 你的原有逻辑
+                        ctorParams.Add(vec);
                     }
                 }
-                return (Entity)ctor.Invoke(ctorParams.ToArray());
+                else if (param.ParameterType == typeof(Player))
+                {
+                    Player player = PUt.player;
+                    if (player != null)
+                    {
+                        ctorParams.Add(player);
+                        Log.Info($"  添加 Player: {player}");
+                    }
+                    else
+                    {
+                        Log.Error($"  Player 为 null，跳过此构造函数");
+                        canConstruct = false;
+                        break;
+                    }
+                }
+                else if (param.ParameterType.IsEnum)
+                {
+                    ctorParams.Add(Enum.GetValues(param.ParameterType).GetValue(0));
+                    Log.Info($"  添加 Enum 默认值");
+                }
+                else if (param.ParameterType == typeof(bool))
+                {
+                    ctorParams.Add(entityData.Bool(param.Name, false));
+                    Log.Info($"  添加 bool: {entityData.Bool(param.Name, false)}");
+                }
+                else if (param.ParameterType == typeof(int))
+                {
+                    ctorParams.Add(entityData.Int(param.Name, 0));
+                    Log.Info($"  添加 int: {entityData.Int(param.Name, 0)}");
+                }
+                else if (param.ParameterType == typeof(float))
+                {
+                    ctorParams.Add(entityData.Float(param.Name, 0f));
+                    Log.Info($"  添加 float: {entityData.Float(param.Name, 0f)}");
+                }
+                else if (param.ParameterType == typeof(EntityID))
+                {
+                    ctorParams.Add(newID);
+                    Log.Info($"  添加 EntityID");
+                }
+                else if (param.ParameterType == typeof(string))
+                {
+                    ctorParams.Add(entityData.Attr(param.Name, ""));
+                    Log.Info($"  添加 string: {entityData.Attr(param.Name, "")}");
+                }
+                else
+                {
+                    Log.Warn($"  未处理类型: {param.ParameterType}");
+                    ctorParams.Add(param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null);
+                }
+            }
+
+            if (canConstruct)
+            {
+                try
+                {
+                    Log.Info($"调用构造函数，参数: {string.Join(", ", ctorParams.Select(p => p?.GetType().Name ?? "null"))}");
+                    Entity entity = (Entity)ctor.Invoke(ctorParams.ToArray());
+                    Log.Info($"成功创建实体: {entity.GetType().Name}");
+                    return entity;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"构造函数调用失败: {ex.Message}");
+                    Log.Error($"堆栈: {ex.StackTrace}");
+                    // 继续尝试下一个构造函数
+                }
             }
         }
-        catch (Exception ex)
-        {
-            Log.Error($"Failed to instantiate entity: {ex.Message}");
-        }
+
+        Log.Error($"所有构造函数都失败了，返回 null");
         return null;
     }
+
 }

@@ -5,10 +5,12 @@ local e = {}
 e.name = "ChroniaHelper/EntityDuplicator"
 
 e.placements = {
-	name = "Entity Duplicator",
+	name = "duplicator",
 	data = {
 		width = 16,
 		height = 16,
+		generateFlag = "generate",
+		duplicatorTag = "duplicator",
 	},
 }
 
