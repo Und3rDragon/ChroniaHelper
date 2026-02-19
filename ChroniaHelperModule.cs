@@ -144,8 +144,6 @@ public class ChroniaHelperModule : EverestModule
         MaddieLoaded = CheckDependency("MaxHelpingHand", "1.38.0");
         XaphanHelperLoaded = CheckDependency("XaphanHelper", "1.0.78");
 
-        PolygonCollider.Load();
-
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;
     }
