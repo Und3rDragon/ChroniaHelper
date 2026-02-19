@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using YoctoHelper.Cores;
+using System.Runtime.CompilerServices;
 
 namespace ChroniaHelper.Utils;
 
@@ -1200,5 +1201,50 @@ public static class NumberUtils
         var y = val.Y.Approach(target.Y, maxMove.Y);
 
         return new Vc2(x, y);
+    }
+
+    public static bool IsBetween(this float value, float n1, float n2)
+    {
+        if(n1 == n2)
+        {
+            return value == n1;
+        }
+
+        return (value >= float.Min(n1, n2)) && (value <= float.Max(n1, n2));
+    }
+
+    public static bool IsBetween(this double value, double n1, double n2)
+    {
+        if (n1 == n2)
+        {
+            return value == n1;
+        }
+
+        return (value >= double.Min(n1, n2)) && (value <= double.Max(n1, n2));
+    }
+
+    public static bool IsBetween(this int value, int n1, int n2)
+    {
+        if (n1 == n2)
+        {
+            return value == n1;
+        }
+
+        return (value >= int.Min(n1, n2)) && (value <= int.Max(n1, n2));
+    }
+
+    public static bool IsBetween(this decimal value, decimal n1, decimal n2)
+    {
+        if (n1 == n2)
+        {
+            return value == n1;
+        }
+
+        return (value >= decimal.Min(n1, n2)) && (value <= decimal.Max(n1, n2));
+    }
+
+    public static float GetBalance(this float value1, float scale1, float value2, float scale2)
+    {
+        return (value1 * scale1 + value2 * scale2) / (scale1 + scale2);
     }
 }

@@ -1,6 +1,6 @@
 
 
-local e = {}
+local e = {} return
 
 e.name = "ChroniaHelper/EntityDuplicator"
 
