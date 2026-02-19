@@ -2,7 +2,7 @@ local drawableRectangle = require("structs.drawable_rectangle")
 local utils = require("utils")
 local drawableSprite = require("structs.drawable_sprite")
 
-local controller = {}
+local controller = {} return
 
 controller.name = "ChroniaHelper/EntityDuplicatorTarget"
 
@@ -33,4 +33,4 @@ function controller.sprite(room, entity)
     return sprite
 end
 
---return controller
+return controller
