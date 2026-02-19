@@ -101,6 +101,17 @@ public class ChroniaHelperModule : EverestModule
     public static bool MaddieLoaded;
     public static bool XaphanHelperLoaded;
 
+    public static bool CheckDependency(string modName, string minimumVersion)
+    {
+        EverestModuleMetadata meta = new()
+        {
+            Name = modName,
+            Version = new Version(minimumVersion)
+        };
+
+        return Everest.Loader.DependencyLoaded(meta);
+    }
+
     public override void Load()
     {
         Log.Info("Welcome to use ChroniaHelper!");
@@ -127,38 +138,12 @@ public class ChroniaHelperModule : EverestModule
         typeof(FrostHelperImports).ModInterop();
         typeof(CameraDynamicsImports).ModInterop();
 
-        // FrostHelper load judgement
-        EverestModuleMetadata frostHelperMetadata = new()
-        {
-            Name = "FrostHelper",
-            Version = new Version("1.70.2")
-        };
-        FrostHelperLoaded = Everest.Loader.DependencyLoaded(frostHelperMetadata);
+        // Helper dependencies
+        FrostHelperLoaded = CheckDependency("FrostHelper", "1.70.2");
+        CommunalHelperLoaded = CheckDependency("CommunalHelper", "1.23.0");
+        MaddieLoaded = CheckDependency("MaxHelpingHand", "1.38.0");
+        XaphanHelperLoaded = CheckDependency("XaphanHelper", "1.0.78");
 
-        // Communal Helper load judgement
-        EverestModuleMetadata communalHelperMetadata = new()
-        {
-            Name = "CommunalHelper",
-            Version = new Version("1.23.0"),
-        };
-        CommunalHelperLoaded = Everest.Loader.DependencyLoaded(communalHelperMetadata);
-
-        // Max Helping Hand judgement
-        EverestModuleMetadata maddieMetadata = new()
-        {
-            Name = "MaxHelpingHand",
-            Version = new Version("1.38.0"),
-        };
-        MaddieLoaded = Everest.Loader.DependencyLoaded(maddieMetadata);
-
-        // Xaphan Helper judgement
-        EverestModuleMetadata xaphanMetadata = new()
-        {
-            Name = "XaphanHelper",
-            Version = new Version("1.0.78"),
-        };
-        XaphanHelperLoaded = Everest.Loader.DependencyLoaded(xaphanMetadata);
-        
         PolygonCollider.Load();
 
         // Map Hider?
