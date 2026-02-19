@@ -9,6 +9,7 @@ using Monocle;
 using static Celeste.ClutterBlock;
 using ChroniaHelper.Utils;
 using Celeste.Mod.Backdrops;
+using System.Globalization;
 
 /*
     Migrated from VivHelper Repository
@@ -48,6 +49,8 @@ namespace ChroniaHelper.Effects {
         private float linearFade = 1f;
 
         public float extX, extY;
+
+        public float windStrength = 0f;
 #pragma warning disable CS0612
 
         public CustomRain(BinaryPacker.Element child)
@@ -55,14 +58,15 @@ namespace ChroniaHelper.Effects {
                  child.AttrFloat("angle", 270f), child.AttrFloat("angleDiff", 3f), child.AttrFloat("speedMult", 1f), 
                  child.AttrInt("Amount", 240), child.Attr("Colors", "161933"), child.AttrFloat("alpha", 1f),
                  child.AttrFloat("extendedBorderX", 0f), child.AttrFloat("extendedBorderY", 0f),
-                 child.Attr("fadingX"), child.Attr("fadingY")
+                 child.Attr("fadingX"), child.Attr("fadingY"), child.AttrFloat("windStrength")
                  )
         { }
         public CustomRain(Vector2 scroll, float angle, float angleDiff, float speedMult, int count, string colors, float alpha,
-            float extX, float extY, string fadeX, string fadeY
+            float extX, float extY, string fadeX, string fadeY, float windStrength
             ) 
         {
             this.Scroll = scroll;
+            this.windStrength = windStrength;
             this.count = count;
             particles = new Particle[count];
             List<Color> _colors = new List<Color>();
@@ -136,7 +140,7 @@ namespace ChroniaHelper.Effects {
                 linearFade = linearFade.Clamp(0f, v);
             }
             for (int i = 0; i < count; i++) {
-                particles[i].Position += particles[i].Speed * Engine.DeltaTime;
+                particles[i].Position += (particles[i].Speed + (scene as Level).Wind * windStrength) * Engine.DeltaTime;
             }
         }
 
@@ -145,11 +149,26 @@ namespace ChroniaHelper.Effects {
                 Camera camera = (scene as Level).Camera;
                 for (int i = 0; i < particles.Length; i++) {
                     Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, 180f + extY));
+
+                    // Process Rotation
+                    float wind = Calc.Angle((scene as Level).Wind);
+                    while(wind - particles[i].Rotation > 180f * Calc.DegToRad)
+                    {
+                        wind -= 360f * Calc.DegToRad;
+                    }
+                    while (particles[i].Rotation - wind > 180f * Calc.DegToRad)
+                    {
+                        wind += 360f * Calc.DegToRad;
+                    }
+
                     Draw.Pixel.DrawCentered(position, 
                         particles[i].color * alpha * linearFade * visibleFade, 
-                        particles[i].Scale, 
-                        particles[i].Rotation);
-
+                        particles[i].Scale,
+                        particles[i].Rotation.GetBalance(
+                            particles[i].Speed.Length(),
+                            wind,
+                            (scene as Level).Wind.Length())
+                        );
                 }
             }
         }
