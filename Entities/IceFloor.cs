@@ -48,7 +48,12 @@ public class IceFloor : BaseEntity
         
         if (createStaticMover)
         {
-            Add(new StaticMover());
+            Add(new StaticMover
+            {
+                OnShake = OnShake,
+                SolidChecker = IsRiding,
+                OnDestroy = RemoveSelf
+            });
         }
     }
     private string xml;
@@ -63,6 +68,22 @@ public class IceFloor : BaseEntity
     //        t.Play("ice", false, false);
     //    });
     //}
+
+    private void OnShake(Vector2 pos)
+    {
+        foreach (Component component in Components)
+        {
+            if (component is Sprite sprite)
+            {
+                sprite.Position += pos;
+            }
+        }
+    }
+
+    private bool IsRiding(Solid solid)
+    {
+        return CollideCheck(solid);
+    }
 
     private List<Sprite> BuildSprite()
     {
