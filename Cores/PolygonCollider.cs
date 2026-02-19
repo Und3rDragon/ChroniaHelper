@@ -11,9 +11,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ChroniaHelper.Cores {
     public class PolygonCollider : Collider {
+        [LoadHook]
         public static void Load() {
             On.Monocle.Collider.Collide_Collider += Collider_Collide_Collider;
         }
+        [UnloadHook]
         public static void Unload() {
             On.Monocle.Collider.Collide_Collider -= Collider_Collide_Collider;
         }
