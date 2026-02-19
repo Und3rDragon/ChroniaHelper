@@ -196,5 +196,4 @@
 		<Loop id="middle" path="mid" delay="0.1" frames="0*20,1-4"/>
 		<Loop id="bottom" path="bottom" delay="0.1" frames="0*20,1-4"/>
 	</iceFloor>
-	
 </Sprites>
