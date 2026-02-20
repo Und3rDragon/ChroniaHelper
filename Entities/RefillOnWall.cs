@@ -11,7 +11,6 @@ using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
-[WorkingInProgress]
 [CustomEntity("ChroniaHelper/RefillOnWall")]
 public class RefillOnWall : BaseEntity
 {

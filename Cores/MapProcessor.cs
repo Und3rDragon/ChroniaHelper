@@ -6,6 +6,7 @@ using ChroniaHelper.Entities;
 using ChroniaHelper.Settings;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.WIPs.Entities;
 using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
 using YamlDotNet.Core;
