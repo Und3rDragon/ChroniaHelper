@@ -22,7 +22,7 @@ controller.placements = {
 controller.fieldInformation = 
 {
     flag = {
-        allowsEmpty = true,
+        allowEmpty = true,
     },
 }
 

@@ -548,6 +548,7 @@ public class CustomBooster : Booster
             orig(self);
         }
     }
+
     private static int PlayerOnBoostUpdate(On.Celeste.Player.orig_BoostUpdate orig, Player self)
     {
         if (self.CurrentBooster is CustomBooster { playerFollow: true } booster)

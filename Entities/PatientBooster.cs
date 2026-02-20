@@ -10,6 +10,7 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 
 namespace ChroniaHelper.Entities;
 
@@ -105,19 +106,38 @@ public class PatientBooster : Booster
         
         freeMoveSpeed = data.Float("freeMoveSpeed", -1f);
 
+		// out speed and boost speed from Custom Booster
+		outSpeed = data.Float("outSpeedMultiplier", 1f);
+		greenSpeed = data.Float("greenBoostMovingSpeed", 240f);
+        redSpeed = data.Float("redBoostMovingSpeed", 240f);
+
+        customBurstParticleType = new ParticleType(red ? P_BurstRed : P_Burst);
+		if (data.Attr("burstParticleColor").IsNotNullOrEmpty())
+		{
+            customBurstParticleType.Color = data.GetChroniaColor("burstParticleColor", Color.White).Parsed();
+        }
+        customAppearParticleType = new ParticleType(red ? P_RedAppear : P_Appear);
+		if (data.Attr("appearParticleColor").IsNotNullOrEmpty())
+		{
+            customAppearParticleType.Color = data.GetChroniaColor("appearParticleColor", Color.White).Parsed();
+        }
+
         Remove(sprite);
 		Add(sprite = GFX.SpriteBank.Create(!string.IsNullOrEmpty(spriteName) ? spriteName : (killTimer > 0f ? "Preset_yellow" : (red ? "Preset_red" : "Preset_green"))));
 	}
 	private int dashes, stamina;
-	private enum DashRefill { refill, set};
+	private enum DashRefill { refill, set, delta };
 	private DashRefill dashesMode;
-	private enum StaminaRefill { refill, set};
+	private enum StaminaRefill { refill, set, delta };
 	private StaminaRefill staminaMode;
 	private float killTimer = -1f, timer_killTimer = -1f;
 	private bool timerRunning = false;
 
 	private float freeMoveSpeed = -1f;
     private Vc2 freeMoveOffset = Vc2.Zero;
+
+	private float outSpeed, redSpeed, greenSpeed;
+    private ParticleType customBurstParticleType, customAppearParticleType;
 
     public override void Added(Scene scene)
     {
@@ -176,6 +196,7 @@ public class PatientBooster : Booster
 	}
 
 	private static ILHook origBoostBeginHook;
+    private static ILHook redDashCoroutineHook, greenDashCoroutineHook;
 
     [LoadHook]
     public static void Load()
@@ -187,7 +208,13 @@ public class PatientBooster : Booster
 		IL.Celeste.Player.BoostBegin += Player_BoostBegin;
 
 		origBoostBeginHook = new ILHook(typeof(Player).GetMethod("orig_BoostBegin", BindingFlags.NonPublic | BindingFlags.Instance), Player_BoostBegin);
-	}
+
+		On.Celeste.Booster.BoostRoutine += Booster_BoostRoutine;
+        redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), Player_RedDashHook);
+        greenDashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), Player_GreenDashHook);
+
+        On.Celeste.Booster.AppearParticles += Booster_AppearParticles;
+    }
 	[UnloadHook]
     public static void Unload()
 	{
@@ -199,7 +226,14 @@ public class PatientBooster : Booster
 
 		origBoostBeginHook?.Dispose();
 		origBoostBeginHook = null;
-	}
+
+        On.Celeste.Booster.BoostRoutine -= Booster_BoostRoutine;
+
+        redDashCoroutineHook.Dispose();
+        greenDashCoroutineHook.Dispose();
+
+        On.Celeste.Booster.AppearParticles -= Booster_AppearParticles;
+    }
 
 	private static void Player_Boost(On.Celeste.Player.orig_Boost orig, Player self, Booster booster)
 	{
@@ -271,29 +305,39 @@ public class PatientBooster : Booster
 			if (TempCurrentBooster is PatientBooster booster)
 			{
 				// Insert Stamina and Dashes logic here
-				if(booster.staminaMode == PatientBooster.StaminaRefill.refill)
+				if(booster.staminaMode == PatientBooster.StaminaRefill.delta)
 				{
-					if(player.Stamina < booster.stamina)
-					{
-						player.Stamina = booster.stamina;
-					}
+					player.Stamina += booster.stamina;
+					player.Stamina = player.Stamina.ClampMin(0f);
 				}
 				else if (booster.staminaMode == PatientBooster.StaminaRefill.set)
 				{
 					player.Stamina = booster.stamina;
 				}
-
-				if (booster.dashesMode == PatientBooster.DashRefill.refill)
+				else
 				{
-					if (player.Dashes < booster.dashes)
-					{
-						player.Dashes = booster.dashes;
-					}
-				} 
-				else if (booster.dashesMode == PatientBooster.DashRefill.set) 
+                    if (player.Stamina < booster.stamina)
+                    {
+                        player.Stamina = booster.stamina;
+                    }
+                }
+
+				if (booster.dashesMode == PatientBooster.DashRefill.delta)
+				{
+					player.Dashes += booster.dashes;
+					player.Dashes = player.Dashes.ClampMin(0);
+				}
+				else if (booster.dashesMode == PatientBooster.DashRefill.set)
 				{
 					player.Dashes = booster.dashes;
-				} 
+				}
+				else
+				{
+                    if (player.Dashes < booster.dashes)
+                    {
+                        player.Dashes = booster.dashes;
+                    }
+                }
 				
 				return true;
 			}
@@ -304,4 +348,105 @@ public class PatientBooster : Booster
 		cursor.Emit(OpCodes.Br, afterRefillsLabel);
 		cursor.MarkLabel(continueLabel);
 	}
+
+    private static IEnumerator Booster_BoostRoutine(On.Celeste.Booster.orig_BoostRoutine orig, Booster self, Player player, Vector2 dir)
+    {
+        if (self is PatientBooster myBooster)
+        {
+            float angle = (-dir).Angle();
+            // angle calculation, left is 0, right is PI, topright +, bottomright -
+            while ((player.StateMachine.State == 2 || player.StateMachine.State == 5) && myBooster.BoostingPlayer)
+            {
+                myBooster.sprite.RenderPosition = player.Center + playerOffset;
+                myBooster.loopingSfx.Position = myBooster.sprite.Position;
+                if (myBooster.Scene.OnInterval(0.02f))
+                {
+                    ParticleType particleType = self is PatientBooster booster ? booster.customBurstParticleType : myBooster.particleType;
+                    (myBooster.Scene as Level).ParticlesBG.Emit(particleType, 2, player.Center - dir * 3f + new Vector2(0f, -2f), new Vector2(3f, 3f), angle);
+                }
+
+                yield return null;
+            }
+
+            myBooster.PlayerReleased();
+
+            player.Speed *= myBooster.outSpeed;
+
+            if (player.StateMachine.State == 4)
+            {
+                myBooster.sprite.Visible = false;
+            }
+
+            while (myBooster.SceneAs<Level>().Transitioning)
+            {
+                yield return null;
+            }
+
+            myBooster.Tag = 0;
+        }
+        else
+        {
+            yield return new SwapImmediately(orig(self, player, dir));
+        }
+    }
+
+    private static void Player_RedDashHook(ILContext il)
+    {
+        ILCursor c = new ILCursor(il);
+
+        if (c.TryGotoNext(ins => ins.MatchLdcR4(240f)))
+        {
+            c.Index += 1;
+
+            c.EmitDelegate<Func<float, float>>(fallback =>
+            {
+                if (PUt.TryGetPlayer(out var p))
+                {
+                    if (p.CurrentBooster is PatientBooster b)
+                    {
+                        return b.redSpeed;
+                    }
+                }
+                return fallback;
+            });
+        }
+    }
+
+    private static void Player_GreenDashHook(ILContext il)
+    {
+        ILCursor c = new ILCursor(il);
+
+        if (c.TryGotoNext(ins => ins.MatchLdcR4(240f)))
+        {
+            c.Index += 1;
+
+            c.EmitDelegate<Func<float, float>>(fallback =>
+            {
+                if (PUt.TryGetPlayer(out var p))
+                {
+                    if (p.CurrentBooster is PatientBooster b)
+                    {
+                        return b.greenSpeed;
+                    }
+                }
+                return fallback;
+            });
+        }
+    }
+
+    public static void Booster_AppearParticles(On.Celeste.Booster.orig_AppearParticles orig, Booster self)
+    {
+        if (self is PatientBooster booster)
+        {
+            ParticleSystem particlesBG = MapProcessor.level.ParticlesBG;
+            for (int i = 0; i < 360; i += 30)
+            {
+                particlesBG.Emit(booster.customAppearParticleType, 1, booster.Center, Vector2.One * 2f, (float)i * (MathF.PI / 180f));
+            }
+        }
+        else
+        {
+            orig(self);
+        }
+    }
 }

@@ -9,13 +9,16 @@ local patientBooster = {
                 red = false,
                 sprite = "",
                 respawnDelay = 1.0,
-                --refillDashes = "",
-                --refillStamina = true,
                 customHitbox = "c,10,0,2",
                 stamina = 110,
                 dashes = 1,
                 staminaMode = 0,
                 dashesMode = 0,
+                outSpeedMultiplier = 1,
+                greenBoostMovingSpeed = 240,
+                redBoostMovingSpeed = 240,
+                burstParticleColor = "",
+                appearParticleColor = "",
                 killIfStayed = -1,
                 freeMoveSpeed = -1,
             }
@@ -50,6 +53,7 @@ local patientBooster = {
             options = {
                 ["refill"] = 0,
                 ["set"] = 1,
+                ["delta"] = 2,
             },
             editable = false,
         },
@@ -57,6 +61,7 @@ local patientBooster = {
             options = {
                 ["refill"] = 0,
                 ["set"] = 1,
+                ["delta"] = 2,
             },
             editable = false,
         },
@@ -75,6 +80,16 @@ local patientBooster = {
                 "Preset_pink",
             },
             editable = true,
+        },
+        burstParticleColor = {
+            fieldType = "color",
+            allowEmpty = true,
+            useAlpha = true,
+        },
+        appearParticleColor = {
+            fieldType = "color",
+            allowEmpty = true,
+            useAlpha = true,
         },
     },
 }
