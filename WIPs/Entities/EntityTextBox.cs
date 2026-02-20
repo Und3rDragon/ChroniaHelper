@@ -162,15 +162,16 @@ public class EntityTextBox : BaseEntity
         float textEase = 1f;
         Vc2 startPos = Position;
         Vector2 textRenderPos = new Vector2(textPaddingFromEdge, textPaddingFromEdge);
-        Vector2 actualTextCenter = new Vector2(actualTextWidth, (float)linesPerPage * lineHeight * textEase) / 2f;
+        Vector2 actualTextSize = new Vector2(actualTextWidth, (float)linesPerPage * lineHeight * textEase);
         float assistiveScaling = ((remainLines >= 4) ? 0.75f : 1f);
+        //float assistiveScaling = 1f;
         // The justify is for the text aligning
         text.Draw(
-            startPos + textRenderPos + actualTextCenter,
+            startPos + textRenderPos + actualTextSize / 2f,
             new Vc2(0.5f, 0.5f), new Vector2(1f, textEase) * assistiveScaling,
             textEase, Start, index);
         //text.DrawJustifyPerLine(
-        //    startPos + textRenderPos + actualTextCenter,
+        //    startPos + textRenderPos + actualTextSize / 2f,
         //    new Vc2(0.5f, 0.5f), new Vector2(1f, textEase) * assistiveScaling,
         //    textEase, Start, index);
     }
