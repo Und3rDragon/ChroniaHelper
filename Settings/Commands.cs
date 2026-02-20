@@ -12,6 +12,7 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.LogicExpression;
 using ChroniaHelper.Utils.MathExpression;
 using ChroniaHelper.Utils.StopwatchSystem;
+using MonoMod.Utils;
 using TextCopy;
 
 namespace ChroniaHelper.Settings;
@@ -126,7 +127,7 @@ public class Commands
         if (Md.XaphanHelperLoaded)
         {
             Log.title("Xaphan Helper Global flags").LogCommand(Color.Cyan);
-            foreach (var i in XaphanModule.ModSaveData.GlobalFlags)
+            foreach (var i in Md.Xaphan_GlobalFlags)
             {
                 i.LogCommand();
             }

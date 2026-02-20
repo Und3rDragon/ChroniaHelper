@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Celeste.Mod.CommunalHelper;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Entities;
@@ -132,9 +133,13 @@ public static class MapProcessor
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
         
+        // Apply Session Dynamic Data
         object _slider = new DynamicData(level.Session).Get("_Sliders");
         sliders = (Dictionary<string, Session.Slider>)_slider;
 
+        Md.Xaphan_GlobalFlags = (HashSet<string>)(new DynamicData(Md.xaphanModule._SaveData).Get("GlobalFlags"));
+        Md.Communal_ActivateFlagController = (ButtonBinding)(new DynamicData(Md.communalModule._Settings).Get("ActivateFlagController"));
+        
         level.Add(dummyNormal, dummyHUD, dummyTransitionUpdate, dummyFrozenUpdate, dummyPauseUpdate);
 
         // Apply Flag Timer Trigger flags

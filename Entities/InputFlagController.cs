@@ -26,7 +26,7 @@ public class InputFlagController : AbstractInputController
         (activateByJump && (onlyOnHeld ? Input.Jump.Check : Input.Jump.Pressed)) ||
         (activateByPause && (onlyOnHeld ? Input.Pause.Check : Input.Pause.Pressed)) ||
         (activateByTalk && (onlyOnHeld ? Input.Talk.Check : Input.Talk.Pressed)) ||
-        (activateByDefault && (onlyOnHeld ? CommunalHelperModule.Settings.ActivateFlagController.Check : CommunalHelperModule.Settings.ActivateFlagController.Pressed));
+        (activateByDefault && (onlyOnHeld ? (Md.Communal_ActivateFlagController?.Check ?? false) : (Md.Communal_ActivateFlagController?.Pressed ?? false)));
 
     public string[][] Flags;
     private int flagIndex = 0;

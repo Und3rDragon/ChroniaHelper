@@ -242,8 +242,8 @@ public static class Miscs
         Vc2 cameraSize = new Vc2(320f, 180f);
         if (Md.MaddieLoaded)
         {
-            cameraSize.X = MaxHelpingHandModule.CameraWidth;
-            cameraSize.Y = MaxHelpingHandModule.CameraHeight;
+            cameraSize.X = Md.Maddie_CameraWidth;
+            cameraSize.Y = Md.Maddie_CameraHeight;
         }
         return pos.X + size.X > camera.X - 16f && pos.Y + size.Y > camera.Y - 16f && pos.X < camera.X + cameraSize.X && pos.Y < camera.Y + cameraSize.Y;
     }
