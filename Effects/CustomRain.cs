@@ -164,10 +164,7 @@ namespace ChroniaHelper.Effects {
                     Draw.Pixel.DrawCentered(position, 
                         particles[i].color * alpha * linearFade * visibleFade, 
                         particles[i].Scale,
-                        particles[i].Rotation.GetBalance(
-                            particles[i].Speed.Length(),
-                            wind,
-                            (scene as Level).Wind.Length())
+                        Calc.Angle(particles[i].Speed + (scene as Level).Wind * windStrength)
                         );
                 }
             }
