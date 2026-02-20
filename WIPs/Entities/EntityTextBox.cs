@@ -37,9 +37,6 @@ public class EntityTextBox : BaseEntity
         index = 0;
         Start = 0;
 
-        runRoutine = new Coroutine(RunRoutine());
-        runRoutine.UseRawDeltaTime = true;
-
         Add(listener = new FlagListener(d.Attr("operationFlag", "triggerDialog")));
 
         justification = new Vc2(d.Float("justifyX", 0.5f), d.Float("justifyY", 0.5f));
@@ -58,6 +55,8 @@ public class EntityTextBox : BaseEntity
 
         listener.onEnable = () =>
         {
+            runRoutine = new Coroutine(RunRoutine());
+            runRoutine.UseRawDeltaTime = true;
             Add(runRoutine);
         };
 
