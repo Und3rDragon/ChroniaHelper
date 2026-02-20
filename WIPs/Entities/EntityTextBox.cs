@@ -20,52 +20,53 @@ public class EntityTextBox : BaseEntity
     {
         Tag = Tags.PauseUpdate | Tags.HUD;
 
-        font = Dialog.Language.Font;
         lineHeight = Dialog.Language.FontSize.LineHeight - 1;
-        float actualTextHeight = 240f;
-        float maxHeight = 272f;
-        float maxWidth = 1688f;
-        linesPerPage = (int)(actualTextHeight / lineHeight);
-        textPaddingFromEdge = (maxHeight - actualTextHeight) / 2f;
-        actualTextWidth = maxWidth - textPaddingFromEdge * 2f;
-        text = FancyText.Parse(Dialog.Get(dialog, Dialog.Language), 
-            (int)actualTextWidth, linesPerPage, 1f, null, Dialog.Language);
+
+        float maxHeight = d.Float("maxHeight", 272f).GetAbs();
+        float maxWidth = d.Float("maxWidth", 1688f).GetAbs();
+
+        linesPerPage = (int)(maxHeight / lineHeight);
+
+        string dialogID = d.Attr("dialog", "dialogID");
+        string dialog = dialogID.StartsWith('#') ?
+            Md.Session.keystrings[dialogID.TrimStart('#')] :
+            Dialog.Get(dialogID, Dialog.Language);
+        text = FancyText.Parse(dialog, 
+            (int)maxWidth, linesPerPage, 1f, null, Dialog.Language);
+
         index = 0;
         Start = 0;
+
         runRoutine = new Coroutine(RunRoutine());
         runRoutine.UseRawDeltaTime = true;
 
-        //Add(runRoutine);
-        Add(new FlagListener("dia"));
+        Add(listener = new FlagListener(d.Attr("operationFlag", "triggerDialog")));
+
+        justification = new Vc2(d.Float("justifyX", 0.5f), d.Float("justifyY", 0.5f));
     }
-    private PixelFont font;
     private float lineHeight;
     private int linesPerPage;
-    private float textPaddingFromEdge;
-    private float actualTextWidth;
     private FancyText.Text text;
     private int index = 0, Start = 0;
     private Coroutine runRoutine;
-    private string dialog = "testE";
+    private Vc2 justification = Vc2.One * 0.5f;
+    private FlagListener listener;
 
     public override void Update()
     {
         base.Update();
 
-        foreach(Component comp in this.Components)
+        listener.onEnable = () =>
         {
-            if(comp is FlagListener listener)
-            {
-                listener.onEnable = () =>
-                {
-                    Add(runRoutine);
-                    Log.Info(Position);
-                    Vector2 textPadding = new Vector2(textPaddingFromEdge, textPaddingFromEdge);
-                    Vector2 linePadding = new Vector2(actualTextWidth, (float)linesPerPage * lineHeight) / 2f;
-                    Log.Info(textPadding, linePadding);
-                };
-            }
-        }
+            Add(runRoutine);
+        };
+
+        listener.onDisable = () =>
+        {
+            Remove(runRoutine);
+            index = 0;
+            Start = 0;
+        };
     }
 
     // Status
@@ -160,19 +161,14 @@ public class EntityTextBox : BaseEntity
 
         // Assist calculations from original
         float textEase = 1f;
-        Vc2 startPos = Position;
-        Vector2 textRenderPos = new Vector2(textPaddingFromEdge, textPaddingFromEdge);
-        Vector2 actualTextSize = new Vector2(actualTextWidth, (float)linesPerPage * lineHeight * textEase);
+        //Vector2 textRenderPos = new Vector2(textPaddingFromEdge, textPaddingFromEdge);
+        //Vector2 actualTextSize = new Vector2(actualTextWidth, (float)linesPerPage * lineHeight * textEase);
         float assistiveScaling = ((remainLines >= 4) ? 0.75f : 1f);
         //float assistiveScaling = 1f;
         // The justify is for the text aligning
-        text.Draw(
-            (startPos - MaP.cameraPos) * 6f,
-            new Vc2(0.5f, 0.5f), new Vector2(1f, textEase) * assistiveScaling,
+        text.DrawJustifyPerLine(
+            (Position - MaP.cameraPos) * HDRenderEntity.HDScale,
+            justification, new Vector2(1f, textEase) * assistiveScaling,
             textEase, Start, index);
-        //text.DrawJustifyPerLine(
-        //    startPos + textRenderPos + actualTextSize / 2f,
-        //    new Vc2(0.5f, 0.5f), new Vector2(1f, textEase) * assistiveScaling,
-        //    textEase, Start, index);
     }
 }

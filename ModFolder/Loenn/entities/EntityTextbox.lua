@@ -12,17 +12,29 @@ controller.name = "ChroniaHelper/EntityTextbox"
 controller.placements = {
     name = "Entity Textbox",
     data = {
-        
+        maxWidth = 1688,
+        maxHeight = 272,
+        justifyX = 0.5,
+        justifyY = 0.5,
+        dialog = "dialogID",
+        operationFlag = "triggerDialog",
     },
 }
 
 controller.fieldInformation = {
-    
+    justifyX = {
+        minimumValue = 0,
+        maximumValue = 1,
+    },
+    justifyY = {
+        minimumValue = 0,
+        maximumValue = 1,
+    },
 }
 
 controller.sprite = function(room, entity)
 	local sprite = {}
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/RoomTag", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/EntityTextBox", entity)
 
     table.insert(sprite, iconSprite)
     return sprite
