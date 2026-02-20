@@ -167,7 +167,7 @@ public class EntityTextBox : BaseEntity
         //float assistiveScaling = 1f;
         // The justify is for the text aligning
         text.Draw(
-            startPos + textRenderPos + actualTextSize / 2f,
+            (startPos - MaP.cameraPos) * 6f,
             new Vc2(0.5f, 0.5f), new Vector2(1f, textEase) * assistiveScaling,
             textEase, Start, index);
         //text.DrawJustifyPerLine(
