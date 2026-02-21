@@ -5,47 +5,73 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.WIPs.Entities;
 
-[WorkingInProgress]
+[WorkingInProgress("Display normal, but the Positioning is really weird")]
+[CustomEntity("ChroniaHelper/EntityTextbox")]
 public class EntityTextBox : BaseEntity
 {
     public EntityTextBox(EntityData d, Vc2 o) : base(d, o)
     {
         Tag = Tags.PauseUpdate | Tags.HUD;
 
-        font = Dialog.Language.Font;
         lineHeight = Dialog.Language.FontSize.LineHeight - 1;
-        linesPerPage = (int)(240f / lineHeight);
-        innerTextPadding = (272f - lineHeight * (float)linesPerPage) / 2f;
-        maxLineWidthNoPortrait = 1688f - innerTextPadding * 2f;
-        text = FancyText.Parse(Dialog.Get(dialog, Dialog.Language), 
-            (int)maxLineWidthNoPortrait, linesPerPage, 0f, null, Dialog.Language);
+        Log.Info(lineHeight);
+        float maxHeight = d.Float("maxHeight", 272f).GetAbs();
+        float maxWidth = d.Float("maxWidth", 1688f).GetAbs();
+
+        linesPerPage = (int)(maxHeight / lineHeight);
+
+        string dialogID = d.Attr("dialog", "dialogID");
+        string dialog = dialogID.StartsWith('#') ?
+            Md.Session.keystrings[dialogID.TrimStart('#')] :
+            Dialog.Get(dialogID, Dialog.Language);
+        text = FancyText.Parse(dialog, 
+            (int)maxWidth, linesPerPage, 1f, null, Dialog.Language);
+
         index = 0;
         Start = 0;
-        runRoutine = new Coroutine(RunRoutine());
-        runRoutine.UseRawDeltaTime = true;
 
-        Add(runRoutine);
+        Add(listener = new FlagListener(d.Attr("operationFlag", "triggerDialog")));
+
+        justification = new Vc2(d.Float("justifyX", 0.5f), d.Float("justifyY", 0.5f));
     }
-    private PixelFont font;
     private float lineHeight;
     private int linesPerPage;
-    private float innerTextPadding;
-    private float maxLineWidthNoPortrait;
     private FancyText.Text text;
     private int index = 0, Start = 0;
     private Coroutine runRoutine;
-    private string dialog;
+    private Vc2 justification = Vc2.One * 0.5f;
+    private FlagListener listener;
+
+    public override void Update()
+    {
+        base.Update();
+
+        listener.onEnable = () =>
+        {
+            runRoutine = new Coroutine(RunRoutine());
+            runRoutine.UseRawDeltaTime = true;
+            Add(runRoutine);
+        };
+
+        listener.onDisable = () =>
+        {
+            Remove(runRoutine);
+            index = 0;
+            Start = 0;
+        };
+    }
 
     // Status
     private List<FancyText.Node> Nodes => text.Nodes;
     private int Page;
     private char lastChar;
-
-    private Textbox original;
 
     public IEnumerator RunRoutine()
     {
@@ -112,19 +138,19 @@ public class EntityTextBox : BaseEntity
             yield return delay;
         }
 
-        //Start = Nodes.Count;
+        Start = Nodes.Count;
     }
 
     public override void Render()
     {
         base.Render();
-
-        int num5 = 1;
+        
+        int remainLines = 1;
         for (int i = Start; i < text.Nodes.Count; i++)
         {
             if (text.Nodes[i] is FancyText.NewLine)
             {
-                num5++;
+                remainLines++;
             }
             else if (text.Nodes[i] is FancyText.NewPage)
             {
@@ -133,12 +159,15 @@ public class EntityTextBox : BaseEntity
         }
 
         // Assist calculations from original
-        float num = 1;
-        Vc2 vector = Vc2.Zero;
-
-        Vector2 vector2 = new Vector2(innerTextPadding, innerTextPadding);
-        Vector2 vector3 = new Vector2(maxLineWidthNoPortrait, (float)linesPerPage * lineHeight * num) / 2f;
-        float num6 = ((num5 >= 4) ? 0.75f : 1f);
-        text.Draw(vector + vector2 + vector3, new Vector2(0.5f, 0.5f), new Vector2(1f, num) * num6, num, Start);
+        float textEase = 1f;
+        //Vector2 textRenderPos = new Vector2(textPaddingFromEdge, textPaddingFromEdge);
+        //Vector2 actualTextSize = new Vector2(actualTextWidth, (float)linesPerPage * lineHeight * textEase);
+        float assistiveScaling = ((remainLines >= 4) ? 0.75f : 1f);
+        //float assistiveScaling = 1f;
+        // The justify is for the text aligning
+        text.DrawJustifyPerLine(
+            (Position - MaP.cameraPos) * HDRenderEntity.HDScale,
+            justification, new Vector2(1f, textEase) * assistiveScaling,
+            textEase, Start, index);
     }
 }

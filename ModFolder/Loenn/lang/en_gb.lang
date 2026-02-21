@@ -1371,3 +1371,9 @@ entities.ChroniaHelper/EntityDuplicatorTarget.attributes.description.duplicatorT
 
 entities.ChroniaHelper/RefillOnWall.placements.name.wall=Refill On Wall
 entities.ChroniaHelper/RefillOnWall.attributes.description.directory=The folder of the sprites, must contain sprites for "top", "mid", and "bottom" \nWhen there are multiple images, the entity will choose from one of them randomly
+
+# ================= Entity Text Box
+
+entities.ChroniaHelper/EntityTextbox.placements.name.box=Entity Text Box
+entities.ChroniaHelper/EntityTextbox.attributes.description.maxHeight=As reference, English font size is around 63 px on height
+entities.ChroniaHelper/EntityTextbox.attributes.description.operationFlag=When flag is enabled, the dialog will start playing.\nWhen flag is disabled, the entity will disappear immediately and reset the dialog

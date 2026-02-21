@@ -1,31 +1,17 @@
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Numerics;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using Celeste;
-using Celeste.Mod;
 using Celeste.Mod.ChroniaHelperIndicatorZone;
 using Celeste.Mod.Helpers;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
-using ChroniaHelper.Effects;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Entities.MigratedNeonHelper;
 using ChroniaHelper.Imports;
 using ChroniaHelper.Modules;
-using ChroniaHelper.Settings;
-using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils;
-using ChroniaHelper.Utils.ChroniaSystem;
-using ChroniaHelper.Utils.StopwatchSystem;
 using FMOD.Studio;
-using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.ModInterop;
 using YoctoHelper.Hooks;
+using Extensions = Celeste.Mod.Extensions;
 
 namespace ChroniaHelper;
 
@@ -96,10 +82,10 @@ public class ChroniaHelperModule : EverestModule
 
     public static bool InstanceReady => Session != null && SaveData != null;
 
-    public static bool FrostHelperLoaded;
-    public static bool CommunalHelperLoaded;
-    public static bool MaddieLoaded;
-    public static bool XaphanHelperLoaded;
+    public static bool FrostHelperLoaded => CheckDependency("FrostHelper", "1.70.2");
+    public static bool CommunalHelperLoaded => CheckDependency("CommunalHelper", "1.23.0");
+    public static bool MaddieLoaded => CheckDependency("MaxHelpingHand", "1.38.0");
+    public static bool XaphanHelperLoaded => CheckDependency("XaphanHelper", "1.0.78");
 
     public static bool CheckDependency(string modName, string minimumVersion)
     {
@@ -110,6 +96,18 @@ public class ChroniaHelperModule : EverestModule
         };
 
         return Everest.Loader.DependencyLoaded(meta);
+    }
+
+    public static bool CheckDependency(string modName, string minimumVersion,
+        out EverestModule module)
+    {
+        EverestModuleMetadata meta = new()
+        {
+            Name = modName,
+            Version = new Version(minimumVersion)
+        };
+
+        return Everest.Loader.TryGetDependency(meta, out module);
     }
 
     public override void Load()
@@ -137,12 +135,6 @@ public class ChroniaHelperModule : EverestModule
         // API Imports
         typeof(FrostHelperImports).ModInterop();
         typeof(CameraDynamicsImports).ModInterop();
-
-        // Helper dependencies
-        FrostHelperLoaded = CheckDependency("FrostHelper", "1.70.2");
-        CommunalHelperLoaded = CheckDependency("CommunalHelper", "1.23.0");
-        MaddieLoaded = CheckDependency("MaxHelpingHand", "1.38.0");
-        XaphanHelperLoaded = CheckDependency("XaphanHelper", "1.0.78");
 
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;
@@ -250,7 +242,7 @@ public class ChroniaHelperModule : EverestModule
     {
         base.PrepareMapDataProcessors(context);
 
-        context.Add<MaxHelpingHandMapDataProcessor>();
+        context.Add<Modules.MaxHelpingHandMapDataProcessor>();
     }
 
     // Create Custom ChroniaHelper Menu
