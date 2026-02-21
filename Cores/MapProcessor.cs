@@ -1,14 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using ChroniaHelper.Components;
+﻿using Celeste.Mod.CommunalHelper;
 using ChroniaHelper.Cores.Graphical;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Settings;
+using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
-using YamlDotNet.Core;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
@@ -131,9 +127,10 @@ public static class MapProcessor
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
         
+        // Apply Session Dynamic Data
         object _slider = new DynamicData(level.Session).Get("_Sliders");
         sliders = (Dictionary<string, Session.Slider>)_slider;
-
+        
         level.Add(dummyNormal, dummyHUD, dummyTransitionUpdate, dummyFrozenUpdate, dummyPauseUpdate);
 
         // Apply Flag Timer Trigger flags
