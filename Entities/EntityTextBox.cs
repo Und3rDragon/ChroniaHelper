@@ -10,9 +10,8 @@ using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 
-namespace ChroniaHelper.WIPs.Entities;
+namespace ChroniaHelper.Entities;
 
-[WorkingInProgress("Display normal, but the Positioning is really weird")]
 [CustomEntity("ChroniaHelper/EntityTextbox")]
 public class EntityTextBox : BaseEntity
 {
@@ -21,7 +20,7 @@ public class EntityTextBox : BaseEntity
         Tag = Tags.PauseUpdate | Tags.HUD;
 
         lineHeight = Dialog.Language.FontSize.LineHeight - 1;
-        Log.Info(lineHeight);
+        //Log.Info(lineHeight);
         float maxHeight = d.Float("maxHeight", 272f).GetAbs();
         float maxWidth = d.Float("maxWidth", 1688f).GetAbs();
 

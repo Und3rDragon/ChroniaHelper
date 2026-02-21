@@ -1,9 +1,6 @@
 ﻿global using CColor = ChroniaHelper.Utils.ColorUtils.ChroniaColor;
 global using ChroniaColor = ChroniaHelper.Utils.ColorUtils.ChroniaColor;
 global using Cons = ChroniaHelper.Utils.Constants;
-global using FI = ChroniaHelper.Imports.FrostHelperImports;
-global using CmI = ChroniaHelper.Imports.CommunalHelperImports;
-global using SrI = ChroniaHelper.Imports.SpeedRunToolImports;
 global using HSL = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSLColor = ChroniaHelper.Utils.ColorUtils.HSLColor;
 global using HSV = ChroniaHelper.Utils.ColorUtils.HSVColor;
@@ -27,6 +24,12 @@ using static ChroniaHelper.Cores.WorkingInProgressAttribute; // marker attribute
 using static ChroniaHelper.Cores.VersionNoteAttribute; // marker attributes
 using static ChroniaHelper.Cores.PrivateForAttribute; // marker attributes
 using static ChroniaHelper.Cores.CreditsAttribute; // marker attributes
+using static ChroniaHelper.Imports.APIFrostHelper; 
+using static ChroniaHelper.Imports.APICommunalHelper;
+using static ChroniaHelper.Imports.APISpeedrunTool;
+using static ChroniaHelper.References.RefMaxHelpingHand; // usual
+using static ChroniaHelper.References.RefXaphanHelper; // usual
+using static ChroniaHelper.References.RefCommunalHelper; // usual
 
 using System.Reflection;
 

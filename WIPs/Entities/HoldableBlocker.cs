@@ -9,7 +9,7 @@ using ChroniaHelper.Utils;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [Tracked]
 [Credits("Originated from DJ Map Helper")]

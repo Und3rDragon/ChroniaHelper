@@ -21,6 +21,7 @@ local patientBooster = {
                 appearParticleColor = "",
                 killIfStayed = -1,
                 freeMoveSpeed = -1,
+                forceCoyoteTime = -1,
             }
         },
         {

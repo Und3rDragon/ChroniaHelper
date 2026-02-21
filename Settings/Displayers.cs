@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.Graphical;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.StopwatchSystem;
 using Microsoft.Xna.Framework.Media;
@@ -444,7 +445,7 @@ public class Displayers : HDRenderEntity
 
             if (Md.FrostHelperLoaded)
             {
-                Color? getBloom = FI.GetBloomColor?.Invoke();
+                Color? getBloom = APIFrostHelper.GetBloomColor?.Invoke();
                 target = target + $" (Color: {(getBloom is null ? "Not Available" : ((Color)getBloom).RgbaToHex())})";
             }
             

@@ -11,7 +11,7 @@ using MonoMod.ModInterop;
 namespace ChroniaHelper.Imports;
 
 [ModImportName("FrostHelper")] // registered in Module
-public static class FrostHelperImports
+public static class APIFrostHelper
 {
     public delegate bool TryCreateSessionExpression(string str, [NotNullWhen(true)] out object? expression);
     public static TryCreateSessionExpression _tryCreateSessionExpression;
