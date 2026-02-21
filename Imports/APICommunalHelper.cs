@@ -10,7 +10,7 @@ using MonoMod.ModInterop;
 namespace ChroniaHelper.Imports;
 
 [ModImportName("CommunalHelper.DashStates")]
-public static class CommunalHelperImports
+public static class APICommunalHelper
 {
     #region DreamTunnel
 

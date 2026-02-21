@@ -133,8 +133,8 @@ public class ChroniaHelperModule : EverestModule
         On.Celeste.GameLoader.Begin += LateInitialize;
 
         // API Imports
-        typeof(FrostHelperImports).ModInterop();
-        typeof(CameraDynamicsImports).ModInterop();
+        typeof(APIFrostHelper).ModInterop();
+        typeof(APICameraDynamics).ModInterop();
 
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;

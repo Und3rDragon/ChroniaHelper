@@ -8,7 +8,7 @@ using MonoMod.ModInterop;
 namespace ChroniaHelper.Imports;
 
 [ModImportName("SpeedrunTool.SaveLoad")]
-public static class SpeedRunToolImports
+public static class APISpeedrunTool
 {
     /// <summary>
     /// Ignore the entities when saving state. They will be removed before saving state and then added into level after loading state.
