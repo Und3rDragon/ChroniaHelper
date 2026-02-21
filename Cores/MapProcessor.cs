@@ -1,16 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using Celeste.Mod.CommunalHelper;
-using ChroniaHelper.Components;
+﻿using Celeste.Mod.CommunalHelper;
 using ChroniaHelper.Cores.Graphical;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Settings;
+using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
-using ChroniaHelper.WIPs.Entities;
 using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
-using YamlDotNet.Core;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
@@ -136,9 +130,6 @@ public static class MapProcessor
         // Apply Session Dynamic Data
         object _slider = new DynamicData(level.Session).Get("_Sliders");
         sliders = (Dictionary<string, Session.Slider>)_slider;
-
-        Md.Xaphan_GlobalFlags = (HashSet<string>)(new DynamicData(Md.xaphanModule._SaveData).Get("GlobalFlags"));
-        Md.Communal_ActivateFlagController = (ButtonBinding)(new DynamicData(Md.communalModule._Settings).Get("ActivateFlagController"));
         
         level.Add(dummyNormal, dummyHUD, dummyTransitionUpdate, dummyFrozenUpdate, dummyPauseUpdate);
 

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Celeste.Mod.CommunalHelper;
-using Celeste.Mod.CommunalHelper.Entities;
+﻿using System.Text.RegularExpressions;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using MonoMod.Cil;
@@ -26,7 +20,7 @@ public class InputFlagController : AbstractInputController
         (activateByJump && (onlyOnHeld ? Input.Jump.Check : Input.Jump.Pressed)) ||
         (activateByPause && (onlyOnHeld ? Input.Pause.Check : Input.Pause.Pressed)) ||
         (activateByTalk && (onlyOnHeld ? Input.Talk.Check : Input.Talk.Pressed)) ||
-        (activateByDefault && (onlyOnHeld ? (Md.Communal_ActivateFlagController?.Check ?? false) : (Md.Communal_ActivateFlagController?.Pressed ?? false)));
+        (activateByDefault && (onlyOnHeld ? (RefCommunalHelper.ActivateFlagController?.Check ?? false) : (RefCommunalHelper.ActivateFlagController?.Pressed ?? false)));
 
     public string[][] Flags;
     private int flagIndex = 0;

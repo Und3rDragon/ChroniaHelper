@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Globalization;
 using System.Reflection;
-using AsmResolver.DotNet.Code.Cil;
 using Celeste.Mod.Helpers;
-using Celeste.Mod.KoseiHelper;
-using Celeste.Mod.MaxHelpingHand.Module;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
-using FMOD;
-using Microsoft.VisualBasic;
-using YamlDotNet.Serialization;
-using YoctoHelper.Cores;
+using ChroniaHelper.References;
 
 namespace ChroniaHelper.Utils;
 
@@ -242,8 +234,8 @@ public static class Miscs
         Vc2 cameraSize = new Vc2(320f, 180f);
         if (Md.MaddieLoaded)
         {
-            cameraSize.X = Md.Maddie_CameraWidth;
-            cameraSize.Y = Md.Maddie_CameraHeight;
+            cameraSize.X = RefMaxHelpingHand.CameraWidth;
+            cameraSize.Y = RefMaxHelpingHand.CameraHeight;
         }
         return pos.X + size.X > camera.X - 16f && pos.Y + size.Y > camera.Y - 16f && pos.X < camera.X + cameraSize.X && pos.Y < camera.Y + cameraSize.Y;
     }

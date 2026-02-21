@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Celeste.Mod.XaphanHelper;
-using ChroniaHelper.Cores;
+﻿using System.Collections;
+using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.LogicExpression;
 using ChroniaHelper.Utils.MathExpression;
 using ChroniaHelper.Utils.StopwatchSystem;
-using MonoMod.Utils;
 using TextCopy;
 
 namespace ChroniaHelper.Settings;
@@ -127,7 +119,7 @@ public class Commands
         if (Md.XaphanHelperLoaded)
         {
             Log.title("Xaphan Helper Global flags").LogCommand(Color.Cyan);
-            foreach (var i in Md.Xaphan_GlobalFlags)
+            foreach (var i in RefXaphanHelper.GlobalFlags)
             {
                 i.LogCommand();
             }
