@@ -21,7 +21,7 @@ public class EntityTextBox : BaseEntity
         Tag = Tags.PauseUpdate | Tags.HUD;
 
         lineHeight = Dialog.Language.FontSize.LineHeight - 1;
-
+        Log.Info(lineHeight);
         float maxHeight = d.Float("maxHeight", 272f).GetAbs();
         float maxWidth = d.Float("maxWidth", 1688f).GetAbs();
 

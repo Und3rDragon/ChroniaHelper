@@ -10,7 +10,7 @@ local controller = {}
 
 controller.name = "ChroniaHelper/EntityTextbox"
 controller.placements = {
-    name = "Entity Textbox",
+    name = "box",
     data = {
         maxWidth = 1688,
         maxHeight = 272,
