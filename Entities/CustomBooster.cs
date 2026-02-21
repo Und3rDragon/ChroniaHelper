@@ -107,6 +107,7 @@ public class CustomBooster : Booster
     public bool playerFollow;
 
     public float redBoostMovingSpeed = 240f, greenBoostMovingSpeed = 240f;
+    public float forceCoyoteTime = -1f;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -135,6 +136,9 @@ public class CustomBooster : Booster
 
         redBoostMovingSpeed = data.Float("redBoostMovingSpeed", 240f);
         greenBoostMovingSpeed = data.Float("greenBoostMovingSpeed", 240f);
+
+        // force coyote
+        forceCoyoteTime = data.Float("forceCoyoteTime", -1f);
 
         // process old data
         if (!string.IsNullOrEmpty(data.Attr("setOutSpeed")))
@@ -458,6 +462,12 @@ public class CustomBooster : Booster
                     {
                         player.Stamina = Math.Max(player.Stamina - myBooster.setStamina, 0);
                     }
+                }
+
+                // If needed, override player coyote time
+                if(myBooster.forceCoyoteTime >= 0f)
+                {
+                    player.jumpGraceTimer = myBooster.forceCoyoteTime;
                 }
 
                 return true;
