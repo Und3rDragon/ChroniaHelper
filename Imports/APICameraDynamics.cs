@@ -10,7 +10,7 @@ namespace ChroniaHelper.Imports;
 
 [ModImportName("ExtendedCameraDynamics")] // registered in Module
 
-public static class CameraDynamicsImports
+public static class APICameraDynamics
 {
     public static Func<bool> ExtendedCameraHooksEnabled;
     

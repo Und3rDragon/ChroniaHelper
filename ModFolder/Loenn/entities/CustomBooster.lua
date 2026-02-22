@@ -33,6 +33,7 @@ booster.placements={
 		hitboxRadius = 10,
 		hitboxX = 0,
 		hitboxY = 2,
+		forceCoyoteTime = -1,
 		red = false,
 		setOrRefillDashes = false,
 		setOrRefillStamina = false,

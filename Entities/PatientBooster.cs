@@ -111,6 +111,9 @@ public class PatientBooster : Booster
 		greenSpeed = data.Float("greenBoostMovingSpeed", 240f);
         redSpeed = data.Float("redBoostMovingSpeed", 240f);
 
+        // force coyote time
+        forceCoyoteTime = data.Float("forceCoyoteTime", -1f);
+
         customBurstParticleType = new ParticleType(red ? P_BurstRed : P_Burst);
 		if (data.Attr("burstParticleColor").IsNotNullOrEmpty())
 		{
@@ -138,6 +141,8 @@ public class PatientBooster : Booster
 
 	private float outSpeed, redSpeed, greenSpeed;
     private ParticleType customBurstParticleType, customAppearParticleType;
+
+    private float forceCoyoteTime = -1f;
 
     public override void Added(Scene scene)
     {
@@ -337,6 +342,11 @@ public class PatientBooster : Booster
                     {
                         player.Dashes = booster.dashes;
                     }
+                }
+
+                if(booster.forceCoyoteTime >= 0f)
+                {
+                    player.jumpGraceTimer = booster.forceCoyoteTime;
                 }
 				
 				return true;

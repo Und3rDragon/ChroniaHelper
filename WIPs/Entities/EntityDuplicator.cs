@@ -11,7 +11,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using VivHelper;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
 [Tracked]
