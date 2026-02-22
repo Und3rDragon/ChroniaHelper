@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.CommunalHelper;
+using Celeste.Mod.CommunalHelper.DashStates;
+using Celeste.Mod.CommunalHelper.Entities;
+using MonoMod.Utils;
 
 namespace ChroniaHelper.References;
 
@@ -30,4 +33,12 @@ public static class RefCommunalHelper
     }
 
     public static ButtonBinding ActivateFlagController => GetSettings().ActivateFlagController;
+
+    public static bool DreamTunnelDashAttacking = (bool)new DynamicData(typeof(DreamTunnelDash)).Get("dreamTunnelDashAttacking");
+
+}
+
+public class RefDreamTunnelBlocker : DreamTunnelBlocker
+{
+    public RefDreamTunnelBlocker(EntityData data, Vc2 offset) : base(data, offset) { }
 }
