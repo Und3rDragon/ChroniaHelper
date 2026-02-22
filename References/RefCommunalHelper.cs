@@ -42,3 +42,8 @@ public class RefDreamTunnelBlocker : DreamTunnelBlocker
 {
     public RefDreamTunnelBlocker(EntityData data, Vc2 offset) : base(data, offset) { }
 }
+
+public class RefCustomDreamBlock : CustomDreamBlock
+{
+    public RefCustomDreamBlock(EntityData data, Vc2 offset) : base(data, offset) { }
+}

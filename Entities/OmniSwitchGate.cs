@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using Celeste.Mod.Entities;
-using Celeste.Mod.MaxHelpingHand.Entities;
-using Celeste.Mod.MaxHelpingHand.Module;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
-using IL.MonoMod;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Utils;
-using YamlDotNet.Core.Tokens;
 
 namespace ChroniaHelper.Entities;
 
