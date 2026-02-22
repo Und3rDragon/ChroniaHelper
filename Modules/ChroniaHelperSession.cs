@@ -219,24 +219,10 @@ public class ChroniaHelperSession : EverestModuleSession
         
     }
     public Dictionary<string, CodeButtonTarget> codeButtonTargets = new();
-    
-    // Settings Override Controller
-    public struct SettingsData
-    {
-        public bool photosensitive; 
-        public bool fullScreen; 
-        public int windowScale;
-        public string language;
-        public GrabModes grabMode;
-    }
-    public SettingsData settingsData = new Ses.SettingsData
-    {
-        fullScreen = Celeste.Settings.Instance.Fullscreen,
-        photosensitive = Celeste.Settings.Instance.DisableFlashes,
-        windowScale = Celeste.Settings.Instance.WindowScale,
-        language = Celeste.Settings.Instance.Language,
-        grabMode = Celeste.Settings.Instance.GrabMode,
-    };
+
+    // Screenshake Data
+    public ScreenshakeAmount InitialScreenshake = Celeste.Settings.Instance.ScreenShake;
+    public ScreenshakeAmount CurrentScreenshake = Celeste.Settings.Instance.ScreenShake;
 
     /// <summary>
     /// For Chronia Flag-Counter-Slider System

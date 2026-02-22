@@ -99,14 +99,19 @@ public static class MapProcessor
     public static void OnLevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
     {
         orig(self);
-        
+
+        Md.Session.InitialScreenshake = Celeste.Settings.Instance.ScreenShake;
+        Celeste.Settings.Instance.ScreenShake = Md.Session.CurrentScreenshake;
+
         self.Add(dummyGlobal);
     }
     
     public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
     {
         dummyGlobal.RemoveSelf();
-        
+
+        Celeste.Settings.Instance.ScreenShake = Md.Session.InitialScreenshake;
+
         orig(self);
     }
     
