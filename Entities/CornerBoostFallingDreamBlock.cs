@@ -1,15 +1,12 @@
 ﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using Celeste.Mod.CommunalHelper;
-using Celeste.Mod.CommunalHelper.Entities;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
+using ChroniaHelper.References;
 
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/CornerBoostFallingDreamBlock")]
-public class CornerBoostFallingDreamBlock : CustomDreamBlock
+public class CornerBoostFallingDreamBlock : RefCustomDreamBlock
 {
     private readonly bool forceShake;
     public bool Triggered;
@@ -28,6 +25,11 @@ public class CornerBoostFallingDreamBlock : CustomDreamBlock
     public CornerBoostFallingDreamBlock(EntityData data, Vector2 offset)
         : base(data, offset)
     {
+        if (!Md.CommunalHelperLoaded)
+        {
+            return;
+        }
+
         noCollide = data.Bool("noCollide", false);
         forceShake = data.Bool("forceShake", false);
         legacyLandingBehavior = data.Bool("legacyLandingBehavior", true);
