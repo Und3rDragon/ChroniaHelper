@@ -72,7 +72,7 @@ public class Displayers : HDRenderEntity
                 InputUtils.MouseLevelPosition.X,
                 InputUtils.MouseLevelPosition.Y);
 
-            if (Md.Settings.entityInfoDisplayer.DisplayEntityInfoInConsole)
+            if (Md.Settings.DisplayEntityInfoInConsole)
             {
                 Log.Info("==== Your mouse is around these entities ====");
             }
@@ -83,7 +83,7 @@ public class Displayers : HDRenderEntity
                 {
                     Md.Settings.entityInfoDisplayer.renderTarget.Add($"{entity.GetType()}");
                     
-                    if (Md.Settings.entityInfoDisplayer.DisplayEntityInfoInConsole)
+                    if (Md.Settings.DisplayEntityInfoInConsole)
                     {
                         Log.Info(entity.GetType());
                     }
@@ -616,11 +616,11 @@ public class Displayers : HDRenderEntity
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
             }, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
+        }
 
-            if (displayer.showMouse)
-            {
-                GFX.Game["Chroniahelper/LoennIcons/Mouse"].Draw(InputUtils.MousePosition);
-            }
+        if (Md.Settings.showMouse)
+        {
+            GFX.Game["Chroniahelper/LoennIcons/Mouse"].Draw(InputUtils.MousePosition);
         }
 
         if (Md.Settings.entityInfoDisplayer.enabled)

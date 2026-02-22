@@ -10,7 +10,9 @@ public class ChroniaHelperSettings : EverestModuleSettings
     public bool HUDMainControl { get; set; } = true;
     public enum DisplayPosition { PlayerBased, StaticScreen }
     public enum Aligning { Left, Middle, Right }
-    
+    public bool showMouse { get; set; } = false;
+    public bool DisplayEntityInfoInConsole { get; set; } = false;
+
     public class CommonDisplayer
     {
         public bool enabled { get; set; } = false;
@@ -193,7 +195,6 @@ public class ChroniaHelperSettings : EverestModuleSettings
     {
         public enum DisplayType { HD, LD, Level }
         public DisplayType displayType { get; set; } = DisplayType.HD;
-        public bool showMouse { get; set; } = false;
     }
     public MousePositionDisplayer mousePositionDisplayer { get; set; } = new();
 
@@ -216,8 +217,6 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public int overallAligning { get; set; } = 1;
 
         public List<string> renderTarget = new();
-
-        public bool DisplayEntityInfoInConsole { get; set; } = false;
     }
     public EntityInfoDisplayer entityInfoDisplayer { get; set; } = new();
 }

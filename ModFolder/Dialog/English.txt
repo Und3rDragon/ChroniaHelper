@@ -80,4 +80,4 @@ modoptions_Chroniahelper_displayType_LD=Canvas Position
 modoptions_Chroniahelper_displayType_Level=Level Position
 modoptions_Chroniahelper_showMouse=Display Mouse
 modoptions_Chroniahelper_entityInfoDisplayer=Entity Info on Mouse Click
-modoptions_Chroniahelper_DisplayEntityInfoInConsole=Entity Info on Mouse Click in Console (Not limited by the displayer)
+modoptions_Chroniahelper_DisplayEntityInfoInConsole=Entity Info on Mouse Click in Console
