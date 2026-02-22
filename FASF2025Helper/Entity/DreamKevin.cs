@@ -1,19 +1,8 @@
-﻿using Celeste.Mod.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MonoMod.Utils;
-using MonoMod.RuntimeDetour;
-using System.Reflection;
+﻿using System.Collections;
+using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.References;
 using static Celeste.CrushBlock;
-using System.Collections;
-using Celeste.Mod.CommunalHelper.Entities;
-using ChroniaHelper.Utils;
-using Celeste.Mod.CommunalHelper;
-using Celeste.Mod.CommunalHelper.DashStates;
 
 namespace FASF2025Helper.Entities;
 
@@ -32,7 +21,7 @@ public class DreamKevin : Solid
         public float TimeOffset;
     }
 
-    private DreamTunnelBlocker dreamBlocker;
+    private RefDreamTunnelBlocker dreamBlocker;
     private DreamBlock dreamBlock;
     //public DreamBlock DreamBlock => dreamBlock;
 
@@ -41,7 +30,7 @@ public class DreamKevin : Solid
     {
         if (Md.CommunalHelperLoaded)
         {
-            return !(bool)new DynamicData(typeof(DreamTunnelDash)).Get("dreamTunnelDashAttacking");
+            return !RefCommunalHelper.DreamTunnelDashAttacking;
         }
 
         return true;
@@ -205,17 +194,21 @@ public class DreamKevin : Solid
             Width = (int)Width,
             Height = (int)Height,
         };
-        dreamBlocker = new DreamTunnelBlocker(data, Vector2.Zero)
-        {
-            BlockDreamTunnelDashes = true,
-        };
-
 
         dreamBlock = new DreamBlock(Position, Width, Height, null, false, false);
         dreamBlock.Visible = false;
 
         Scene.Add(dreamBlock);
-        Scene.Add(dreamBlocker);
+
+        if (Md.CommunalHelperLoaded)
+        {
+            dreamBlocker = new RefDreamTunnelBlocker(data, Vector2.Zero)
+            {
+                BlockDreamTunnelDashes = true,
+            };
+
+            Scene.Add(dreamBlocker);
+        }
 
         particles = new DreamParticle[(int)((double)base.Width / 8.0 * ((double)base.Height / 8.0) * 0.699999988079071)];
         for (int i = 0; i < particles.Length; i++)
@@ -575,7 +568,7 @@ public class DreamKevin : Solid
             Collidable = originalKevinCollidable;
             // 同步位置
             dreamBlock.Position = Position;
-            dreamBlocker.Position = Position;
+            dreamBlocker?.Position = Position;
 
             if (Top >= level.Bounds.Bottom + 32)
             {
@@ -716,7 +709,7 @@ public class DreamKevin : Solid
                 dreamBlock.MoveTowardsY(move.From.Y, speed * Engine.DeltaTime);
             }
             dreamBlock.Position = Position;
-            dreamBlocker.Position = Position;
+            dreamBlocker?.Position = Position;
 
             if ((move.Direction.X == 0f || ExactPosition.X == move.From.X) &&
                 (move.Direction.Y == 0f || ExactPosition.Y == move.From.Y))
