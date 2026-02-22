@@ -1313,9 +1313,9 @@ entities.ChroniaHelper/SetFlagController.attributes.description.chroniaMathExpes
 entities.ChroniaHelper/CameraGrid.placements.name.grid=Camera Grid
 entities.ChroniaHelper/CameraGrid.attributes.description.Introduction=A small useless entity that indicates a usual camera grid of 320 * 180
 
-# ================= Settings Override On Flag Controller
+# ================= Screenshake Setting Trigger
 
-entities.ChroniaHelper/SettingsOverrideOnFlagController.placements.name.controller=Settings Override On Flag Controller
+triggers.ChroniaHelper/ScreenshakeSettingTrigger.placements.name.normal=Screenshake Setting Trigger
 
 # ================= Omni Switch Gate
 
