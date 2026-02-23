@@ -113,25 +113,6 @@ public class ChroniaHelperModule : EverestModule
         return Everest.Loader.TryGetDependency(meta, out module);
     }
 
-    public static bool CheckDependencyWithAssembly(string modName, string minimumVersion)
-    {
-        bool dependencyLoaded = CheckDependency(modName, minimumVersion, out var mod);
-
-        bool assemblyUsable = mod.Metadata.AssemblyContext != null;
-
-        return dependencyLoaded && assemblyUsable;
-    }
-
-    public static bool CheckDependencyWithAssembly(string modName, string minimumVersion,
-        out EverestModule module)
-    {
-        bool dependencyLoaded = CheckDependency(modName, minimumVersion, out module);
-
-        bool assemblyUsable = module.Metadata.AssemblyContext != null;
-
-        return dependencyLoaded && assemblyUsable;
-    }
-
     public override void Load()
     {
         Log.Info("Welcome to use ChroniaHelper!");
