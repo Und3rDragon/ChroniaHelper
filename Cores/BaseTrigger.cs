@@ -249,76 +249,114 @@ public abstract class BaseTrigger : Trigger
 
     protected virtual bool OnlyOnceExpression(Player player) => true;
 
+    public bool MouseColliding()
+    {
+        Vc2 p1 = TopLeft, p2 = BottomRight;
+        bool posMatchX = InputUtils.MouseLevelPosition.X.IsBetween(p1.X, p2.X);
+        bool posMatchY = InputUtils.MouseLevelPosition.Y.IsBetween(p1.Y, p2.Y);
+        
+        return posMatchY && posMatchX;
+    }
+
     public override void Update()
     {
         base.Update();
 
-        Vc2 p1 = TopLeft, p2 = BottomRight;
-        bool posMatchX = InputUtils.MouseLevelPosition.X.IsBetween(p1.X, p2.X);
-        bool posMatchY = InputUtils.MouseLevelPosition.Y.IsBetween(p1.Y, p2.Y);
-
-        GeneralMouseEntity.Instance?.leftButtonClick += () =>
+        if (mouseConfig.leftClick)
         {
-            if (posMatchX && posMatchY && mouseConfig.leftClick)
+            GeneralMouseEntity.Instance?.leftButtonClick += () =>
             {
                 OnMouseLeftClick();
-            }
-        };
-        GeneralMouseEntity.Instance?.rightButtonClick += () =>
+            };
+        }
+
+        if (mouseConfig.rightClick)
         {
-            if (posMatchX && posMatchY && mouseConfig.rightClick)
+            GeneralMouseEntity.Instance?.rightButtonClick += () =>
             {
                 OnMouseRightClick();
-            }
-        };
-        GeneralMouseEntity.Instance?.middleButtonClick += () => 
-        { 
-            if (posMatchX && posMatchY && mouseConfig.middleClick) 
-            { 
-                OnMouseMiddleClick(); 
-            } 
-        };
-        GeneralMouseEntity.Instance?.leftButtonHold += () => 
-        { 
-            if (posMatchX && posMatchY && mouseConfig.leftHold) 
-            { 
-                OnMouseLeftHold(); } 
-        };
-        GeneralMouseEntity.Instance?.rightButtonHold += () => 
-        { 
-            if (posMatchX && posMatchY && mouseConfig.rightHold) 
-            { 
-                OnMouseRightHold(); 
-            } 
-        };
-        GeneralMouseEntity.Instance?.middleButtonHold += () => 
-        { 
-            if (posMatchX && posMatchY && mouseConfig.middleHold) 
-            { 
-                OnMouseMiddleHold(); 
-            } 
-        };
-        GeneralMouseEntity.Instance?.leftButtonRelease += () => 
-        { 
-            if (posMatchX && posMatchY && mouseConfig.leftRelease) 
-            { 
-                OnMouseLeftRelease(); 
-            } 
-        };
-        GeneralMouseEntity.Instance?.rightButtonRelease += () => 
-        { 
-            if (posMatchX && posMatchY && mouseConfig.rightRelease) 
-            { 
-                OnMouseRightRelease(); 
-            } 
-        };
-        GeneralMouseEntity.Instance?.middleButtonRelease += () => 
-        { 
-            if (posMatchX && posMatchY && mouseConfig.middleRelease) 
-            { 
-                OnMouseMiddleRelease(); 
-            } 
-        };
+            };
+        }
+
+        if (mouseConfig.middleClick)
+        {
+            GeneralMouseEntity.Instance?.middleButtonClick += () =>
+            {
+                OnMouseMiddleClick();
+            };
+        }
+
+        if (mouseConfig.leftHold)
+        {
+            GeneralMouseEntity.Instance?.leftButtonHold += () =>
+            {
+                OnMouseLeftHold();
+            };
+        }
+
+        if (mouseConfig.rightHold)
+        {
+            GeneralMouseEntity.Instance?.rightButtonHold += () =>
+            {
+                OnMouseRightHold();
+            };
+        }
+
+        if (mouseConfig.middleHold)
+        {
+            GeneralMouseEntity.Instance?.middleButtonHold += () =>
+            {
+                OnMouseMiddleHold();
+            };
+        }
+
+        if (mouseConfig.leftEmpty)
+        {
+            GeneralMouseEntity.Instance?.leftButtonEmpty += () =>
+            {
+                OnMouseLeftEmpty();
+            };
+        }
+
+        if (mouseConfig.rightEmpty)
+        {
+            GeneralMouseEntity.Instance?.rightButtonEmpty += () =>
+            {
+                OnMouseRightEmpty();
+            };
+        }
+
+        if (mouseConfig.middleEmpty)
+        {
+            GeneralMouseEntity.Instance?.middleButtonEmpty += () =>
+            {
+                OnMouseMiddleEmpty();
+            };
+        }
+
+        if (mouseConfig.leftRelease)
+        {
+            GeneralMouseEntity.Instance?.leftButtonRelease += () =>
+            {
+                OnMouseLeftRelease();
+            };
+        }
+
+        if (mouseConfig.rightRelease)
+        {
+            GeneralMouseEntity.Instance?.rightButtonRelease += () =>
+            {
+                OnMouseRightRelease();
+            };
+        }
+
+        if (mouseConfig.middleRelease)
+        {
+            GeneralMouseEntity.Instance?.middleButtonRelease += () =>
+            {
+                OnMouseMiddleRelease();
+            };
+        }
 
         if (!FlagUtils.IsCorrectFlag(level, updateIfFlag) || !TriggerUtils.IsDeathCount(level, levelDeathMode, levelDeathCount, totalDeathMode, totalDeathCount))
         {
@@ -351,6 +389,9 @@ public abstract class BaseTrigger : Trigger
         public bool leftRelease = false;
         public bool rightRelease = false;
         public bool middleRelease = false;
+        public bool leftEmpty = false;
+        public bool rightEmpty = false;
+        public bool middleEmpty = false;
     }
 
     public MouseOperationConfig mouseConfig = new();
@@ -361,6 +402,9 @@ public abstract class BaseTrigger : Trigger
     protected virtual void OnMouseLeftHold() { }
     protected virtual void OnMouseRightHold() { }
     protected virtual void OnMouseMiddleHold() { }
+    protected virtual void OnMouseLeftEmpty() { }
+    protected virtual void OnMouseRightEmpty() { }
+    protected virtual void OnMouseMiddleEmpty() { }
     protected virtual void OnMouseLeftRelease() { }
     protected virtual void OnMouseRightRelease() { }
     protected virtual void OnMouseMiddleRelease() { }

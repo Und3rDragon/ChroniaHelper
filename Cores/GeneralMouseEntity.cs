@@ -87,6 +87,21 @@ public class GeneralMouseEntity : Entity
             rightButtonHold?.Invoke();
         }
 
+        if (!MInput.Mouse.CheckLeftButton)
+        {
+            leftButtonEmpty?.Invoke();
+        }
+
+        if (!MInput.Mouse.CheckMiddleButton)
+        {
+            middleButtonEmpty?.Invoke();
+        }
+
+        if (!MInput.Mouse.CheckRightButton)
+        {
+            rightButtonEmpty?.Invoke();
+        }
+
         if (MInput.Mouse.ReleasedLeftButton)
         {
             leftButtonRelease?.Invoke();
@@ -111,11 +126,15 @@ public class GeneralMouseEntity : Entity
         leftButtonRelease = () => { };
         rightButtonRelease = () => { };
         middleButtonRelease = () => { };
+        leftButtonEmpty = () => { };
+        rightButtonEmpty = () => { };
+        middleButtonEmpty = () => { };
     }
 
     public float ButtonDetectionRadius = 2f;
 
     public Action leftButtonClick, rightButtonClick, middleButtonClick;
     public Action leftButtonHold, rightButtonHold, middleButtonHold;
+    public Action leftButtonEmpty, rightButtonEmpty, middleButtonEmpty;
     public Action leftButtonRelease, rightButtonRelease, middleButtonRelease;
 }

@@ -69,7 +69,12 @@ public class TriggerExtension : BaseTrigger
 
     protected override void OnMouseLeftClick()
     {
-        if(PUt.TryGetAlivePlayer(out Player player))
+        if (!MouseColliding())
+        {
+            return;
+        }
+
+        if (PUt.TryGetAlivePlayer(out Player player))
         {
             base.OnEnter(player);
 

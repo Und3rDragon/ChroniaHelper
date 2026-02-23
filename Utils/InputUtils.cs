@@ -38,8 +38,8 @@ public static class InputUtils
                 if (Md.CommunalHelperLoaded)
                 {
                     return (held ? 
-                        (RefCommunalHelper.ActivateFlagController?.Check ?? false) : 
-                        (RefCommunalHelper.ActivateFlagController?.Pressed ?? false));
+                        RefCommunalHelper.ActivateFlagControllerCheck : 
+                        RefCommunalHelper.ActivateFlagControllerPressed);
                 }
                 return false;
             case InputTypes.Left:
