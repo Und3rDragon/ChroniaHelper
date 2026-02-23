@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using Celeste.Mod.KoseiHelper.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Imports;
@@ -51,6 +52,39 @@ public class Displayers : HDRenderEntity
     public Displayers(EntityData d,Vc2 o) : base(d, o)
     {
         Tag |= Tags.Global;
+    }
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+
+        Md.Settings.entityInfoDisplayer.renderTarget.Clear();
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        GeneralMouseEntity.Instance.leftButtonClick += () =>
+        {
+            if (Md.Settings.DisplayEntityInfoInConsole)
+            {
+                Log.Info("==== Your mouse is around these entities ====");
+            }
+            Md.Settings.entityInfoDisplayer.renderTarget.Clear();
+            foreach (var entity in MaP.level.Entities)
+            {
+                if (entity.CollideCheck(GeneralMouseEntity.Instance))
+                {
+                    Md.Settings.entityInfoDisplayer.renderTarget.Add($"{entity.GetType()}");
+
+                    if (Md.Settings.DisplayEntityInfoInConsole)
+                    {
+                        Log.Info(entity.GetType());
+                    }
+                }
+            }
+        };
     }
 
     protected override void HDRender()
@@ -544,6 +578,62 @@ public class Displayers : HDRenderEntity
                 return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
             }, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
         }
+
+        if (Md.Settings.mousePositionDisplayer.enabled)
+        {
+            var displayer = Md.Settings.mousePositionDisplayer;
+            var displayUI = mousePos_UI;
+
+            string target = "Mouse: ";
+            Vc2 data = Vc2.Zero;
+            if(displayer.displayType == Modules.ChroniaHelperSettings.MousePositionDisplayer.DisplayType.LD)
+            {
+                data = InputUtils.MousePositionOnScreen;
+            }
+            else if(displayer.displayType == Modules.ChroniaHelperSettings.MousePositionDisplayer.DisplayType.Level)
+            {
+                data = InputUtils.MouseLevelPosition;
+            }
+            else
+            {
+                data = InputUtils.MousePosition;
+            }
+            target = target + $"X = {float.Round(data.X, 2)}, Y = {float.Round(data.Y, 2)}";
+
+            displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.distance = displayer.letterDistance;
+            displayUI.scale = displayer.scale * 0.1f;
+
+            displayUI.Render(target, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(displayer.displayPosition,
+                new Vc2(displayer.X, displayer.Y)));
+        }
+
+        if (Md.Settings.showMouse)
+        {
+            GFX.Game["Chroniahelper/LoennIcons/Mouse"].Draw(InputUtils.MousePosition, Vc2.One * 32f);
+        }
+
+        if (Md.Settings.entityInfoDisplayer.enabled)
+        {
+            var displayer = Md.Settings.entityInfoDisplayer;
+            var displayUI = entityInfo_UI;
+
+            displayUI.template.origin = ((int)displayer.aligning + 4).ToJustify();
+            displayUI.template.renderMode = 0;
+            displayUI.template.distance = displayer.letterDistance;
+            displayUI.template.segmentOrigin = Vc2.Zero;
+            displayUI.scales = new() { displayer.scale * 0.1f };
+            displayUI.memberDistance = displayer.lineDistance;
+            displayUI.groupOrigin = displayer.overallAligning.ToJustify();
+
+            displayUI.Render(displayer.renderTarget, (c) =>
+            {
+                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
+            }, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
+        }
     }
 
     public string generalReference = Cons.DisplayFontsReference;
@@ -613,17 +703,24 @@ public class Displayers : HDRenderEntity
     public SerialImageRaw commandClock_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/StopclockFonts/fontB"));
 
     public SerialImageGroupRaw input_UI = new SerialImageGroupRaw("ChroniaHelper/DisplayFonts/font");
-    
+
+    public SerialImageRaw mousePos_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
+    {
+        segmentOrigin = Vc2.Zero,
+    };
+
+    public SerialImageGroupRaw entityInfo_UI = new SerialImageGroupRaw("ChroniaHelper/DisplayFonts/font");
+
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)
         {
             Vc2 p = new Vc2((int)(PUt.player?.Center.X ?? 0), (int)(PUt.player?.Center.Y ?? 0)) + setup;
-            return (p - MaP.cameraPos) * HDScale;
+            return (p - MaP.cameraPos) * Cons.HDScale;
         }
         else if (pos == Sts.DisplayPosition.StaticScreen)
         {
-            return setup * HDScale;
+            return setup * Cons.HDScale;
         }
 
         return Vc2.Zero;

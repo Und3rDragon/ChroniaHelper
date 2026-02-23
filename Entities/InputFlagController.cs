@@ -13,14 +13,14 @@ namespace ChroniaHelper.Entities;
 public class InputFlagController : AbstractInputController
 {
     public bool Activated =>
-        (activateByGrab && (onlyOnHeld ? Input.Grab.Check : Input.Grab.Pressed)) ||
-        (activateByDash && (onlyOnHeld ? Input.Dash.Check : Input.Dash.Pressed)) ||
-        (activateByCrouchDash && (onlyOnHeld ? Input.CrouchDash.Check : Input.CrouchDash.Pressed)) ||
-        (activateByESC && (onlyOnHeld ? Input.ESC.Check : Input.ESC.Pressed)) ||
-        (activateByJump && (onlyOnHeld ? Input.Jump.Check : Input.Jump.Pressed)) ||
-        (activateByPause && (onlyOnHeld ? Input.Pause.Check : Input.Pause.Pressed)) ||
-        (activateByTalk && (onlyOnHeld ? Input.Talk.Check : Input.Talk.Pressed)) ||
-        (activateByDefault && (onlyOnHeld ? (RefCommunalHelper.ActivateFlagController?.Check ?? false) : (RefCommunalHelper.ActivateFlagController?.Pressed ?? false)));
+        (activateByGrab && InputUtils.CheckInput(InputTypes.Grab, onlyOnHeld)) ||
+        (activateByDash && InputUtils.CheckInput(InputTypes.Dash, onlyOnHeld)) ||
+        (activateByCrouchDash && InputUtils.CheckInput(InputTypes.CrouchDash, onlyOnHeld)) ||
+        (activateByESC && InputUtils.CheckInput(InputTypes.ESC, onlyOnHeld)) ||
+        (activateByJump && InputUtils.CheckInput(InputTypes.Jump, onlyOnHeld)) ||
+        (activateByPause && InputUtils.CheckInput(InputTypes.Pause, onlyOnHeld)) ||
+        (activateByTalk && InputUtils.CheckInput(InputTypes.Interact, onlyOnHeld)) ||
+        (activateByDefault && InputUtils.CheckInput(InputTypes.ActivateFlagController, onlyOnHeld));
 
     public string[][] Flags;
     private int flagIndex = 0;
