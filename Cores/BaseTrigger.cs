@@ -252,6 +252,74 @@ public abstract class BaseTrigger : Trigger
     public override void Update()
     {
         base.Update();
+
+        Vc2 p1 = TopLeft, p2 = BottomRight;
+        bool posMatchX = InputUtils.MouseLevelPosition.X.IsBetween(p1.X, p2.X);
+        bool posMatchY = InputUtils.MouseLevelPosition.Y.IsBetween(p1.Y, p2.Y);
+
+        GeneralMouseEntity.Instance?.leftButtonClick += () =>
+        {
+            if (posMatchX && posMatchY && mouseConfig.leftClick)
+            {
+                OnMouseLeftClick();
+            }
+        };
+        GeneralMouseEntity.Instance?.rightButtonClick += () =>
+        {
+            if (posMatchX && posMatchY && mouseConfig.rightClick)
+            {
+                OnMouseRightClick();
+            }
+        };
+        GeneralMouseEntity.Instance?.middleButtonClick += () => 
+        { 
+            if (posMatchX && posMatchY && mouseConfig.middleClick) 
+            { 
+                OnMouseMiddleClick(); 
+            } 
+        };
+        GeneralMouseEntity.Instance?.leftButtonHold += () => 
+        { 
+            if (posMatchX && posMatchY && mouseConfig.leftHold) 
+            { 
+                OnMouseLeftHold(); } 
+        };
+        GeneralMouseEntity.Instance?.rightButtonHold += () => 
+        { 
+            if (posMatchX && posMatchY && mouseConfig.rightHold) 
+            { 
+                OnMouseRightHold(); 
+            } 
+        };
+        GeneralMouseEntity.Instance?.middleButtonHold += () => 
+        { 
+            if (posMatchX && posMatchY && mouseConfig.middleHold) 
+            { 
+                OnMouseMiddleHold(); 
+            } 
+        };
+        GeneralMouseEntity.Instance?.leftButtonRelease += () => 
+        { 
+            if (posMatchX && posMatchY && mouseConfig.leftRelease) 
+            { 
+                OnMouseLeftRelease(); 
+            } 
+        };
+        GeneralMouseEntity.Instance?.rightButtonRelease += () => 
+        { 
+            if (posMatchX && posMatchY && mouseConfig.rightRelease) 
+            { 
+                OnMouseRightRelease(); 
+            } 
+        };
+        GeneralMouseEntity.Instance?.middleButtonRelease += () => 
+        { 
+            if (posMatchX && posMatchY && mouseConfig.middleRelease) 
+            { 
+                OnMouseMiddleRelease(); 
+            } 
+        };
+
         if (!FlagUtils.IsCorrectFlag(level, updateIfFlag) || !TriggerUtils.IsDeathCount(level, levelDeathMode, levelDeathCount, totalDeathMode, totalDeathCount))
         {
             return;
@@ -271,6 +339,31 @@ public abstract class BaseTrigger : Trigger
             Add(new Coroutine(UpdateInvoke(player), true));
         }
     }
+
+    public class MouseOperationConfig
+    {
+        public bool leftClick = false;
+        public bool rightClick = false;
+        public bool middleClick = false;
+        public bool leftHold = false;
+        public bool rightHold = false;
+        public bool middleHold = false;
+        public bool leftRelease = false;
+        public bool rightRelease = false;
+        public bool middleRelease = false;
+    }
+
+    public MouseOperationConfig mouseConfig = new();
+
+    protected virtual void OnMouseLeftClick() { }
+    protected virtual void OnMouseRightClick() { }
+    protected virtual void OnMouseMiddleClick() { }
+    protected virtual void OnMouseLeftHold() { }
+    protected virtual void OnMouseRightHold() { }
+    protected virtual void OnMouseMiddleHold() { }
+    protected virtual void OnMouseLeftRelease() { }
+    protected virtual void OnMouseRightRelease() { }
+    protected virtual void OnMouseMiddleRelease() { }
 
     protected virtual bool UpdateInvokeExpression(Player player) => true;
 

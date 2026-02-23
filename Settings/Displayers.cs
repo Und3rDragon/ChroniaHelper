@@ -61,37 +61,30 @@ public class Displayers : HDRenderEntity
         Md.Settings.entityInfoDisplayer.renderTarget.Clear();
     }
 
-    private bool mouseLeftDown = false;
     public override void Update()
     {
         base.Update();
 
-        if (MInput.Mouse.PressedLeftButton)
+        GeneralMouseEntity.Instance.leftButtonClick += () =>
         {
-            Collider = new Hitbox(4f, 4f,
-                InputUtils.MouseLevelPosition.X,
-                InputUtils.MouseLevelPosition.Y);
-
             if (Md.Settings.DisplayEntityInfoInConsole)
             {
                 Log.Info("==== Your mouse is around these entities ====");
             }
             Md.Settings.entityInfoDisplayer.renderTarget.Clear();
-            foreach(var entity in MaP.level.Entities)
+            foreach (var entity in MaP.level.Entities)
             {
-                if (entity.CollideCheck(this))
+                if (entity.CollideCheck(GeneralMouseEntity.Instance))
                 {
                     Md.Settings.entityInfoDisplayer.renderTarget.Add($"{entity.GetType()}");
-                    
+
                     if (Md.Settings.DisplayEntityInfoInConsole)
                     {
                         Log.Info(entity.GetType());
                     }
                 }
             }
-
-            Collider = null;
-        }
+        };
     }
 
     protected override void HDRender()
@@ -620,7 +613,7 @@ public class Displayers : HDRenderEntity
 
         if (Md.Settings.showMouse)
         {
-            GFX.Game["Chroniahelper/LoennIcons/Mouse"].Draw(InputUtils.MousePosition);
+            GFX.Game["Chroniahelper/LoennIcons/Mouse"].Draw(InputUtils.MousePosition, Vc2.One * 32f);
         }
 
         if (Md.Settings.entityInfoDisplayer.enabled)

@@ -205,9 +205,15 @@ public class FlagButton : Entity {
         passwordID = data.Attr("passwordID");
         password = data.Attr("password");
         passwordProtected = !string.IsNullOrEmpty(passwordID) && !string.IsNullOrEmpty(password);
+
+        // Reset Mode
+        resetMode = (ResetMode)data.Int("resetMode", 0);
+
     }
     // Save or overwrite the existing values
     private bool passwordProtected = false; private string passwordID, password;
+    public enum ResetMode { Both, PerRoom, PerDeath }
+    public ResetMode resetMode = 0;
     
     public void TurnOn()
     {
@@ -218,8 +224,14 @@ public class FlagButton : Entity {
             Activated(true);
             if (!persistent)
             {
-                Md.Session.flagsPerRoom.Add(flagID);
-                Md.Session.flagsPerDeath.Add(flagID);
+                if(resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
+                {
+                    Md.Session.flagsPerRoom.Add(flagID);
+                }
+                if(resetMode == ResetMode.Both || resetMode == ResetMode.PerDeath)
+                {
+                    Md.Session.flagsPerDeath.Add(flagID);
+                }
             }
 
             // animation
@@ -307,8 +319,14 @@ public class FlagButton : Entity {
 
         if (!persistent)
         {
-            Md.Session.flagsPerRoom.Add(flagID);
-            Md.Session.flagsPerDeath.Add(flagID);
+            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
+            {
+                Md.Session.flagsPerRoom.Add(flagID);
+            }
+            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerDeath)
+            {
+                Md.Session.flagsPerDeath.Add(flagID);
+            }
         }
     }
 
@@ -319,7 +337,10 @@ public class FlagButton : Entity {
         // If not persistent, reset the values
         if (!persistent)
         {
-            flagID.SetFlag(false);
+            if(resetMode != ResetMode.PerDeath)
+            {
+                flagID.SetFlag(false);
+            }
         }
 
         // If not completed, we should reset the flag too
