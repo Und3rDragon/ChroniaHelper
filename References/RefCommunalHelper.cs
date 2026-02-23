@@ -32,7 +32,8 @@ public static class RefCommunalHelper
         return CommunalHelperModule.Settings;
     }
 
-    public static ButtonBinding ActivateFlagController => GetSettings().ActivateFlagController;
+    public static bool ActivateFlagControllerPressed => GetSettings().ActivateFlagController.Pressed;
+    public static bool ActivateFlagControllerCheck => GetSettings().ActivateFlagController.Check;
 
     public static bool DreamTunnelDashAttacking = (bool)new DynamicData(typeof(DreamTunnelDash)).Get("dreamTunnelDashAttacking");
 
@@ -41,4 +42,9 @@ public static class RefCommunalHelper
 public class RefDreamTunnelBlocker : DreamTunnelBlocker
 {
     public RefDreamTunnelBlocker(EntityData data, Vc2 offset) : base(data, offset) { }
+}
+
+public class RefCustomDreamBlock : CustomDreamBlock
+{
+    public RefCustomDreamBlock(EntityData data, Vc2 offset) : base(data, offset) { }
 }

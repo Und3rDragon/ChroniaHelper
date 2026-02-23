@@ -1,5 +1,4 @@
-﻿using Celeste.Mod.CommunalHelper;
-using ChroniaHelper.Cores.Graphical;
+﻿using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;

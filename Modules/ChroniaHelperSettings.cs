@@ -10,7 +10,9 @@ public class ChroniaHelperSettings : EverestModuleSettings
     public bool HUDMainControl { get; set; } = true;
     public enum DisplayPosition { PlayerBased, StaticScreen }
     public enum Aligning { Left, Middle, Right }
-    
+    public bool showMouse { get; set; } = false;
+    public bool DisplayEntityInfoInConsole { get; set; } = false;
+
     public class CommonDisplayer
     {
         public bool enabled { get; set; } = false;
@@ -187,4 +189,34 @@ public class ChroniaHelperSettings : EverestModuleSettings
         public List<string> renderTarget = new();
     }
     public InputDisplayer inputDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class MousePositionDisplayer : CommonDisplayer
+    {
+        public enum DisplayType { HD, LD, Level }
+        public DisplayType displayType { get; set; } = DisplayType.HD;
+    }
+    public MousePositionDisplayer mousePositionDisplayer { get; set; } = new();
+
+    [SettingSubMenu]
+    public class EntityInfoDisplayer
+    {
+        public bool enabled { get; set; } = false;
+        [SettingRange(-1000, 1000, true)]
+        public int X { get; set; } = 4;
+        [SettingRange(-1000, 1000, true)]
+        public int Y { get; set; } = 70;
+        [SettingRange(-32, 32, true)]
+        public int letterDistance { get; set; } = -4;
+        [SettingRange(0, 1000, true)]
+        public int scale { get; set; } = 40;
+        public Aligning aligning { get; set; } = Aligning.Left;
+        [SettingRange(-64, 64)]
+        public int lineDistance { get; set; } = 2;
+        [SettingRange(1, 9)]
+        public int overallAligning { get; set; } = 1;
+
+        public List<string> renderTarget = new();
+    }
+    public EntityInfoDisplayer entityInfoDisplayer { get; set; } = new();
 }

@@ -30,7 +30,6 @@ public class HDRenderEntity : BaseEntity
     }
     public VirtualRenderTarget Buffer;
     public Vc2 Parallax = Vc2.One;
-    public const float HDScale = 6f;
     public Vc2 StaticScreen = new Vc2(160f, 90f);
     public CColor DrawColor = new CColor(Color.White);
     
@@ -97,14 +96,14 @@ public class HDRenderEntity : BaseEntity
     {
         Vc2 normal = position - (MaP.cameraPos - MaP.levelPos) * parallax;
 
-        return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * HDScale;
+        return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * Cons.HDScale;
     }
 
     public Vc2 ParseGlobalPositionToHDPosition(Vc2 globalPosition, Vc2 parallax, Vc2 staticScreen)
     {
         Vc2 normal = (globalPosition - MaP.levelPos) - (MaP.cameraPos - MaP.levelPos) * parallax;
         
-        return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * HDScale;
+        return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * Cons.HDScale;
     }
 
     public override void Removed(Scene scene)

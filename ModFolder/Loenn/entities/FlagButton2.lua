@@ -32,6 +32,7 @@ touchSwitch.placements = {
             completeSoundFromScene = "event:/game/general/touchswitch_last_oneshot",
             passwordID = "",
             password = "",
+            resetMode = 0,
         }
     },
     {
@@ -56,6 +57,7 @@ touchSwitch.placements = {
             completeSoundFromScene = "event:/game/general/touchswitch_last_oneshot",
             passwordID = "",
             password = "",
+            resetMode = 0,
         }
     }
 }
@@ -89,6 +91,14 @@ touchSwitch.fieldInformation = {
     },
     borderTexture = {
         options = {"", "particles/ChroniaHelper/none"}, editable = true,
+    },
+    resetMode = {
+        options = {
+            ["Default"] = 0,
+            ["Reset On Room Switch"] = 1,
+            ["Reset On Death"] = 2,
+        },
+        editable = false,
     },
 }
 

@@ -249,9 +249,115 @@ public abstract class BaseTrigger : Trigger
 
     protected virtual bool OnlyOnceExpression(Player player) => true;
 
+    public bool MouseColliding()
+    {
+        Vc2 p1 = TopLeft, p2 = BottomRight;
+        bool posMatchX = InputUtils.MouseLevelPosition.X.IsBetween(p1.X, p2.X);
+        bool posMatchY = InputUtils.MouseLevelPosition.Y.IsBetween(p1.Y, p2.Y);
+        
+        return posMatchY && posMatchX;
+    }
+
     public override void Update()
     {
         base.Update();
+
+        if (mouseConfig.leftClick)
+        {
+            GeneralMouseEntity.Instance?.leftButtonClick += () =>
+            {
+                OnMouseLeftClick();
+            };
+        }
+
+        if (mouseConfig.rightClick)
+        {
+            GeneralMouseEntity.Instance?.rightButtonClick += () =>
+            {
+                OnMouseRightClick();
+            };
+        }
+
+        if (mouseConfig.middleClick)
+        {
+            GeneralMouseEntity.Instance?.middleButtonClick += () =>
+            {
+                OnMouseMiddleClick();
+            };
+        }
+
+        if (mouseConfig.leftHold)
+        {
+            GeneralMouseEntity.Instance?.leftButtonHold += () =>
+            {
+                OnMouseLeftHold();
+            };
+        }
+
+        if (mouseConfig.rightHold)
+        {
+            GeneralMouseEntity.Instance?.rightButtonHold += () =>
+            {
+                OnMouseRightHold();
+            };
+        }
+
+        if (mouseConfig.middleHold)
+        {
+            GeneralMouseEntity.Instance?.middleButtonHold += () =>
+            {
+                OnMouseMiddleHold();
+            };
+        }
+
+        if (mouseConfig.leftEmpty)
+        {
+            GeneralMouseEntity.Instance?.leftButtonEmpty += () =>
+            {
+                OnMouseLeftEmpty();
+            };
+        }
+
+        if (mouseConfig.rightEmpty)
+        {
+            GeneralMouseEntity.Instance?.rightButtonEmpty += () =>
+            {
+                OnMouseRightEmpty();
+            };
+        }
+
+        if (mouseConfig.middleEmpty)
+        {
+            GeneralMouseEntity.Instance?.middleButtonEmpty += () =>
+            {
+                OnMouseMiddleEmpty();
+            };
+        }
+
+        if (mouseConfig.leftRelease)
+        {
+            GeneralMouseEntity.Instance?.leftButtonRelease += () =>
+            {
+                OnMouseLeftRelease();
+            };
+        }
+
+        if (mouseConfig.rightRelease)
+        {
+            GeneralMouseEntity.Instance?.rightButtonRelease += () =>
+            {
+                OnMouseRightRelease();
+            };
+        }
+
+        if (mouseConfig.middleRelease)
+        {
+            GeneralMouseEntity.Instance?.middleButtonRelease += () =>
+            {
+                OnMouseMiddleRelease();
+            };
+        }
+
         if (!FlagUtils.IsCorrectFlag(level, updateIfFlag) || !TriggerUtils.IsDeathCount(level, levelDeathMode, levelDeathCount, totalDeathMode, totalDeathCount))
         {
             return;
@@ -271,6 +377,37 @@ public abstract class BaseTrigger : Trigger
             Add(new Coroutine(UpdateInvoke(player), true));
         }
     }
+
+    public class MouseOperationConfig
+    {
+        public bool leftClick = false;
+        public bool rightClick = false;
+        public bool middleClick = false;
+        public bool leftHold = false;
+        public bool rightHold = false;
+        public bool middleHold = false;
+        public bool leftRelease = false;
+        public bool rightRelease = false;
+        public bool middleRelease = false;
+        public bool leftEmpty = false;
+        public bool rightEmpty = false;
+        public bool middleEmpty = false;
+    }
+
+    public MouseOperationConfig mouseConfig = new();
+
+    protected virtual void OnMouseLeftClick() { }
+    protected virtual void OnMouseRightClick() { }
+    protected virtual void OnMouseMiddleClick() { }
+    protected virtual void OnMouseLeftHold() { }
+    protected virtual void OnMouseRightHold() { }
+    protected virtual void OnMouseMiddleHold() { }
+    protected virtual void OnMouseLeftEmpty() { }
+    protected virtual void OnMouseRightEmpty() { }
+    protected virtual void OnMouseMiddleEmpty() { }
+    protected virtual void OnMouseLeftRelease() { }
+    protected virtual void OnMouseRightRelease() { }
+    protected virtual void OnMouseMiddleRelease() { }
 
     protected virtual bool UpdateInvokeExpression(Player player) => true;
 

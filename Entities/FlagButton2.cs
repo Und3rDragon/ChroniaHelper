@@ -182,10 +182,15 @@ public class FlagButton2 : Entity {
         passwordID = data.Attr("passwordID");
         password = data.Attr("password");
         passwordProtected = !string.IsNullOrEmpty(passwordID) && !string.IsNullOrEmpty(password);
+
+        // Reset Mode
+        resetMode = (ResetMode)data.Int("resetMode", 0);
     }
     // Save or overwrite the existing values
     private bool passwordProtected = false; private string passwordID, password;
-    
+    public enum ResetMode { Both, PerRoom, PerDeath }
+    public ResetMode resetMode = 0;
+
     public void TurnOn()
     {
         if (!Activated())
@@ -195,7 +200,14 @@ public class FlagButton2 : Entity {
             Activated(true);
             if (!persistent)
             {
-                Md.Session.flagsPerRoom.Add(flagID);
+                if (resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
+                {
+                    Md.Session.flagsPerRoom.Add(flagID);
+                }
+                if (resetMode == ResetMode.Both || resetMode == ResetMode.PerDeath)
+                {
+                    Md.Session.flagsPerDeath.Add(flagID);
+                }
             }
 
             // animation
@@ -282,7 +294,14 @@ public class FlagButton2 : Entity {
 
         if (!persistent)
         {
-            Md.Session.flagsPerRoom.Enter(flagID);
+            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
+            {
+                Md.Session.flagsPerRoom.Add(flagID);
+            }
+            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerDeath)
+            {
+                Md.Session.flagsPerDeath.Add(flagID);
+            }
         }
     }
 
@@ -292,7 +311,10 @@ public class FlagButton2 : Entity {
         
         if (!persistent)
         {
-            flagID.SetFlag(false);
+            if(resetMode != ResetMode.PerDeath)
+            {
+                flagID.SetFlag(false);
+            }
             
             icon.Play("idle");
             finished = false;

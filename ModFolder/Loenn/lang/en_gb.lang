@@ -583,7 +583,10 @@ triggers.ChroniaHelper/BloomFadeTrigger.placements.name.BloomFadeTrigger=Bloom F
 # ================= Lighting Trigger (Yocto Legacy)
 
 triggers.ChroniaHelper/LightingTrigger.placements.name.LightingTrigger=Lighting Trigger
+triggers.ChroniaHelper/LightingTrigger.attributes.description.lightingAlpha=NOTICE:\nThis field is by vanilla-coded as "only once", each time you go through a room,\nthis value will automatically fade to the sum of "base lighting alpha" and "lighting alpha add",\nso if you didn't change the latter two fields and only changed this value, the effect will only last for one room.\nAnd also, if the lighting alpha value you set up is smaller than the sum I mentioned earlier,\nthere will be a sound emitted as where in vanilla chapter 5 when the temple lights up
 triggers.ChroniaHelper/LightingFadeTrigger.placements.name.LightingFadeTrigger=Lighting Fade Trigger
+triggers.ChroniaHelper/LightingFadeTrigger.attributes.description.lightingAlphaFrom=NOTICE:\nThis field is by vanilla-coded as "only once", each time you go through a room,\nthis value will automatically fade to the sum of "base lighting alpha" and "lighting alpha add",\nso if you didn't change the latter two fields and only changed this value, the effect will only last for one room.\nAnd also, if the lighting alpha value you set up is smaller than the sum I mentioned earlier,\nthere will be a sound emitted as where in vanilla chapter 5 when the temple lights up
+triggers.ChroniaHelper/LightingFadeTrigger.attributes.description.lightingAlphaTo=NOTICE:\nThis field is by vanilla-coded as "only once", each time you go through a room,\nthis value will automatically fade to the sum of "base lighting alpha" and "lighting alpha add",\nso if you didn't change the latter two fields and only changed this value, the effect will only last for one room.\nAnd also, if the lighting alpha value you set up is smaller than the sum I mentioned earlier,\nthere will be a sound emitted as where in vanilla chapter 5 when the temple lights up
 
 # ================= Music Trigger (Yocto Legacy)
 
@@ -706,7 +709,7 @@ entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitchwall=Flag Button
 
 # ================= Real Flag Switch Alt
 
-entities.ChroniaHelper/RealFlagSwitchAlt.placements.name.flagswitch=~ Flag Button (Alternate) (Deprecated)
+entities.ChroniaHelper/RealFlagSwitchAlt.placements.name.flagswitch=(Obsoleted) Flag Button (Alternate)
 entities.ChroniaHelper/RealFlagSwitchAlt.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
 
 # ================= Real Flag Switch 2 (Animation Recoded)
@@ -1377,3 +1380,7 @@ entities.ChroniaHelper/RefillOnWall.attributes.description.directory=The folder 
 entities.ChroniaHelper/EntityTextbox.placements.name.box=Entity Text Box
 entities.ChroniaHelper/EntityTextbox.attributes.description.maxHeight=As reference, English font size is around 63 px on height
 entities.ChroniaHelper/EntityTextbox.attributes.description.operationFlag=When flag is enabled, the dialog will start playing.\nWhen flag is disabled, the entity will disappear immediately and reset the dialog
+
+# ================= Set Flag On Mouse Controller
+
+entities.ChroniaHelper/SetFlagOnMouseController.placements.name.controller=Set Flag On Mouse Controller

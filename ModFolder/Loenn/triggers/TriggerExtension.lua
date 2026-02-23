@@ -9,6 +9,7 @@ return{
 		{
 			extensionTag = "",
 			overrideID = -1,
+			allowLeftClick = false,
 		}
 	},
 	fieldInformation = {

@@ -52,4 +52,6 @@ public static class Constants
     public const string DisplayFontsReference = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/.<>()[]{}'\"?!\\:; =,_^";
 
     public const string CommandStopclockID = "ChroniaHelper_Debug_CommandStopclock";
+
+    public const float HDScale = 6f;
 }

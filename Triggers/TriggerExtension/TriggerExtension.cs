@@ -22,6 +22,8 @@ public class TriggerExtension : BaseTrigger
         ID = data.ID;
         extensionTag = data.Attr("extensionTag");
         extensionID = data.Int("overrideID", -1);
+
+        mouseConfig.leftClick = data.Bool("allowLeftClick", false);
     }
     public string extensionTag;
     public int extensionID;
@@ -63,6 +65,23 @@ public class TriggerExtension : BaseTrigger
         FindMasterTrigger();
 
         base.Awake(scene);
+    }
+
+    protected override void OnMouseLeftClick()
+    {
+        if (!MouseColliding())
+        {
+            return;
+        }
+
+        if (PUt.TryGetAlivePlayer(out Player player))
+        {
+            base.OnEnter(player);
+
+            if (CollideOther(player)) { return; }
+
+            masterTrigger.OnEnter(player);
+        }
     }
 
     public override void OnEnter(Player player)

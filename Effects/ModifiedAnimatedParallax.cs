@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Celeste.Mod.Backdrops;
-using Celeste.Mod.MaxHelpingHand.Effects;
+﻿using System.Text.RegularExpressions;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
 using MonoMod.Cil;
-using VivHelper.Entities;
 
 namespace ChroniaHelper.Effects;
 

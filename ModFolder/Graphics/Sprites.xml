@@ -100,6 +100,51 @@
 		<Anim id="appear" path="appear" delay="0.08"/>
 	</Preset_pink>
 
+	<Preset_orange path="objects/ChroniaHelper/customBoosterPresets/orange/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_orange>
+
+	<Preset_cyan path="objects/ChroniaHelper/customBoosterPresets/cyan/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_cyan>
+
+	<Preset_blue path="objects/ChroniaHelper/customBoosterPresets/blue/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_blue>
+
+	<Preset_lavender path="objects/ChroniaHelper/customBoosterPresets/lavender/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_lavender>
+	
+	<Preset_lightGreen path="objects/ChroniaHelper/customBoosterPresets/lightGreen/" start="loop">
+		<Justify x="0.5" y="0.5"/>
+		<Loop id="loop" path="loop" delay="0.1"/>
+		<Loop id="inside" path="inside" delay="0.1"/>
+		<Loop id="spin" path="spin" delay="0.06" goto="fallLoop"/>
+		<Anim id="pop" path="pop" delay="0.08"/>
+		<Anim id="appear" path="appear" delay="0.08"/>
+	</Preset_lightGreen>
+
 	<boosterZipper path="objects/ChroniaHelper/boosterZipper/" start="loop">
 		<Justify x="0.5" y="0.5"/>
 		<Loop id="loop" path="idle" delay="0.1" />

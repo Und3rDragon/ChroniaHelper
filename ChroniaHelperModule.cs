@@ -1,6 +1,9 @@
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.Loader;
 using Celeste.Mod.ChroniaHelperIndicatorZone;
 using Celeste.Mod.Helpers;
+using Celeste.Mod.Meta;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Imports;
@@ -108,6 +111,25 @@ public class ChroniaHelperModule : EverestModule
         };
 
         return Everest.Loader.TryGetDependency(meta, out module);
+    }
+
+    public static bool CheckDependencyWithAssembly(string modName, string minimumVersion)
+    {
+        bool dependencyLoaded = CheckDependency(modName, minimumVersion, out var mod);
+
+        bool assemblyUsable = mod.Metadata.AssemblyContext != null;
+
+        return dependencyLoaded && assemblyUsable;
+    }
+
+    public static bool CheckDependencyWithAssembly(string modName, string minimumVersion,
+        out EverestModule module)
+    {
+        bool dependencyLoaded = CheckDependency(modName, minimumVersion, out module);
+
+        bool assemblyUsable = module.Metadata.AssemblyContext != null;
+
+        return dependencyLoaded && assemblyUsable;
     }
 
     public override void Load()

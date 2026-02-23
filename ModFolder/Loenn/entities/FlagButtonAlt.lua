@@ -19,13 +19,10 @@ touchSwitch.placements = {
             activeColor = "FFFFFF",
             finishColor = "F141DF",
             smoke = true,
-            --inverted = false,
             allowDisable = false,
             playerCanActivate = true,
             hitSound = "event:/game/general/touchswitch_any",
-            --completeSoundFromSwitch = "event:/game/general/touchswitch_last_cutoff",
             completeSoundFromScene = "event:/game/general/touchswitch_last_oneshot",
-            --hideIfFlag = "",
             switch = "touchSwitch",
             idleAnimDelay = 0.1,
             spinAnimDelay = 0.1,
@@ -33,6 +30,7 @@ touchSwitch.placements = {
             finishedAnimRate = 0.1,
             passwordID = "",
             password = "",
+            resetMode = 0,
         }
     }
 }
@@ -66,6 +64,14 @@ touchSwitch.fieldInformation = {
     },
     borderTexture = {
         options = {"", "particles/ChroniaHelper/none"}, editable = true,
+    },
+    resetMode = {
+        options = {
+            ["Default"] = 0,
+            ["Reset On Room Switch"] = 1,
+            ["Reset On Death"] = 2,
+        },
+        editable = false,
     },
 }
 
