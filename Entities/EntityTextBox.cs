@@ -39,6 +39,7 @@ public class EntityTextBox : BaseEntity
         Add(listener = new FlagListener(d.Attr("operationFlag", "triggerDialog")));
 
         justification = new Vc2(d.Float("justifyX", 0.5f), d.Float("justifyY", 0.5f));
+        scale = d.Float("scale", 1f);
     }
     private float lineHeight;
     private int linesPerPage;
@@ -47,6 +48,7 @@ public class EntityTextBox : BaseEntity
     private Coroutine runRoutine;
     private Vc2 justification = Vc2.One * 0.5f;
     private FlagListener listener;
+    private float scale;
 
     public override void Update()
     {
@@ -166,7 +168,7 @@ public class EntityTextBox : BaseEntity
         // The justify is for the text aligning
         text.DrawJustifyPerLine(
             (Position - MaP.cameraPos) * Cons.HDScale,
-            justification, new Vector2(1f, textEase) * assistiveScaling,
+            justification, new Vector2(1f, textEase) * assistiveScaling * scale,
             textEase, Start, index);
     }
 }

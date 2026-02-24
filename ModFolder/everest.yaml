@@ -1,5 +1,5 @@
 - Name: ChroniaHelper
-  Version: 1.47.1
+  Version: 1.47.6
   DLL: Code/ChroniaHelper.dll
   Dependencies:
     - Name: Everest
@@ -13,3 +13,5 @@
       Version: 1.38.0
     - Name: XaphanHelper
       Version: 1.0.78
+    - Name: MoreDasheline
+      Version: 1.7.1

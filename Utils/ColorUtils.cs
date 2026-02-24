@@ -360,36 +360,40 @@ public static class ColorUtils
             return color * alpha;
         }
         
-        public Color Parsed(float additionalAlpha)
+        public Color Parsed(params float[] additionalAlpha)
         {
-            return color * alpha * additionalAlpha;
+            float value = 1f;
+            for(int i = 0; i < additionalAlpha.Length; i++)
+            {
+                value *= additionalAlpha[i];
+            }
+
+            if(value.IsBetween(0.99999f, 1.00001f))
+            {
+                return color * alpha;
+            }
+            else
+            {
+                return color * alpha * value;
+            }
         }
         
-        public Color OverrideParse(float overrideAlpha)
+        public Color OverrideParse(params float[] overrideAlpha)
         {
-            return color * overrideAlpha.Clamp(0f, 1f);
-        }
+            float value = 1f;
+            for (int i = 0; i < overrideAlpha.Length; i++)
+            {
+                value *= overrideAlpha[i];
+            }
 
-        public Color ParseMultiplied(params float[] parameters)
-        {
-            if(parameters.Length == 0 || parameters.IsNull()) { return Parsed(); }
-
-            float a = 1f;
-            parameters.EachDo((n) => a *= n);
-            a.Clamp(0f, 1f, out a);
-            
-            return color * alpha * a;
-        }
-
-        public Color OverrideParseMultiplied(params float[] parameters)
-        {
-            if (parameters.Length == 0 || parameters.IsNull()) { return Parsed(); }
-
-            float a = 1f;
-            parameters.EachDo((n) => a *= n);
-            a.Clamp(0f, 1f, out a);
-
-            return color * a;
+            if (value.IsBetween(0.99999f, 1.00001f))
+            {
+                return color;
+            }
+            else
+            {
+                return color * value;
+            }
         }
     }
 
