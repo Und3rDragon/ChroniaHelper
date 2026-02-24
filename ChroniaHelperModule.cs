@@ -90,6 +90,7 @@ public class ChroniaHelperModule : EverestModule
     public static bool MaddieLoaded => CheckDependency("MaxHelpingHand", "1.38.0");
     public static bool XaphanHelperLoaded => CheckDependency("XaphanHelper", "1.0.78");
     public static bool MoreDashelineLoaded => CheckDependency("MoreDasheline", "1.7.1");
+    public static bool LakeSideLoaded => CheckDependency("LakeSideCode", "0.1.0");
 
     public static bool CheckDependency(string modName, string minimumVersion)
     {
