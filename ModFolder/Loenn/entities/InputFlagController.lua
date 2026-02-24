@@ -47,9 +47,10 @@ inputFlagController.fieldInformation = {
     },
     mode = {
         options = {
-            ["Enable"] = 2,
-            ["Toggle"] = 0,
-            ["Counter Suffix"] = 1,
+            ["Enable Flags"] = 2,
+            ["Toggle Flags"] = 0,
+            ["Flag With Counter Suffix"] = 1,
+            ["Disable Flags"] = 3,
         },
         editable = false,
     },
