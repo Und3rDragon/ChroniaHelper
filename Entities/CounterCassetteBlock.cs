@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
@@ -72,13 +73,16 @@ public class CounterCassetteBlock : CassetteBlock
 
     public string prefix, counter;
     private bool initialized;
-
+    private ChroniaColor baseColor, backColor;
     public CounterCassetteBlock(Vector2 position, EntityID id, EntityData data)
         : base(data.Position + position, id, data.Width, data.Height, data.Int("counterValue", 0), -1f)
     {
-        color = data.GetChroniaColor("color", Color.White).Parsed();
+        color = (baseColor = data.GetChroniaColor("color", Color.White)).Parsed();
         this.prefix = data.Attr("directory", "objects/ChroniaHelper/counterCassetteBlock/").TrimEnd('/') + '/';
         this.counter = data.Attr("counter", "counterCassetteBlockCounter");
+
+        backColor = data.GetChroniaColor("disabledColor", "667da5");
+        backColor.alpha = baseColor.alpha;
     }
 
     public CounterCassetteBlock(EntityData data, Vector2 offset, EntityID id)
@@ -89,6 +93,19 @@ public class CounterCassetteBlock : CassetteBlock
     {
         base.Awake(scene);
         ShiftSize(1);
+        side.color = Color.Transparent;
+    }
+
+    public override void Render()
+    {
+        base.Render();
+
+        if(blockHeight > 0)
+        {
+            Draw.Rect(Position.X, Position.Y + Height, 
+                Width, blockHeight, 
+                backColor.Parsed(1.2f));
+        }
     }
 
     public override void Update()

@@ -15,6 +15,9 @@ local dashToggleBlock = {
             fieldType = "color",
             useAlpha = true,
         },
+        disabledColor = {
+            fieldType = "color",
+        },
     },
     placements={
         name = "block",
@@ -23,6 +26,7 @@ local dashToggleBlock = {
             height = 16,
             counterValue = 0,
             color = "ffffffff",
+            disabledColor = "667da5",
             directory = "objects/ChroniaHelper/counterCassetteBlock/",
             counter = "counterCassetteBlockCounter",
         },
