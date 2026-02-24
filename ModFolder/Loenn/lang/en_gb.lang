@@ -1384,3 +1384,10 @@ entities.ChroniaHelper/EntityTextbox.attributes.description.operationFlag=When f
 # ================= Set Flag On Mouse Controller
 
 entities.ChroniaHelper/SetFlagOnMouseController.placements.name.controller=Set Flag On Mouse Controller
+
+# ================= Counter Cassette Block
+
+entities.ChroniaHelper/CounterCassetteBlock.placements.name.block=Counter Cassette Block
+
+entities.ChroniaHelper/CounterCassetteBlockManager.placements.name.controller=Counter Cassette Block Manager
+entities.ChroniaHelper/CounterCassetteBlockManager.attributes.description.maxCassetteBlockIndex=If this is set to below 0, the manager will automaticlly looking for the largest index of the blocks

@@ -35,7 +35,7 @@ public class InputFlagController : AbstractInputController
     private string[] conditions;
     private bool noConditions;
 
-    private enum Mode { Toggle = 0, Suffix = 1, Enable = 2}
+    private enum Mode { Toggle = 0, Suffix = 1, Enable = 2, Disable = 3}
     private Mode mode;
     private enum Restraint
     {
@@ -179,21 +179,15 @@ public class InputFlagController : AbstractInputController
             if (flagIndex < Flags.Length)
             {
                 string[] flagSet = Flags[flagIndex];
-                bool value = true;
                 foreach (string flag in flagSet)
                 {
-                    if (Toggle)
-                    {
-                        value = !flag.GetFlag();
-                    }
-
-                    flag.SetFlag(!flag.GetFlag());
+                    flag.SetFlag(Toggle ? !flag.GetFlag() : true);
                 }
                 flagIndex++;
-                if (Toggle && flagIndex >= Flags.Length)
-                { 
-                    flagIndex = 0; 
-                }
+            }
+            if (Toggle && flagIndex >= Flags.Length)
+            {
+                flagIndex = 0;
             }
         }
 
@@ -215,6 +209,23 @@ public class InputFlagController : AbstractInputController
 
                     $"{controllerID}_{i}:{MaP.level.Session.GetCounter(controllerID)}".SetFlag(true);
                 }
+            }
+        }
+
+        else if (mode == Mode.Disable)
+        {
+            if (flagIndex < Flags.Length)
+            {
+                string[] flagSet = Flags[flagIndex];
+                foreach (string flag in flagSet)
+                {
+                    flag.SetFlag(false);
+                }
+                flagIndex++;
+            }
+            if (Toggle && flagIndex >= Flags.Length)
+            {
+                flagIndex = 0;
             }
         }
         
@@ -251,6 +262,16 @@ public class InputFlagController : AbstractInputController
                                 flag.SetFlag(false);
                             }
                         }
+                    }
+                }
+            }
+            else if(mode == Mode.Disable)
+            {
+                for (int i = 0; i < Flags.Length; i++)
+                {
+                    foreach (string flag in Flags[i])
+                    {
+                        flag.SetFlag(true);
                     }
                 }
             }

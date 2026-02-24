@@ -89,6 +89,7 @@ public class ChroniaHelperModule : EverestModule
     public static bool CommunalHelperLoaded => CheckDependency("CommunalHelper", "1.23.0");
     public static bool MaddieLoaded => CheckDependency("MaxHelpingHand", "1.38.0");
     public static bool XaphanHelperLoaded => CheckDependency("XaphanHelper", "1.0.78");
+    public static bool MoreDashelineLoaded => CheckDependency("MoreDasheline", "1.7.1");
 
     public static bool CheckDependency(string modName, string minimumVersion)
     {
@@ -111,25 +112,6 @@ public class ChroniaHelperModule : EverestModule
         };
 
         return Everest.Loader.TryGetDependency(meta, out module);
-    }
-
-    public static bool CheckDependencyWithAssembly(string modName, string minimumVersion)
-    {
-        bool dependencyLoaded = CheckDependency(modName, minimumVersion, out var mod);
-
-        bool assemblyUsable = mod.Metadata.AssemblyContext != null;
-
-        return dependencyLoaded && assemblyUsable;
-    }
-
-    public static bool CheckDependencyWithAssembly(string modName, string minimumVersion,
-        out EverestModule module)
-    {
-        bool dependencyLoaded = CheckDependency(modName, minimumVersion, out module);
-
-        bool assemblyUsable = module.Metadata.AssemblyContext != null;
-
-        return dependencyLoaded && assemblyUsable;
     }
 
     public override void Load()

@@ -46,6 +46,10 @@
 		<CelesteModReference Include="XaphanHelper" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<CelesteModReference Include="MoreDasheline" />
+	</ItemGroup>
+
     <!--Implement dependencies here in an ItemGroup-->
 
 
