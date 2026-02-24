@@ -18,6 +18,7 @@ controller.placements = {
         justifyY = 0.5,
         dialog = "dialogID",
         operationFlag = "triggerDialog",
+        scale = 1,
     },
 }
 
@@ -29,6 +30,9 @@ controller.fieldInformation = {
     justifyY = {
         minimumValue = 0,
         maximumValue = 1,
+    },
+    scale = {
+        minimumValue = 0,
     },
 }
 
