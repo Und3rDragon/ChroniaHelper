@@ -304,7 +304,7 @@ public static class ColorUtils
             return new Color(R, G, B, A);
         }
     }
-    
+
     public struct ChroniaColor
     {
         public static CColor White = new(Color.White);
@@ -359,16 +359,16 @@ public static class ColorUtils
         {
             return color * alpha;
         }
-        
+
         public Color Parsed(params float[] additionalAlpha)
         {
             float value = 1f;
-            for(int i = 0; i < additionalAlpha.Length; i++)
+            for (int i = 0; i < additionalAlpha.Length; i++)
             {
                 value *= additionalAlpha[i];
             }
 
-            if(value.IsBetween(0.99999f, 1.00001f))
+            if (value.IsBetween(0.99999f, 1.00001f))
             {
                 return color * alpha;
             }
@@ -377,7 +377,7 @@ public static class ColorUtils
                 return color * alpha * value;
             }
         }
-        
+
         public Color OverrideParse(params float[] overrideAlpha)
         {
             float value = 1f;
@@ -394,6 +394,30 @@ public static class ColorUtils
             {
                 return color * value;
             }
+        }
+
+        public static ChroniaColor operator *(ChroniaColor c, float f)
+        {
+            c.alpha *= f;
+            return c;
+        }
+
+        public static ChroniaColor operator *(float f, ChroniaColor c)
+        {
+            c.alpha *= f;
+            return c;
+        }
+
+        public static ChroniaColor operator /(ChroniaColor c, float f)
+        {
+            c.alpha /= f;
+            return c;
+        }
+
+        public static ChroniaColor operator /(float f, ChroniaColor c)
+        {
+            c.alpha /= f;
+            return c;
         }
     }
 
