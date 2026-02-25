@@ -73,7 +73,7 @@ public class MessageDisplayZone : HDRenderEntity
     {
         string text = content.StartsWith("#") ?
             Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "") :
-            content.ParseDialogToString(Lang.English.RefLanguage());
+            content.ParseDialogToString(Languages.English);
 
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();

@@ -43,34 +43,6 @@ public class ChroniaHelperModule : EverestModule
 
     public HookManager HookManager { get; private set; }
     
-    public enum Languages
-    {
-        English = 0,
-        Brazilian = 1,
-        French = 2,
-        German = 3,
-        Italian = 4,
-        Japanese = 5,
-        Korean =6,
-        Russian = 7,
-        SimplifiedChinese = 8,
-        Spanish = 9,
-    }
-
-    public static Dictionary<Languages, string> LanguageID = new()
-    {
-        { Languages.English, "english" },
-        { Languages.Brazilian, "brazilian" },
-        { Languages.French, "french" },
-        { Languages.German, "german" },
-        { Languages.Italian, "italian" },
-        { Languages.Japanese, "japanese" },
-        { Languages.Korean, "korean" },
-        { Languages.Russian, "russian" },
-        { Languages.SimplifiedChinese, "schinese" },
-        { Languages.Spanish, "spanish" },
-    };
-
     public string ModDirectory
     {
         get => Path.Combine(Path.GetDirectoryName(FakeAssembly.GetFakeEntryAssembly().Location), $"Mods\\{ChroniaHelperModule.Name}");

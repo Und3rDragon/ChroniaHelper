@@ -820,8 +820,6 @@ public static class StringUtils
         return string.Concat(resultList);
     }
 
-    public static Language RefLanguage(this Languages language) => Dialog.Languages[LanguageID[language]];
-
     public static List<string> ParseDialogToStringList(this string id, Language lang = null)
     {
         return Dialog.Get(id, lang).ParseDialogMetaToStringList(lang);
