@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Globalization;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
+using ChroniaHelper.Utils.ChroniaSystem;
 using YoctoHelper.Cores;
+using static Celeste.FancyText;
+using static ChroniaHelper.ChroniaHelperModule;
 
 namespace ChroniaHelper.Utils;
 
@@ -452,4 +458,377 @@ public static class StringUtils
         return s;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="getDialog">Use Dialog.Get to fetch the original string data</param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public static List<string> ParseDialogMetaToStringList(this string getDialog, Language language = null)
+    {
+        string[] array = Regex.Split(getDialog, (language ?? Dialog.Language).SplitRegex);
+        string[] array2 = new string[array.Length];
+        int num = 0;
+        for (int k = 0; k < array.Length; k++)
+        {
+            if (!string.IsNullOrEmpty(array[k]))
+            {
+                array2[num++] = array[k];
+            }
+        }
+
+        // Split the strings into substrings
+
+        List<string> resultList = new List<string>();
+        string currentSegment = "";
+        int i = 0;
+
+        while (i < array2.Length)
+        {
+            string token = array2[i];
+
+            // 处理普通文本
+            if (token != "{" && token != "}")
+            {
+                currentSegment += token;
+                i++;
+                continue;
+            }
+
+            // 处理指令开始
+            if (token == "{")
+            {
+                i++;
+                if (i >= array2.Length) break;
+
+                string command = array2[i];
+
+                // 检查是否是闭合的大括号
+                if (command == "}")
+                {
+                    i++;
+                    continue;
+                }
+
+                // 收集完整的指令内容直到遇到闭合大括号
+                List<string> commandParts = new List<string> { command };
+                i++;
+
+                while (i < array2.Length && array2[i] != "}")
+                {
+                    if (array2[i] != "{") // 避免嵌套的大括号
+                    {
+                        commandParts.Add(array2[i]);
+                    }
+                    i++;
+                }
+
+                // 跳过闭合的 }
+                if (i < array2.Length && array2[i] == "}")
+                {
+                    i++;
+                }
+
+                // 处理指令
+                string fullCommand = string.Join("", commandParts);
+                string[] parts = fullCommand.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length > 0)
+                {
+                    string cmd = parts[0];
+
+                    // 处理 {break}
+                    if (cmd == "break")
+                    {
+                        if (!string.IsNullOrEmpty(currentSegment))
+                        {
+                            resultList.Add(currentSegment);
+                            currentSegment = "";
+                        }
+                    }
+                    // 处理 {n}
+                    else if (cmd == "n")
+                    {
+                        currentSegment += Environment.NewLine;
+                    }
+                    // 处理 {counter xxx n}
+                    else if (cmd == "counter" && parts.Length >= 2)
+                    {
+                        string counterName = parts[1];
+                        int minDigits = 0;
+
+                        if (parts.Length >= 3 && int.TryParse(parts[2], out int parsedDigits))
+                        {
+                            minDigits = parsedDigits;
+                        }
+
+                        int value = counterName.GetCounter();
+                        currentSegment += value.ToString($"D{minDigits}");
+                    }
+                    // 处理 {slider xxx m n}
+                    else if (cmd == "slider" && parts.Length >= 2)
+                    {
+                        string sliderName = parts[1];
+                        int intMinDigits = 0;
+                        int decimalMaxDigits = 2;
+
+                        if (parts.Length >= 3 && int.TryParse(parts[2], out int parsedIntDigits))
+                        {
+                            intMinDigits = parsedIntDigits;
+                        }
+
+                        if (parts.Length >= 4 && int.TryParse(parts[3], out int parsedDecimalDigits))
+                        {
+                            decimalMaxDigits = parsedDecimalDigits;
+                        }
+
+                        float value = sliderName.GetSlider();
+
+                        // 格式化浮点数
+                        string format = $"F{decimalMaxDigits}";
+                        string formattedValue = value.ToString(format);
+
+                        // 处理整数部分的最小位数
+                        string[] numberParts = formattedValue.Split('.');
+                        string intPart = numberParts[0];
+
+                        if (intPart.Length < intMinDigits)
+                        {
+                            intPart = intPart.PadLeft(intMinDigits, '0');
+                        }
+
+                        if (numberParts.Length > 1)
+                        {
+                            currentSegment += intPart + "." + numberParts[1];
+                        }
+                        else
+                        {
+                            currentSegment += intPart;
+                        }
+                    }
+                    // 处理 {savedata name}
+                    else if (cmd == "savedata" && parts.Length >= 2)
+                    {
+                        string dataName = parts[1];
+
+                        // 这里可以根据不同的dataName返回不同的值
+                        // 示例中要求将{savedata name}替换成"Madeline"
+                        if (dataName == "Name")
+                        {
+                            currentSegment += (Celeste.SaveData.Instance?.Name ?? "Madeline");
+                        }
+                        else
+                        {
+                            // 可以根据需要处理其他savedata类型
+                            currentSegment += ""; // 或者其他默认值
+                        }
+                    }
+                    // 其他大括号指令都替换为空
+                    else
+                    {
+                        // 不做任何添加，相当于替换为""
+                    }
+                }
+            }
+        }
+
+        // 添加最后一个段落到结果中
+        if (!string.IsNullOrEmpty(currentSegment))
+        {
+            resultList.Add(currentSegment);
+        }
+
+        return resultList;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="getDialog">Use Dialog.Get to fetch the original string data</param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public static string ParseDialogMetaToString(this string getDialog, Language language = null)
+    {
+        string[] array = Regex.Split(getDialog, (language ?? Dialog.Language).SplitRegex);
+        string[] array2 = new string[array.Length];
+        int num = 0;
+        for (int k = 0; k < array.Length; k++)
+        {
+            if (!string.IsNullOrEmpty(array[k]))
+            {
+                array2[num++] = array[k];
+            }
+        }
+
+        // Split the strings into substrings
+
+        List<string> resultList = new List<string>();
+        string currentSegment = "";
+        int i = 0;
+
+        while (i < array2.Length)
+        {
+            string token = array2[i];
+
+            // 处理普通文本
+            if (token != "{" && token != "}")
+            {
+                currentSegment += token;
+                i++;
+                continue;
+            }
+
+            // 处理指令开始
+            if (token == "{")
+            {
+                i++;
+                if (i >= array2.Length) break;
+
+                string command = array2[i];
+
+                // 检查是否是闭合的大括号
+                if (command == "}")
+                {
+                    i++;
+                    continue;
+                }
+
+                // 收集完整的指令内容直到遇到闭合大括号
+                List<string> commandParts = new List<string> { command };
+                i++;
+
+                while (i < array2.Length && array2[i] != "}")
+                {
+                    if (array2[i] != "{") // 避免嵌套的大括号
+                    {
+                        commandParts.Add(array2[i]);
+                    }
+                    i++;
+                }
+
+                // 跳过闭合的 }
+                if (i < array2.Length && array2[i] == "}")
+                {
+                    i++;
+                }
+
+                // 处理指令
+                string fullCommand = string.Join("", commandParts);
+                string[] parts = fullCommand.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length > 0)
+                {
+                    string cmd = parts[0];
+
+                    // 处理 {break}
+                    if (cmd == "break")
+                    {
+                        currentSegment += "\r";
+                    }
+                    // 处理 {n}
+                    else if (cmd == "n")
+                    {
+                        currentSegment += Environment.NewLine;
+                    }
+                    // 处理 {counter xxx n}
+                    else if (cmd == "counter" && parts.Length >= 2)
+                    {
+                        string counterName = parts[1];
+                        int minDigits = 0;
+
+                        if (parts.Length >= 3 && int.TryParse(parts[2], out int parsedDigits))
+                        {
+                            minDigits = parsedDigits;
+                        }
+
+                        int value = counterName.GetCounter();
+                        currentSegment += value.ToString($"D{minDigits}");
+                    }
+                    // 处理 {slider xxx m n}
+                    else if (cmd == "slider" && parts.Length >= 2)
+                    {
+                        string sliderName = parts[1];
+                        int intMinDigits = 0;
+                        int decimalMaxDigits = 2;
+
+                        if (parts.Length >= 3 && int.TryParse(parts[2], out int parsedIntDigits))
+                        {
+                            intMinDigits = parsedIntDigits;
+                        }
+
+                        if (parts.Length >= 4 && int.TryParse(parts[3], out int parsedDecimalDigits))
+                        {
+                            decimalMaxDigits = parsedDecimalDigits;
+                        }
+
+                        float value = sliderName.GetSlider();
+
+                        // 格式化浮点数
+                        string format = $"F{decimalMaxDigits}";
+                        string formattedValue = value.ToString(format);
+
+                        // 处理整数部分的最小位数
+                        string[] numberParts = formattedValue.Split('.');
+                        string intPart = numberParts[0];
+
+                        if (intPart.Length < intMinDigits)
+                        {
+                            intPart = intPart.PadLeft(intMinDigits, '0');
+                        }
+
+                        if (numberParts.Length > 1)
+                        {
+                            currentSegment += intPart + "." + numberParts[1];
+                        }
+                        else
+                        {
+                            currentSegment += intPart;
+                        }
+                    }
+                    // 处理 {savedata name}
+                    else if (cmd == "savedata" && parts.Length >= 2)
+                    {
+                        string dataName = parts[1];
+
+                        // 这里可以根据不同的dataName返回不同的值
+                        // 示例中要求将{savedata name}替换成"Madeline"
+                        if (dataName == "Name")
+                        {
+                            currentSegment += (Celeste.SaveData.Instance?.Name ?? "Madeline");
+                        }
+                        else
+                        {
+                            // 可以根据需要处理其他savedata类型
+                            currentSegment += ""; // 或者其他默认值
+                        }
+                    }
+                    // 其他大括号指令都替换为空
+                    else
+                    {
+                        // 不做任何添加，相当于替换为""
+                    }
+                }
+            }
+        }
+
+        // 添加最后一个段落到结果中
+        if (!string.IsNullOrEmpty(currentSegment))
+        {
+            resultList.Add(currentSegment);
+        }
+
+        return string.Concat(resultList);
+    }
+
+    public static Language RefLanguage(this Languages language) => Dialog.Languages[LanguageID[language]];
+
+    public static List<string> ParseDialogToStringList(this string id, Language lang = null)
+    {
+        return Dialog.Get(id, lang).ParseDialogMetaToStringList(lang);
+    }
+
+    public static string ParseDialogToString(this string id, Language lang = null)
+    {
+        return Dialog.Get(id, lang).ParseDialogMetaToString(lang);
+    }
 }

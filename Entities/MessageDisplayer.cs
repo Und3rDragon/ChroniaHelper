@@ -67,11 +67,28 @@ public class MessageDisplayer : HDRenderEntity
     public string reference = Cons.DisplayFontsReference;
     public List<string> ParseRenderTarget()
     {
-        string text = content.StartsWith("#") ? 
-            Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "") : 
-            Dialog.Clean(content, Dialog.Languages["english"]);
+        //string text = content.StartsWith("#") ? 
+        //    Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "") : 
+        //    Dialog.Clean(content, Dialog.Languages["english"]);
+
+        //var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
+        //var result = new List<string>();
+        //foreach (string line in lines)
+        //{
+        //    string trimmed = line.Trim();
+        //    if (!string.IsNullOrEmpty(trimmed))
+        //    {
+        //        result.Add(trimmed);
+        //    }
+        //}
+
+        //return result;
+
+        string text = content.StartsWith("#") ?
+            Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "") :
+            content.ParseDialogToString(Lang.English.RefLanguage());
         
-        var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
+        var lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.TrimEntries);
         var result = new List<string>();
         foreach (string line in lines)
         {
@@ -81,7 +98,7 @@ public class MessageDisplayer : HDRenderEntity
                 result.Add(trimmed);
             }
         }
-        
+
         return result;
     }
 
