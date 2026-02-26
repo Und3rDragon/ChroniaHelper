@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.LakeSideCode;
 using Celeste.Mod.LakeSideCode.FishDefs;
 using ChroniaHelper.Utils;
+using MonoMod.Utils;
 
 namespace ChroniaHelper.References;
 
@@ -31,7 +32,8 @@ public static class RefLakeside
         return LakeSideCodeModule.Settings;
     }
 
-    public static Dictionary<FishType, int> FishCounters => GetSession().CatchCounter;
+    //public static Dictionary<FishType, int> FishCounters = (Dictionary<FishType, int>)new DynamicData(GetSession()).Get("CatchCounter");
+    public static Dictionary<FishType, int> FishCounters = GetSession().CatchCounter;
 
     public class FishPrices
     {
@@ -80,7 +82,9 @@ public static class RefLakeside
                 int type = (int)item.Key;
                 int count = item.Value;
 
-                for(int i = 0; i < count; i++)
+                PriceEntries.Create(type, new());
+
+                for (int i = 0; i < count; i++)
                 {
                     PriceEntries[type].Create(i, 
                         PriceList[type] + RandomUtils.RandomInt(Variations[type]) - Variations[type] / 2,

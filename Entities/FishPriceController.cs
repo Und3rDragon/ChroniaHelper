@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Celeste.Mod.Entities;
-using Celeste.Mod.LakeSideCode.FishDefs;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.References;
 using ChroniaHelper.Utils.ChroniaSystem;
@@ -13,6 +11,7 @@ public class FishPriceController : BaseEntity
 {
     public FishPriceController(EntityData data, Vc2 offset):base(data, offset)
     {
+        LakeSideCreditsCounter = data.Attr("FishingCreditsCounter", "ChroniaHelper_LakesideFishScore");
         prices = new();
 
         prices.PriceList = new()
@@ -52,18 +51,7 @@ public class FishPriceController : BaseEntity
         };
     }
     private RefLakeside.FishPrices prices;
-    public const string LakeSideCreditsCounter = "ChroniaHelper_LakesideFishCredits";
-
-    public override void Added(Scene scene)
-    {
-        base.Added(scene);
-
-        if(scene.Tracker.GetEntities<FishPriceController>().Count != 0)
-        {
-            RemoveSelf();
-            return;
-        }
-    }
+    public string LakeSideCreditsCounter = "ChroniaHelper_LakesideFishScore";
 
     public override void Update()
     {
