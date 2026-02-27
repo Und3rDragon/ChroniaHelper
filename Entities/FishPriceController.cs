@@ -1,6 +1,7 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.References;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Entities;
@@ -59,7 +60,9 @@ public class FishPriceController : BaseEntity
 
         if (!Md.LakeSideLoaded) { return; }
 
+        prices.PriceEntries = Md.Session.FishPricers.GetValueOrDefault(LakeSideCreditsCounter, new());
         prices.GeneratePriceList(RefLakeside.FishCounters);
         LakeSideCreditsCounter.SetCounter(prices.GetTotalCredits());
+        Md.Session.FishPricers.Enter(LakeSideCreditsCounter, prices.PriceEntries);
     }
 }

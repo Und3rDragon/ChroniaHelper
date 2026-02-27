@@ -224,6 +224,9 @@ public class ChroniaHelperSession : EverestModuleSession
     public ScreenshakeAmount InitialScreenshake = Celeste.Settings.Instance.ScreenShake;
     public ScreenshakeAmount CurrentScreenshake = Celeste.Settings.Instance.ScreenShake;
 
+    // Fish Pricer Data
+    public Dictionary<string, Dictionary<int, List<int>>> FishPricers = new();
+
     /// <summary>
     /// For Chronia Flag-Counter-Slider System
     /// </summary>

@@ -33,7 +33,7 @@ public static class RefLakeside
     }
 
     //public static Dictionary<FishType, int> FishCounters = (Dictionary<FishType, int>)new DynamicData(GetSession()).Get("CatchCounter");
-    public static Dictionary<FishType, int> FishCounters = GetSession().CatchCounter;
+    public static Dictionary<FishType, int> FishCounters => GetSession().CatchCounter;
 
     public class FishPrices
     {
@@ -84,13 +84,20 @@ public static class RefLakeside
 
                 PriceEntries.Create(type, new());
 
+                var current = PriceEntries[type];
+                List<int> refreshed = new();
+
                 for (int i = 0; i < count; i++)
                 {
-                    PriceEntries[type].Create(i, 
+                    current.Create(i, 
                         PriceList[type] + RandomUtils.RandomInt(Variations[type]) - Variations[type] / 2,
                         PriceList[type] + RandomUtils.RandomInt(Variations[type]) - Variations[type] / 2
                     );
+
+                    refreshed.Add(current[i]);
                 }
+
+                PriceEntries[type] = refreshed;
             }
         }
 
