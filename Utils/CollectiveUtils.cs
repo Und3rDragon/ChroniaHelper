@@ -92,25 +92,34 @@ public static class CollectiveUtils
         return false;
     }
 
-    public static void Create<T>(this List<T> dic, int at, T key, T filler)
+    public static void Create<T>(this List<T> list, int at, T key, T filler)
     {
-        if(dic.Count() <= at)
+        if (at < 0)
+            at = at.GetAbs();
+
+        if (at < list.Count)
+            return;
+
+        // 先填充filler直到at位置
+        for (int i = list.Count; i < at; i++)
         {
-            for (int i = dic.Count(); i <= at; i++)
-            {
-                dic.Add(filler);
-            }
-            dic[at] = key;
+            list.Add(filler);
         }
+
+        // 在at位置添加key
+        list.Add(key);
     }
 
     public static void Enter<T>(this List<T> dic, int at, T key, T filler)
     {
-        for (int i = dic.Count(); i <= at; i++)
+        if(dic.Count() <= at)
         {
-            dic.Add(filler);
+            dic.Create(at, key, filler);
         }
-        dic[at] = key;
+        else
+        {
+            dic[at] = key;
+        }
     }
 
     public static void Create<A, B>(this Dictionary<A,B> dic, A key, B value)
