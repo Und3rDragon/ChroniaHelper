@@ -43,34 +43,6 @@ public class ChroniaHelperModule : EverestModule
 
     public HookManager HookManager { get; private set; }
     
-    public enum Languages
-    {
-        English = 0,
-        Brazilian = 1,
-        French = 2,
-        German = 3,
-        Italian = 4,
-        Japanese = 5,
-        Korean =6,
-        Russian = 7,
-        SimplifiedChinese = 8,
-        Spanish = 9,
-    }
-
-    public static Dictionary<Languages, string> LanguageID = new()
-    {
-        { Languages.English, "english" },
-        { Languages.Brazilian, "brazilian" },
-        { Languages.French, "french" },
-        { Languages.German, "german" },
-        { Languages.Italian, "italian" },
-        { Languages.Japanese, "japanese" },
-        { Languages.Korean, "korean" },
-        { Languages.Russian, "russian" },
-        { Languages.SimplifiedChinese, "schinese" },
-        { Languages.Spanish, "spanish" },
-    };
-
     public string ModDirectory
     {
         get => Path.Combine(Path.GetDirectoryName(FakeAssembly.GetFakeEntryAssembly().Location), $"Mods\\{ChroniaHelperModule.Name}");
@@ -90,6 +62,7 @@ public class ChroniaHelperModule : EverestModule
     public static bool MaddieLoaded => CheckDependency("MaxHelpingHand", "1.38.0");
     public static bool XaphanHelperLoaded => CheckDependency("XaphanHelper", "1.0.78");
     public static bool MoreDashelineLoaded => CheckDependency("MoreDasheline", "1.7.1");
+    public static bool LakeSideLoaded => CheckDependency("LakeSideCode", "0.1.0");
 
     public static bool CheckDependency(string modName, string minimumVersion)
     {

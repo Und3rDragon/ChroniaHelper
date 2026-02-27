@@ -69,7 +69,7 @@ public class MessageDisplayerNormal : SerialImageRenderer
     {
         string text = content.StartsWith("#") ?
             Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "") :
-            Dialog.Clean(content, Dialog.Languages["english"]);
+            content.ParseDialogToString(Languages.English);
 
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();

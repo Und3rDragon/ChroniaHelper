@@ -1391,3 +1391,6 @@ entities.ChroniaHelper/CounterCassetteBlock.placements.name.block=Counter Casset
 
 entities.ChroniaHelper/CounterCassetteBlockManager.placements.name.controller=Counter Cassette Block Manager
 entities.ChroniaHelper/CounterCassetteBlockManager.attributes.description.maxCassetteBlockIndex=If this is set to below 0, the manager will automaticlly looking for the largest index of the blocks
+
+# ================= Fish Market
+entities.ChroniaHelper/FishPriceController.placements.name.controller=Fish Price Controller

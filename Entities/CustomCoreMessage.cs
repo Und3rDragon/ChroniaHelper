@@ -125,11 +125,11 @@ public class ColoredCustomCoreMessage : Entity
 
         if (this.wholeDialog)
         {
-            text = Dialog.Clean(t1);
+            text = t1.ParseDialogToString();
         }
         else
         {
-            if (t1.StartsWith("*§")) { text = t1.Substring(2); b = true; } else text = Dialog.Clean(t1);
+            if (t1.StartsWith("*§")) { text = t1.Substring(2); b = true; } else text = t1.ParseDialogToString();
             if (text.Contains("\n") || text.Contains("\r"))
             {
                 var t2 = text.Split(new char[2]
