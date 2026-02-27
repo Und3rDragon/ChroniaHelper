@@ -50,6 +50,10 @@
 		<CelesteModReference Include="MoreDasheline" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<CelesteModReference Include="LakeSideCode" />
+	</ItemGroup>
+
     <!--Implement dependencies here in an ItemGroup-->
 
 
