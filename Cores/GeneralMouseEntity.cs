@@ -15,7 +15,8 @@ public class GeneralMouseEntity : Entity
     {
         Tag |= Tags.Global;
 
-        Collider = new Circle(ButtonDetectionRadius);
+        Collider = new Hitbox(ButtonDetectionRadius * 2, ButtonDetectionRadius * 2,
+            -ButtonDetectionRadius, -ButtonDetectionRadius);
 
         Instance = this;
     }
