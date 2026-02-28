@@ -227,30 +227,20 @@ public class ChroniaHelperSession : EverestModuleSession
     // Fish Pricer Data
     public Dictionary<string, Dictionary<int, List<int>>> FishPricers = new();
 
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerDeath = new();
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, int> countersPerRoom = new();
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, int> countersPerDeath = new();
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, float> slidersPerRoom = new();
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, float> slidersPerDeath = new();
-
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, string> keystrings = new();
+    [Note("For Chronia Flag-Counter-Slider System")]
+    public Dictionary<string, ChroniaColor> chroniaColors = new();
 }

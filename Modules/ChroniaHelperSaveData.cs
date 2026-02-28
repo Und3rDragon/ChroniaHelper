@@ -13,20 +13,16 @@ public class ChroniaHelperSaveData : EverestModuleSaveData
     // Flag Timer Trigger
     public Dictionary<string, float> FlagTimerS = new();
 
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flags = new();
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, int> counters = new();
-    /// <summary>
-    /// For Chronia Flag-Counter-Slider System
-    /// </summary>
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, float> sliders = new();
-
+    [Note("For Chronia Flag-Counter-Slider System")]
     public Dictionary<string, string> keystrings = new();
+    [Note("For Chronia Flag-Counter-Slider System")]
+    public Dictionary<string, ChroniaColor> chroniaColors = new();
 
     // Flag Packer
     public Dictionary<string, List<string>> PackedFlags = new();
