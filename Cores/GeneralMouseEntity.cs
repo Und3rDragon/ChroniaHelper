@@ -15,9 +15,6 @@ public class GeneralMouseEntity : Entity
     {
         Tag |= Tags.Global;
 
-        Collider = new Hitbox(ButtonDetectionRadius * 2, ButtonDetectionRadius * 2,
-            -ButtonDetectionRadius, -ButtonDetectionRadius);
-
         Instance = this;
     }
     public static GeneralMouseEntity Instance = null;
@@ -54,68 +51,127 @@ public class GeneralMouseEntity : Entity
         orig(self);
     }
 
+    public void StartDetecting()
+    {
+        Collider = new Hitbox(ButtonDetectionRadius * 2, ButtonDetectionRadius * 2,
+            -ButtonDetectionRadius, -ButtonDetectionRadius);
+    }
+
+    public void EndDetecting()
+    {
+        Collider = null;
+    }
+
     public override void Update()
     {
         Position = InputUtils.MouseLevelPosition;
 
         if (MInput.Mouse.PressedLeftButton)
         {
+            StartDetecting();
+
             leftButtonClick?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.PressedRightButton)
         {
+            StartDetecting();
+
             rightButtonClick?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.PressedMiddleButton)
         {
+            StartDetecting();
+
             middleButtonClick?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.CheckLeftButton)
         {
+            StartDetecting();
+
             leftButtonHold?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.CheckMiddleButton)
         {
+            StartDetecting();
+
             middleButtonHold?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.CheckRightButton)
         {
+            StartDetecting();
+
             rightButtonHold?.Invoke();
+
+            EndDetecting();
         }
 
         if (!MInput.Mouse.CheckLeftButton)
         {
+            StartDetecting();
+
             leftButtonEmpty?.Invoke();
+
+            EndDetecting();
         }
 
         if (!MInput.Mouse.CheckMiddleButton)
         {
+            StartDetecting();
+
             middleButtonEmpty?.Invoke();
+
+            EndDetecting();
         }
 
         if (!MInput.Mouse.CheckRightButton)
         {
+            StartDetecting();
+
             rightButtonEmpty?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.ReleasedLeftButton)
         {
+            StartDetecting();
+
             leftButtonRelease?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.ReleasedMiddleButton)
         {
+            StartDetecting();
+
             middleButtonRelease?.Invoke();
+
+            EndDetecting();
         }
 
         if (MInput.Mouse.ReleasedRightButton)
         {
+            StartDetecting();
+
             rightButtonRelease?.Invoke();
+
+            EndDetecting();
         }
 
         leftButtonClick = () => { };
@@ -134,8 +190,11 @@ public class GeneralMouseEntity : Entity
 
     public float ButtonDetectionRadius = 2f;
 
-    public Action leftButtonClick, rightButtonClick, middleButtonClick;
-    public Action leftButtonHold, rightButtonHold, middleButtonHold;
-    public Action leftButtonEmpty, rightButtonEmpty, middleButtonEmpty;
-    public Action leftButtonRelease, rightButtonRelease, middleButtonRelease;
+    /// <summary>
+    /// When using the actions, do "targetAction += newAction"
+    /// </summary>
+    public Action leftButtonClick, rightButtonClick, middleButtonClick,
+        leftButtonHold, rightButtonHold, middleButtonHold,
+        leftButtonEmpty, rightButtonEmpty, middleButtonEmpty,
+        leftButtonRelease, rightButtonRelease, middleButtonRelease;
 }
