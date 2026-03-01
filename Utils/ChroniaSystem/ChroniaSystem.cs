@@ -137,6 +137,8 @@ public class ChroniaSystem
 
         if (!Md.InstanceReady) { return; }
 
+        if (MaP.level.Session is null || self.Session is null) { return; }
+
         foreach(var counter in MaP.level.Session.Counters)
         {
             if (counter.Key.StartsWith("ChroniaHelper_ChroniaColor_"))
