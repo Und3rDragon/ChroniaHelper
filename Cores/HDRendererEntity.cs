@@ -22,9 +22,6 @@ public class HDRenderEntity : BaseEntity
         Prepare(d, o);
 
         Tag |= TagsExt.SubHUD;
-        
-        // Create a new render target for later renders
-        Buffer = VirtualContent.CreateRenderTarget("ChroniaHelper_HDEntity_" + ID.ToString(), 1920, 1080);
 
         Add(new BeforeRenderHook(BeforeRender));
     }
@@ -34,8 +31,16 @@ public class HDRenderEntity : BaseEntity
     public CColor DrawColor = new CColor(Color.White);
     
     public virtual void Prepare(EntityData data, Vc2 offset) { }
+
+    [Credits("SSM24 for some technical bugfix")]
     public void BeforeRender()
     {
+        // Create a new render target for later renders
+        if (Buffer?.Target is null)
+        {
+            Buffer = VirtualContent.CreateRenderTarget("ChroniaHelper_HDEntity_" + ID.ToString(), 1920, 1080);
+        }
+
         // Change the render canvas to my own canvas
         Engine.Graphics.GraphicsDevice.SetRenderTarget(Buffer);
         // Clear up the canvas
