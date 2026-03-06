@@ -13,13 +13,13 @@ public class FlagListener : StateListener
 {
     public FlagListener(string flag)
     {
-        this.flag = flag;
+        this.Flag = flag;
     }
-    public string flag;
+    public string Flag;
 
     protected override bool GetState()
     {
-        return flag.GetFlag();
+        return Flag.GetFlag();
     }
 }
 
