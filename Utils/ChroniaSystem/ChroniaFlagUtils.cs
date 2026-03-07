@@ -13,8 +13,9 @@ public static class ChroniaFlagUtils
 {
     public static bool GetFlag(this string name)
     {
-        return MaP.level.Session.GetFlag(name);
+        return MaP.level?.Session.GetFlag(name) ?? false;
     }
+
     public static void SetFlag(this string name, bool active)
     {
         if ((name.GetSensitivity() & Sens.AllowNoSetFlag) != 0) { return; }
@@ -124,12 +125,12 @@ public static class ChroniaFlagUtils
     
     public static bool GetConditionalInvertedFlag(this string name, Func<string, bool> invertCheck)
     {
-        return invertCheck(name)? !MaP.level.Session.GetFlag(name) : MaP.level.Session.GetFlag(name);
+        return invertCheck(name)? !name.GetFlag() : MaP.level.Session.GetFlag(name);
     }
     
     public static bool GetConditionalInvertedFlag(this string name, Func<string, bool> invertCheck, Func<string, string> invertParser)
     {
-        return invertCheck(name) ? !MaP.level.Session.GetFlag(invertParser(name)) : MaP.level.Session.GetFlag(name);
+        return invertCheck(name) ? !invertParser(name).GetFlag() : MaP.level.Session.GetFlag(name);
     }
     
     public static bool GetGeneralInvertedFlag(this string name)

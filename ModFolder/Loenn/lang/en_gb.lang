@@ -1393,4 +1393,9 @@ entities.ChroniaHelper/CounterCassetteBlockManager.placements.name.controller=Co
 entities.ChroniaHelper/CounterCassetteBlockManager.attributes.description.maxCassetteBlockIndex=If this is set to below 0, the manager will automaticlly looking for the largest index of the blocks
 
 # ================= Fish Market
+
 entities.ChroniaHelper/FishPriceController.placements.name.controller=Fish Price Controller
+
+# ================= Counter Camera Offset
+
+triggers.ChroniaHelper/CounterCameraOffset.placements.name.offset=Camera Offset (Counter-Toggled)
