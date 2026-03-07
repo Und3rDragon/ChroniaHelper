@@ -20,7 +20,7 @@ public static class ChroniaSliderUtils
 
     public static void SetSlider(this string name, float value)
     {
-        MaP.level.Session.SetSlider(name, value);
+        MaP.level?.Session.SetSlider(name, value);
     }
 
     public static void SetSlider(this ICollection<string> source, float state)
