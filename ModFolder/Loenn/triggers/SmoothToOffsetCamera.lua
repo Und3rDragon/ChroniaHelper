@@ -19,8 +19,8 @@ return {
     {
         name = "SmoothToOffsetCamera",
         data ={
-            width = 48,    
-            height = 56,
+            width = 8,    
+            height = 8,
             offsetXTo = 0,
             offsetYTo = 0,
             onlyOnce = false,

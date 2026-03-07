@@ -5,6 +5,8 @@ trigger.name = "ChroniaHelper/CounterCameraOffset"
 trigger.placements = {
 	name = "offset",
 	data = {
+		width = 8,    
+        height = 8,
 		counter = "cameraIndex",
 		param1 = "0",
 		param2 = "0",
@@ -31,7 +33,7 @@ trigger.fieldInformation = {
 			["Not Between Param1 and Param2"] = 4,
 		},
 		editable = false,
-	}£¬
+	},
 	positionMode = {
 		fieldType = "integer",
         options = {
