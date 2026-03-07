@@ -1,8 +1,5 @@
 # Additions : Entities
 
-## Fish Prices Controller - Extended Feature for Lakeside Songbook
-Calculating the fish prices and export them into a counter
-
 # Additions : Triggers
 
 # Additions : Features
@@ -10,20 +7,3 @@ Calculating the fish prices and export them into a counter
 # Optimizations
 
 # Miscs
-
-If using the following displayers:
-Custom Core Message,
-Message Displayer series,
-Fnt Displayer Series,
-Entity Textbox.
-A built-in command is supprted: {counter xxx} and {slider xxx}
-Which allows mappers to display counter and slider values
-
-## Custom Climb Text:
-Now you can customize the "Climb" entrance text by using this syntax in the Dialog file:
-chroniahelper_climbtext_path_to_your_bin=Climb Text
-chroniahelper_climbtext_path_to_your_bin_B=Climb Text for B Side
-chroniahelper_climbtext_path_to_your_bin_C=Climb Text for C Side
-
-## Open Url Trigger:
-Now finally with a fucking UI for confirmation
