@@ -10,20 +10,22 @@ namespace ChroniaHelper.Components;
 
 public class SelectiveCounter : BaseComponent
 {
-    public SelectiveCounter(string name, int fallback = 0) : base()
+    public SelectiveCounter(string name, int fallback = 0, Clamper.Int restraints = null) : base()
     {
         Expression = name;
         this.Fallback = fallback;
+        this.Limiter = restraints ?? new();
     }
     public string Expression;
     public int Fallback;
+    public Clamper.Int Limiter = new();
 
-    public int Value => GetValue();
+    public int Value => Limiter.Operate(GetValue());
     private int GetValue()
     {
         int n = Fallback;
 
-        if (string.IsNullOrEmpty(Expression))
+        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
         {
             return n;
         }
