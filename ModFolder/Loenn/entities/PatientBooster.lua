@@ -10,18 +10,18 @@ local patientBooster = {
                 sprite = "",
                 respawnDelay = 1.0,
                 customHitbox = "c,10,0,2",
-                stamina = 110,
-                dashes = 1,
+                stamina = "110",
+                dashes = "1",
                 staminaMode = 0,
                 dashesMode = 0,
-                outSpeedMultiplier = 1,
-                greenBoostMovingSpeed = 240,
-                redBoostMovingSpeed = 240,
+                outSpeedMultiplier = "1",
+                greenBoostMovingSpeed = "240",
+                redBoostMovingSpeed = "240",
                 burstParticleColor = "",
                 appearParticleColor = "",
-                killIfStayed = -1,
-                freeMoveSpeed = -1,
-                forceCoyoteTime = -1,
+                killIfStayed = "-1",
+                freeMoveSpeed = "-1",
+                forceCoyoteTime = "-1",
             }
         },
         {
@@ -38,8 +38,12 @@ local patientBooster = {
         }
     },
     texture = function (room, entity)
-        if entity.killIfStayed > 0 then
-            return "objects/ChroniaHelper/customBoosterPresets/yellow/loop0"
+        if tonumber(entity.killIfStayed) ~= nil then
+            local n = tonumber(entity.killIfStayed)
+            if n > 0 then
+                return "objects/ChroniaHelper/customBoosterPresets/yellow/loop0"
+            end
+            return "objects/ChroniaHelper/customBoosterPresets/green/loop0"
         elseif entity.red then
             return "objects/ChroniaHelper/customBoosterPresets/red/loop0"
         else
@@ -47,7 +51,7 @@ local patientBooster = {
         end
     end,
     selection = function (room, entity)
-        return utils.rectangle(entity.x - 11, entity.y - 9, 22, 18)
+        return utils.rectangle(entity.x - 8, entity.y - 8, 16, 16)
     end,
     fieldInformation = {
         staminaMode = {
@@ -65,12 +69,6 @@ local patientBooster = {
                 ["delta"] = 2,
             },
             editable = false,
-        },
-        stamina = {
-            fieldType = "integer",
-        },
-        dashes = {
-            fieldType = "integer",
         },
         sprite = {
             options = {
