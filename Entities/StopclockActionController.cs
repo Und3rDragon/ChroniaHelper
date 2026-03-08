@@ -33,11 +33,16 @@ public class StopclockActionController : Entity
     private string sessionKey;
     private bool sessionKeyAvailable;
 
+    private bool foundClock = false;
     public override void Update()
     {
         base.Update();
 
-        if (!clockTag.GetStopclock(out Stopclock clock)) { return; }
+        if (!clockTag.GetStopclock(out Stopclock clock)) 
+        {
+            foundClock = false;
+            return; 
+        }
 
         if (sessionKeyAvailable)
         {
@@ -59,18 +64,23 @@ public class StopclockActionController : Entity
 
             Md.Session.keystrings[sessionKey] = sessionData;
         }
-        
-        if (clock.FetchSignal())
-        {
-            if (killPlayer)
-            {
-                PUt.player?.Die(Vc2.Zero);
-            }
 
-            if (flagAvailable)
+        if (!foundClock)
+        {
+            clock.onComplete += () =>
             {
-                flag.SetFlag(true);
-            }
+                if (killPlayer)
+                {
+                    PUt.player?.Die(Vc2.Zero);
+                }
+
+                if (flagAvailable)
+                {
+                    flag.SetFlag(true);
+                }
+            };
         }
+
+        foundClock = true;
     }
 }

@@ -65,13 +65,14 @@ public class Displayers : HDRenderEntity
     {
         base.Update();
 
-        GeneralMouseEntity.Instance.leftButtonClick += () =>
+        if (MInput.Mouse.PressedLeftButton)
         {
             if (Md.Settings.DisplayEntityInfoInConsole)
             {
                 Log.Info("==== Your mouse is around these entities ====");
             }
             Md.Settings.entityInfoDisplayer.renderTarget.Clear();
+            GeneralMouseEntity.Instance?.StartDetecting();
             foreach (var entity in MaP.level.Entities)
             {
                 if (entity.CollideCheck(GeneralMouseEntity.Instance))
@@ -84,7 +85,8 @@ public class Displayers : HDRenderEntity
                     }
                 }
             }
-        };
+            GeneralMouseEntity.Instance?.StartDetecting();
+        }
     }
 
     protected override void HDRender()

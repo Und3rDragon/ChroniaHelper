@@ -29,7 +29,8 @@ controller.fieldInformation =
         options = {
             ["Restart when Flag Enable"] = 0,
             ["Pause when Flag Disable"] = 1,
-        }
+        },
+        editable = false,
     }
 }
 

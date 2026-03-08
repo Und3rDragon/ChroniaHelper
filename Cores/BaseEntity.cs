@@ -25,15 +25,12 @@ public class BaseEntity : Entity
     /// </summary>
     public Vc2[] nodes;
     public int ID;
-    public Action onAdded, onAwake, onRemoved, onUpdate, onSceneBegin, onSceneEnd;
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
         level = SceneAs<Level>();
         session = level.Session;
-
-        onAdded?.Invoke();
 
         if(AddedAwait <= 0f && AddedFreeze <= 0f)
         {
@@ -80,8 +77,6 @@ public class BaseEntity : Entity
         base.Awake(scene);
         level = SceneAs<Level>();
         session = level.Session;
-
-        onAwake?.Invoke();
 
         if(AwakeAwait <= 0f && AwakeFreeze <= 0f)
         {
@@ -131,8 +126,6 @@ public class BaseEntity : Entity
             Add(new Coroutine(RemovedInterfere(scene), true));
         }
 
-        onRemoved?.Invoke();
-
         base.Removed(scene);
     }
     public float RemovedAwait = -1f, RemovedFreeze = -1f;
@@ -159,112 +152,69 @@ public class BaseEntity : Entity
         yield return RemovedRoutine(scene);
     }
 
-    public bool MouseColliding()
-    {
-        return this.CollideCheck(GeneralMouseEntity.Instance);
-    }
-    
     public override void Update()
     {
         base.Update();
 
-        if (mouseConfig.leftClick)
+        if (mouseConfig.leftClick && MInput.Mouse.PressedLeftButton)
         {
-            GeneralMouseEntity.Instance?.leftButtonClick += () =>
-            {
-                OnMouseLeftClick();
-            };
+            OnMouseLeftClick();
         }
 
-        if (mouseConfig.rightClick)
+        if (mouseConfig.rightClick && MInput.Mouse.PressedRightButton)
         {
-            GeneralMouseEntity.Instance?.rightButtonClick += () =>
-            {
-                OnMouseRightClick();
-            };
+            OnMouseRightClick();
         }
 
-        if (mouseConfig.middleClick)
+        if (mouseConfig.middleClick && MInput.Mouse.PressedMiddleButton)
         {
-            GeneralMouseEntity.Instance?.middleButtonClick += () =>
-            {
-                OnMouseMiddleClick();
-            };
+            OnMouseMiddleClick();
         }
 
-        if (mouseConfig.leftHold)
+        if (mouseConfig.leftHold && MInput.Mouse.CheckLeftButton)
         {
-            GeneralMouseEntity.Instance?.leftButtonHold += () =>
-            {
-                OnMouseLeftHold();
-            };
+            OnMouseLeftHold();
         }
 
-        if (mouseConfig.rightHold)
+        if (mouseConfig.rightHold && MInput.Mouse.CheckRightButton)
         {
-            GeneralMouseEntity.Instance?.rightButtonHold += () =>
-            {
-                OnMouseRightHold();
-            };
+            OnMouseRightHold();
         }
 
-        if (mouseConfig.middleHold)
+        if (mouseConfig.middleHold && MInput.Mouse.CheckMiddleButton)
         {
-            GeneralMouseEntity.Instance?.middleButtonHold += () =>
-            {
-                OnMouseMiddleHold();
-            };
+            OnMouseMiddleHold();
         }
 
-        if (mouseConfig.leftEmpty)
+        if (mouseConfig.leftEmpty && !MInput.Mouse.CheckLeftButton)
         {
-            GeneralMouseEntity.Instance?.leftButtonEmpty += () =>
-            {
-                OnMouseLeftEmpty();
-            };
+            OnMouseLeftEmpty();
         }
 
-        if (mouseConfig.rightEmpty)
+        if (mouseConfig.rightEmpty && !MInput.Mouse.CheckRightButton)
         {
-            GeneralMouseEntity.Instance?.rightButtonEmpty += () =>
-            {
-                OnMouseRightEmpty();
-            };
+            OnMouseRightEmpty();
         }
 
-        if (mouseConfig.middleEmpty)
+        if (mouseConfig.middleEmpty && !MInput.Mouse.CheckMiddleButton)
         {
-            GeneralMouseEntity.Instance?.middleButtonEmpty += () =>
-            {
-                OnMouseMiddleEmpty();
-            };
+            OnMouseMiddleEmpty();
         }
 
-        if (mouseConfig.leftRelease)
+        if (mouseConfig.leftRelease && MInput.Mouse.ReleasedLeftButton)
         {
-            GeneralMouseEntity.Instance?.leftButtonRelease += () =>
-            {
-                OnMouseLeftRelease();
-            };
+            OnMouseLeftRelease();
         }
 
-        if (mouseConfig.rightRelease)
+        if (mouseConfig.rightRelease && MInput.Mouse.ReleasedRightButton)
         {
-            GeneralMouseEntity.Instance?.rightButtonRelease += () =>
-            {
-                OnMouseRightRelease();
-            };
+            OnMouseRightRelease();
         }
 
-        if (mouseConfig.middleRelease)
+        if (mouseConfig.middleRelease && MInput.Mouse.ReleasedMiddleButton)
         {
-            GeneralMouseEntity.Instance?.middleButtonRelease += () =>
-            {
-                OnMouseMiddleRelease();
-            };
+            OnMouseMiddleRelease();
         }
-
-        onUpdate?.Invoke();
 
         if (!UpdateArg) { return; }
         
@@ -328,8 +278,6 @@ public class BaseEntity : Entity
     {
         base.SceneBegin(scene);
 
-        onSceneBegin?.Invoke();
-        
         if(SceneBeginAwait <= 0f && SceneBeginFreeze <= 0f)
         {
             SceneBeginExecute(scene);
@@ -370,8 +318,6 @@ public class BaseEntity : Entity
         {
             Add(new Coroutine(SceneEndInterfere(scene), true));
         }
-
-        onSceneEnd?.Invoke();
 
         base.SceneEnd(scene);
     }
