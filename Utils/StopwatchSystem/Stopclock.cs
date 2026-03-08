@@ -190,22 +190,22 @@ public partial class Stopclock : IDisposable
     /// 注意: 该操作不会被保存到记录中
     /// </summary>
     [YamlIgnore]
-    public Action onStart;
+    public ActionManager onStart = new();
     /// <summary>
     /// 注意: 该操作不会被保存到记录中
     /// </summary>
     [YamlIgnore]
-    public Action onStop;
+    public ActionManager onStop = new();
     /// <summary>
     /// 注意: 该操作不会被保存到记录中
     /// </summary>
     [YamlIgnore]
-    public Action onReset;
+    public ActionManager onReset = new();
     /// <summary>
     /// 注意: 该操作不会被保存到记录中
     /// </summary>
     [YamlIgnore]
-    public Action onComplete;
+    public ActionManager onComplete = new();
     public virtual void OnStart() { }
     public virtual void OnStop() { }
     public virtual void OnReset() { }

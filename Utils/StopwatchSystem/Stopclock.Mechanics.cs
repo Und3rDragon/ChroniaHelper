@@ -44,7 +44,8 @@ public partial class Stopclock
 
             signal = (int)Signal.Complete;
 
-            onComplete?.Invoke();
+            onComplete?.InvokeAll();
+            onComplete?.Clear();
             OnComplete();
 
             if (resetWhenCompleted)
@@ -127,7 +128,8 @@ public partial class Stopclock
 
             signal = (int)Signal.Complete;
 
-            onComplete?.Invoke();
+            onComplete?.InvokeAll();
+            onComplete?.Clear();
             OnComplete();
 
             if (resetWhenCompleted)

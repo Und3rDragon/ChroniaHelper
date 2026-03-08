@@ -33,14 +33,12 @@ public class StopclockActionController : Entity
     private string sessionKey;
     private bool sessionKeyAvailable;
 
-    private bool foundClock = false;
     public override void Update()
     {
         base.Update();
 
         if (!clockTag.GetStopclock(out Stopclock clock)) 
         {
-            foundClock = false;
             return; 
         }
 
@@ -65,9 +63,8 @@ public class StopclockActionController : Entity
             Md.Session.keystrings[sessionKey] = sessionData;
         }
 
-        if (!foundClock)
-        {
-            clock.onComplete += () =>
+        clock.onComplete.Register($"StopclockActionController_{SourceData.ID}",
+            () =>
             {
                 if (killPlayer)
                 {
@@ -78,9 +75,6 @@ public class StopclockActionController : Entity
                 {
                     flag.SetFlag(true);
                 }
-            };
-        }
-
-        foundClock = true;
+            });
     }
 }
