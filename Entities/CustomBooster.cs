@@ -14,6 +14,7 @@ using Mono.Cecil.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using YamlDotNet.Core;
+using ChroniaHelper.Components;
 
 namespace ChroniaHelper.Entities;
 
@@ -106,7 +107,7 @@ public class CustomBooster : Booster
     
     public bool playerFollow;
 
-    public float redBoostMovingSpeed = 240f, greenBoostMovingSpeed = 240f;
+    public SelectiveSlider redBoostMovingSpeed, greenBoostMovingSpeed;
     public float forceCoyoteTime = -1f;
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
@@ -134,8 +135,8 @@ public class CustomBooster : Booster
         setDashes = data.Bool("setOrRefillDashes", false);
         setupStamina = data.Bool("setOrRefillStamina", false);
 
-        redBoostMovingSpeed = data.Float("redBoostMovingSpeed", 240f);
-        greenBoostMovingSpeed = data.Float("greenBoostMovingSpeed", 240f);
+        redBoostMovingSpeed = data.Slider("redBoostMovingSpeed", 240f);
+        greenBoostMovingSpeed = data.Slider("greenBoostMovingSpeed", 240f);
 
         // force coyote
         forceCoyoteTime = data.Float("forceCoyoteTime", -1f);
@@ -354,7 +355,7 @@ public class CustomBooster : Booster
                 {
                     if(p.CurrentBooster is CustomBooster b)
                     {
-                        return b.redBoostMovingSpeed;
+                        return b.redBoostMovingSpeed.Value;
                     }
                 }
                 return fallback;
@@ -376,7 +377,7 @@ public class CustomBooster : Booster
                 {
                     if (p.CurrentBooster is CustomBooster b)
                     {
-                        return b.greenBoostMovingSpeed;
+                        return b.greenBoostMovingSpeed.Value;
                     }
                 }
                 return fallback;
