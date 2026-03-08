@@ -10,6 +10,7 @@ trigger.placements = {
         countdown = true,
         onlyOnce = true,
         followLevelPause = false,
+        autoReset = false,
     },
 }
 

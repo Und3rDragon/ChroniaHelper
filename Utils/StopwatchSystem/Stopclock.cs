@@ -48,7 +48,7 @@ public partial class Stopclock : IDisposable
                 }
             }
 
-            if (watches.Value.completed && watches.Value.removeWhenCompleted) 
+            if (watches.Value.completed && watches.Value.removeWhenCompleted && !watches.Value.resetWhenCompleted) 
             {
                 if (!watches.Value.removeRequireSignalUsed)
                 {
@@ -123,7 +123,7 @@ public partial class Stopclock : IDisposable
                 watches.Value.UpdateTime(TimeUtils.deltaTicks);
             }
 
-            if (watches.Value.completed && watches.Value.removeWhenCompleted)
+            if (watches.Value.completed && watches.Value.removeWhenCompleted && !watches.Value.resetWhenCompleted)
             {
                 if (!watches.Value.removeRequireSignalUsed)
                 {
@@ -153,6 +153,7 @@ public partial class Stopclock : IDisposable
 
     public bool countdown = false;
     public bool completed { get; private set; } = false;
+    public bool resetWhenCompleted = false;
     public bool removeWhenCompleted = true;
     public bool removeRequireSignalUsed = true;
     public bool running { get; private set; } = false;
@@ -252,6 +253,7 @@ public partial class Stopclock : IDisposable
     {
         countdown = false;
         followPause = false;
+        resetWhenCompleted = false;
         removeWhenCompleted = true;
         isolatedUpdate = false;
         _lastUpdateTime = DateTime.Now;
@@ -268,7 +270,7 @@ public partial class Stopclock : IDisposable
         int minute = 0, int second = 0, int millisecond = 0, bool followPause = false,
         int initialYear = 0, int initialMonth = 0, int initialDay = 0, int initialHour = 0, int initialMinute = 5,
         int initialSecond = 0, int initialMillisecond = 0, bool removeWhenCompleted = true, bool isolatedUpdate = false,
-        bool removeRequireSignalUsed = true)
+        bool removeRequireSignalUsed = true, bool resetWhenCompleted = false)
     {
         this.year = year;
         this.month = month;
@@ -289,6 +291,7 @@ public partial class Stopclock : IDisposable
         this.removeWhenCompleted = removeWhenCompleted;
         this.isolatedUpdate = isolatedUpdate;
         this.removeRequireSignalUsed = removeRequireSignalUsed;
+        this.resetWhenCompleted = resetWhenCompleted;
         _lastUpdateTime = DateTime.Now;
 
         registered = false;
@@ -305,7 +308,8 @@ public partial class Stopclock : IDisposable
     /// <param name="removeWhenCompleted"></param>
     /// <param name="isolatedUpdate"></param>
     public Stopclock(bool countdown, string time, bool followPause = false,
-        bool removeWhenCompleted = true, bool isolatedUpdate = false, bool removeRequireSignalUsed = true)
+        bool removeWhenCompleted = true, bool isolatedUpdate = false, 
+        bool removeRequireSignalUsed = true, bool resetWhenCompleted = false)
     {
         initialMinute = 0;
         time.Split(':', StringSplitOptions.TrimEntries).ApplyTo(out string[] t);
@@ -350,6 +354,7 @@ public partial class Stopclock : IDisposable
         this.removeWhenCompleted = removeWhenCompleted;
         this.isolatedUpdate = isolatedUpdate;
         this.removeRequireSignalUsed = removeRequireSignalUsed;
+        this.resetWhenCompleted = resetWhenCompleted;
         _lastUpdateTime = DateTime.Now;
 
         registered = false;

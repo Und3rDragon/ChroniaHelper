@@ -46,6 +46,13 @@ public partial class Stopclock
 
             onComplete?.Invoke();
             OnComplete();
+
+            if (resetWhenCompleted)
+            {
+                Reset();
+                Start();
+                return;
+            }
         }
     }
 
@@ -122,6 +129,13 @@ public partial class Stopclock
 
             onComplete?.Invoke();
             OnComplete();
+
+            if (resetWhenCompleted)
+            {
+                Reset();
+                Start();
+                return;
+            }
 
             // 完成后停止定时器以节省资源
             StopAutoUpdate();

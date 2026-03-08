@@ -22,7 +22,8 @@ public partial class Stopclock
                   followPause: false,
                   removeWhenCompleted: true,
                   isolatedUpdate: false,
-                  removeRequireSignalUsed: true)
+                  removeRequireSignalUsed: true,
+                  resetWhenCompleted: false)
         {
 
         }
@@ -30,6 +31,7 @@ public partial class Stopclock
         public Countdown(bool followPause = false,
             bool removeWhenCompleted = true,
             bool removeRequireSignalUsed = true,
+            bool resetWhenCompleted = false,
             params int[] n)
             : base(countdown: true,
                   initialYear: n.Length > 6 ? n[6] : 0,
@@ -42,7 +44,8 @@ public partial class Stopclock
                   followPause: followPause,
                   removeWhenCompleted: removeWhenCompleted,
                   isolatedUpdate: false,
-                  removeRequireSignalUsed: removeRequireSignalUsed)
+                  removeRequireSignalUsed: removeRequireSignalUsed,
+                  resetWhenCompleted: resetWhenCompleted)
         {
 
         }
@@ -56,7 +59,8 @@ public partial class Stopclock
             int initialMillisecond = 0,
             bool followPause = false, 
             bool removeWhenCompleted = true,
-            bool removeRequireSignalUsed = true) 
+            bool removeRequireSignalUsed = true,
+            bool resetWhenCompleted = false) 
             : base(countdown: true, 
                   initialYear: initialYear, 
                   initialMonth: initialMonth,
@@ -68,7 +72,8 @@ public partial class Stopclock
                   followPause: followPause, 
                   removeWhenCompleted: removeWhenCompleted,
                   isolatedUpdate: false, 
-                  removeRequireSignalUsed: removeRequireSignalUsed)
+                  removeRequireSignalUsed: removeRequireSignalUsed,
+                  resetWhenCompleted: resetWhenCompleted)
         {
             
         }
@@ -76,8 +81,9 @@ public partial class Stopclock
         public Countdown(string time, 
             bool followPause = false,
             bool removeWhenCompleted = true, 
-            bool removeRequireSignalUsed = true) 
-            : base(true, time, followPause, removeWhenCompleted, false, removeRequireSignalUsed)
+            bool removeRequireSignalUsed = true,
+            bool resetWhenCompleted = false) 
+            : base(true, time, followPause, removeWhenCompleted, false, removeRequireSignalUsed, resetWhenCompleted)
         {
             
         }
@@ -97,7 +103,8 @@ public partial class Stopclock
                   followPause: false,
                   removeWhenCompleted: true,
                   isolatedUpdate: false,
-                  removeRequireSignalUsed: true)
+                  removeRequireSignalUsed: true,
+                  resetWhenCompleted: false)
         {
 
         }
@@ -117,7 +124,8 @@ public partial class Stopclock
                   followPause: followPause,
                   removeWhenCompleted: removeWhenCompleted,
                   isolatedUpdate: false,
-                  removeRequireSignalUsed: removeRequireSignalUsed)
+                  removeRequireSignalUsed: removeRequireSignalUsed,
+                  resetWhenCompleted: false)
         {
 
         }
@@ -143,7 +151,8 @@ public partial class Stopclock
                   followPause: followPause,
                   removeWhenCompleted: removeWhenCompleted, 
                   isolatedUpdate: false,
-                  removeRequireSignalUsed: removeRequireSignalUsed)
+                  removeRequireSignalUsed: removeRequireSignalUsed,
+                  resetWhenCompleted: false)
         {
             
         }
@@ -152,7 +161,7 @@ public partial class Stopclock
             bool followPause = false,
             bool removeWhenCompleted = true, 
             bool removeRequireSignalUsed = true)
-            : base(false, time, followPause, removeWhenCompleted, false, removeRequireSignalUsed)
+            : base(false, time, followPause, removeWhenCompleted, false, removeRequireSignalUsed, false)
         {
             
         }
@@ -172,7 +181,8 @@ public partial class Stopclock
                   followPause: false,
                   removeWhenCompleted: true,
                   isolatedUpdate: true,
-                  removeRequireSignalUsed: true)
+                  removeRequireSignalUsed: true,
+                  resetWhenCompleted: false)
         {
 
         }
@@ -180,6 +190,7 @@ public partial class Stopclock
         public IsolatedCountdown(bool followPause = false,
             bool removeWhenCompleted = true,
             bool removeRequireSignalUsed = true,
+            bool resetWhenCompleted = false,
             params int[] n)
             : base(countdown: true,
                   initialYear: n.Length > 6 ? n[6] : 0,
@@ -192,7 +203,8 @@ public partial class Stopclock
                   followPause: followPause,
                   removeWhenCompleted: removeWhenCompleted,
                   isolatedUpdate: true,
-                  removeRequireSignalUsed: removeRequireSignalUsed)
+                  removeRequireSignalUsed: removeRequireSignalUsed,
+                  resetWhenCompleted: resetWhenCompleted)
         {
 
         }
@@ -206,7 +218,8 @@ public partial class Stopclock
             int initialMillisecond = 0,
             bool followPause = false, 
             bool removeWhenCompleted = true,
-            bool removeRequireSignalUsed = true)
+            bool removeRequireSignalUsed = true,
+            bool resetWhenCompleted = false)
             : base(countdown: true, 
                   initialYear: initialYear, 
                   initialMonth: initialMonth,
@@ -218,7 +231,8 @@ public partial class Stopclock
                   followPause: followPause, 
                   removeWhenCompleted: removeWhenCompleted,
                   isolatedUpdate: true, 
-                  removeRequireSignalUsed: removeRequireSignalUsed)
+                  removeRequireSignalUsed: removeRequireSignalUsed,
+                  resetWhenCompleted: resetWhenCompleted)
         {
 
         }
@@ -226,8 +240,9 @@ public partial class Stopclock
         public IsolatedCountdown(string time, 
             bool followPause = false,
             bool removeWhenCompleted = true, 
-            bool removeRequireSignalUsed = true)
-            : base(true, time, followPause, removeWhenCompleted, true, removeRequireSignalUsed)
+            bool removeRequireSignalUsed = true,
+            bool resetWhenCompleted = false)
+            : base(true, time, followPause, removeWhenCompleted, true, removeRequireSignalUsed, resetWhenCompleted)
         {
 
         }

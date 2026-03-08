@@ -12,6 +12,7 @@ controller.placements = {
         stopclockName = "stopclock",
         flag = "flag",
         time = "00:05:000",
+        operation = 0,
         countdown = true,
         followLevelPause = true,
     },
@@ -23,7 +24,13 @@ controller.ignoredFields = {
 
 controller.fieldInformation = 
 {
-    
+    operation = {
+        fieldType = "integer",
+        options = {
+            ["Restart when Flag Enable"] = 0,
+            ["Pause when Flag Disable"] = 1,
+        }
+    }
 }
 
 function controller.sprite(room, entity)
