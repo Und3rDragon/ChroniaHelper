@@ -30,12 +30,12 @@ public class SelectiveCounter : BaseComponent
             return n;
         }
         
-        if(!int.TryParse(Expression, out n))
+        if(int.TryParse(Expression, out n))
         {
-            return Expression.GetCounter();
+            return n;
         }
 
-        return n;
+        return Expression.GetCounter();
     }
 }
 

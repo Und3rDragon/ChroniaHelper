@@ -85,30 +85,32 @@ public class CustomBooster : Booster
         greenDashCoroutineHook.Dispose();
     }
 
-    private float appearTime, loopTime, insideTime, spinTime, popTime, tr;
+    private float appearTime, loopTime, insideTime, spinTime, popTime;
+
+    private SelectiveSlider respawnTime;
 
     private string outlineDir;
 
-    private int setDash, setStamina;
+    private SelectiveCounter setDash, setStamina;
 
     private bool setDashes, setupStamina;
 
     private float hbr, hbx, hby;
 
-    private float moveSpeed, outSpeed;
+    private SelectiveSlider outSpeed;
 
     private bool setOutSpeed, rememberSpeed;
 
     private Color color;
     private ParticleType customBurstParticleType, customAppearParticleType;
     private bool burstParticleColorOverride, appearParticleColorOverride;
-    private float holdTime = 0.25f;
+    private SelectiveSlider holdTime = new(null, 0.25f);
     public bool DisableFastBubble, allowDashout, onlyOnce;
     
     public bool playerFollow;
 
     public SelectiveSlider redBoostMovingSpeed, greenBoostMovingSpeed;
-    public float forceCoyoteTime = -1f;
+    public SelectiveSlider forceCoyoteTime = new(null, -1f);
 
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
@@ -130,8 +132,8 @@ public class CustomBooster : Booster
         popTime = data.Float("popAnimInterval", 0.08f);
 
         // Dashes and Stamina
-        setDash = data.Int("dashes", 1);
-        setStamina = data.Int("stamina", 110);
+        setDash = data.Counter("dashes", 1);
+        setStamina = data.Counter("stamina", 110);
         setDashes = data.Bool("setOrRefillDashes", false);
         setupStamina = data.Bool("setOrRefillStamina", false);
 
@@ -139,17 +141,17 @@ public class CustomBooster : Booster
         greenBoostMovingSpeed = data.Slider("greenBoostMovingSpeed", 240f);
 
         // force coyote
-        forceCoyoteTime = data.Float("forceCoyoteTime", -1f);
+        forceCoyoteTime = data.Slider("forceCoyoteTime", -1f);
 
         // process old data
         if (!string.IsNullOrEmpty(data.Attr("setOutSpeed")))
         {
             bool setOutSpeed = data.Bool("setOutSpeed", false);
-            outSpeed = setOutSpeed ? outSpeed : 1f;
+            outSpeed = setOutSpeed ? outSpeed : new(null, 1f);
         }
         else
         {
-            outSpeed = Math.Abs(data.Float("outSpeedMultiplier", 1f));
+            outSpeed = data.Slider("outSpeedMultiplier", 1f);
         }
 
         color = Calc.HexToColor(data.Attr("colorOverlay", "ffffff"));
@@ -192,7 +194,7 @@ public class CustomBooster : Booster
         dashListener.OnDash = OnPlayerDashed;
         particleType = (red ? P_BurstRed : P_Burst);
 
-        tr = data.Float("respawnTime", 1f);
+        respawnTime = data.Slider("respawnTime", 1f);
         outlineDir = data.Attr("outlineDirectory", "objects/ChroniaHelper/customBooster/outline");
 
         burstParticleColorOverride = data.Bool("burstParticleColorOverride");
@@ -209,7 +211,7 @@ public class CustomBooster : Booster
             customAppearParticleType.Color = data.HexColor("appearParticleColor");
         }
 
-        holdTime = data.Float("holdTime", 0.25f);
+        holdTime = data.Slider("holdTime", 0.25f);
         DisableFastBubble = data.Bool("disableFastBubble", false);
         playerFollow = data.Bool("playerFollow", false);
         rememberSpeed = data.Bool("keepPlayerSpeed", false);
@@ -306,7 +308,7 @@ public class CustomBooster : Booster
                 Scene scene = Engine.Scene;
                 Player player = scene.Tracker.GetEntity<Player>();
                 if (player != null && player.CurrentBooster is CustomBooster booster)
-                    return booster.holdTime;
+                    return booster.holdTime.Value.GetAbs();
                 return defaultHoldTime;
             });
         }
@@ -435,40 +437,40 @@ public class CustomBooster : Booster
                 // Insert Stamina and Dashes logic here
                 if (myBooster.setDashes)
                 {
-                    player.Dashes = Math.Max(myBooster.setDash, 0);
+                    player.Dashes = Math.Max(myBooster.setDash.Value, 0);
                 }
                 else
                 {
-                    if (player.Dashes < myBooster.setDash)
+                    if (player.Dashes < myBooster.setDash.Value)
                     {
-                        player.Dashes = myBooster.setDash;
+                        player.Dashes = myBooster.setDash.Value;
                     }
-                    else if (myBooster.setDash < 0)
+                    else if (myBooster.setDash.Value < 0)
                     {
-                        player.Dashes = Math.Max(player.Dashes - myBooster.setDash, 0);
+                        player.Dashes = Math.Max(player.Dashes - myBooster.setDash.Value, 0);
                     }
                 }
 
                 if (myBooster.setupStamina)
                 {
-                    player.Stamina = Math.Max(myBooster.setStamina, 0);
+                    player.Stamina = Math.Max(myBooster.setStamina.Value, 0);
                 }
                 else
                 {
-                    if (player.Stamina < myBooster.setStamina)
+                    if (player.Stamina < myBooster.setStamina.Value)
                     {
-                        player.Stamina = myBooster.setStamina;
+                        player.Stamina = myBooster.setStamina.Value;
                     }
-                    else if (myBooster.setStamina < 0)
+                    else if (myBooster.setStamina.Value < 0)
                     {
-                        player.Stamina = Math.Max(player.Stamina - myBooster.setStamina, 0);
+                        player.Stamina = Math.Max(player.Stamina - myBooster.setStamina.Value, 0);
                     }
                 }
 
                 // If needed, override player coyote time
-                if(myBooster.forceCoyoteTime >= 0f)
+                if(myBooster.forceCoyoteTime.Value >= 0f)
                 {
-                    player.jumpGraceTimer = myBooster.forceCoyoteTime;
+                    player.jumpGraceTimer = myBooster.forceCoyoteTime.Value;
                 }
 
                 return true;
@@ -488,7 +490,7 @@ public class CustomBooster : Booster
 
         if (self is CustomBooster myBooster)
         {
-            myBooster.respawnTimer = myBooster.tr;
+            myBooster.respawnTimer = myBooster.respawnTime.Value;
             if (myBooster.onlyOnce)
             {
                 myBooster.RemoveSelf();
@@ -519,11 +521,11 @@ public class CustomBooster : Booster
 
             if (myBooster.rememberSpeed)
             {
-                player.Speed = dir * myBooster.recordedSpeed.Length() * myBooster.outSpeed;
+                player.Speed = dir * myBooster.recordedSpeed.Length() * myBooster.outSpeed.Value.GetAbs();
             }
             else
             {
-                player.Speed *= myBooster.outSpeed;
+                player.Speed *= myBooster.outSpeed.Value.GetAbs();
             }
 
             if (player.StateMachine.State == 4)

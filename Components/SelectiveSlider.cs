@@ -32,12 +32,12 @@ public class SelectiveSlider : BaseComponent
             return n;
         }
 
-        if (!float.TryParse(Expression, out n))
+        if (float.TryParse(Expression, out n))
         {
-            return Expression.GetSlider();
+            return n;
         }
 
-        return n;
+        return Expression.GetSlider();
     }
 }
 
