@@ -51,12 +51,6 @@ booster.ignoredFields = {
 }
 
 booster.fieldInformation = {
-	dashes = {
-		fieldType = "integer",
-	},
-	stamina = {
-		fieldType = "integer",
-	},
 	depth = require("mods").requireFromPlugin("helpers.field_options").depths,
 	directory = {
 		options = {
