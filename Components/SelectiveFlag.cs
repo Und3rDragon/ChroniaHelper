@@ -3,6 +3,7 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,5 +51,13 @@ public class SelectiveFlag : BaseComponent
         }
 
         return Expression.GetFlag();
+    }
+}
+
+public static class SelectiveFlagExtension
+{
+    public static SelectiveFlag Flag(this EntityData data, string field, bool fallback = false)
+    {
+        return new SelectiveFlag(data.Attr(field), fallback);
     }
 }
