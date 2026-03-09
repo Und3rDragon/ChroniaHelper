@@ -43,7 +43,8 @@ public partial class Stopclock
 
         signal = (int)Signal.Start;
 
-        onStart?.Invoke();
+        onStart?.InvokeAll();
+        onStart.Clear();
         OnStart();
     }
 
@@ -56,7 +57,8 @@ public partial class Stopclock
 
         signal = (int)Signal.Stop;
 
-        onStop?.Invoke();
+        onStop?.InvokeAll();
+        onStop.Clear();
         OnStop();
     }
 
@@ -105,7 +107,8 @@ public partial class Stopclock
 
         signal = (int)Signal.Reset;
 
-        onReset?.Invoke();
+        onReset?.InvokeAll();
+        onReset?.Clear();
         OnReset();
     }
 

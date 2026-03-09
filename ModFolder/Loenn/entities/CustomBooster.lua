@@ -18,22 +18,22 @@ booster.placements={
 		outlineDirectory = "objects/ChroniaHelper/customBoosterPresets/grey/outline",
 		colorOverlay = "ffffff",
 		ch9_hub_booster = false,
-		greenBoostMovingSpeed = 240,
-		redBoostMovingSpeed = 240,
+		greenBoostMovingSpeed = "240",
+		redBoostMovingSpeed = "240",
 		appearAnimInterval = 0.8,
 		loopAnimInterval = 0.1,
 		insideAnimInterval = 0.1,
 		spinAnimInterval = 0.06,
 		popAnimInterval = 0.08,
-		respawnTime = 1.0,
-		dashes = 1,
-		stamina = 110,
-		holdTime = 0.25,
-		outSpeedMultiplier = 1,
+		respawnTime = "1.0",
+		dashes = "1",
+		stamina = "110",
+		holdTime = "0.25",
+		outSpeedMultiplier = "1",
 		hitboxRadius = 10,
 		hitboxX = 0,
 		hitboxY = 2,
-		forceCoyoteTime = -1,
+		forceCoyoteTime = "-1",
 		red = false,
 		setOrRefillDashes = false,
 		setOrRefillStamina = false,
@@ -56,12 +56,6 @@ booster.ignoredFields = {
 }
 
 booster.fieldInformation = {
-	dashes = {
-		fieldType = "integer",
-	},
-	stamina = {
-		fieldType = "integer",
-	},
 	depth = require("mods").requireFromPlugin("helpers.field_options").depths,
 	directory = {
 		options = {

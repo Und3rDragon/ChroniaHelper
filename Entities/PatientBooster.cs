@@ -3,6 +3,7 @@ using System.Collections;
 using System.Data.Common;
 using System.Reflection;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
@@ -81,8 +82,8 @@ public class PatientBooster : Booster
 		respawnDelay = data.Float("respawnDelay", 1f);
 
 		// New dashes and stamina setups
-		dashes = data.Int("dashes", 1);
-		stamina = data.Int("stamina", 110);
+		dashes = data.Counter("dashes", 1);
+		stamina = data.Counter("stamina", 110);
 		staminaMode = (StaminaRefill)data.Int("staminaMode", 0);
         dashesMode = (DashRefill)data.Int("dashesMode", 0);
 		// Old data
@@ -92,7 +93,7 @@ public class PatientBooster : Booster
 		{
 			int d = 1;
             int.TryParse(old_dashes, out d);
-			dashes = d;
+			dashes.Fallback = d;
         }
 		if (!string.IsNullOrEmpty(old_stamina))
 		{
@@ -102,17 +103,17 @@ public class PatientBooster : Booster
 		var spriteName = data.Attr("sprite", "");
 		var red = data.Bool("red");
 
-		killTimer = data.Float("killIfStayed", -1f);
+		killTimer = data.Slider("killIfStayed", -1f);
         
-        freeMoveSpeed = data.Float("freeMoveSpeed", -1f);
+        freeMoveSpeed = data.Slider("freeMoveSpeed", -1f);
 
 		// out speed and boost speed from Custom Booster
-		outSpeed = data.Float("outSpeedMultiplier", 1f);
-		greenSpeed = data.Float("greenBoostMovingSpeed", 240f);
-        redSpeed = data.Float("redBoostMovingSpeed", 240f);
+		outSpeed = data.Slider("outSpeedMultiplier", 1f);
+		greenSpeed = data.Slider("greenBoostMovingSpeed", 240f);
+        redSpeed = data.Slider("redBoostMovingSpeed", 240f);
 
         // force coyote time
-        forceCoyoteTime = data.Float("forceCoyoteTime", -1f);
+        forceCoyoteTime = data.Slider("forceCoyoteTime", -1f);
 
         customBurstParticleType = new ParticleType(red ? P_BurstRed : P_Burst);
 		if (data.Attr("burstParticleColor").IsNotNullOrEmpty())
@@ -126,28 +127,32 @@ public class PatientBooster : Booster
         }
 
         Remove(sprite);
-		Add(sprite = GFX.SpriteBank.Create(!string.IsNullOrEmpty(spriteName) ? spriteName : (killTimer > 0f ? "Preset_yellow" : (red ? "Preset_red" : "Preset_green"))));
-	}
-	private int dashes, stamina;
+		Add(sprite = GFX.SpriteBank.Create(!string.IsNullOrEmpty(spriteName) ? spriteName : (killTimer.Value > 0f ? "Preset_yellow" : (red ? "Preset_red" : "Preset_green"))));
+
+        Add(dashes, stamina, killTimer, freeMoveSpeed, 
+            outSpeed, redSpeed, greenSpeed, forceCoyoteTime);
+    }
+	private SelectiveCounter dashes, stamina;
 	private enum DashRefill { refill, set, delta };
 	private DashRefill dashesMode;
 	private enum StaminaRefill { refill, set, delta };
 	private StaminaRefill staminaMode;
-	private float killTimer = -1f, timer_killTimer = -1f;
+    private SelectiveSlider killTimer = new(null, -1f);
+    private float timer_killTimer = -1f;
 	private bool timerRunning = false;
 
-	private float freeMoveSpeed = -1f;
+	private SelectiveSlider freeMoveSpeed = new(null, -1f);
     private Vc2 freeMoveOffset = Vc2.Zero;
 
-	private float outSpeed, redSpeed, greenSpeed;
+	private SelectiveSlider outSpeed, redSpeed, greenSpeed;
     private ParticleType customBurstParticleType, customAppearParticleType;
 
-    private float forceCoyoteTime = -1f;
+    private SelectiveSlider forceCoyoteTime = new(null, -1f);
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
-		timer_killTimer = killTimer;
+		timer_killTimer = killTimer.Value;
     }
 	public override void Update()
 	{
@@ -163,7 +168,7 @@ public class PatientBooster : Booster
             if (timer_killTimer > 0f)
             {
                 timer_killTimer = Calc.Approach(timer_killTimer, 0f, Engine.DeltaTime);
-                Sprite.Color = timer_killTimer.LerpValue(killTimer, 0f, Color.White, Color.Red);
+                Sprite.Color = timer_killTimer.LerpValue(killTimer.Value, 0f, Color.White, Color.Red);
             }
             if (timer_killTimer == 0f)
             {
@@ -175,9 +180,9 @@ public class PatientBooster : Booster
 			BoostingPlayer = true;
 			player.boostTarget = Center;
 			var targetPos = Center - player.Collider.Center + (Input.Aim.Value * 3f);
-            if(freeMoveSpeed > 0f)
+            if(freeMoveSpeed.Value > 0f)
 			{
-				freeMoveOffset += freeMoveSpeed * Engine.DeltaTime * Input.Aim.Value;
+				freeMoveOffset += freeMoveSpeed.Value * Engine.DeltaTime * Input.Aim.Value;
             }
 			targetPos += freeMoveOffset;
 			this.sprite.Position = freeMoveOffset;
@@ -275,11 +280,11 @@ public class PatientBooster : Booster
 		if (self is PatientBooster patientBooster)
 		{
 			patientBooster.respawnTimer = patientBooster.respawnDelay;
-			patientBooster.timer_killTimer = patientBooster.killTimer;
+			patientBooster.timer_killTimer = patientBooster.killTimer.Value;
             
             patientBooster.freeMoveOffset = Vc2.Zero;
             patientBooster.timerRunning = false;
-            patientBooster.timer_killTimer = patientBooster.killTimer;
+            patientBooster.timer_killTimer = patientBooster.killTimer.Value;
             patientBooster.Sprite.Color = Color.White;
         }
 	}
@@ -312,41 +317,41 @@ public class PatientBooster : Booster
 				// Insert Stamina and Dashes logic here
 				if(booster.staminaMode == PatientBooster.StaminaRefill.delta)
 				{
-					player.Stamina += booster.stamina;
+					player.Stamina += booster.stamina.Value;
 					player.Stamina = player.Stamina.ClampMin(0f);
 				}
 				else if (booster.staminaMode == PatientBooster.StaminaRefill.set)
 				{
-					player.Stamina = booster.stamina;
+					player.Stamina = booster.stamina.Value;
 				}
 				else
 				{
-                    if (player.Stamina < booster.stamina)
+                    if (player.Stamina < booster.stamina.Value)
                     {
-                        player.Stamina = booster.stamina;
+                        player.Stamina = booster.stamina.Value;
                     }
                 }
 
 				if (booster.dashesMode == PatientBooster.DashRefill.delta)
 				{
-					player.Dashes += booster.dashes;
+					player.Dashes += booster.dashes.Value;
 					player.Dashes = player.Dashes.ClampMin(0);
 				}
 				else if (booster.dashesMode == PatientBooster.DashRefill.set)
 				{
-					player.Dashes = booster.dashes;
+					player.Dashes = booster.dashes.Value;
 				}
 				else
 				{
-                    if (player.Dashes < booster.dashes)
+                    if (player.Dashes < booster.dashes.Value)
                     {
-                        player.Dashes = booster.dashes;
+                        player.Dashes = booster.dashes.Value;
                     }
                 }
 
-                if(booster.forceCoyoteTime >= 0f)
+                if(booster.forceCoyoteTime.Value >= 0f)
                 {
-                    player.jumpGraceTimer = booster.forceCoyoteTime;
+                    player.jumpGraceTimer = booster.forceCoyoteTime.Value;
                 }
 				
 				return true;
@@ -380,7 +385,7 @@ public class PatientBooster : Booster
 
             myBooster.PlayerReleased();
 
-            player.Speed *= myBooster.outSpeed;
+            player.Speed *= myBooster.outSpeed.Value;
 
             if (player.StateMachine.State == 4)
             {
@@ -414,7 +419,7 @@ public class PatientBooster : Booster
                 {
                     if (p.CurrentBooster is PatientBooster b)
                     {
-                        return b.redSpeed;
+                        return b.redSpeed.Value;
                     }
                 }
                 return fallback;
@@ -436,7 +441,7 @@ public class PatientBooster : Booster
                 {
                     if (p.CurrentBooster is PatientBooster b)
                     {
-                        return b.greenSpeed;
+                        return b.greenSpeed.Value;
                     }
                 }
                 return fallback;

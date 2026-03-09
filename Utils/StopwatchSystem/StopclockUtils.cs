@@ -10,13 +10,13 @@ public static class StopclockUtils
 {
     public static bool GetStopclock(this string name, out Stopclock clock)
     {
-        if (Md.SaveData.stopclocks.ContainsKey(name))
+        if (Md.SaveData?.stopclocks.ContainsKey(name) ?? false)
         {
             clock = Md.SaveData.stopclocks[name];
             return true;
         }
 
-        if (Md.Session.Stopclocks.ContainsKey(name))
+        if (Md.Session?.Stopclocks.ContainsKey(name) ?? false)
         {
             clock = Md.Session.Stopclocks[name];
             return true;
@@ -28,13 +28,13 @@ public static class StopclockUtils
 
     public static bool GetStopclock(this string name, bool fromGlobal, out Stopclock clock)
     {
-        if (fromGlobal && Md.SaveData.stopclocks.ContainsKey(name))
+        if (fromGlobal && (Md.SaveData?.stopclocks.ContainsKey(name) ?? false))
         {
             clock = Md.SaveData.stopclocks[name];
             return true;
         }
 
-        if (!fromGlobal && Md.Session.Stopclocks.ContainsKey(name))
+        if (!fromGlobal && (Md.Session?.Stopclocks.ContainsKey(name) ?? false))
         {
             clock = Md.Session.Stopclocks[name];
             return true;

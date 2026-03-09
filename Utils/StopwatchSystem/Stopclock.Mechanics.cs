@@ -44,8 +44,16 @@ public partial class Stopclock
 
             signal = (int)Signal.Complete;
 
-            onComplete?.Invoke();
+            onComplete?.InvokeAll();
+            onComplete?.Clear();
             OnComplete();
+
+            if (resetWhenCompleted)
+            {
+                Reset();
+                Start();
+                return;
+            }
         }
     }
 
@@ -120,8 +128,16 @@ public partial class Stopclock
 
             signal = (int)Signal.Complete;
 
-            onComplete?.Invoke();
+            onComplete?.InvokeAll();
+            onComplete?.Clear();
             OnComplete();
+
+            if (resetWhenCompleted)
+            {
+                Reset();
+                Start();
+                return;
+            }
 
             // 完成后停止定时器以节省资源
             StopAutoUpdate();

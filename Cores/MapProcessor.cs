@@ -279,6 +279,8 @@ public static class MapProcessor
     {
         scene = self;
         orig(self);
+
+        Md.Instance.CoroutineManager?.Update();
         
         if (Md.SaveData.IsNotNull())
         {
