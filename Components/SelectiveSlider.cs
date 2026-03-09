@@ -32,12 +32,36 @@ public class SelectiveSlider : BaseComponent
             return n;
         }
 
-        if (!float.TryParse(Expression, out n))
+        if (float.TryParse(Expression, out n))
         {
-            return Expression.GetSlider();
+            return n;
         }
 
-        return n;
+        return Expression.GetSlider();
+    }
+
+    protected override void BeforeEntityAdded(Scene scene)
+    {
+        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
+        {
+            return;
+        }
+
+        if (float.TryParse(Expression, out float f)) { return; }
+
+        var counters = MaP.level?.Session?.Sliders;
+
+        if (counters == null) { return; }
+
+        foreach (var counter in counters)
+        {
+            if (counter.Key == Expression)
+            {
+                return;
+            }
+        }
+
+        Expression.SetSlider(Fallback);
     }
 }
 

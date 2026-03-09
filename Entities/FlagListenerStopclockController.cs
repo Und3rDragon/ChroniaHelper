@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.StopwatchSystem;
@@ -20,13 +21,16 @@ public class FlagListenerStopclockController :  BaseEntity
         clock = new Stopclock(d.Bool("countdown", true), 
             d.Attr("time", "5:0:0"), followPause: d.Bool("followLevelPause", true));
         stopclockName = d.Attr("stopclockName", "stopclock");
-        flag = d.Attr("flag");
-
+        Add(flag = new(d.Attr("flag")));
         clock.Register(stopclockName, false);
+        operation = (Mode)d.Int("operation", 0);
     }
-    private string flag, stopclockName;
+    private string stopclockName;
+    private FlagListener flag;
     private Stopclock clock;
     private bool flagState = false;
+    private enum Mode { Restart, Pause }
+    private Mode operation;
 
     public override void Awake(Scene scene)
     {
@@ -36,13 +40,22 @@ public class FlagListenerStopclockController :  BaseEntity
     public override void Update()
     {
         base.Update();
-        
-        if(!flagState && flag.GetFlag())
+
+        flag.onEnable = () =>
         {
-            clock.Reset();
+            if(operation == Mode.Restart)
+            {
+                clock.Reset();
+            }
             clock.Start();
-        }
-        
-        flagState = flag.GetFlag();
+        };
+
+        flag.onDisable = () =>
+        {
+            if (operation == Mode.Pause)
+            {
+                clock.Stop();
+            }
+        };
     }
 }

@@ -30,12 +30,33 @@ public class SelectiveCounter : BaseComponent
             return n;
         }
         
-        if(!int.TryParse(Expression, out n))
+        if(int.TryParse(Expression, out n))
         {
-            return Expression.GetCounter();
+            return n;
         }
 
-        return n;
+        return Expression.GetCounter();
+    }
+
+    protected override void BeforeEntityAdded(Scene scene)
+    {
+        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
+        {
+            return;
+        }
+
+        if (float.TryParse(Expression, out float f)) { return; }
+
+        var counters = MaP.level?.Session?.Counters ?? new();
+        foreach(var counter in counters)
+        {
+            if(counter.Key == Expression)
+            {
+                return;
+            }
+        }
+
+        Expression.SetCounter(Fallback);
     }
 }
 

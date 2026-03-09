@@ -21,12 +21,14 @@ public class StopclockTrigger : BaseTrigger
         operation = d.Int("operation", 0);
         onlyOnce = d.Bool("onlyOnce", true);
         followLevelPause = d.Bool("followLevelPause", false);
+        autoReset = d.Bool("autoReset", false);
     }
     private string name, time;
     private bool countdown;
     private int operation = 0;
     private enum Operations { Set = 0, Add = 1, Minus = 2, Stop = 3, Resume = 4, SetAndStart = 5}
     private bool followLevelPause;
+    private bool autoReset = false;
 
     protected override void OnEnterExecute(Player player)
     {
@@ -68,13 +70,13 @@ public class StopclockTrigger : BaseTrigger
         }
         else if(operation == (int)Operations.SetAndStart)
         {
-            var clock = new Stopclock(countdown, time, followPause: followLevelPause);
+            var clock = new Stopclock(countdown, time, followPause: followLevelPause, resetWhenCompleted: autoReset);
             clock.Register(name, false);
             clock.Start();
         }
         else
         {
-            var clock = new Stopclock(countdown, time, followPause: followLevelPause);
+            var clock = new Stopclock(countdown, time, followPause: followLevelPause, resetWhenCompleted: autoReset);
             clock.Register(name, false);
         }
     }

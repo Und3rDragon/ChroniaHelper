@@ -37,7 +37,10 @@ public class StopclockActionController : Entity
     {
         base.Update();
 
-        if (!clockTag.GetStopclock(out Stopclock clock)) { return; }
+        if (!clockTag.GetStopclock(out Stopclock clock)) 
+        {
+            return; 
+        }
 
         if (sessionKeyAvailable)
         {
@@ -59,18 +62,19 @@ public class StopclockActionController : Entity
 
             Md.Session.keystrings[sessionKey] = sessionData;
         }
-        
-        if (clock.FetchSignal())
-        {
-            if (killPlayer)
-            {
-                PUt.player?.Die(Vc2.Zero);
-            }
 
-            if (flagAvailable)
+        clock.onComplete.Register($"StopclockActionController_{SourceData.ID}",
+            () =>
             {
-                flag.SetFlag(true);
-            }
-        }
+                if (killPlayer)
+                {
+                    PUt.player?.Die(Vc2.Zero);
+                }
+
+                if (flagAvailable)
+                {
+                    flag.SetFlag(true);
+                }
+            });
     }
 }
