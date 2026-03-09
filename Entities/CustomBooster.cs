@@ -215,6 +215,9 @@ public class CustomBooster : Booster
         DisableFastBubble = data.Bool("disableFastBubble", false);
         playerFollow = data.Bool("playerFollow", false);
         rememberSpeed = data.Bool("keepPlayerSpeed", false);
+
+        Add(respawnTime, setDash, setStamina, outSpeed, holdTime,
+            redBoostMovingSpeed, greenBoostMovingSpeed, forceCoyoteTime);
     }
 
 

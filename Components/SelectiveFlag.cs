@@ -53,18 +53,29 @@ public class SelectiveFlag : BaseComponent
         return Expression.GetFlag();
     }
 
-    protected override void BeforeEntityAdded(Scene scene)
-    {
-        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
-        {
-            return;
-        }
-        
-        if (!MaP.level?.Session?.Flags.Contains(Expression) ?? true)
-        {
-            Expression.SetFlag(Fallback);
-        }
-    }
+    //protected override void BeforeEntityAdded(Scene scene)
+    //{
+    //    if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
+    //    {
+    //        return;
+    //    }
+
+    //    string s = Expression.ToLower().Trim();
+    //    if (TrueSyntax.Contains(s))
+    //    {
+    //        return;
+    //    }
+
+    //    if (FalseSyntax.Contains(s))
+    //    {
+    //        return;
+    //    }
+
+    //    if (!MaP.level?.Session?.Flags.Contains(Expression) ?? true)
+    //    {
+    //        Expression.SetFlag(Fallback);
+    //    }
+    //}
 }
 
 public static class SelectiveFlagExtension

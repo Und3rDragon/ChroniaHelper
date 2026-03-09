@@ -128,7 +128,10 @@ public class PatientBooster : Booster
 
         Remove(sprite);
 		Add(sprite = GFX.SpriteBank.Create(!string.IsNullOrEmpty(spriteName) ? spriteName : (killTimer.Value > 0f ? "Preset_yellow" : (red ? "Preset_red" : "Preset_green"))));
-	}
+
+        Add(dashes, stamina, killTimer, freeMoveSpeed, 
+            outSpeed, redSpeed, greenSpeed, forceCoyoteTime);
+    }
 	private SelectiveCounter dashes, stamina;
 	private enum DashRefill { refill, set, delta };
 	private DashRefill dashesMode;

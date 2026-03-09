@@ -45,6 +45,8 @@ public class SelectiveCounter : BaseComponent
             return;
         }
 
+        if (float.TryParse(Expression, out float f)) { return; }
+
         var counters = MaP.level?.Session?.Counters ?? new();
         foreach(var counter in counters)
         {

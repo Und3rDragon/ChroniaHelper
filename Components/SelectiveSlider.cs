@@ -47,6 +47,8 @@ public class SelectiveSlider : BaseComponent
             return;
         }
 
+        if (float.TryParse(Expression, out float f)) { return; }
+
         var counters = MaP.level?.Session?.Sliders;
 
         if (counters == null) { return; }
