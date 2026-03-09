@@ -128,7 +128,7 @@ public class ActionManager
             catch (Exception e)
             {
                 if (!ignoreErrors) throw;
-                Console.WriteLine($"[ActionEventManager] Error invoking an event: {e.Message}");
+                Log.Error($"[ActionEventManager] Error invoking an event: {e.Message}");
             }
         }
     }
