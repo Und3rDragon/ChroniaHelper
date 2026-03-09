@@ -37,6 +37,25 @@ public class SelectiveCounter : BaseComponent
 
         return Expression.GetCounter();
     }
+
+    protected override void BeforeEntityAdded(Scene scene)
+    {
+        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
+        {
+            return;
+        }
+
+        var counters = MaP.level?.Session?.Counters ?? new();
+        foreach(var counter in counters)
+        {
+            if(counter.Key == Expression)
+            {
+                return;
+            }
+        }
+
+        Expression.SetCounter(Fallback);
+    }
 }
 
 public static class SelectiveCounterExtension

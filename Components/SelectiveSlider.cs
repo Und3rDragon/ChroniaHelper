@@ -39,6 +39,28 @@ public class SelectiveSlider : BaseComponent
 
         return Expression.GetSlider();
     }
+
+    protected override void BeforeEntityAdded(Scene scene)
+    {
+        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
+        {
+            return;
+        }
+
+        var counters = MaP.level?.Session?.Sliders;
+
+        if (counters == null) { return; }
+
+        foreach (var counter in counters)
+        {
+            if (counter.Key == Expression)
+            {
+                return;
+            }
+        }
+
+        Expression.SetSlider(Fallback);
+    }
 }
 
 public static class SelectiveSliderExtension
