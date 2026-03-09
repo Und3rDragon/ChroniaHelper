@@ -615,7 +615,7 @@ public class Displayers : HDRenderEntity
 
         if (Md.Settings.showMouse)
         {
-            GFX.Game["Chroniahelper/LoennIcons/Mouse"].Draw(InputUtils.MousePosition, Vc2.One * 32f);
+            mouseIndicator.Draw(InputUtils.MousePosition, Vc2.One * Md.Settings.mouseSize);
         }
 
         if (Md.Settings.entityInfoDisplayer.enabled)
@@ -713,6 +713,8 @@ public class Displayers : HDRenderEntity
 
     public SerialImageGroupRaw entityInfo_UI = new SerialImageGroupRaw("ChroniaHelper/DisplayFonts/font");
 
+    public MTexture mouseIndicator = GFX.Game["ChroniaHelper/LoennIcons/Mouse"];
+    public const string defaultMouseIndicator = "ChroniaHelper/LoennIcons/Mouse";
     public Vc2 GetRenderPosition(Sts.DisplayPosition pos, Vc2 setup)
     {
         if (pos == Sts.DisplayPosition.PlayerBased)

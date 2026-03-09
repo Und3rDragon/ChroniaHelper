@@ -11,6 +11,8 @@ public class ChroniaHelperSettings : EverestModuleSettings
     public enum DisplayPosition { PlayerBased, StaticScreen }
     public enum Aligning { Left, Middle, Right }
     public bool showMouse { get; set; } = false;
+    [SettingRange(0, 1000, true)]
+    public int mouseSize { get; set; } = 32;
     public bool DisplayEntityInfoInConsole { get; set; } = false;
 
     public class CommonDisplayer
