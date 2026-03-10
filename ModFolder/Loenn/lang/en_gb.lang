@@ -1403,3 +1403,7 @@ triggers.ChroniaHelper/CounterCameraOffset.placements.name.offset=Camera Offset 
 # ================= Mouse Respriter
 
 entities.ChroniaHelper/MouseIndicatorOverrider.placements.name.controller=Mouse Indicator Overrider
+
+# ================= Parallax Text
+
+entities.ChroniaHelper/ParallaxText.placements.name.parallax_text=Parallax Text (Node-targeted)
