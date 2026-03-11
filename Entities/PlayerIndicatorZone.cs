@@ -58,16 +58,18 @@ public sealed partial class PlayerIndicatorZone : Entity
         Icons = config.Icons;
         IconOffsets = config.IconOffsets;
         IconColors = config.IconColors;
+
+        Tag = Tags.TransitionUpdate;
     }
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
         
-        if(scene.Tracker.GetEntities<PlayerIndicatorZoneMonitor>().Count < 1)
-        {
-            scene.Add(new PlayerIndicatorZoneMonitor());
-        }
+        //if(scene.Tracker.GetEntities<PlayerIndicatorZoneMonitor>().Count < 1)
+        //{
+        //    scene.Add(new PlayerIndicatorZoneMonitor());
+        //}
     }
     
     public override void Removed(Scene scene)
