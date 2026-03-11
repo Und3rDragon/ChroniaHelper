@@ -15,7 +15,11 @@ namespace ChroniaHelper.Entities;
 [Tracked(true)]
 public class PlayerIndicatorZoneMonitor : Entity
 {
-    public PlayerIndicatorZoneMonitor() : base() { }
+    public static PlayerIndicatorZoneMonitor Instance = new();
+    public PlayerIndicatorZoneMonitor() : base()
+    {
+        Tag = Tags.Global;
+    }
 
     private Dictionary<int, bool> flagReset = new();
     private Dictionary<int, bool> innerFlagReset = new();
