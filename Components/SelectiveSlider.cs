@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class SelectiveSlider : BaseComponent
+public class SelectiveSlider : SelectiveSessionValue
 {
     public SelectiveSlider(string name, float fallback = 0f, Clamper.Float restraints = null) : base()
     {
@@ -18,10 +18,10 @@ public class SelectiveSlider : BaseComponent
         this.Fallback = fallback;
         this.Limiter = restraints ?? new();
     }
-    public string Expression;
     public float Fallback;
     public Clamper.Float Limiter = new();
 
+    public override float DefaultGetValue() => Limiter.Operate(GetValue());
     public float Value => Limiter.Operate(GetValue());
     private float GetValue()
     {

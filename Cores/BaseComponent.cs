@@ -12,15 +12,13 @@ public class BaseComponent : Component
 {
     public BaseComponent(bool active, bool visible) : base(active, visible)
     {
-        coroutineManager = new();
+        
     }
     
     public BaseComponent() : base(true, true)
     {
-        coroutineManager = new();
+        
     }
-
-    public CoroutineManager coroutineManager;
 
     public override void Added(Entity entity)
     {
@@ -29,8 +27,6 @@ public class BaseComponent : Component
         base.Added(entity);
         
         AfterAdded(entity);
-
-        coroutineManager.Start(AddedRoutine(entity));
     }
     
     protected virtual void BeforeAdded(Entity entity) { }
@@ -44,8 +40,6 @@ public class BaseComponent : Component
     {
         BeforeRemoved(entity);
 
-        coroutineManager.Start(RemovedRoutine(entity));
-        
         base.Removed(entity);
 
         AfterRemoved(entity);
@@ -65,8 +59,6 @@ public class BaseComponent : Component
         base.EntityAdded(scene);
 
         AfterEntityAdded(scene);
-
-        coroutineManager.Start(EntityAddedRoutine(scene));
     }
     
     protected virtual void BeforeEntityAdded(Scene scene) { }
@@ -80,8 +72,6 @@ public class BaseComponent : Component
     {
         BeforeEntityRemoved(scene);
 
-        coroutineManager.Start(EntityRemovedRoutine(scene));
-
         base.EntityRemoved(scene);
 
         AfterEntityRemoved(scene);
@@ -92,20 +82,5 @@ public class BaseComponent : Component
     protected virtual IEnumerator EntityRemovedRoutine(Scene scene)
     {
         yield return null;
-    }
-
-    public override void Update()
-    {
-        coroutineManager.Update();
-
-        Updating();
-    }
-
-    protected virtual void Updating() { }
-
-    public override void SceneEnd(Scene scene)
-    {
-        //coroutineManager.Dispose();
-        //coroutineManager = null;
     }
 }

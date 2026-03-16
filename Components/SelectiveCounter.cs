@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class SelectiveCounter : BaseComponent
+public class SelectiveCounter : SelectiveSessionValue
 {
     public SelectiveCounter(string name, int fallback = 0, Clamper.Int restraints = null) : base()
     {
@@ -16,10 +16,10 @@ public class SelectiveCounter : BaseComponent
         this.Fallback = fallback;
         this.Limiter = restraints ?? new();
     }
-    public string Expression;
     public int Fallback;
     public Clamper.Int Limiter = new();
 
+    public override float DefaultGetValue() => Limiter.Operate(GetValue());
     public int Value => Limiter.Operate(GetValue());
     private int GetValue()
     {
