@@ -9,9 +9,9 @@ namespace ChroniaHelper.Components;
 
 public abstract class SelectiveSessionValue : BaseComponent
 {
+    public SelectiveSessionValue(string expression)
+    {
+        Expression = expression;
+    }
     public string Expression;
-
-    public float GeneralValue => DefaultGetValue();
-
-    public abstract float DefaultGetValue();
 }

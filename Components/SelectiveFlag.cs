@@ -11,9 +11,8 @@ namespace ChroniaHelper.Components;
 
 public class SelectiveFlag : SelectiveSessionValue
 {
-    public SelectiveFlag(string name, bool fallback = false)
+    public SelectiveFlag(string name, bool fallback = false) : base(name)
     {
-        Expression = name;
         Fallback = fallback;
     }
     private bool Fallback;
@@ -28,7 +27,6 @@ public class SelectiveFlag : SelectiveSessionValue
         "false", "f", "0",
     };
 
-    public override float DefaultGetValue() => GetValue() ? 1f : 0f;
     public bool Value => GetValue();
     private bool GetValue()
     {

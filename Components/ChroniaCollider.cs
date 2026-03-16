@@ -1,9 +1,11 @@
 ﻿using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.MathExpression;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,32 +20,34 @@ public class ChroniaCollider : BaseComponent
             Hitbox, Circle
         }
 
-        public ColliderBuilder(ColliderType type, List<SelectiveSessionValue> parameters)
+        public ColliderBuilder(ColliderType type, List<string> mathExpressions)
         {
             Type = type;
-            Parameters = parameters;
+            MathExpressions = mathExpressions;
         }
 
         public ColliderType Type;
-        public List<SelectiveSessionValue> Parameters;
+        public List<string> MathExpressions;
 
         public Collider Build()
         {
-            int N = Parameters.Count;
+            int N = MathExpressions.Count;
 
             if (N == 0) { return null; }
 
             if (Type == ColliderType.Circle)
             {
-                float r = Parameters[0].GeneralValue;
+                float r = MathExpressions[0].ParseMathExpression().GetAbs();
+
+                if (r < 0.0001f) { return null; }
 
                 if (N >= 2)
                 {
-                    float x = Parameters[1].GeneralValue;
+                    float x = MathExpressions[1].ParseMathExpression();
 
                     if (N >= 3)
                     {
-                        float y = Parameters[2].GeneralValue;
+                        float y = MathExpressions[2].ParseMathExpression();
 
                         return new Circle(r, x, y);
                     }
@@ -58,16 +62,18 @@ public class ChroniaCollider : BaseComponent
             {
                 if (N < 2) { return null; }
 
-                float w = Parameters[0].GeneralValue;
-                float h = Parameters[1].GeneralValue;
+                float w = MathExpressions[0].ParseMathExpression().GetAbs();
+                float h = MathExpressions[1].ParseMathExpression().GetAbs();
+
+                if(w < 0.00001f || h < 0.0001f) { return null; }
 
                 if (N >= 3)
                 {
-                    float x = Parameters[2].GeneralValue;
+                    float x = MathExpressions[2].ParseMathExpression();
 
                     if (N >= 4)
                     {
-                        float y = Parameters[3].GeneralValue;
+                        float y = MathExpressions[3].ParseMathExpression();
 
                         return new Hitbox(w, h, x, y);
                     }

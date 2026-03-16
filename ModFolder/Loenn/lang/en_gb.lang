@@ -1407,3 +1407,7 @@ entities.ChroniaHelper/MouseIndicatorOverrider.placements.name.controller=Mouse 
 # ================= Parallax Text
 
 entities.ChroniaHelper/ParallaxText.placements.name.parallax_text=Parallax Text (Node-targeted)
+
+# ================= Custom Shield
+
+entities.ChroniaHelper/CustomShield.placements.name.shield=Custom Shield
