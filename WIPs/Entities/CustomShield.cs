@@ -62,6 +62,7 @@ public class CustomShield : BaseEntity
         Add(moveWiggle);
 
         color = data.GetChroniaColor("color", Color.White);
+        horizontalMult = data.Slider("horizontalSpeedMultiplier", 1.2f);
     }
     private string radius;
     private bool square;
@@ -71,6 +72,7 @@ public class CustomShield : BaseEntity
     private ChroniaColor lightColor;
     private SelectiveSlider lightAlpha, lightStartFade, lightEndFade;
     private ChroniaColor color;
+    private SelectiveSlider horizontalMult;
 
     public override void Update()
     {
@@ -139,7 +141,7 @@ public class CustomShield : BaseEntity
 
         if (Input.MoveX.Value == Math.Sign(player.Speed.X))
         {
-            player.Speed.X *= 1.2f;
+            player.Speed.X *= horizontalMult.Value;
         }
 
         moveWiggle.Start();

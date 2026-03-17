@@ -563,4 +563,11 @@ public static class MapDataUtils
         return data.Attr(tag).Split(separator, split);
     }
 
+    public static Vc2 Vector2(this EntityData data, string fieldX, string fieldY, Vc2? fallback = null)
+    {
+        return new Vc2(
+            string.IsNullOrEmpty(data.Attr(fieldX)) ? (fallback?.X ?? 0f) : data.Float(fieldX),
+            string.IsNullOrEmpty(data.Attr(fieldY)) ? (fallback?.Y ?? 0f) : data.Float(fieldY));
+    }
+
 }

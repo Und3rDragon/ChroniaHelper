@@ -20,6 +20,7 @@ shield.placements = {
         lightStartFade = "16",
         lightEndFade="48",
         color = "ffffff",
+        horizontalSpeedMultiplier = "1.2",
         square = false,
     },
 }
