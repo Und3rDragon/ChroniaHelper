@@ -81,11 +81,11 @@ public class CustomShield : BaseEntity
         base.Update();
 
         light.Alpha = Calc.Approach(light.Alpha, lightFlag.GetFlag() ? 1f : 0.0f, 4f * Engine.DeltaTime);
-
         light.StartRadius = lightStartFade.Value.GetAbs();
         light.EndRadius = lightEndFade.Value.GetAbs();
+
         bloom.Radius = bloomRadius.Value.GetAbs();
-        bloom.Alpha = bloomAlpha.Value.GetAbs();
+        bloom.Alpha = Calc.Approach(bloom.Alpha, lightFlag.GetFlag() ? bloomAlpha.Value.GetAbs() : 0.0f , 4f * Engine.DeltaTime);
     }
 
     public override void Render()
