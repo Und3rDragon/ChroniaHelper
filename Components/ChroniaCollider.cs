@@ -88,6 +88,43 @@ public class ChroniaCollider : BaseComponent
         }
     }
     
+    public static ColliderBuilder GenerateHitbox(string widthExpression, string heightExpression,
+        string xExpression = null, string yExpression = null)
+    {
+        if(xExpression is not null)
+        {
+            if(yExpression is not null)
+            {
+                return new ColliderBuilder(ColliderBuilder.ColliderType.Hitbox,
+                    new() { widthExpression, heightExpression, xExpression, yExpression });
+            }
+
+            return new ColliderBuilder(ColliderBuilder.ColliderType.Hitbox,
+                new() { widthExpression, heightExpression, xExpression });
+        }
+
+        return new ColliderBuilder(ColliderBuilder.ColliderType.Hitbox,
+            new() { widthExpression, heightExpression });
+    }
+
+    public static ColliderBuilder GenerateCircle(string radiusExpression,
+        string xExpression = null, string yExpression = null)
+    {
+        if (xExpression is not null)
+        {
+            if (yExpression is not null)
+            {
+                return new ColliderBuilder(ColliderBuilder.ColliderType.Circle,
+                    new() { radiusExpression, xExpression, yExpression });
+            }
+
+            return new ColliderBuilder(ColliderBuilder.ColliderType.Circle,
+                new() { radiusExpression, xExpression });
+        }
+
+        return new ColliderBuilder(ColliderBuilder.ColliderType.Circle,
+            new() { radiusExpression });
+    }
 
     public List<ColliderBuilder> Colliders = new();
     public ChroniaCollider(params ColliderBuilder[] colliders)

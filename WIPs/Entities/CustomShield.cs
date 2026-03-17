@@ -30,14 +30,10 @@ public class CustomShield : BaseEntity
     {
         radius = data.Attr("radius", "10");
         square = data.Bool("square", false);
-        ChroniaCollider.ColliderBuilder.ColliderType builderType = 
-            square ? 
-            ChroniaCollider.ColliderBuilder.ColliderType.Hitbox
-            : ChroniaCollider.ColliderBuilder.ColliderType.Circle;
-        List<string> builderParams = square ?
-            new() { $"({radius}) * 2", $"({radius}) * 2", $"-({radius})", $"-({radius})" }
-            : new() { radius };
-        ChroniaCollider.ColliderBuilder builder = new(builderType, builderParams);
+        ChroniaCollider.ColliderBuilder builder = square ?
+            ChroniaCollider.GenerateHitbox($"({radius}) * 2", $"({radius}) * 2", 
+                $"-({radius})", $"-({radius})")
+            : ChroniaCollider.GenerateCircle(radius);
         dynCollider = new(builder);
         Add(dynCollider);
 
