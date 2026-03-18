@@ -1411,3 +1411,8 @@ entities.ChroniaHelper/ParallaxText.placements.name.parallax_text=Parallax Text 
 # ================= Custom Shield
 
 entities.ChroniaHelper/CustomShield.placements.name.shield=Custom Shield
+
+# ================= Custom Cloud
+
+entities.ChroniaHelper/CustomCloud.placements.name.normal=Custom Cloud (Normal)
+entities.ChroniaHelper/CustomCloud.placements.name.fragile=Custom Cloud (Fragile)
