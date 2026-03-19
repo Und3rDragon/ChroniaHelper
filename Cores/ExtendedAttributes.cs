@@ -40,9 +40,9 @@ public class NoteAttribute : Attribute
 }
 
 [AttributeUsage(AttributeTargets.All)]
-public class VersionNoteAttribute : Attribute
+public class ObsoletedAttribute : Attribute
 {
-    public VersionNoteAttribute(int x, int y, int z, params string[] note) { }
+    public ObsoletedAttribute(params string[] note) { }
 }
 
 [AttributeUsage(AttributeTargets.All)]

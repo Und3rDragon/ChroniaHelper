@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Triggers;
 
+[Obsoleted]
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/SpeedAdaptiveCamera")]
 
