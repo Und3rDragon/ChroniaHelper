@@ -1,14 +1,9 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChroniaHelper.WIPs.Entities;
+namespace ChroniaHelper.Entities;
 
 [WorkingInProgress]
 [CustomEntity("ChroniaHelper/CustomCloud")]

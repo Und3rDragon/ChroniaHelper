@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.CommunalHelper;
 using Celeste.Mod.CommunalHelper.DashStates;
 using Celeste.Mod.CommunalHelper.Entities;
+using ChroniaHelper.Imports;
 using MonoMod.Utils;
 
 namespace ChroniaHelper.References;
@@ -34,16 +35,6 @@ public static class RefCommunalHelper
 
     public static ButtonBinding ActivateFlagController => GetSettings().ActivateFlagController;
 
-    public static bool DreamTunnelDashAttacking = (bool)new DynamicData(typeof(DreamTunnelDash)).Get("dreamTunnelDashAttacking");
-
-}
-
-public class RefDreamTunnelBlocker : DreamTunnelBlocker
-{
-    public RefDreamTunnelBlocker(EntityData data, Vc2 offset) : base(data, offset) { }
-}
-
-public class RefCustomDreamBlock : CustomDreamBlock
-{
-    public RefCustomDreamBlock(EntityData data, Vc2 offset) : base(data, offset) { }
+    public static DynamicData DreamTunnelDashDynData = new DynamicData(typeof(DreamTunnelDash));
+    public static bool DreamTunnelDashAttacking => (bool)DreamTunnelDashDynData.Get("dreamTunnelDashAttacking");
 }

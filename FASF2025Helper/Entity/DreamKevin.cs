@@ -2,6 +2,7 @@
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.References;
+using ChroniaHelper.Utils;
 using static Celeste.CrushBlock;
 
 namespace FASF2025Helper.Entities;
@@ -21,7 +22,7 @@ public class DreamKevin : Solid
         public float TimeOffset;
     }
 
-    private RefDreamTunnelBlocker dreamBlocker;
+    private Celeste.Mod.CommunalHelper.Entities.DreamTunnelBlocker dreamBlocker;
     private DreamBlock dreamBlock;
     //public DreamBlock DreamBlock => dreamBlock;
 
@@ -183,7 +184,7 @@ public class DreamKevin : Solid
 
         if (!Md.CommunalHelperLoaded)
         {
-            Logger.Log("FASF2025", "DreamKevin require CommunalHelper 1.23.0 loaded. Removed self");
+            Log.Info("DreamKevin require CommunalHelper 1.23.0 loaded. Removed self");
             RemoveSelf();
             return;
         }
@@ -202,7 +203,7 @@ public class DreamKevin : Solid
 
         if (Md.CommunalHelperLoaded)
         {
-            dreamBlocker = new RefDreamTunnelBlocker(data, Vector2.Zero)
+            dreamBlocker = new Celeste.Mod.CommunalHelper.Entities.DreamTunnelBlocker(data, Vector2.Zero)
             {
                 BlockDreamTunnelDashes = true,
             };
@@ -246,7 +247,7 @@ public class DreamKevin : Solid
     public override void Update()
     {
         base.Update();
-        
+
         if (inDreamBlockState())
         {
             dreamBlock.Collidable = true;
