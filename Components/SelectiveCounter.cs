@@ -8,15 +8,14 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class SelectiveCounter : BaseComponent
+public class SelectiveCounter : SelectiveSessionValue
 {
-    public SelectiveCounter(string name, int fallback = 0, Clamper.Int restraints = null) : base()
+    public SelectiveCounter(string name, int fallback = 0, 
+        Clamper.Int restraints = null) : base(name)
     {
-        Expression = name;
         this.Fallback = fallback;
         this.Limiter = restraints ?? new();
     }
-    public string Expression;
     public int Fallback;
     public Clamper.Int Limiter = new();
 
@@ -38,7 +37,7 @@ public class SelectiveCounter : BaseComponent
         return Expression.GetCounter();
     }
 
-    protected override void BeforeEntityAdded(Scene scene)
+    public override void EntityAdded(Scene scene)
     {
         if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
         {
@@ -57,13 +56,15 @@ public class SelectiveCounter : BaseComponent
         }
 
         Expression.SetCounter(Fallback);
+
+        base.EntityAdded(scene);
     }
 }
 
 public static class SelectiveCounterExtension
 {
-    public static SelectiveCounter Counter(this EntityData data, string field, int fallback = 0)
+    public static SelectiveCounter Counter(this EntityData data, string field, int fallback = 0, Clamper.Int limiter = null)
     {
-        return new SelectiveCounter(data.Attr(field), fallback);
+        return new SelectiveCounter(data.Attr(field), fallback, limiter);
     }
 }

@@ -9,14 +9,12 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class SelectiveFlag : BaseComponent
+public class SelectiveFlag : SelectiveSessionValue
 {
-    public SelectiveFlag(string name, bool fallback = false)
+    public SelectiveFlag(string name, bool fallback = false) : base(name)
     {
-        Expression = name;
         Fallback = fallback;
     }
-    private string Expression;
     private bool Fallback;
 
     private List<string> TrueSyntax = new()

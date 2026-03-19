@@ -241,8 +241,10 @@ public class Passive3D : BaseComponent
         StartFlatSpin();
     }
 
-    protected override void AfterEntityRemoved(Scene scene)
+    public override void EntityRemoved(Scene scene)
     {
+        base.EntityRemoved(scene);
+
         Entity.Position = InitialPosition;
     }
 }
