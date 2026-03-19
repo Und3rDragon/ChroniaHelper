@@ -269,4 +269,49 @@ public static class ObjectUtils
                 $"Unable to convert object of type '{obj.GetType()}' to type '{typeof(T)}'.", ex);
         }
     }
+
+    /// <summary>
+    /// 判断类型 a 是否继承自类型 b (包括实现接口)。
+    /// </summary>
+    /// <param name="a">子类型 (Derived)</param>
+    /// <param name="b">父类型/基类型 (Base)</param>
+    /// <param name="excludeSelf">
+    /// true: 严格继承，如果 a 和 b 是同一个类型，返回 false。
+    /// false: 广义继承，如果 a 和 b 是同一个类型，返回 true (默认)。
+    /// </param>
+    public static bool InheritFrom(this Type a, Type b, bool excludeSelf = false)
+    {
+        if (a == null || b == null)
+            return false;
+
+        // 如果两者相同
+        if (a == b)
+            return !excludeSelf;
+
+        // 使用 IsAssignableFrom 判断继承或接口实现关系
+        // b.IsAssignableFrom(a) 意为：a 是否可以赋值给 b? (即 a 是 b 的子类)
+        return b.IsAssignableFrom(a);
+    }
+
+    /// <summary>
+    /// 判断类型 a 是否继承自类型 b (泛型版本)。
+    /// 自动推导 T1 和 T2 的 Type 对象。
+    /// </summary>
+    public static bool InheritFrom<T1, T2>(this T1 a, T2 b, bool excludeSelf = false)
+    {
+        // 获取实际运行时的类型
+        Type typeA = a is Type tA ? tA : typeof(T1);
+        Type typeB = b is Type tB ? tB : typeof(T2);
+
+        return typeof(T1).InheritFrom(typeof(T2), excludeSelf);
+    }
+
+    /// <summary>
+    /// 判断当前类型是否继承自 TBase。
+    /// 用法：typeof(Derived).InheritFrom<Base>()
+    /// </summary>
+    public static bool InheritFrom<TBase>(this Type a, bool excludeSelf = false)
+    {
+        return a.InheritFrom(typeof(TBase), excludeSelf);
+    }
 }

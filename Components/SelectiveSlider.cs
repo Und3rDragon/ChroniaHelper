@@ -10,15 +10,14 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class SelectiveSlider : BaseComponent
+public class SelectiveSlider : SelectiveSessionValue
 {
-    public SelectiveSlider(string name, float fallback = 0f, Clamper.Float restraints = null) : base()
+    public SelectiveSlider(string name, float fallback = 0f, 
+        Clamper.Float restraints = null) : base(name)
     {
-        Expression = name;
         this.Fallback = fallback;
         this.Limiter = restraints ?? new();
     }
-    public string Expression;
     public float Fallback;
     public Clamper.Float Limiter = new();
 
@@ -40,7 +39,7 @@ public class SelectiveSlider : BaseComponent
         return Expression.GetSlider();
     }
 
-    protected override void BeforeEntityAdded(Scene scene)
+    public override void EntityAdded(Scene scene)
     {
         if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
         {
@@ -62,13 +61,15 @@ public class SelectiveSlider : BaseComponent
         }
 
         Expression.SetSlider(Fallback);
+
+        base.EntityAdded(scene);
     }
 }
 
 public static class SelectiveSliderExtension
 {
-    public static SelectiveSlider Slider(this EntityData data, string field, float fallback = 0f)
+    public static SelectiveSlider Slider(this EntityData data, string field, float fallback = 0f, Clamper.Float limiter = null)
     {
-        return new SelectiveSlider(data.Attr(field), fallback);
+        return new SelectiveSlider(data.Attr(field), fallback, limiter);
     }
 }

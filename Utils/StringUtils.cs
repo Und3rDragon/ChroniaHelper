@@ -59,6 +59,11 @@ public static class StringUtils
         return (obj is string);
     }
 
+    public static bool HasValidContent(this string str)
+    {
+        return !string.IsNullOrEmpty(str) && !string.IsNullOrWhiteSpace(str);
+    }
+
     public static void EmptyStringFiller(ref string str, string defaultValue)
     {
         if (StringUtils.IsNullOrEmpty(str))

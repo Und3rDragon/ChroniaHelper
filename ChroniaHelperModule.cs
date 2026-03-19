@@ -42,8 +42,6 @@ public class ChroniaHelperModule : EverestModule
     public ChroniaHelperHandle ChroniaHelperHandle { get; private set; }
 
     public HookManager HookManager { get; private set; }
-
-    public CoroutineManager CoroutineManager;
     
     public string ModDirectory
     {
@@ -117,8 +115,6 @@ public class ChroniaHelperModule : EverestModule
 
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;
-
-        CoroutineManager = new CoroutineManager();
     }
 
     public override void Unload()
@@ -135,9 +131,6 @@ public class ChroniaHelperModule : EverestModule
         On.Celeste.GameLoader.Begin -= LateInitialize;
 
         IL.Celeste.AreaData.Load -= HookAreaDataLoad;
-
-        CoroutineManager.Dispose();
-        CoroutineManager = null;
     }
 
     private static bool IsFromHelpers(ModAsset asset)

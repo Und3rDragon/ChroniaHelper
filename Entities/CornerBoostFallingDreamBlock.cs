@@ -6,7 +6,7 @@ using ChroniaHelper.References;
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/CornerBoostFallingDreamBlock")]
-public class CornerBoostFallingDreamBlock : RefCustomDreamBlock
+public class CornerBoostFallingDreamBlock : Celeste.Mod.CommunalHelper.Entities.CustomDreamBlock
 {
     private readonly bool forceShake;
     public bool Triggered;
@@ -25,11 +25,6 @@ public class CornerBoostFallingDreamBlock : RefCustomDreamBlock
     public CornerBoostFallingDreamBlock(EntityData data, Vector2 offset)
         : base(data, offset)
     {
-        if (!Md.CommunalHelperLoaded)
-        {
-            return;
-        }
-
         noCollide = data.Bool("noCollide", false);
         forceShake = data.Bool("forceShake", false);
         legacyLandingBehavior = data.Bool("legacyLandingBehavior", true);

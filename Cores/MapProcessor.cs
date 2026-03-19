@@ -1,4 +1,5 @@
 ﻿using ChroniaHelper.Cores.Graphical;
+using ChroniaHelper.Entities;
 using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
@@ -103,11 +104,13 @@ public static class MapProcessor
         Celeste.Settings.Instance.ScreenShake = Md.Session.CurrentScreenshake;
 
         self.Add(dummyGlobal);
+        self.Add(PlayerIndicatorZoneMonitor.Instance);
     }
     
     public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
     {
         dummyGlobal.RemoveSelf();
+        PlayerIndicatorZoneMonitor.Instance.RemoveSelf();
 
         Celeste.Settings.Instance.ScreenShake = Md.Session.InitialScreenshake;
 
@@ -280,8 +283,6 @@ public static class MapProcessor
         scene = self;
         orig(self);
 
-        Md.Instance.CoroutineManager?.Update();
-        
         if (Md.SaveData.IsNotNull())
         {
             // Flag Timer Trigger
