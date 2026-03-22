@@ -11,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChroniaHelper.WIPs.Entities;
+namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/FlagSwapBlock")]
 public class FlagSwapBlock : BaseSolid2
