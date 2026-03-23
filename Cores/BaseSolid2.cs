@@ -12,15 +12,16 @@ public class BaseSolid2 : Solid
     public Level level;
     public BaseSolid2(Vector2 offset, EntityData data) : base(data.Position + offset, data.Width, data.Height, true)
     {
-        
+        nodes = data.NodesWithPosition(offset);
     }
     public PlayerCollider playerCollider;
     public int playerTouch;
+    public Vc2[] nodes;
 
     public BaseSolid2(Vector2 offset, EntityData data, int width, int height, bool safe = true)
         : base(data.Position + offset, width, height, true)
     {
-
+        nodes = data.NodesWithPosition(offset);
     }
 
     public override void Added(Scene scene)

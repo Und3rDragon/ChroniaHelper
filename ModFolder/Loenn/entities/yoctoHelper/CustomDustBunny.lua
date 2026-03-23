@@ -14,7 +14,11 @@ local entity = {
             baseTexture = "ChroniaHelper/CustomDustBunny/base",
             overlayTexture = "ChroniaHelper/CustomDustBunny/overlay",
             hasEyes = true,
-            attached = false
+            attached = false,
+            --moving bunny
+            duration = 1,
+            movement = 4, --int
+            easer = "CubeInOut",
         }
     },
     fieldInformation =
@@ -30,8 +34,26 @@ local entity = {
         borderColor =
         {
             fieldType = "color"
-        }
+        },
+        easer = {
+            options = require("mods").requireFromPlugin("helpers.chroniaHelper_old").easers,
+            editable = false,
+        },
+        movement = {
+            options = {
+                ["Persist"] = 0,
+                ["Oneshot"] = 1,
+                ["Looping"] = 2,
+                ["YoyoOneshot"] = 3,
+                ["YoyoLooping"] = 4,
+            },
+            editable = false,
+        },
+        duration = {
+            minimumValue = 0,
+        },
     },
+    --[[
     fieldOrder =
     {
         "x",
@@ -42,6 +64,7 @@ local entity = {
         "hasEyes",
         "attached"
     },
+    ]]
     sprite = function(room, entity, viewport)
         local texture = drawableSprite.fromTexture("danger/dustcreature/base00", entity)
         texture:setColor(entity.tintColor)
@@ -53,7 +76,24 @@ local entity = {
             texture
         }
     end,
-    depth = - 50
+    depth = - 50,
+    nodeLimits = {0, 1},
+    ignoredFields = function(entity)
+        local attrs = {"_x", "_y", "_id", "_name"}
+        if entity.nodes == nil then
+            table.insert(attrs, "easer")
+            table.insert(attrs, "movement")
+            table.insert(attrs, "duration")
+            return attrs
+        elseif #entity.nodes == 0 then
+            table.insert(attrs, "easer")
+            table.insert(attrs, "movement")
+            table.insert(attrs, "duration")
+            return attrs
+        else
+            return attrs
+        end
+    end,
 }
 
 return entity

@@ -22,4 +22,4 @@ Check the bgs/ChroniaHelper/modifiedParallax in the helper for usage examples
 
 # Optimizations
 
-Now most message displayer that allows mapper to fill in a Dialog ID now supports session keys, which can be set up by some other entities, to access session keys, use "#" before the Dialog ID to indicate it
+# Miscs
