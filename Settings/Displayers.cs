@@ -61,11 +61,18 @@ public class Displayers : HDRenderEntity
         Md.Settings.entityInfoDisplayer.renderTarget.Clear();
     }
 
+    public static bool GeneralMouseEntityArg()
+    {
+        bool arg1 = Md.Settings?.DisplayEntityInfoInConsole ?? false;
+        bool arg2 = Md.Settings?.entityInfoDisplayer.enabled ?? false;
+
+        return arg1 || arg2;
+    }
     public override void Update()
     {
         base.Update();
 
-        if (MInput.Mouse.PressedLeftButton)
+        if (MInput.Mouse.PressedLeftButton && GeneralMouseEntityArg())
         {
             if (Md.Settings.DisplayEntityInfoInConsole)
             {
@@ -85,7 +92,7 @@ public class Displayers : HDRenderEntity
                     }
                 }
             }
-            GeneralMouseEntity.Instance?.StartDetecting();
+            GeneralMouseEntity.Instance?.EndDetecting();
         }
     }
 

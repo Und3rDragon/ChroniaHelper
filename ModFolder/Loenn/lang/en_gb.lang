@@ -1416,3 +1416,7 @@ entities.ChroniaHelper/CustomShield.placements.name.shield=Custom Shield
 
 entities.ChroniaHelper/CustomCloud.placements.name.normal=Custom Cloud (Normal)
 entities.ChroniaHelper/CustomCloud.placements.name.fragile=Custom Cloud (Fragile)
+
+# ================= Flag Swap Block
+
+entities.ChroniaHelper/FlagSwapBlock.placements.name.swapblock=Swap Block (Flag-toggled)

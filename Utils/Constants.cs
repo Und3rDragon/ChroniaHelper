@@ -20,10 +20,6 @@ global using GSav = ChroniaHelper.Modules.ChroniaHelperGlobalSaveData; // usual
 
 using static ChroniaHelper.Settings.Commands; // usual
 using static ChroniaHelper.Cores.NoteAttribute; // marker attributes
-using static ChroniaHelper.Cores.WorkingInProgressAttribute; // marker attributes
-using static ChroniaHelper.Cores.VersionNoteAttribute; // marker attributes
-using static ChroniaHelper.Cores.PrivateForAttribute; // marker attributes
-using static ChroniaHelper.Cores.CreditsAttribute; // marker attributes
 using static ChroniaHelper.Imports.APIFrostHelper; 
 using static ChroniaHelper.Imports.APICommunalHelper;
 using static ChroniaHelper.Imports.APISpeedrunTool;

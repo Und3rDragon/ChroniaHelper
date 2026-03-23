@@ -26,6 +26,8 @@ public class IceFloor : BaseEntity
 
     public static bool WhenRefillDash(On.Celeste.Player.orig_RefillDash orig, Player self)
     {
+        if(self is null) { return orig(self); }
+
         if (self.CollideCheck<IceFloor>())
         {
             return false;
