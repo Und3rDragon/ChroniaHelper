@@ -3,12 +3,13 @@ using Celeste.Mod.Entities;
 using YoctoHelper.Components;
 using YoctoHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Cores;
 
 namespace YoctoHelper.Entities;
 
 [Tracked(false)]
 [CustomEntity("ChroniaHelper/CustomDustBunny")]
-public class CustomDustBunny : Entity
+public class CustomDustBunny : BaseEntity
 {
 
     public Color tintColor;
@@ -27,7 +28,7 @@ public class CustomDustBunny : Entity
 
     public string baseTexture, overlayTexture, centerTexture;
 
-    public CustomDustBunny(Vector2 position, EntityData data) : base(position)
+    public CustomDustBunny(EntityData data, Vc2 offset) : base(data, offset)
     {
         this.tintColor = data.HexColor("tintColor", new Color(102, 102, 102));
         this.eyesColor = data.HexColor("eyesColor", Color.Red);
@@ -53,11 +54,15 @@ public class CustomDustBunny : Entity
         }
         this.offset = Calc.Random.NextFloat();
         base.Depth = Depths.Dust;
-    }
 
-    public CustomDustBunny(EntityData data, Vector2 offset) : this(data.Position + offset, data)
-    {
+        movingDust = nodes.Length > 1;
+        trail = Tween.Create((Tween.TweenMode)data.Int("movement", 4), 
+            EaseUtils.StringToEase(data.Attr("easer", "CubeInOut")), 
+            data.Float("duration", 1f).ClampMin(Engine.DeltaTime / 2f), false);
+        Add(trail);
     }
+    public bool movingDust = false;
+    public Tween trail;
 
     private void OnPlayer(Player player)
     {
@@ -83,6 +88,14 @@ public class CustomDustBunny : Entity
     public override void Update()
     {
         base.Update();
+        if (movingDust)
+        {
+            if (!trail.Active)
+            {
+                trail.Start();
+            }
+            Position = trail.Eased.LerpValue(0f, 1f, nodes[0], nodes[1]);
+        }
         if ((base.Scene.OnInterval(0.05F, this.offset)) && (this.sprite.established))
         {
             Player player = base.Scene.Tracker.GetEntity<Player>();
