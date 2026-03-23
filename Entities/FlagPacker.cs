@@ -13,7 +13,6 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/FlagPacker")]
-[PrivateFor("SSC2025")]
 public class FlagPacker : Entity
 {
     public FlagPacker(EntityData data, Vector2 offset) : base(data.Position + offset)
