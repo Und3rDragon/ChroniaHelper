@@ -16,10 +16,8 @@ public class RandomMusicController : BaseEntity
 {
     public RandomMusicController(EntityData d, Vc2 o) : base(d, o)
     {
-        musics = d.StringArray("musicNames", ';');
-        interval = d.Float("interval", 1f).GetAbs().ClampMin(Engine.DeltaTime / 2f);
+        musics = d.Attr("musics").ParseSquaredString();
         mode = (Modes)d.Int("mode", 0);
-
         startDelay = d.Float("startDelay", -1f);
         if (mode == Modes.OnAdded)
         {
@@ -32,8 +30,7 @@ public class RandomMusicController : BaseEntity
             Tag = Tags.Global;
         }
     }
-    public string[] musics;
-    public float interval;
+    public string[][] musics;
     public enum Modes { OnAdded = 0 }
     public Modes mode;
     public float startDelay;
@@ -62,15 +59,33 @@ public class RandomMusicController : BaseEntity
         if (timer <= 0f)
         {
             SetRandomMusic();
-            timer = interval;
         }
 
         timer -= Engine.DeltaTime;
     }
 
+    private string lastPlayed = MaP.level?.Session?.Audio.Music.Event ?? "";
     public void SetRandomMusic()
     {
-        MaP.level.Session.Audio.Music.Event = SFX.EventnameByHandle(musics[RandomUtils.RandomInt(0, musics.Length)]);
+        int count = musics.GetLength(0);
+        string[] choose = musics[RandomUtils.RandomInt(0, count)];
+        float interval = 60f;
+        if(choose.Length >= 2) 
+        { 
+            float.TryParse(choose[1], out interval); 
+        }
+        if (choose[0] == lastPlayed)
+        {
+            timer = interval;
+            //Log.Info($"Equal, extend [{choose[0]}] by {interval}");
+            return;
+        }
+
+        timer = interval;
+
+        MaP.level.Session.Audio.Music.Event = SFX.EventnameByHandle(choose[0]);
         MaP.level.Session.Audio.Apply();
+        lastPlayed = choose[0];
+        //Log.Info($"Different, play [{choose[0]}] for {interval}");
     }
 }

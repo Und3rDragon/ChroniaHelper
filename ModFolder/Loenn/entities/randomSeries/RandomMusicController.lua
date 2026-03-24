@@ -12,8 +12,7 @@ controller.name = "ChroniaHelper/RandomMusicController"
 controller.placements = {
     name = "Controller",
     data = {
-        musicNames = "music_city;music_credits",
-        interval = 1,
+        musics = "music_city,60;music_credits,60",
         mode = 0,
         startDelay = 0,
         global = false,
@@ -34,9 +33,14 @@ controller.fieldInformation = {
     value2 = {
         fieldType = "integer",
     },
-    musicNames = {
+    musics = {
         fieldType = "list",
         elementSeparator = ";",
+        elementOptions = {
+            fieldType = "list",
+            minimumElements = 2,
+            maximumElements = 2,
+        },
     },
 }
 
