@@ -1420,3 +1420,11 @@ entities.ChroniaHelper/CustomCloud.placements.name.fragile=Custom Cloud (Fragile
 # ================= Flag Swap Block
 
 entities.ChroniaHelper/FlagSwapBlock.placements.name.swapblock=Swap Block (Flag-toggled)
+
+# ================= Random Generators
+
+entities.ChroniaHelper/TimedRandomSliderController.placements.name.Controller=Random Slider Controller
+entities.ChroniaHelper/TimedRandomCounterController.placements.name.Controller=Random Counter Controller
+triggers.ChroniaHelper/RandomSliderTrigger.placements.name.trigger=Random Slider
+triggers.ChroniaHelper/RandomCounterTrigger.placements.name.trigger=Random Counter
+entities.ChroniaHelper/RandomMusicController.placements.name.Controller=Random Music Controller
