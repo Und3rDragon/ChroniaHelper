@@ -16,6 +16,7 @@ return {
             value2 = 1,
             interval = 1,
             enterDelay = 0,
+            seed = "",
             continuously = false,
             onlyOnce = true,
         }

@@ -23,11 +23,29 @@ public class RandomCounterTrigger : BaseTrigger
         interval = d.Float("interval", 1f).GetAbs().ClampMin(Engine.DeltaTime / 2f);
         continuously = d.Bool("continuously", false);
         onlyOnce = d.Bool("onlyOnce", true);
+
+        string _seed = d.Attr("seed");
+        if (_seed.HasValidContent())
+        {
+            if (int.TryParse(_seed, out int n))
+            {
+                seed = n;
+            }
+            else
+            {
+                seed = _seed.GetHashCode();
+            }
+        }
+        else
+        {
+            seed = SourceData.ID;
+        }
     }
     public string counter;
     public int value1, value2;
     public float interval;
     public bool continuously;
+    public int seed;
 
     public float timer = 0f;
     public bool active = false;
@@ -58,6 +76,6 @@ public class RandomCounterTrigger : BaseTrigger
 
     public int GenerateRandom()
     {
-        return RandomUtils.RandomInt(value1, value2);
+        return RandomUtils.RandomInt(value1, value2, seed);
     }
 }
