@@ -48,7 +48,7 @@ public class TimedRandomSliderController : BaseEntity
         }
         else
         {
-            seed = SourceData.ID;
+            seed = ID;
         }
     }
     public string slider;

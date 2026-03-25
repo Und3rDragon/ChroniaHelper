@@ -38,7 +38,7 @@ public class RandomCounterTrigger : BaseTrigger
         }
         else
         {
-            seed = SourceData.ID;
+            seed = d.ID;
         }
     }
     public string counter;
