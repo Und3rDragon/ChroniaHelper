@@ -29,7 +29,7 @@ public class TimedRandomCounterController : BaseEntity
             active = false;
         }
 
-        if (d.Bool("global", false))
+        if (global = d.Bool("globalEntity", false))
         {
             Tag = Tags.Global;
         }
@@ -40,17 +40,21 @@ public class TimedRandomCounterController : BaseEntity
     public enum Modes { OnAdded = 0 }
     public Modes mode;
     public float startDelay;
+    public bool global;
 
     public float timer;
     public bool active = false;
     protected override void AddedExecute(Scene scene)
     {
-        if ((Tag | Tags.Global) != 0 && $"ChroniaHelper_TimedRandomController_{SourceData.ID}".GetFlag())
+        if (global)
         {
-            RemoveSelf();
-            return;
+            if (Md.Session.GlobalEntitiesRegistry.Contains(SourceId))
+            {
+                RemoveSelf();
+                return;
+            }
+            Md.Session.GlobalEntitiesRegistry.Add(SourceId);
         }
-        $"ChroniaHelper_TimedRandomController_{SourceData.ID}".SetFlag(true);
         timer = 0f;
         active = true;
     }

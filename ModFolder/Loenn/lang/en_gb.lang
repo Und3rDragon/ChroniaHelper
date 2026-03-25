@@ -1428,3 +1428,5 @@ entities.ChroniaHelper/TimedRandomCounterController.placements.name.Controller=R
 triggers.ChroniaHelper/RandomSliderTrigger.placements.name.trigger=Random Slider
 triggers.ChroniaHelper/RandomCounterTrigger.placements.name.trigger=Random Counter
 entities.ChroniaHelper/RandomMusicController.placements.name.Controller=Random Music Controller
+entities.ChroniaHelper/FlagWhenCounterController.placements.name.Controller=Flag When Counter Controller
+entities.ChroniaHelper/FlagWhenSliderController.placements.name.Controller=Flag When Slider Controller

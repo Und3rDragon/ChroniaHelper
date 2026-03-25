@@ -1289,4 +1289,25 @@ public static class NumberUtils
 
         return n;
     }
+
+    public static double ClampLoop(double value, double border1, double border2)
+    {
+        if (border1 == border2) { return border1; }
+
+        double min = border1 < border2 ? border1 : border2;
+        double max = border1 > border2 ? border1 : border2;
+        double d = max - min;
+
+        double n = value;
+        while (n < min)
+        {
+            n += d;
+        }
+        while (n > max)
+        {
+            n -= d;
+        }
+
+        return n;
+    }
 }

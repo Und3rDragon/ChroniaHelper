@@ -8,33 +8,27 @@ local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/TimedRandomSliderController"
+controller.name = "ChroniaHelper/FlagWhenCounterController"
 controller.placements = {
     name = "Controller",
     data = {
-        slider = "slider",
-        value1 = 0,
-        value2 = 1,
-        interval = 1,
-        startDelay = -1,
-        mode = 0,
+        flag = "flag",
+        counter = "counter",
+        values = "1,2-3,4-6",
+        inverted = false,
         globalEntity = false,
     },
 }
 
 controller.fieldInformation = {
-    mode = {
-        fieldType = "integer",
-        options = {
-            ["On Added"] = 0,
-        },
-        editable = false,
+    values = {
+        fieldType = "list",
     }
 }
 
 controller.sprite = function(room, entity)
 	local sprite = {}
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/RandomSlider", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/CounterToFlag", entity)
 
     table.insert(sprite, iconSprite)
     return sprite

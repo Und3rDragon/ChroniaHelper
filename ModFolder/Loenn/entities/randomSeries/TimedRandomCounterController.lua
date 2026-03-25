@@ -18,7 +18,7 @@ controller.placements = {
         interval = 1,
         startDelay = -1,
         mode = 0,
-        global = false,
+        globalEntity = false,
     },
 }
 

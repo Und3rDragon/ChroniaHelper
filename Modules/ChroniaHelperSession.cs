@@ -227,6 +227,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // Fish Pricer Data
     public Dictionary<string, Dictionary<int, List<int>>> FishPricers = new();
 
+    // Global Entity Registration
+    public HashSet<EntityID> GlobalEntitiesRegistry = new();
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]

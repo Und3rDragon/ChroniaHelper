@@ -21,6 +21,12 @@ public class CounterListener :  StateListener
     public List<int> References = new();
     public bool Inverted = false;
 
+    /// <summary>
+    /// Expression Syntax: 1, 2-3, 4-6
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="inverted"></param>
+    /// <param name="expression"></param>
     public CounterListener(string name, bool inverted, string expression)
     {
         this.Name = name;
