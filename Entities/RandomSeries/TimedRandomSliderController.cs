@@ -33,6 +33,23 @@ public class TimedRandomSliderController : BaseEntity
         {
             Tag = Tags.Global;
         }
+
+        string _seed = d.Attr("seed");
+        if (_seed.HasValidContent())
+        {
+            if (int.TryParse(_seed, out int n))
+            {
+                seed = n;
+            }
+            else
+            {
+                seed = _seed.GetHashCode();
+            }
+        }
+        else
+        {
+            seed = SourceData.ID;
+        }
     }
     public string slider;
     public float value1, value2;
@@ -41,6 +58,7 @@ public class TimedRandomSliderController : BaseEntity
     public Modes mode;
     public float startDelay;
     public bool global;
+    public int seed;
 
     public float timer;
     public bool active = false;
@@ -77,6 +95,6 @@ public class TimedRandomSliderController : BaseEntity
 
     public float GenerateRandom()
     {
-        return RandomUtils.RandomFloat(value1, value2);
+        return RandomUtils.RandomFloat(value1, value2, seed);
     }
 }
