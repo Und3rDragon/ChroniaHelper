@@ -48,7 +48,7 @@ public class TimedRandomCounterController : BaseEntity
         }
         else
         {
-            seed = SourceData.ID;
+            seed = ID;
         }
     }
     public string counter;
