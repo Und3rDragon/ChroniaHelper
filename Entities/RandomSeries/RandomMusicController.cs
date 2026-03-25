@@ -24,6 +24,7 @@ public class RandomMusicController : BaseEntity
             AddedAwait = startDelay;
             active = false;
         }
+        allowRepeat = d.Bool("allowRepeat", true);
 
         if (d.Bool("global", false))
         {
@@ -34,6 +35,7 @@ public class RandomMusicController : BaseEntity
     public enum Modes { OnAdded = 0 }
     public Modes mode;
     public float startDelay;
+    public bool allowRepeat;
 
     public float timer;
     public bool active = false;
@@ -68,7 +70,8 @@ public class RandomMusicController : BaseEntity
     public void SetRandomMusic()
     {
         int count = musics.GetLength(0);
-        string[] choose = musics[RandomUtils.RandomInt(0, count)];
+        int index = RandomUtils.RandomInt(0, count);
+        string[] choose = musics[index];
         float interval = 60f;
         if(choose.Length >= 2) 
         { 
@@ -76,6 +79,14 @@ public class RandomMusicController : BaseEntity
         }
         if (choose[0] == lastPlayed)
         {
+            index++;
+            choose = musics.ClampLoop(index);
+
+            if (choose.Length >= 2)
+            {
+                float.TryParse(choose[1], out interval);
+            }
+
             timer = interval;
             //Log.Info($"Equal, extend [{choose[0]}] by {interval}");
             return;

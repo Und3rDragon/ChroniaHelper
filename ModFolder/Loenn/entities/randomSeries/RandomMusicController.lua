@@ -15,6 +15,7 @@ controller.placements = {
         musics = "music_city,60;music_credits,60",
         mode = 0,
         startDelay = 0,
+        allowRepeat = true,
         global = false,
     },
 }
@@ -36,6 +37,7 @@ controller.fieldInformation = {
     musics = {
         fieldType = "list",
         elementSeparator = ";",
+        minimumElements = 2,
         elementOptions = {
             fieldType = "list",
             minimumElements = 2,
