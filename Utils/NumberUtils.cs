@@ -1247,4 +1247,67 @@ public static class NumberUtils
     {
         return (value1 * scale1 + value2 * scale2) / (scale1 + scale2);
     }
+
+    public static int ClampLoop(this int value, int border1, int border2)
+    {
+        if(border1 == border2) { return border1; }
+
+        int min = border1 < border2 ? border1 : border2;
+        int max = border1 > border2 ? border1 : border2;
+        int d = max - min + 1;
+
+        int n = value;
+        while(n < min)
+        {
+            n += d;
+        }
+        while(n > max)
+        {
+            n -= d;
+        }
+
+        return n;
+    }
+
+    public static float ClampLoop(this float value, float border1, float border2)
+    {
+        if (border1 == border2) { return border1; }
+
+        float min = border1 < border2 ? border1 : border2;
+        float max = border1 > border2 ? border1 : border2;
+        float d = max - min;
+
+        float n = value;
+        while (n < min)
+        {
+            n += d;
+        }
+        while (n > max)
+        {
+            n -= d;
+        }
+
+        return n;
+    }
+
+    public static double ClampLoop(double value, double border1, double border2)
+    {
+        if (border1 == border2) { return border1; }
+
+        double min = border1 < border2 ? border1 : border2;
+        double max = border1 > border2 ? border1 : border2;
+        double d = max - min;
+
+        double n = value;
+        while (n < min)
+        {
+            n += d;
+        }
+        while (n > max)
+        {
+            n -= d;
+        }
+
+        return n;
+    }
 }

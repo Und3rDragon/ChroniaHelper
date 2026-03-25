@@ -32,6 +32,51 @@ public class SliderListener : StateListener
         }
     }
 
+    /// <summary>
+    /// Expression syntax: 0, 0.5-1.2
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="inverted"></param>
+    /// <param name="expression"></param>
+    public SliderListener(string name, bool inverted, string expression)
+    {
+        Name = name;
+        Inverted = inverted;
+        string[] s = expression.Split(',', StringSplitOptions.TrimEntries);
+        foreach (var item in s)
+        {
+            if (float.TryParse(item, out float n))
+            {
+                References.Add((n, null));
+                continue;
+            }
+
+            if (item.Contains('-'))
+            {
+                string[] s1 = item.Split('-', StringSplitOptions.TrimEntries);
+                List<float> indexes = new();
+                foreach (var num in s1)
+                {
+                    if (float.TryParse(num, out float n1))
+                    {
+                        indexes.Add(n1);
+                    }
+                }
+
+                if (indexes.Count == 0) { continue; }
+
+                if (indexes.Count == 1) { References.Add((indexes[0], null)); }
+
+                float m1 = indexes.GetMinItem(n => n);
+                float m2 = indexes.GetMaxItem(n => n);
+
+                References.Add((m1, m2));
+
+                continue;
+            }
+        }
+    }
+
     private float f = 0f;
     protected override bool GetState()
     {

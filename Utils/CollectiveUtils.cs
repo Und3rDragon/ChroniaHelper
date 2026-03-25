@@ -1142,4 +1142,20 @@ public static class CollectiveUtils
             list.Add(convert(orig[i]));
         }
     }
+
+    public static T ClampLoop<T>(this List<T> source, int index)
+    {
+        if (source is null) { return default; }
+        if (source.Count == 0) { return default; }
+
+        return source[index.ClampLoop(0, source.Count - 1)];
+    }
+
+    public static T ClampLoop<T>(this T[] source, int index)
+    {
+        if (source is null) { return default; }
+        if (source.Length == 0) { return default; }
+
+        return source[index.ClampLoop(0, source.Length - 1)];
+    }
 }

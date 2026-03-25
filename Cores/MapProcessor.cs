@@ -49,7 +49,6 @@ public static class MapProcessor
     public static MapData mapdata;
     public static int saveSlotIndex;
     public static Level level;
-    public static EntityList entities;
 
     /// <summary>
     /// Entity Dummies for Recycling Components
@@ -129,7 +128,6 @@ public static class MapProcessor
     private static void OnLevelLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level level, Player.IntroTypes intro, bool isFromLoader)
     {
         MaP.level = level;
-        entities = level.Entities;
         camOffset = level.CameraOffset;
         mapdata = level.Session.MapData;
         areakey = level.Session.MapData.Area;
@@ -248,7 +246,6 @@ public static class MapProcessor
         orig(self);
         
         level = self;
-        entities = level.Entities;
 
         string languageFlag = $"ChroniaHelper_Language_{Dialog.Language?.Id ?? "english"}";
         self.Session.Flags.RemoveWhere((flag) =>
