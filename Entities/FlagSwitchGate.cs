@@ -273,7 +273,7 @@ namespace ChroniaHelper.Entities {
                         for (int tileY = 0; tileY < Height / 8f; tileY++) {
                             if ((tileX + tileY) % 2 == particleAt) {
                                 SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind,
-                                    Position + new Vector2(tileX * 8, tileY * 8) + Calc.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
+                                    Position + new Vector2(tileX * 8, tileY * 8) + Rd.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
                             }
                         }
                     }
@@ -362,7 +362,7 @@ namespace ChroniaHelper.Entities {
             Collidable = false;
             if (!Scene.CollideCheck<Solid>(Center) && smoke) {
                 for (int i = 0; i < 32; i++) {
-                    float angle = Calc.Random.NextFloat((float) Math.PI * 2f);
+                    float angle = Rd.Random.NextFloat((float) Math.PI * 2f);
                     SceneAs<Level>().ParticlesFG.Emit(goingBack ? P_RecoloredFireBack : P_RecoloredFire, Position + iconOffset + Calc.AngleToVector(angle, 4f), angle);
                 }
             }
@@ -414,7 +414,7 @@ namespace ChroniaHelper.Entities {
 
             yield return 0.1f;
             for (int k = 0; k < 32; k++) {
-                float num = Calc.Random.NextFloat((float) Math.PI * 2f);
+                float num = Rd.Random.NextFloat((float) Math.PI * 2f);
                 SceneAs<Level>().ParticlesFG.Emit(P_RecoloredFire, Position + iconOffset + Calc.AngleToVector(num, 4f), num);
             }
             openSfx.Stop();

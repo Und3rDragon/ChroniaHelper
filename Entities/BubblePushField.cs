@@ -131,7 +131,7 @@ public class BubblePushField : Entity
             if (FramesSinceSpawn == SpawnFrame)
             {
                 FramesSinceSpawn = 0;
-                SpawnFrame = Calc.Random.Next(2, 10);
+                SpawnFrame = Rd.Random.Next(2, 10);
                 Add(new BubbleParticle(true, true));
             }
 
@@ -310,8 +310,8 @@ class BubbleParticle : Component
         BubbleField = (BubblePushField)entity;
         Position = BubbleField.Position;
 
-        int dirIndex = Calc.Random.Range(0, BubbleField.pDirLength);
-        //Texture = GFX.Game["particles/ChroniaHelper/bubble_" + TextureNames[Calc.Random.Next(0, 2)]];
+        int dirIndex = Rd.Random.Range(0, BubbleField.pDirLength);
+        //Texture = GFX.Game["particles/ChroniaHelper/bubble_" + TextureNames[Rd.Random.Next(0, 2)]];
         Texture = GFX.Game[BubbleField.particlePaths[dirIndex]];
         //自定义贴图
 
@@ -323,27 +323,27 @@ class BubbleParticle : Component
         switch (BubbleField.Direction)
         {
             case PushDirection.Up:
-                Origin = new Vector2(Calc.Random.Range(BubbleField.BottomLeft.X, BubbleField.BottomRight.X), BubbleField.BottomCenter.Y);
-                End = new Vector2(Calc.Random.Range(BubbleField.TopLeft.X, BubbleField.TopRight.X), BubbleField.TopCenter.Y);
-                FramesMaxAlive = (int)Calc.Random.Range(20, BubbleField.Height / BubbleField.Strength * .5f);
+                Origin = new Vector2(Rd.Random.Range(BubbleField.BottomLeft.X, BubbleField.BottomRight.X), BubbleField.BottomCenter.Y);
+                End = new Vector2(Rd.Random.Range(BubbleField.TopLeft.X, BubbleField.TopRight.X), BubbleField.TopCenter.Y);
+                FramesMaxAlive = (int)Rd.Random.Range(20, BubbleField.Height / BubbleField.Strength * .5f);
                 break;
 
             case PushDirection.Down:
-                Origin = new Vector2(Calc.Random.Range(BubbleField.TopLeft.X, BubbleField.TopRight.X), BubbleField.TopCenter.Y);
-                End = new Vector2(Calc.Random.Range(BubbleField.BottomLeft.X, BubbleField.BottomRight.X), BubbleField.BottomCenter.Y);
-                FramesMaxAlive = (int)Calc.Random.Range(20, BubbleField.Height / BubbleField.Strength * .5f);
+                Origin = new Vector2(Rd.Random.Range(BubbleField.TopLeft.X, BubbleField.TopRight.X), BubbleField.TopCenter.Y);
+                End = new Vector2(Rd.Random.Range(BubbleField.BottomLeft.X, BubbleField.BottomRight.X), BubbleField.BottomCenter.Y);
+                FramesMaxAlive = (int)Rd.Random.Range(20, BubbleField.Height / BubbleField.Strength * .5f);
                 break;
 
             case PushDirection.Right:
-                Origin = new Vector2(BubbleField.CenterLeft.X, Calc.Random.Range(BubbleField.BottomLeft.Y, BubbleField.TopLeft.Y));
-                End = new Vector2(BubbleField.CenterRight.X, Calc.Random.Range(BubbleField.BottomRight.Y, BubbleField.TopRight.Y));
-                FramesMaxAlive = (int)Calc.Random.Range(20, BubbleField.Width / BubbleField.Strength * .5f);
+                Origin = new Vector2(BubbleField.CenterLeft.X, Rd.Random.Range(BubbleField.BottomLeft.Y, BubbleField.TopLeft.Y));
+                End = new Vector2(BubbleField.CenterRight.X, Rd.Random.Range(BubbleField.BottomRight.Y, BubbleField.TopRight.Y));
+                FramesMaxAlive = (int)Rd.Random.Range(20, BubbleField.Width / BubbleField.Strength * .5f);
                 break;
 
             case PushDirection.Left:
-                Origin = new Vector2(BubbleField.CenterRight.X, Calc.Random.Range(BubbleField.BottomRight.Y, BubbleField.TopRight.Y));
-                End = new Vector2(BubbleField.CenterLeft.X, Calc.Random.Range(BubbleField.BottomLeft.Y, BubbleField.TopLeft.Y));
-                FramesMaxAlive = (int)Calc.Random.Range(20, BubbleField.Width / BubbleField.Strength * .5f);
+                Origin = new Vector2(BubbleField.CenterRight.X, Rd.Random.Range(BubbleField.BottomRight.Y, BubbleField.TopRight.Y));
+                End = new Vector2(BubbleField.CenterLeft.X, Rd.Random.Range(BubbleField.BottomLeft.Y, BubbleField.TopLeft.Y));
+                FramesMaxAlive = (int)Rd.Random.Range(20, BubbleField.Width / BubbleField.Strength * .5f);
                 break;
         }
 

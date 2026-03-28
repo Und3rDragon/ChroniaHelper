@@ -55,17 +55,17 @@ public class OmniZipWater : OmniZipEntity
         public Ray(float maxWidth)
         {
             MaxWidth = maxWidth;
-            Reset(Calc.Random.NextFloat());
+            Reset(Rd.Random.NextFloat());
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void Reset(float percent)
         {
-            Position = Calc.Random.NextFloat() * MaxWidth;
+            Position = Rd.Random.NextFloat() * MaxWidth;
             Percent = percent;
-            Duration = Calc.Random.Range(2f, 8f);
-            Width = Calc.Random.Range(2, 16);
-            Length = Calc.Random.Range(8f, 128f);
+            Duration = Rd.Random.Range(2f, 8f);
+            Width = Rd.Random.Range(2, 16);
+            Length = Rd.Random.Range(8f, 128f);
         }
     }
 
@@ -788,7 +788,7 @@ public class OmniZipWater : OmniZipEntity
 
         if (isShaking)
         {
-            Vector2 dPos = Calc.Random.Range(new Vector2(-2f, -2f), new Vector2(2f, 2f));
+            Vector2 dPos = Rd.Random.Range(new Vector2(-2f, -2f), new Vector2(2f, 2f));
             Position += dPos;
         }
 

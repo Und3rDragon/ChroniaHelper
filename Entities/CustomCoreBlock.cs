@@ -38,7 +38,7 @@ public class CustomCoreBlock : Solid
         public RespawnDebris Init(Vector2 from, Vector2 to, bool ice, float duration, string iceRubble = "objects/BumpBlockNew/ice_rubble", string fireRubble = "objects/BumpBlockNew/fire_rubble")
         {
             List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(ice ? iceRubble : fireRubble);
-            MTexture texture = Calc.Random.Choose(atlasSubtextures);
+            MTexture texture = Rd.Random.Choose(atlasSubtextures);
             if (sprite == null)
             {
                 Add(sprite = new Image(texture));
@@ -92,7 +92,7 @@ public class CustomCoreBlock : Solid
         public BreakDebris Init(Vector2 position, Vector2 direction, bool ice, string iceRubble = "objects/BumpBlockNew/ice_rubble", string fireRubble = "objects/BumpBlockNew/fire_rubble")
         {
             List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(ice ? iceRubble : fireRubble);
-            MTexture texture = Calc.Random.Choose(atlasSubtextures);
+            MTexture texture = Rd.Random.Choose(atlasSubtextures);
             if (sprite == null)
             {
                 Add(sprite = new Image(texture));
@@ -104,10 +104,10 @@ public class CustomCoreBlock : Solid
             }
 
             Position = position;
-            direction = Calc.AngleToVector(direction.Angle() + Calc.Random.Range(-0.1f, 0.1f), 1f);
-            speed = direction * (ice ? Calc.Random.Range(20, 40) : Calc.Random.Range(120, 200));
+            direction = Calc.AngleToVector(direction.Angle() + Rd.Random.Range(-0.1f, 0.1f), 1f);
+            speed = direction * (ice ? Rd.Random.Range(20, 40) : Rd.Random.Range(120, 200));
             percent = 0f;
-            duration = Calc.Random.Range(2, 3);
+            duration = Rd.Random.Range(2, 3);
             return this;
         }
 
@@ -228,8 +228,8 @@ public class CustomCoreBlock : Solid
         {
             for (int j = 0; (float)j < base.Height; j += 8)
             {
-                int num3 = ((i != 0) ? ((!((float)i >= base.Width - 8f)) ? Calc.Random.Next(1, num - 1) : (num - 1)) : 0);
-                int num4 = ((j != 0) ? ((!((float)j >= base.Height - 8f)) ? Calc.Random.Next(1, num2 - 1) : (num2 - 1)) : 0);
+                int num3 = ((i != 0) ? ((!((float)i >= base.Width - 8f)) ? Rd.Random.Next(1, num - 1) : (num - 1)) : 0);
+                int num4 = ((j != 0) ? ((!((float)j >= base.Height - 8f)) ? Rd.Random.Next(1, num2 - 1) : (num2 - 1)) : 0);
                 Image image = new Image(source.GetSubtexture(num3 * 8, num4 * 8, 8, 8));
                 image.Position = new Vector2(i, j);
                 list.Add(image);
@@ -479,28 +479,28 @@ public class CustomCoreBlock : Solid
 
             for (int i = 0; (float)i < base.Width; i += 4)
             {
-                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Y), c.Parsed(), -MathF.PI / 2f);
-                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Bottom - 1f), c.Parsed(), MathF.PI / 2f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Rd.Random.Range(-1, 1), base.Y), c.Parsed(), -MathF.PI / 2f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Rd.Random.Range(-1, 1), base.Bottom - 1f), c.Parsed(), MathF.PI / 2f);
             }
 
             for (int j = 0; (float)j < base.Height; j += 4)
             {
-                level.Particles.Emit(P_Reform, new Vector2(base.X, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), MathF.PI);
-                level.Particles.Emit(P_Reform, new Vector2(base.Right - 1f, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), 0f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X, base.Y + 2f + (float)j + (float)Rd.Random.Range(-1, 1)), MathF.PI);
+                level.Particles.Emit(P_Reform, new Vector2(base.Right - 1f, base.Y + 2f + (float)j + (float)Rd.Random.Range(-1, 1)), 0f);
             }
         }
         else
         {
             for (int i = 0; (float)i < base.Width; i += 4)
             {
-                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Y), -MathF.PI / 2f);
-                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Calc.Random.Range(-1, 1), base.Bottom - 1f), MathF.PI / 2f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Rd.Random.Range(-1, 1), base.Y), -MathF.PI / 2f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X + 2f + (float)i + (float)Rd.Random.Range(-1, 1), base.Bottom - 1f), MathF.PI / 2f);
             }
 
             for (int j = 0; (float)j < base.Height; j += 4)
             {
-                level.Particles.Emit(P_Reform, new Vector2(base.X, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), MathF.PI);
-                level.Particles.Emit(P_Reform, new Vector2(base.Right - 1f, base.Y + 2f + (float)j + (float)Calc.Random.Range(-1, 1)), 0f);
+                level.Particles.Emit(P_Reform, new Vector2(base.X, base.Y + 2f + (float)j + (float)Rd.Random.Range(-1, 1)), MathF.PI);
+                level.Particles.Emit(P_Reform, new Vector2(base.Right - 1f, base.Y + 2f + (float)j + (float)Rd.Random.Range(-1, 1)), 0f);
             }
         }
     }
@@ -578,7 +578,7 @@ public class CustomCoreBlock : Solid
         {
             for (int l = 0; (float)l < base.Height; l += 4)
             {
-                Vector2 vector = Position + new Vector2(2 + k, 2 + l) + Calc.Random.Range(-Vector2.One, Vector2.One);
+                Vector2 vector = Position + new Vector2(2 + k, 2 + l) + Rd.Random.Range(-Vector2.One, Vector2.One);
                 float direction2 = (iceMode ? (vector - center).Angle() : num);
                 
                 if(!iceBreak.Item1 || !fireBreak.Item1)

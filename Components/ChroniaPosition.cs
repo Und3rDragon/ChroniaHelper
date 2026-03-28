@@ -215,7 +215,7 @@ public class ChroniaPosition :  BaseComponent
             return;
         }
 
-        int id = Calc.Random.Next();
+        int id = Rd.Random.Next();
         RoutineRunning[$"routine_move_{id}"] = true;
         Entity.Add(new Coroutine(MoveRoutine(id, delta, duration.GetAbs(), easer)));
     }

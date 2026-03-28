@@ -31,9 +31,9 @@ namespace ChroniaHelper.Effects {
             public Color Color;
 
             public void Init(float extX, float extY) {
-                Position = new Vector2(-32f + Calc.Random.NextFloat(384f + extX), -32f + Calc.Random.NextFloat(244f + extY));
-                Rotation = MathF.PI / 2f + Calc.Random.Range(-0.05f, 0.05f);
-                Speed = Calc.Random.Range(200f, 600f);
+                Position = new Vector2(-32f + Rd.Random.NextFloat(384f + extX), -32f + Rd.Random.NextFloat(244f + extY));
+                Rotation = MathF.PI / 2f + Rd.Random.Range(-0.05f, 0.05f);
+                Speed = Rd.Random.Range(200f, 600f);
                 Scale = new Vector2(4f + (Speed - 200f) / 400f * 12f, 1f);
             }
         }

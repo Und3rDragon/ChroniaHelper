@@ -35,23 +35,23 @@ public class CustomSummitCloud2 : Entity
         screenY = data.Float("screenPosY", 90f).GetAbs();
         amp = data.Float("floatyAmplitude", 8f).GetAbs();
 
-        camParallax = Calc.Random.Range(parallax - randomParallax, parallax + randomParallax);
+        camParallax = Rd.Random.Range(parallax - randomParallax, parallax + randomParallax);
 
         freq = data.Float("floatingFreq", 0.1f).GetAbs();
         r_freq = data.Float("randomFloatingFreq", 0.05f).GetAbs();
 
         List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(path = data.Attr("path", "ChroniaHelper/CustomSummitCloud2s/cloud"));
-        image = new Image(Calc.Random.Choose(atlasSubtextures));
+        image = new Image(Rd.Random.Choose(atlasSubtextures));
         image.CenterOrigin();
 
         // Scale Flip
         if(data.Bool("randomFlipX", true))
         {
-            image.Scale.X = Calc.Random.Choose(-1, 1);
+            image.Scale.X = Rd.Random.Choose(-1, 1);
         }
         if(data.Bool("randomFlipY", false))
         {
-            image.Scale.Y = Calc.Random.Choose(-1, 1);
+            image.Scale.Y = Rd.Random.Choose(-1, 1);
         }
 
         image.Color = Calc.HexToColor(data.Attr("color", "ffffff"));
@@ -59,7 +59,7 @@ public class CustomSummitCloud2 : Entity
         Add(image);
 
         bool fPos = freq - r_freq >= 0;
-        SineWave sineWave = new SineWave(Calc.Random.Range(fPos? freq - r_freq : 0f, freq + r_freq), 0f);
+        SineWave sineWave = new SineWave(Rd.Random.Range(fPos? freq - r_freq : 0f, freq + r_freq), 0f);
         sineWave.Randomize();
         sineWave.OnUpdate = delegate (float f)
         {

@@ -45,12 +45,12 @@ public class CustomSummitCloud : Entity
         screenX = data.Float("screenPosX", 160f);
         screenY = data.Float("screenPosY", 90f);
 
-        diff = randomizeParallax? Calc.Random.Range(parallax, parallax + 0.1f) : parallax;
+        diff = randomizeParallax? Rd.Random.Range(parallax, parallax + 0.1f) : parallax;
         floatiness = data.Float("floatiness", 1f);
         alignment = data.Enum<Aligns>("alignment", Aligns.PositionTopLeft);
 
         List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(path = data.Attr("path", "ChroniaHelper/CustomSummitClouds/cloud"));
-        image = new Image(Calc.Random.Choose(atlasSubtextures));
+        image = new Image(Rd.Random.Choose(atlasSubtextures));
         // Alignments
         float tileL = Width, tileH = Height;
         switch (alignment)
@@ -122,18 +122,18 @@ public class CustomSummitCloud : Entity
         // Scale Flip
         if(data.Bool("randomFlipX", true))
         {
-            image.Scale.X = Calc.Random.Choose(-1, 1);
+            image.Scale.X = Rd.Random.Choose(-1, 1);
         }
         if(data.Bool("randomFlipY", false))
         {
-            image.Scale.Y = Calc.Random.Choose(-1, 1);
+            image.Scale.Y = Rd.Random.Choose(-1, 1);
         }
 
         image.Color = Calc.HexToColor(data.Attr("color", "ffffff"));
 
         Add(image);
 
-        SineWave sineWave = new SineWave(Calc.Random.Range(0.05f, 0.15f) * floatiness, 0f);
+        SineWave sineWave = new SineWave(Rd.Random.Range(0.05f, 0.15f) * floatiness, 0f);
         sineWave.Randomize();
         sineWave.OnUpdate = delegate (float f)
         {

@@ -120,7 +120,7 @@ public class GoomyGate : Solid
                     {
                         if ((n + num2) % 2 == particleAt)
                         {
-                            SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind, Position + new Vector2(n * 8, num2 * 8) + Calc.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
+                            SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind, Position + new Vector2(n * 8, num2 * 8) + Rd.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
                         }
                     }
                 }
@@ -209,7 +209,7 @@ public class GoomyGate : Solid
         {
             for (int m = 0; m < 32; m++)
             {
-                float num = Calc.Random.NextFloat((float)Math.PI * 2f);
+                float num = Rd.Random.NextFloat((float)Math.PI * 2f);
                 SceneAs<Level>().ParticlesFG.Emit(TouchSwitch.P_Fire, Position + iconOffset + Calc.AngleToVector(num, 4f), num);
             }
         }

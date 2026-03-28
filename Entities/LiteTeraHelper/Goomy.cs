@@ -1,5 +1,6 @@
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores.LiteTeraHelper;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
@@ -93,7 +94,7 @@ public class Goomy : Entity
             var data = SaveData.Instance.Areas_Safe[area.ID];
             roll += data.TotalStrawberries;
             int seed = (int)data.TotalTimePlayed;
-            Random random = new Random(seed);
+            Random random = Rd.Rand(seed);
             while (roll > 0)
             {
                 roll--;
@@ -127,7 +128,7 @@ public class Goomy : Entity
     public override void Update()
     {
         base.Update();
-        var rand = new Random((int)(player.Position.X + player.Position.Y + X));
+        var rand = Rd.Rand((int)(player.Position.X + player.Position.Y + X));
         var joy = happiness;
         if (joy == 3)
             OpenGate();

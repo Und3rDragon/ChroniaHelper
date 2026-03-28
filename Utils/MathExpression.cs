@@ -485,7 +485,7 @@ internal class Parser
                 case "rand":
                     ValidateArgCount(args, 2, "rand");
                     float a = args[0], b = args[1];
-                    return RandomUtils.RandomFloat(Math.Min(a, b), Math.Max(a, b));
+                    return Rd.RandomFloat(Math.Min(a, b), Math.Max(a, b));
 
                 // 可变参数函数
                 case "min":

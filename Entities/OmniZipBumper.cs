@@ -377,7 +377,7 @@ public class OmniZipBumper : OmniZipEntity
         }
         else if (base.Scene.OnInterval(0.05f))
         {
-            float num = Calc.Random.NextAngle();
+            float num = Rd.Random.NextAngle();
             ParticleType type = (fireMode ? P_FireAmbience : P_Ambience);
             float direction = (fireMode ? (-(float)Math.PI / 2f) : num);
             float length = (fireMode ? 12 : 8);
@@ -397,7 +397,7 @@ public class OmniZipBumper : OmniZipEntity
 
         if (isShaking)
         {
-            Vector2 dPos = Calc.Random.Range(new Vector2(-2f, -2f), new Vector2(2f, 2f));
+            Vector2 dPos = Rd.Random.Range(new Vector2(-2f, -2f), new Vector2(2f, 2f));
             Position += dPos;
         }
 

@@ -214,7 +214,7 @@ public class FlagButton2 : Entity {
             wiggler.Start();
             for (int i = 0; i < 32; i++)
             {
-                float num = Calc.Random.NextFloat((float)Math.PI * 2f);
+                float num = Rd.Random.NextFloat((float)Math.PI * 2f);
                 level.Particles.Emit(particle, Position + new Vector2(ew / 2, eh / 2) + Calc.AngleToVector(num, 6f), num);
             }
             icon.Play("spin");
@@ -381,7 +381,7 @@ public class FlagButton2 : Entity {
             }
             else if (base.Scene.OnInterval(0.03f))
             {
-                Vector2 position = Position + new Vector2(ew /2, eh /2 + 1) + Calc.AngleToVector(Calc.Random.NextAngle(), 5f);
+                Vector2 position = Position + new Vector2(ew /2, eh /2 + 1) + Calc.AngleToVector(Rd.Random.NextAngle(), 5f);
                 // emit particles depending on the entity
                 if(classify == switchKind.touch) { level.ParticlesBG.Emit(particle, position); }
                 else { level.ParticlesBG.Emit(particle, EdgePosition()); }
@@ -396,18 +396,18 @@ public class FlagButton2 : Entity {
 
     public Vector2 EdgePosition()
     {
-        int def = Calc.Random.Range(0,4);
+        int def = Rd.Random.Range(0,4);
         int x, y;
         switch (def)
         {
             case 1:
-                x = ew; y = Calc.Random.Range(0, eh); break;
+                x = ew; y = Rd.Random.Range(0, eh); break;
             case 2:
-                x = Calc.Random.Range(0, ew); y = eh; break;
+                x = Rd.Random.Range(0, ew); y = eh; break;
             case 3:
-                x = 0; y = Calc.Random.Range(0, eh); break;
+                x = 0; y = Rd.Random.Range(0, eh); break;
             default:
-                x = Calc.Random.Range(0, ew); y = 0; break;
+                x = Rd.Random.Range(0, ew); y = 0; break;
         }
         return Position + new Vector2(x, y);
     }

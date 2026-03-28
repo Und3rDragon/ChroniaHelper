@@ -255,7 +255,7 @@ public class OmniSwitchGate : Solid
                         {
                             if ((x + y) % 2 == particleAt)
                             {
-                                SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind, Position + new Vector2(x * 8, y * 8) + Calc.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
+                                SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind, Position + new Vector2(x * 8, y * 8) + Rd.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
                             }
                         }
                     }
@@ -384,7 +384,7 @@ public class OmniSwitchGate : Solid
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    float angle = Calc.Random.NextFloat((float)Math.PI * 2f);
+                    float angle = Rd.Random.NextFloat((float)Math.PI * 2f);
                     SceneAs<Level>().ParticlesFG.Emit(TouchSwitch.P_Fire, Position + iconOffset + Calc.AngleToVector(angle, 4f), angle);
                 }
             }
@@ -482,7 +482,7 @@ public class OmniSwitchGate : Solid
         
         for (int k = 0; k < 32; k++)
         {
-            float num = Calc.Random.NextFloat((float)Math.PI * 2f);
+            float num = Rd.Random.NextFloat((float)Math.PI * 2f);
             SceneAs<Level>().ParticlesFG.Emit(SwitchGate.P_Dust, Position + iconOffset + Calc.AngleToVector(num, 4f), num);
         }
         openSfx.Stop();

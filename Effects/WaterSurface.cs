@@ -130,13 +130,13 @@ public class WaterSurface : Backdrop
         var _angle = 0f * -Calc.DegToRad; //90f = angle
         for (int i = 0; i < count; i++)
         {
-            float x = Calc.Random.Range(-16f, 344f + extX);
-            float y = Calc.Random.Range(renderY1, renderY2);
+            float x = Rd.Random.Range(-16f, 344f + extX);
+            float y = Rd.Random.Range(renderY1, renderY2);
             particles[i].Init(
                 new Vector2(x, y), _angle, 
                 FadeUtils.LerpValue(y, renderY1, renderY2, this.waterSpeed1, this.waterSpeed2),
                 new Vector2(FadeUtils.LerpValue(y, renderY1, renderY2, particleScale1, particleScale2), 1f),
-                Calc.Random.Choose<Color>(_colors), 
+                Rd.Random.Choose<Color>(_colors), 
                 extX, extY
                 );
         }
@@ -168,13 +168,13 @@ public class WaterSurface : Backdrop
         var _angleBG = 0f * -Calc.DegToRad; //90f = angle
         for (int i = 0; i < backParticleCount; i++)
         {
-            float x = Calc.Random.Range(-16f, 344f + extX);
-            float y = Calc.Random.Range(renderY1, renderY2);
+            float x = Rd.Random.Range(-16f, 344f + extX);
+            float y = Rd.Random.Range(renderY1, renderY2);
             backParticles[i].Init(
                 new Vector2(x, y), _angleBG,
                 FadeUtils.LerpValue(y, renderY1, renderY2, this.waterSpeed1, this.waterSpeed2),
                 new Vector2(FadeUtils.LerpValue(y, renderY1, renderY2, particleScale1, particleScale2), 1f),
-                Calc.Random.Choose<Color>(_colorsBG),
+                Rd.Random.Choose<Color>(_colorsBG),
                 extX, extY
                 );
         }

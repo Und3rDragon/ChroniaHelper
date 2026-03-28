@@ -76,6 +76,6 @@ public class RandomSliderTrigger : BaseTrigger
 
     public float GenerateRandom()
     {
-        return RandomUtils.RandomFloat(value1, value2, seed);
+        return Rd.RandomFloat(value1, value2, seed);
     }
 }

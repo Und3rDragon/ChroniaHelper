@@ -297,7 +297,7 @@ namespace ChroniaHelper.Entities {
                                 if ((tileX + tileY) % 2 == particleAt)
                                 {
                                     SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind,
-                                        Position + new Vector2(tileX * 8, tileY * 8) + Calc.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
+                                        Position + new Vector2(tileX * 8, tileY * 8) + Rd.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
                                 }
                             }
                         }
@@ -419,7 +419,7 @@ namespace ChroniaHelper.Entities {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    float angle = Calc.Random.NextFloat((float)Math.PI * 2f);
+                    float angle = Rd.Random.NextFloat((float)Math.PI * 2f);
                     SceneAs<Level>().ParticlesFG.Emit(P_RecoloredFire, Position + iconOffset + Calc.AngleToVector(angle, 4f), toColor, angle);
                 }
             }
@@ -540,7 +540,7 @@ namespace ChroniaHelper.Entities {
                                 if ((tileX + tileY) % 2 == particleAt)
                                 {
                                     SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind,
-                                        Position + new Vector2(tileX * 8, tileY * 8) + Calc.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
+                                        Position + new Vector2(tileX * 8, tileY * 8) + Rd.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
                                 }
                             }
                         }
@@ -582,7 +582,7 @@ namespace ChroniaHelper.Entities {
                                 if ((tileX + tileY) % 2 == particleAt)
                                 {
                                     SceneAs<Level>().ParticlesBG.Emit(SwitchGate.P_Behind,
-                                        Position + new Vector2(tileX * 8, tileY * 8) + Calc.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
+                                        Position + new Vector2(tileX * 8, tileY * 8) + Rd.Random.Range(Vector2.One * 2f, Vector2.One * 6f));
                                 }
                             }
                         }
@@ -710,7 +710,7 @@ namespace ChroniaHelper.Entities {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    float angle = Calc.Random.NextFloat((float)Math.PI * 2f);
+                    float angle = Rd.Random.NextFloat((float)Math.PI * 2f);
                     SceneAs<Level>().ParticlesFG.Emit(P_RecoloredFire, Position + iconOffset + Calc.AngleToVector(angle, 4f), toColor, angle);
                 }
             }

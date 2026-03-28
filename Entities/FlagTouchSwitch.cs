@@ -325,7 +325,7 @@ namespace ChroniaHelper.Entities
                     wiggler.Start();
                     for (int i = 0; i < 32; i++)
                     {
-                        float num = Calc.Random.NextFloat((float)Math.PI * 2f);
+                        float num = Rd.Random.NextFloat((float)Math.PI * 2f);
                         level.Particles.Emit(TouchSwitch.P_FireWhite, Position + new Vector2(ew/2, eh/2) + Calc.AngleToVector(num, 6f), num);
                     }
                 });
@@ -470,7 +470,7 @@ namespace ChroniaHelper.Entities
                 }
                 else if (Scene.OnInterval(0.03f) && smoke)
                 {
-                    Vector2 position = Position + new Vector2(ew/2, eh/2) + new Vector2(0f, 1f) + Calc.AngleToVector(Calc.Random.NextAngle(), 5f);
+                    Vector2 position = Position + new Vector2(ew/2, eh/2) + new Vector2(0f, 1f) + Calc.AngleToVector(Rd.Random.NextAngle(), 5f);
                     level.ParticlesBG.Emit(P_RecoloredFire, position);
                 }
 

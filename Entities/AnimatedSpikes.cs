@@ -639,19 +639,19 @@ public class AnimatedSpikes : Entity
             this.spikes[i].spikeIndex = i;
             this.spikes[i].triggered = !this.trigger;
             this.spikes[i].lerp = (this.trigger ? 0F : this.lerpMoveTime);
-            this.spikes[i].disabledColor = this.disabledColors[Calc.Random.Next(this.disabledColors.Length)];
-            this.spikes[i].disabledFrame = Calc.Random.NextFloat(this.disableds.Count);
+            this.spikes[i].disabledColor = this.disabledColors[Rd.Random.Next(this.disabledColors.Length)];
+            this.spikes[i].disabledFrame = Rd.Random.NextFloat(this.disableds.Count);
             if (defragmentFrameOffset)
             {
                 this.spikes[i].disabledFrame = float.Round(this.spikes[i].disabledFrame);
             }
-            this.spikes[i].enabledFrame = Calc.Random.NextFloat(this.enableds.Count);
+            this.spikes[i].enabledFrame = Rd.Random.NextFloat(this.enableds.Count);
             if (defragmentFrameOffset)
             {
                 this.spikes[i].enabledFrame = float.Round(this.spikes[i].enabledFrame);
             }
             this.spikes[i].enabledColor = this.enabledColor;
-            this.spikes[i].enabledExterior = Calc.Random.Choose(this.enabledExteriors);
+            this.spikes[i].enabledExterior = Rd.Random.Choose(this.enabledExteriors);
             this.spikes[i].position = (this.direction) switch
             {
                 DirectionMode.Up => Vector2.UnitX * (i + 0.5F) * 8F + Vector2.UnitY,

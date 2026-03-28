@@ -34,7 +34,7 @@ public class Balloon : BaseEntity
         superBounce = data.Bool("superBounce");
         Collider = data.Attr("collider", "r,16,16,-8,-8").ParseColliderList();
         Depth = data.Int("depth", -1);
-        floatyOffset = (int)(data.Float("floatPhase", 0f) * Calc.Random.NextFloat());
+        floatyOffset = (int)(data.Float("floatPhase", 0f) * Rd.Random.NextFloat());
         Add(sprite = GFX.SpriteBank.Create(data.Attr("spriteXMLTag", "balloon")));
         Add(new PlayerCollider(onPlayer));
         sprite.Play("idle", true, true);

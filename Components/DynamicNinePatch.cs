@@ -167,7 +167,7 @@ public class DynamicNinePatch : Component
             }
             else if(size >= 4)
             {
-                return Calc.Random.Range(1, size - 1);
+                return Rd.Random.Range(1, size - 1);
             }
         }
 

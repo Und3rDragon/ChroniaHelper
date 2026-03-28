@@ -270,7 +270,7 @@ public static partial class GeometryUtils
     public static List<Vector2> GenerateRandomPoints(Rectangle bounds, int pointCount)
     {
         List<Vector2> points = new List<Vector2>();
-        Random random = new Random();
+        Random random = Rd.Random;
         for (int i = 0; i < pointCount; i++)
         {
             float x = random.Next(bounds.Left, bounds.Right);
