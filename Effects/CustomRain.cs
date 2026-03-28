@@ -32,9 +32,9 @@ namespace ChroniaHelper.Effects {
             public Color color;
 
             public void Init(float rot, float speedMult, Color color, float extX, float extY) {
-                Position = new Vector2(-32f + Calc.Random.NextFloat(384f + extX), -32f + Calc.Random.NextFloat(244f + extY));
+                Position = new Vector2(-32f + Rd.Random.NextFloat(384f + extX), -32f + Rd.Random.NextFloat(244f + extY));
                 Rotation = rot;
-                Speed = Calc.AngleToVector(Rotation, Calc.Random.Range(200f * speedMult, 600f * speedMult));
+                Speed = Calc.AngleToVector(Rotation, Rd.Random.Range(200f * speedMult, 600f * speedMult));
                 Scale = new Vector2(4f + (Speed.Length() - 200f) * speedMult / 33.33333f, 1f);
                 this.color = color;
             }
@@ -92,7 +92,7 @@ namespace ChroniaHelper.Effects {
             var _angle = angle * -Calc.DegToRad;
             var _angleDiff = Math.Abs(angleDiff * Calc.DegToRad);
             for (int i = 0; i < count; i++) {
-                particles[i].Init(_angle + Calc.Random.Range(-_angleDiff, _angleDiff), speedMult, Calc.Random.Choose<Color>(_colors), extX, extY);
+                particles[i].Init(_angle + Rd.Random.Range(-_angleDiff, _angleDiff), speedMult, Rd.Random.Choose<Color>(_colors), extX, extY);
             }
             this.alpha = alpha;
 

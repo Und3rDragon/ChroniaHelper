@@ -90,8 +90,8 @@ public static class RefLakeside
                 for (int i = 0; i < count; i++)
                 {
                     current.Create(i, 
-                        PriceList[type] + RandomUtils.RandomInt(Variations[type]) - Variations[type] / 2,
-                        PriceList[type] + RandomUtils.RandomInt(Variations[type]) - Variations[type] / 2
+                        PriceList[type] + Rd.RandomInt(Variations[type]) - Variations[type] / 2,
+                        PriceList[type] + Rd.RandomInt(Variations[type]) - Variations[type] / 2
                     );
 
                     refreshed.Add(current[i]);

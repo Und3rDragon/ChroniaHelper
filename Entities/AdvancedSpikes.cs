@@ -621,7 +621,7 @@ public class AdvancedSpikes : Entity
         {
             this.spikes[i].parent = this;
             this.spikes[i].spikeIndex = i;
-            this.spikes[i].textureIndex = this.randomTexture ? Calc.Random.Next(this.spikeTextures.Count) : this.textureIndex;
+            this.spikes[i].textureIndex = this.randomTexture ? Rd.Random.Next(this.spikeTextures.Count) : this.textureIndex;
             this.spikes[i].triggered = !this.trigger;
             this.spikes[i].lerp = (this.trigger ? 0F : this.lerpMoveTime);
             this.spikes[i].color = this.spriteColor;

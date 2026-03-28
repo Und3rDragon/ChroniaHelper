@@ -17,6 +17,7 @@ global using Sens = ChroniaHelper.Utils.SensitiveFlags.Sensitivity;
 global using Prm = ChroniaHelper.Cores.Graphical.GraphicalParams;
 global using Clock = ChroniaHelper.Utils.StopwatchSystem.Stopclock;
 global using GSav = ChroniaHelper.Modules.ChroniaHelperGlobalSaveData; // usual
+global using Rd = ChroniaHelper.Utils.RandomUtils; // usual
 
 using static ChroniaHelper.Settings.Commands; // usual
 using static ChroniaHelper.Cores.NoteAttribute; // marker attributes

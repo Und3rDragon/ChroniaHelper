@@ -89,10 +89,10 @@ public class OmniZipSolid : ConnectedSolid
 
             public void Spark(Level level)
             {
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, from + sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirStartA);
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, from - sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirStartB);
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, to + sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirEndA);
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, to - sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirEndB);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, from + sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirStartA);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, from - sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirStartB);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, to + sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirEndA);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, to - sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirEndB);
             }
 
             public void Render(float percent, Color rope, Color lightRope, bool hide)

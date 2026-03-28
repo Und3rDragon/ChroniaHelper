@@ -33,7 +33,7 @@ public class CustomCloud : JumpThru
         this.fragile = data.Bool("fragile");
         startY = base.Y;
         base.Collider.Position.X = data.Float("colliderOffset", -16f);
-        timer = Calc.Random.NextFloat() * 4f;
+        timer = Rd.Random.NextFloat() * 4f;
         Add(wiggler = Wiggler.Create(0.3f, 4f));
         particleType = (fragile ? new(Cloud.P_FragileCloud) : new(Cloud.P_Cloud));
         particleType.Color = data.GetChroniaColor("particleColor", particleType.Color).Parsed();

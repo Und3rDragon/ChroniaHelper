@@ -87,14 +87,14 @@ public class ModifiedBumperBlock : Solid
         AddImage(idle, num, num2, 3, 3, 1, 1);
         for (int i = 1; i < num; i++)
         {
-            AddImage(idle, i, 0, Calc.Random.Choose(1, 2), 0, 0, -1);
-            AddImage(idle, i, num2, Calc.Random.Choose(1, 2), 3, 0, 1);
+            AddImage(idle, i, 0, Rd.Random.Choose(1, 2), 0, 0, -1);
+            AddImage(idle, i, num2, Rd.Random.Choose(1, 2), 3, 0, 1);
         }
 
         for (int j = 1; j < num2; j++)
         {
-            AddImage(idle, 0, j, 0, Calc.Random.Choose(1, 2), -1, 0);
-            AddImage(idle, num, j, 3, Calc.Random.Choose(1, 2), 1, 0);
+            AddImage(idle, 0, j, 0, Rd.Random.Choose(1, 2), -1, 0);
+            AddImage(idle, num, j, 3, Rd.Random.Choose(1, 2), 1, 0);
         }
 
         Add(new LightOcclude(0.2f));

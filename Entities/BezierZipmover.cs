@@ -70,10 +70,10 @@ public class BezierZipmover : Solid
 
         public void CreateSparks()
         {
-            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, from + sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirFromA);
-            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, from - sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirFromB);
-            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, to + sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirToA);
-            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, to - sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirToB);
+            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, from + sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirFromA);
+            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, from - sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirFromB);
+            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, to + sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirToA);
+            SceneAs<Level>().ParticlesBG.Emit(P_Sparks, to - sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirToB);
         }
         
         public override void Render()

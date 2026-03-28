@@ -122,7 +122,7 @@ public class RefillOnWall : BaseEntity
                 sprite.AddLoop(text, text, 0.1f);
                 sprite.Play(text);
                 sprite.Position = new Vector2(0f, (float)num);
-                sprite.CurrentAnimationFrame = RandomUtils.RandomInt(sprite.CurrentAnimationTotalFrames);
+                sprite.CurrentAnimationFrame = Rd.RandomInt(sprite.CurrentAnimationTotalFrames);
                 sprite.Animating = false;
                 list.Add(sprite);
                 Add(sprite);
@@ -135,7 +135,7 @@ public class RefillOnWall : BaseEntity
                 sprite.Play(text);
                 sprite.FlipX = true;
                 sprite.Position = new Vector2(data.Width - 8f, (float)num);
-                sprite.CurrentAnimationFrame = RandomUtils.RandomInt(sprite.CurrentAnimationTotalFrames);
+                sprite.CurrentAnimationFrame = Rd.RandomInt(sprite.CurrentAnimationTotalFrames);
                 sprite.Animating = false;
                 list.Add(sprite);
                 Add(sprite);

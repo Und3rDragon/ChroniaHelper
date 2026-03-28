@@ -133,14 +133,14 @@ public class ReskinnableKevin : Solid
         AddImage(idle, num, num2, 3, 3, 1, 1);
         for (int i = 1; i < num; i++)
         {
-            AddImage(idle, i, 0, Calc.Random.Choose(1, 2), 0, 0, -1);
-            AddImage(idle, i, num2, Calc.Random.Choose(1, 2), 3, 0, 1);
+            AddImage(idle, i, 0, Rd.Random.Choose(1, 2), 0, 0, -1);
+            AddImage(idle, i, num2, Rd.Random.Choose(1, 2), 3, 0, 1);
         }
 
         for (int j = 1; j < num2; j++)
         {
-            AddImage(idle, 0, j, 0, Calc.Random.Choose(1, 2), -1);
-            AddImage(idle, num, j, 3, Calc.Random.Choose(1, 2), 1);
+            AddImage(idle, 0, j, 0, Rd.Random.Choose(1, 2), -1);
+            AddImage(idle, num, j, 3, Rd.Random.Choose(1, 2), 1);
         }
 
         Add(new LightOcclude(0.2f));
@@ -505,22 +505,22 @@ public class ReskinnableKevin : Solid
                 float direction;
                 if (crushDir == Vector2.UnitX)
                 {
-                    position = new Vector2(Left + 1f, Calc.Random.Range(Top + 3f, Bottom - 3f));
+                    position = new Vector2(Left + 1f, Rd.Random.Range(Top + 3f, Bottom - 3f));
                     direction = MathF.PI;
                 }
                 else if (crushDir == -Vector2.UnitX)
                 {
-                    position = new Vector2(Right - 1f, Calc.Random.Range(Top + 3f, Bottom - 3f));
+                    position = new Vector2(Right - 1f, Rd.Random.Range(Top + 3f, Bottom - 3f));
                     direction = 0f;
                 }
                 else if (crushDir == Vector2.UnitY)
                 {
-                    position = new Vector2(Calc.Random.Range(Left + 3f, Right - 3f), Top + 1f);
+                    position = new Vector2(Rd.Random.Range(Left + 3f, Right - 3f), Top + 1f);
                     direction = -MathF.PI / 2f;
                 }
                 else
                 {
-                    position = new Vector2(Calc.Random.Range(Left + 3f, Right - 3f), Bottom - 1f);
+                    position = new Vector2(Rd.Random.Range(Left + 3f, Right - 3f), Bottom - 1f);
                     direction = MathF.PI / 2f;
                 }
 

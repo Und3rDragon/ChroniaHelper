@@ -35,7 +35,7 @@ public class FloatyBgTile : Platform
         this.tileType = tileType;
 
         Depth = depth;
-        sineWave = !disableSpawnOffset ? Calc.Random.NextFloat((float)Math.PI * 2f) : 0f;
+        sineWave = !disableSpawnOffset ? Rd.Random.NextFloat((float)Math.PI * 2f) : 0f;
         Collider = new Hitbox(width, height);
         Collidable = false;
         

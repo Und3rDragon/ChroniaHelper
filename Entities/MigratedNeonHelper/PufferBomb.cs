@@ -371,7 +371,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			level.Displacement.AddBurst(Position, 0.4f, 36f, 60f, 0.5f);
 			for (float num = 0f; num < (float)Math.PI * 2f; num += 0.17453292f)
 			{
-				Vector2 position = Center + Calc.AngleToVector(num + Calc.Random.Range(-(float)Math.PI / 90f, (float)Math.PI / 90f), Calc.Random.Range(12, 18));
+				Vector2 position = Center + Calc.AngleToVector(num + Rd.Random.Range(-(float)Math.PI / 90f, (float)Math.PI / 90f), Rd.Random.Range(12, 18));
 				level.Particles.Emit(P_Explosion, position, num);
 			}
 			if (player != null)

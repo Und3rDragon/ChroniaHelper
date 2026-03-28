@@ -68,10 +68,10 @@ public class OmniZipEntity : Entity
             
             public void Spark(Level level)
             {
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, from + sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirStartA);
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, from - sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirStartB);
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, to + sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirEndA);
-                level.ParticlesBG.Emit(ZipMover.P_Sparks, to - sparkAdd + Calc.Random.Range(-Vector2.One, Vector2.One), sparkDirEndB);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, from + sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirStartA);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, from - sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirStartB);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, to + sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirEndA);
+                level.ParticlesBG.Emit(ZipMover.P_Sparks, to - sparkAdd + Rd.Random.Range(-Vector2.One, Vector2.One), sparkDirEndB);
             }
 
             public void Render(float percent, Color rope, Color lightRope, bool hide)
@@ -425,7 +425,7 @@ public class OmniZipEntity : Entity
 
         if (isShaking)
         {
-            Vector2 dPos = Calc.Random.Range(new Vector2(-2f, -2f), new Vector2(2f, 2f));
+            Vector2 dPos = Rd.Random.Range(new Vector2(-2f, -2f), new Vector2(2f, 2f));
             Position += dPos;
         }
 

@@ -113,11 +113,11 @@ public class GroupedWindTunnelController : BaseEntity
         {
             Particle particle = new();
             particle.Percent = 0f;
-            particle.Position = ((Func<Point, Vc2>)((i) => new Vc2(i.X, i.Y)))(pixels[Calc.Random.Next(pixels.Count)]);
+            particle.Position = ((Func<Point, Vc2>)((i) => new Vc2(i.X, i.Y)))(pixels[Rd.Random.Next(pixels.Count)]);
             particle.Speed = particle.Percent * particleSpeed;
-            //particle.Spin = Calc.Random.Range(0.25f, (float)Math.PI * 6f);
-            particle.Color = colors[Calc.Random.Next(colors.Count)];
-            particle.phase = 2 * MathF.PI * Calc.Random.NextFloat();
+            //particle.Spin = Rd.Random.Range(0.25f, (float)Math.PI * 6f);
+            particle.Color = colors[Rd.Random.Next(colors.Count)];
+            particle.phase = 2 * MathF.PI * Rd.Random.NextFloat();
             particle.Color.alpha = MathF.Sin(particle.phase);
 
             particles.Add(particle);
@@ -147,7 +147,7 @@ public class GroupedWindTunnelController : BaseEntity
             if (!pixels.Contains(new Point(posX, posY)))
             {
                 // 随机回退
-                var p = pixels[Calc.Random.Next(pixels.Count)];
+                var p = pixels[Rd.Random.Next(pixels.Count)];
                 particle.Position = new Vc2(p.X, p.Y);
                 // 可选：重置速度方向
             }
@@ -231,11 +231,11 @@ public class GroupedWindTunnelController : BaseEntity
     public void Reset(Particle particle, float percent = 0f)
     {
         particle.Percent = percent;
-        particle.Position = ((Func<Point, Vc2>)((i) => new Vc2(i.X, i.Y)))(pixels[Calc.Random.Next(pixels.Count)]);
-        particle.Speed = Calc.Random.Range(4, 14) * Calc.AngleToVector(Calc.Random.NextFloat((float)Math.PI * 2f), 1f);
-        //particle.Spin = Calc.Random.Range(0.25f, (float)Math.PI * 6f);
-        particle.Color = colors[Calc.Random.Next(colors.Count)];
-        particle.phase = 2 * MathF.PI * Calc.Random.NextFloat();
+        particle.Position = ((Func<Point, Vc2>)((i) => new Vc2(i.X, i.Y)))(pixels[Rd.Random.Next(pixels.Count)]);
+        particle.Speed = Rd.Random.Range(4, 14) * Calc.AngleToVector(Rd.Random.NextFloat((float)Math.PI * 2f), 1f);
+        //particle.Spin = Rd.Random.Range(0.25f, (float)Math.PI * 6f);
+        particle.Color = colors[Rd.Random.Next(colors.Count)];
+        particle.phase = 2 * MathF.PI * Rd.Random.NextFloat();
         particle.Color.alpha = MathF.Sin(particle.phase);
     }
 }

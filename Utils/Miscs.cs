@@ -22,7 +22,7 @@ public static class Miscs
 
     public static Vector2 RandomDir(float length)
     {
-        return Calc.AngleToVector(Calc.Random.NextAngle(), length);
+        return Calc.AngleToVector(Rd.Random.NextAngle(), length);
     }
 
     public static string StrTrim(string str)

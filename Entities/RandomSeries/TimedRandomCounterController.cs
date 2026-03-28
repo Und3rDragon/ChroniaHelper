@@ -95,6 +95,6 @@ public class TimedRandomCounterController : BaseEntity
 
     public int GenerateRandom()
     {
-        return RandomUtils.RandomInt(value1, value2, seed);
+        return Rd.RandomInt(value1, value2, seed);
     }
 }

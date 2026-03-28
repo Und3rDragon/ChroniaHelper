@@ -154,8 +154,8 @@ public class BoxSprite : GraphicsComponent
 
         if (randomizeFrame)
         {
-            animationTimer = Calc.Random.NextFloat(currentAnimation.Delay);
-            CurrentAnimationFrame = Calc.Random.Next(currentAnimation.SubtextureFrames.Length);
+            animationTimer = Rd.Random.NextFloat(currentAnimation.Delay);
+            CurrentAnimationFrame = Rd.Random.Next(currentAnimation.SubtextureFrames.Length);
         }
         else
         {

@@ -131,7 +131,7 @@ public class CustomResortLantern : Entity
             {
                 sfx.Play("event:/game/03_resort/lantern_bump");
                 collideTimer = 0.5f;
-                mult = Calc.Random.Choose(1, -1);
+                mult = Rd.Random.Choose(1, -1);
                 wiggler.Start();
             }
         }

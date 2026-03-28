@@ -74,7 +74,7 @@ public class RandomMusicController : BaseEntity
     public void SetRandomMusic()
     {
         int count = musics.GetLength(0);
-        int index = RandomUtils.RandomInt(0, count);
+        int index = Rd.RandomInt(0, count);
         string[] choose = musics[index];
         float interval = 60f;
         if(choose.Length >= 2) 

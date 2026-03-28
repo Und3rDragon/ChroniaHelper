@@ -11,27 +11,40 @@ namespace ChroniaHelper.Utils;
 
 public static class RandomUtils
 {
-    public static Random CreateRandom(int? overrideValue = null)
+    public static int RandomSeed = new Random().Next();
+    public static Random Random { get; set; } = new(RandomSeed);
+    public static void RefreshRandom()
     {
-        if (overrideValue.IsNull())
+        Random = new(RandomSeed);
+    }
+    public static Random Rand(object overrideValue = null)
+    {
+        if (overrideValue is null)
         {
-            // Maximum integer: 2,147,483,647
-            // hhm,mss,MMM
-            $"{DateTime.Now.Hour}{DateTime.Now.Minute}{DateTime.Now.Second}{DateTime.Now.Millisecond}".ParseInt(out int seed, 0);
-            return new Random(seed);
+            return Random;
         }
 
-        return new Random(overrideValue ?? 0);
+        if(overrideValue is int)
+        {
+            return new Random((int)overrideValue);
+        }
+
+        if(overrideValue is float || overrideValue is double || overrideValue is byte)
+        {
+            return new Random((int)overrideValue);
+        }
+
+        return new Random(overrideValue.ToString().GetHashCode());
     }
 
-    public static void CreateRandom(out Random random, int? overrideValue = null)
+    public static void Rand(out Random random, object overrideValue = null)
     {
-        random = CreateRandom(overrideValue);
+        random = Rand(overrideValue);
     }
 
     public static T[] RandomPick<T>(this T[] source, int count, int? seed = null)
     {
-        return CreateRandom(seed).GetItems(source, count.ClampMin(1));
+        return Rand(seed).GetItems(source, count.ClampMin(1));
     }
 
     public static void RandomPick<T>(this T[] source, int count, out T[] picked, int? seed = null)
@@ -41,7 +54,7 @@ public static class RandomUtils
 
     public static T[] RandomPick<T>(this ReadOnlySpan<T> source, int count, int? seed = null)
     {
-        return CreateRandom(seed).GetItems(source, count.ClampMin(1));
+        return Rand(seed).GetItems(source, count.ClampMin(1));
     }
 
     public static void RandomPick<T>(this ReadOnlySpan<T> source, int count, out T[] picked, int? seed = null)
@@ -51,7 +64,7 @@ public static class RandomUtils
 
     public static int RandomInt(int? seed = null)
     {
-        return CreateRandom(seed).Next();
+        return Rand(seed).Next();
     }
 
     /// <summary>
@@ -62,7 +75,7 @@ public static class RandomUtils
     /// <returns></returns>
     public static int RandomInt(int max, int? seed = null)
     {
-        return CreateRandom(seed).Next(max);
+        return Rand(seed).Next(max);
     }
 
     public static int RandomInt(int min, int max, int? seed = null)
@@ -100,7 +113,7 @@ public static class RandomUtils
     /// <returns></returns>
     public static float RandomFloat(int? seed = null)
     {
-        return CreateRandom(seed).NextFloat();
+        return Rand(seed).NextFloat();
     }
 
     /// <summary>

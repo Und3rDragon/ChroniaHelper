@@ -369,6 +369,48 @@ public class Commands
     {
         inputs.LogCommand();
     }
+
+    [Command("chronia_seed", "Set ChroniaHelper Random Seed")]
+    public static void _setSeed(string s)
+    {
+        if(int.TryParse(s, out int n))
+        {
+            Rd.RandomSeed = n;
+            Rd.RefreshRandom();
+            return;
+        }
+
+        if(float.TryParse(s, out float f))
+        {
+            Rd.RandomSeed = (int)f;
+            Rd.RefreshRandom();
+            return;
+        }
+
+        if (long.TryParse(s, out long l))
+        {
+            Rd.RandomSeed = (int)l;
+            Rd.RefreshRandom();
+            return;
+        }
+
+        if (double.TryParse(s, out double d))
+        {
+            Rd.RandomSeed = (int)d;
+            Rd.RefreshRandom();
+            return;
+        }
+
+        if (decimal.TryParse(s, out decimal D))
+        {
+            Rd.RandomSeed = (int)D;
+            Rd.RefreshRandom();
+            return;
+        }
+
+        Rd.RandomSeed = s.GetHashCode();
+        Rd.RefreshRandom();
+    }
 }
 
 public static class CommandLog

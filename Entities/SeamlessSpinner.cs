@@ -211,7 +211,7 @@ public class SeamlessSpinner : Entity
 
     public SeamlessSpinner(Vector2 position, EntityData data) : base(position)
     {
-        offset = Calc.Random.NextFloat();
+        offset = Rd.Random.NextFloat();
         Tag = Tags.TransitionUpdate;
 
         //碰撞箱
@@ -250,7 +250,7 @@ public class SeamlessSpinner : Entity
             });
         }
 
-        randomSeed = Calc.Random.Next();
+        randomSeed = Rd.Random.Next();
 
         float bloomAlpha = data.Float("bloomAlpha");
         if (bloomAlpha != 0.0f)
@@ -268,8 +268,8 @@ public class SeamlessSpinner : Entity
             fg2 = data.Float("fgAnimRandomize").GetAbs(),
             bg1 = data.Float("bgAnimDelay", 0.1f).GetAbs(),
             bg2 = data.Float("bgAnimRandomize").GetAbs();
-        fgAnim = Calc.Random.Range(fg1 - fg2 >= Engine.DeltaTime ? fg1 - fg2 : Engine.DeltaTime, fg1 + fg2);
-        bgAnim = Calc.Random.Range(bg1 - bg2 >= Engine.DeltaTime ? bg1 - bg2 : Engine.DeltaTime, bg1 + bg2);
+        fgAnim = Rd.Random.Range(fg1 - fg2 >= Engine.DeltaTime ? fg1 - fg2 : Engine.DeltaTime, fg1 + fg2);
+        bgAnim = Rd.Random.Range(bg1 - bg2 >= Engine.DeltaTime ? bg1 - bg2 : Engine.DeltaTime, bg1 + bg2);
 
         flipX = data.Enum<Flip>("fgFlipX");
         flipY = data.Enum<Flip>("fgFlipY");
@@ -415,7 +415,7 @@ public class SeamlessSpinner : Entity
                 }
 
                 int totalFrames = sprite.CurrentAnimationTotalFrames;
-                int randomChoice = Calc.Random.Range(0, totalFrames);
+                int randomChoice = Rd.Random.Range(0, totalFrames);
                 sprite.SetAnimationFrame(randomChoice);
 
                 if (!dynamic)
@@ -525,7 +525,7 @@ public class SeamlessSpinner : Entity
             sprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
 
             int totalFrames = sprite.CurrentAnimationTotalFrames;
-            int randomChoice = Calc.Random.Range(0, totalFrames);
+            int randomChoice = Rd.Random.Range(0, totalFrames);
             sprite.SetAnimationFrame(randomChoice);
 
             if (!dynamic) { sprite.Rate = 0f; }
@@ -542,7 +542,7 @@ public class SeamlessSpinner : Entity
                 bgSprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
 
                 int totalBGFrames = bgSprite.CurrentAnimationTotalFrames;
-                int randomBGChoice = Calc.Random.Range(0, totalBGFrames);
+                int randomBGChoice = Rd.Random.Range(0, totalBGFrames);
                 bgSprite.SetAnimationFrame(randomBGChoice);
 
                 if (!dynamic) { bgSprite.Rate = 0f; }
@@ -585,7 +585,7 @@ public class SeamlessSpinner : Entity
         }
         else if (flipX == Flip.random)
         {
-            scale.X = Calc.Random.Choose(1f, -1f);
+            scale.X = Rd.Random.Choose(1f, -1f);
         }
 
         if (flipY == Flip.flipped)
@@ -594,7 +594,7 @@ public class SeamlessSpinner : Entity
         }
         else if (flipY == Flip.random)
         {
-            scale.Y = Calc.Random.Choose(1f, -1f);
+            scale.Y = Rd.Random.Choose(1f, -1f);
         }
 
         sprite.Scale = scale;
@@ -602,7 +602,7 @@ public class SeamlessSpinner : Entity
         if (!dynamic)
         {
             int totalFrames = sprite.CurrentAnimationTotalFrames;
-            int randomChoice = Calc.Random.Range(0, totalFrames);
+            int randomChoice = Rd.Random.Range(0, totalFrames);
             sprite.Rate = 0f;
             sprite.SetAnimationFrame(randomChoice);
         }
@@ -668,7 +668,7 @@ public class SeamlessSpinner : Entity
         }
         else if (bgFlipX == Flip.random)
         {
-            scale.X = Calc.Random.Choose(1f, -1f);
+            scale.X = Rd.Random.Choose(1f, -1f);
         }
 
         if (bgFlipY == Flip.flipped)
@@ -677,7 +677,7 @@ public class SeamlessSpinner : Entity
         }
         else if (bgFlipY == Flip.random)
         {
-            scale.Y = Calc.Random.Choose(1f, -1f);
+            scale.Y = Rd.Random.Choose(1f, -1f);
         }
 
         bgsprite.Scale = scale;
@@ -685,7 +685,7 @@ public class SeamlessSpinner : Entity
         if (!dynamic)
         {
             int totalFrames = bgsprite.GetFrames("").Length;
-            int randomChoice = Calc.Random.Range(0, totalFrames);
+            int randomChoice = Rd.Random.Range(0, totalFrames);
             bgsprite.Rate = 0f;
             bgsprite.SetAnimationFrame(randomChoice);
         }

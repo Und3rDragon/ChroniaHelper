@@ -65,7 +65,7 @@ public class FallingBlock : Solid
         this.finalBoss = data.Bool("finalBoss", false);
         this.climbFall = data.Bool("climbFall", true);
         this.standFall = data.Bool("standFall", true);
-        int newSeed = Calc.Random.Next();
+        int newSeed = Rd.Random.Next();
         Calc.PushRandom(newSeed);
         Add(tiles = GFX.FGAutotiler.GenerateBox(tile, data.Width / 8, data.Height / 8).TileGrid);
         Calc.PopRandom();

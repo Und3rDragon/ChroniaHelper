@@ -35,7 +35,7 @@ public class HoldableBlocker : Solid
         temp = new MTexture();
         for (var index = 0; (double)index < (double)Width * (double)Height / 16.0; ++index)
         {
-            particles.Add(new Vector2(Calc.Random.NextFloat(Width - 1f), Calc.Random.NextFloat(Height - 1f)));
+            particles.Add(new Vector2(Rd.Random.NextFloat(Width - 1f), Rd.Random.NextFloat(Height - 1f)));
         }
 
         offX = position.X;
