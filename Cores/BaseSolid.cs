@@ -7,6 +7,9 @@ using System.Xml.Serialization;
 
 namespace ChroniaHelper.Cores;
 
+/// <summary>
+/// Obsoleted, kept for compatibility
+/// </summary>
 public class BaseSolid : Solid
 {
     public Level level;

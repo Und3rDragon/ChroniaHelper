@@ -1,5 +1,4 @@
-return {} -- Obsoleted
-
+--[[
 return{
 	category = "camera",
 	name = "ChroniaHelper/SpeedAdaptiveCamera",
@@ -43,3 +42,5 @@ return{
 		},
 	}
 }
+
+]]

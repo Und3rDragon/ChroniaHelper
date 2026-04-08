@@ -1158,4 +1158,25 @@ public static class CollectiveUtils
 
         return source[index.ClampLoop(0, source.Length - 1)];
     }
+
+    public static bool IdenticalTo<T>(this List<T> list1, List<T> list2)
+    {
+        foreach (var item in list1)
+        {
+            if (!list2.Contains(item))
+            {
+                return false;
+            }
+        }
+        
+        foreach (var item in list2)
+        {
+            if (!list1.Contains(item))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

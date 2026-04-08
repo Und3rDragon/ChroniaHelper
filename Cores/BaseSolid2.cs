@@ -1,12 +1,17 @@
 ﻿using Celeste;
-using Celeste.Mod.Entities;
 using Celeste.Mod;
+using Celeste.Mod.Entities;
+using ChroniaHelper.Entities;
 using Monocle;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 
 namespace ChroniaHelper.Cores;
 
+/// <summary>
+/// Obsoleted, kept for compatibility
+/// </summary>
 public class BaseSolid2 : Solid
 {
     public Level level;
@@ -29,6 +34,7 @@ public class BaseSolid2 : Solid
         base.Added(scene);
         level = SceneAs<Level>();
     }
+
     public int GetPlayerTouch()
     {
         foreach (Player player in level.Tracker.GetEntities<Player>())
