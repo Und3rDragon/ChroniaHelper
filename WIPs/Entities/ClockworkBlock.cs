@@ -171,6 +171,7 @@ public class ClockworkBlock : GroupedBaseSolid
 
         Vc2 start = Position;
         float timer = 0f, progress = 0f, elapsed = 0f;
+        float overflowProtection = 1000000f;
         while (true)
         {
             elapsed += Engine.DeltaTime;
@@ -183,6 +184,13 @@ public class ClockworkBlock : GroupedBaseSolid
             {
                 break;
             }
+
+            if (timer >= overflowProtection || elapsed >= overflowProtection ||
+                (Position - Nodes[0]).X.GetAbs() > overflowProtection || (Position - Nodes[0]).Y.GetAbs() > overflowProtection)
+            {
+                break;
+            }
+            
             yield return null;
         }
     }
@@ -190,14 +198,13 @@ public class ClockworkBlock : GroupedBaseSolid
     private IEnumerator ResetSequence()
     {
         Vc2 start = Position;
-        float timer = 0f, progress = 0f;
+        float timer = 0f;
 
         while (true)
         {
-            timer += Engine.DeltaTime;
-            progress = timer / returnDuration;
+            timer = Calc.Approach(timer, returnDuration, Engine.DeltaTime);
             
-            MoveTo(progress.LerpValue(0f, 1f, start, Nodes[0]));
+            MoveTo(timer.LerpValue(0f, returnDuration, start, Nodes[0]));
 
             yield return null;
         }
