@@ -53,10 +53,11 @@ public class ClockworkBlock : GroupedBaseSolid
             onDisable = OnDisable,
         };
         Add(flagListener);
+        reverse = data.Attr("reverseFlag", "moveReversed");
     }
     public float duration, startDelay = -1f, maxDuration = -1f;
     public bool instantStart => startDelay <= 0f;
-    public string flag;
+    public string flag, reverse;
     public bool bgTexture = false;
     public bool shouldReturn = true;
     public float returnDuration = 0.5f;
@@ -169,15 +170,16 @@ public class ClockworkBlock : GroupedBaseSolid
         }
 
         Vc2 start = Position;
-        float timer = 0f, progress = 0f;
+        float timer = 0f, progress = 0f, elapsed = 0f;
         while (true)
         {
-            timer += Engine.DeltaTime;
+            elapsed += Engine.DeltaTime;
+            timer += reverse.GetFlag() ? -Engine.DeltaTime : Engine.DeltaTime;
             progress = timer / duration;
             
             MoveTo(start.CalculatePointer(start + direction, progress));
 
-            if (maxDuration > 0f && timer >= maxDuration)
+            if (maxDuration > 0f && elapsed >= maxDuration)
             {
                 break;
             }
@@ -193,7 +195,7 @@ public class ClockworkBlock : GroupedBaseSolid
         while (true)
         {
             timer += Engine.DeltaTime;
-            progress = timer / 0.5f;
+            progress = timer / returnDuration;
             
             MoveTo(progress.LerpValue(0f, 1f, start, Nodes[0]));
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Cores;
 
+[Tracked(true)]
 public class BasicSolid : Solid
 {
     public BasicSolid(EntityData data, Vc2 offset, bool safe = false) : base(data.Position + offset,

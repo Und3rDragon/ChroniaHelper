@@ -5,7 +5,6 @@ local block = {}
 
 block.name = "ChroniaHelper/ClockworkBlock"
 block.nodeLimits = {0,1}
-block.nodeVisibility = "always"
 block.placements =
 {
     name = "ClockworkBlock",
@@ -19,10 +18,12 @@ block.placements =
         maxMoveDuration = -1,
         depth = -9000,
         flag = "flag",
+        reverseFlag = "moveReversed",
         surfaceSoundIndex = 8,
         returnOnFlagDisable = true,
         returnDuration = 0.5,
         bgTexture = false,
+        tutorial = "See tooltip",
     }
 }
 
@@ -39,6 +40,7 @@ block.fieldInformation = function(entity)
         options = require("mods").requireFromPlugin("consts.depths"),
         editable = true,
     }
+    orig["tutorial"] = {editable = false}
 
     return orig
 end
