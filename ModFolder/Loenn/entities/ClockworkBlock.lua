@@ -61,6 +61,22 @@ block.sprite = function(room, entity)
     return sprites
 end
 
+block.nodeSprite = function(room, entity, node)
+    local sprites = {}
+    if entity.bgTexture then
+       sprites = fakeTilesHelper.getEntitySpriteFunction("tiletype", true, "tilesBg")(room, entity, node)
+    else
+       sprites = fakeTilesHelper.getEntitySpriteFunction("tiletype", true, "tilesFg")(room, entity, node)
+    end
+
+    if entity.nodes ~= nil then
+        local line = require("structs.drawable_line").fromPoints({node.x + entity.width/2, node.y + entity.height/2, entity.x + entity.width/2, entity.y + entity.height/2})
+        table.insert(sprites, line)
+    end        
+
+    return sprites
+end
+
 block.depth = function(room,entity) return entity.depth or -9000 end
 
 block.selection = function(room, entity)
