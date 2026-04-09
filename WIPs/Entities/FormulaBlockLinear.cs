@@ -16,11 +16,11 @@ using Classic = On.Celeste.Pico8.Classic;
 namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
-[CustomEntity("ChroniaHelper/ClockworkBlock")]
+[CustomEntity("ChroniaHelper/FormulaBlockLinear")]
 [Tracked]
-public class ClockworkBlock : GroupedBaseSolid
+public class FormulaBlockLinear : GroupedBaseSolid
 {
-    public ClockworkBlock(EntityData data, Vc2 offset) : base(data, offset)
+    public FormulaBlockLinear(EntityData data, Vc2 offset) : base(data, offset)
     {
         if (Nodes.Length <= 1)
         {
@@ -80,14 +80,14 @@ public class ClockworkBlock : GroupedBaseSolid
         // After groupping, the Group is settled, so we can use the Group to see if the direction should be modified
         foreach (var item in Group)
         {
-            if ((item as ClockworkBlock).direction != Vc2.Zero)
+            if ((item as FormulaBlockLinear).direction != Vc2.Zero)
             {
-                direction = (item as ClockworkBlock).direction;
+                direction = (item as FormulaBlockLinear).direction;
             }
             // Unite values, although this is actually not that necessary
-            (item as ClockworkBlock).maxDuration = (master as ClockworkBlock).maxDuration;
-            (item as ClockworkBlock).duration = (master as ClockworkBlock).duration;
-            (item as ClockworkBlock).startDelay = (master as ClockworkBlock).startDelay;
+            (item as FormulaBlockLinear).maxDuration = (master as FormulaBlockLinear).maxDuration;
+            (item as FormulaBlockLinear).duration = (master as FormulaBlockLinear).duration;
+            (item as FormulaBlockLinear).startDelay = (master as FormulaBlockLinear).startDelay;
         }
         Point delta = GroupBoundsMax - GroupBoundsMin;
         if (MasterOfGroup)
@@ -132,11 +132,11 @@ public class ClockworkBlock : GroupedBaseSolid
 
     public override bool ShouldAddIntoGroup(GroupedBaseSolid other)
     {
-        if (other is ClockworkBlock block)
+        if (other is FormulaBlockLinear block)
         {
             float e = 0.001f;
             return block.flag == flag && 
-                   block.Depth.IsBetween(Depth -10, Depth + 10) &&
+                   block.Depth == Depth &&
                    block.startDelay.IsBetween(startDelay - e, startDelay + e) &&
                    block.duration.IsBetween(duration - e, duration + e) &&
                    block.maxDuration.IsBetween(maxDuration - e, maxDuration + e);

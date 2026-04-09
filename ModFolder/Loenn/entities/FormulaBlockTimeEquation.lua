@@ -3,25 +3,22 @@ local cons = require("mods").requireFromPlugin("utils.constants")
 
 local block = {}
 
-block.name = "ChroniaHelper/ClockworkBlock"
-block.nodeLimits = {0,1}
+block.name = "ChroniaHelper/FormulaBlockTimeEquation"
 block.placements =
 {
-    name = "ClockworkBlock",
+    name = "FormulaBlockTimeEquation",
     data =
     {
         width = 8,
         height = 8,
+        functionX = "",
+        functionY = "",
         tiletype = '3',
-        duration = 1,
         startDelay = -1,
         maxMoveDuration = -1,
         depth = -9000,
         flag = "flag",
-        reverseFlag = "moveReversed",
         surfaceSoundIndex = 8,
-        returnOnFlagDisable = true,
-        returnDuration = 0.5,
         bgTexture = false,
         tutorial = "See tooltip",
     }
@@ -57,22 +54,6 @@ block.sprite = function(room, entity)
     else
        sprites = fakeTilesHelper.getEntitySpriteFunction("tiletype", true, "tilesFg")(room, entity)
     end
-
-    return sprites
-end
-
-block.nodeSprite = function(room, entity, node)
-    local sprites = {}
-    if entity.bgTexture then
-       sprites = fakeTilesHelper.getEntitySpriteFunction("tiletype", true, "tilesBg")(room, entity, node)
-    else
-       sprites = fakeTilesHelper.getEntitySpriteFunction("tiletype", true, "tilesFg")(room, entity, node)
-    end
-
-    if entity.nodes ~= nil then
-        local line = require("structs.drawable_line").fromPoints({node.x + entity.width/2, node.y + entity.height/2, entity.x + entity.width/2, entity.y + entity.height/2})
-        table.insert(sprites, line)
-    end        
 
     return sprites
 end

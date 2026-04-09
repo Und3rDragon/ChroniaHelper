@@ -1431,7 +1431,8 @@ entities.ChroniaHelper/RandomMusicController.placements.name.Controller=Random M
 entities.ChroniaHelper/FlagWhenCounterController.placements.name.Controller=Flag When Counter Controller
 entities.ChroniaHelper/FlagWhenSliderController.placements.name.Controller=Flag When Slider Controller
 
-# ================== Clockwork Block
+# ================== Formula Blocks
 
-entities.ChroniaHelper/ClockworkBlock.placements.name.ClockworkBlock=Clockwork Block
-entities.ChroniaHelper/ClockworkBlock.attributes.description.tutorial=Place several blocks, make sure they have the same setting so that they will be grouped\nThen select one of the blocks you wanna use as a reference\nPress 'N' to add a node from it, drag it to the point where you expect it to pass by\nAnd then you set up a "duration", the block will move to the passing point within the duration when "flag" is active\nAnd the block will move at an opposite direction if the "reverseFlag" is active 
+entities.ChroniaHelper/FormulaBlockLinear.placements.name.FormulaBlockLinear=Formula Block (Linear)
+entities.ChroniaHelper/FormulaBlockLinear.attributes.description.tutorial=Place several blocks, make sure they have the same setting so that they will be grouped\nThen select one of the blocks you wanna use as a reference\nPress 'N' to add a node from it, drag it to the point where you expect it to pass by\nAnd then you set up a "duration", the block will move to the passing point within the duration when "flag" is active\nAnd the block will move at an opposite direction if the "reverseFlag" is active
+entities.ChroniaHelper/FormulaBlockTimeEquation.placements.name.FormulaBlockTimeEquation=Formula Block (Time Function)
