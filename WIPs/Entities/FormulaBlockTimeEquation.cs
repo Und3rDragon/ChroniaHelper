@@ -53,6 +53,7 @@ public class FormulaBlockTimeEquation : GroupedBaseSolid
         foreach (var item in Group)
         {
             (item as FormulaBlockTimeEquation).startDelay = (master as FormulaBlockTimeEquation).startDelay;
+            (item as FormulaBlockTimeEquation).maxMoveDuration = (master as FormulaBlockTimeEquation).maxMoveDuration;
         }
         Point delta = GroupBoundsMax - GroupBoundsMin;
         if (MasterOfGroup)
@@ -100,9 +101,16 @@ public class FormulaBlockTimeEquation : GroupedBaseSolid
         if (other is FormulaBlockTimeEquation block)
         {
             float e = 0.001f;
-            return block.flag == flag && 
-                   block.Depth.IsBetween(Depth -10, Depth + 10) &&
+            //Log.Info($"[flag {block.GetID()} VS {this.GetID()}] {block.flag.Flag} : {this.flag.Flag}");
+            //Log.Info($"[depth {block.GetID()} VS {this.GetID()}] {block.Depth} : {this.Depth}");
+            //Log.Info($"[startDelay {block.GetID()} VS {this.GetID()}] {block.startDelay} : {this.startDelay}");
+            //Log.Info($"[maxMoveDuration {block.GetID()} VS {this.GetID()}] {block.maxMoveDuration} : {this.maxMoveDuration}");
+            //Log.Info($"[functionX {block.GetID()} VS {this.GetID()}] {block.functionX} : {this.functionX}");
+            //Log.Info($"[functionY {block.GetID()} VS {this.GetID()}] {block.functionY} : {this.functionY}");
+            return block.flag.Flag == flag.Flag && 
+                   block.Depth == Depth &&
                    block.startDelay.IsBetween(startDelay - e, startDelay + e) &&
+                   block.maxMoveDuration.IsBetween(maxMoveDuration - e, maxMoveDuration + e) &&
                    block.functionX == functionX &&
                    block.functionY == functionY;
         }

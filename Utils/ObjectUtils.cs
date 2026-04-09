@@ -314,4 +314,10 @@ public static class ObjectUtils
     {
         return a.InheritFrom(typeof(TBase), excludeSelf);
     }
+
+    public static EntityID GetEID(this Entity entity) => entity.SourceId;
+
+    public static EntityData GetEData(this Entity entity) => entity.SourceData;
+    public static int GetID(this Entity entity) => entity.SourceId.ID;
+    public static int GetDataID(this Entity entity) => entity.SourceData.ID;
 }

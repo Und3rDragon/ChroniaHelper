@@ -322,6 +322,14 @@ public class GroupedBaseSolid : Solid
             }
         }
         
+        string s = $"Group of {this.GetID()}:";
+        foreach (var item in Group)
+        {
+            s += $" {item.GetID()}";
+        }
+        //Log.Info(s);
+        //Log.Info($"Master of {this.GetID()}: {master.GetID()}");
+        
         // Set Group master
         // Reassign attributes
         foreach (var item in Group)
