@@ -14,8 +14,10 @@ public static class MathExpression
     /// </summary>
     public static float ParseMathExpression(this string exp)
     {
-        if (string.IsNullOrWhiteSpace(exp) || exp.IsNullOrEmpty())
-            throw new ArgumentException("Expression is null or empty.");
+        if (!exp.HasValidContent())
+        {
+            exp = "0";
+        }
         
         var lexer = new Lexer(exp);
         var tokens = lexer.Tokenize();
@@ -25,8 +27,10 @@ public static class MathExpression
 
     public static float ParseMathExpression(this string exp, Func<string, float> getVariable = null, Func<string, float> getFlag = null)
     {
-        if (string.IsNullOrWhiteSpace(exp) || exp.IsNullOrEmpty())
-            throw new ArgumentException("Expression is null or empty.");
+        if (!exp.HasValidContent())
+        {
+            exp = "0";
+        }
 
         var lexer = new Lexer(exp);
         var tokens = lexer.Tokenize();
