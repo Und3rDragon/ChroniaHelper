@@ -133,12 +133,18 @@ public class FormulaBlockSpeedEquation : GroupedBaseSolid
             yield return startDelay;
             StopShaking();
         }
-
+        
+        Dictionary<string, Func<Session, object, object>> frostContext = new()
+        {
+            { "t", (session, str) => elapsed },
+            { "time", (session, str) => elapsed }
+        };
+        
         while (true)
         {
             Vc2 delta = Vc2.Zero;
-            delta.X = functionX.Calculate(expressionType, GetVariable);
-            delta.Y = functionY.Calculate(expressionType, GetVariable);
+            delta.X = functionX.Calculate(expressionType, getVariable:GetVariable, simpleCommands:frostContext);
+            delta.Y = functionY.Calculate(expressionType, getVariable:GetVariable, simpleCommands:frostContext);
             
             MoveH(delta.X * Engine.DeltaTime);
             MoveV(delta.Y * Engine.DeltaTime);

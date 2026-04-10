@@ -13,16 +13,16 @@ namespace ChroniaHelper.Imports;
 [ModImportName("FrostHelper")] // registered in Module
 public static class APIFrostHelper
 {
-    public delegate bool TryCreateSessionExpression(string str, [NotNullWhen(true)] out object? expression);
+    public delegate bool TryCreateSessionExpression(string str, [NotNullWhen(true)] out object? expression, object context = null);
     public static TryCreateSessionExpression _tryCreateSessionExpression;
     /// <summary>
     /// Creates an object which can evaluate a Session Expression.
     /// The returned object can be passed to <see cref="_getSessionExpressionValue"/>
     /// Refer to https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions
     /// </summary>
-    public static object tryCreateSessionExpression(this string str)
+    public static object tryCreateSessionExpression(this string str, object context = null)
     {
-        _tryCreateSessionExpression(str, out object expression);
+        _tryCreateSessionExpression(str, out object expression, context);
         return expression;
     }
 

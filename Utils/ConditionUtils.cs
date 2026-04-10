@@ -51,7 +51,10 @@ public static class ConditionUtils
         }
     }
     
-    public static float Calculate(this string condition, int mode = 1, Func<string, float> getVariable = null, Func<string, float> getFlag = null)
+    public static float Calculate(this string condition, int mode = 1, 
+        Func<string, float> getVariable = null, Func<string, float> getFlag = null,
+        Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands = null,
+        Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands = null)
     {
         if ((ConditionMode)mode == ConditionMode.Flags)
         {
@@ -59,7 +62,9 @@ public static class ConditionUtils
         }
         else if ((ConditionMode)mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
         {
-            return condition.getFloatSessionExpressionValue();
+            object context = APIFrostHelper.createSessionExpressionContext(simpleCommands, functionCommands);
+            object exp = condition.tryCreateSessionExpression(context);
+            return exp.getFloatSessionExpressionValue();
         }
         else
         {
