@@ -7,19 +7,19 @@ using ChroniaHelper.Utils.MathExpression;
 
 namespace ChroniaHelper.WIPs.Entities;
 
-[CustomEntity("ChroniaHelper/FormulaBlockTimeEquation")]
+[CustomEntity("ChroniaHelper/FormulaBlockSpeedEquation")]
 [Tracked]
 [WorkingInProgress]
-public class FormulaBlockTimeEquation : GroupedBaseSolid
+public class FormulaBlockSpeedEquation : GroupedBaseSolid
 {
-    public FormulaBlockTimeEquation(EntityData data, Vc2 offset) : base(data, offset)
+    public FormulaBlockSpeedEquation(EntityData data, Vc2 offset) : base(data, offset)
     {
-        functionX = data.Attr("functionX");
+        functionX = data.Attr("functionVX");
         if (!functionX.HasValidContent())
         {
             functionX = "0";
         }
-        functionY = data.Attr("functionY");
+        functionY = data.Attr("functionVY");
         if (!functionY.HasValidContent())
         {
             functionY = "0";
@@ -54,8 +54,8 @@ public class FormulaBlockTimeEquation : GroupedBaseSolid
         AddToGroupAndFindChildren();
         foreach (var item in Group)
         {
-            (item as FormulaBlockTimeEquation).startDelay = (master as FormulaBlockTimeEquation).startDelay;
-            (item as FormulaBlockTimeEquation).maxMoveDuration = (master as FormulaBlockTimeEquation).maxMoveDuration;
+            (item as FormulaBlockSpeedEquation).startDelay = (master as FormulaBlockSpeedEquation).startDelay;
+            (item as FormulaBlockSpeedEquation).maxMoveDuration = (master as FormulaBlockSpeedEquation).maxMoveDuration;
         }
         Point delta = GroupBoundsMax - GroupBoundsMin;
         if (MasterOfGroup)
@@ -100,7 +100,7 @@ public class FormulaBlockTimeEquation : GroupedBaseSolid
 
     public override bool ShouldAddIntoGroup(GroupedBaseSolid other)
     {
-        if (other is FormulaBlockTimeEquation block)
+        if (other is FormulaBlockSpeedEquation block)
         {
             float e = 0.001f;
             //Log.Info($"[flag {block.GetID()} VS {this.GetID()}] {block.flag.Flag} : {this.flag.Flag}");
@@ -136,11 +136,12 @@ public class FormulaBlockTimeEquation : GroupedBaseSolid
 
         while (true)
         {
-            Vc2 pos = Vc2.Zero;
-            pos.X = functionX.Calculate(expressionType, GetVariable);
-            pos.Y = functionY.Calculate(expressionType, GetVariable);
+            Vc2 delta = Vc2.Zero;
+            delta.X = functionX.Calculate(expressionType, GetVariable);
+            delta.Y = functionY.Calculate(expressionType, GetVariable);
             
-            MoveTo(Nodes[0] + pos);
+            MoveH(delta.X * Engine.DeltaTime);
+            MoveV(delta.Y * Engine.DeltaTime);
             
             if (elapsed >= overflowProtection ||
                 (Position - Nodes[0]).X.GetAbs() > overflowProtection || 

@@ -3,16 +3,16 @@ local cons = require("mods").requireFromPlugin("utils.constants")
 
 local block = {}
 
-block.name = "ChroniaHelper/FormulaBlockTimeEquation"
+block.name = "ChroniaHelper/FormulaBlockSpeedEquation"
 block.placements =
 {
-    name = "FormulaBlockTimeEquation",
+    name = "FormulaBlockSpeedEquation",
     data =
     {
         width = 8,
         height = 8,
-        functionX = "",
-        functionY = "",
+        functionVX = "",
+        functionVY = "",
         tiletype = '3',
         startDelay = -1,
         maxMoveDuration = -1,
@@ -28,7 +28,7 @@ block.associatedMods = function(entity)
     if entity["expressionType"] == nil then
         return {"ChroniaHelper"}
     end
-
+    
     if entity.expressionType == 2 then
         return {"ChroniaHelper", "FrostHelper"}
     else

@@ -34,4 +34,36 @@ public static class ConditionUtils
             return condition.GetGeneralFlags();
         }
     }
+
+    public static float Calculate(this string condition, ConditionMode mode = ConditionMode.ChroniaMathExpression, Func<string, float> getVariable = null, Func<string, float> getFlag = null)
+    {
+        if (mode == ConditionMode.Flags)
+        {
+            return condition.GetGeneralFlags() ? 1f : 0f;
+        }
+        else if (mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
+        {
+            return condition.getFloatSessionExpressionValue();
+        }
+        else
+        {
+            return condition.ParseMathExpression(getVariable, getFlag);
+        }
+    }
+    
+    public static float Calculate(this string condition, int mode = 1, Func<string, float> getVariable = null, Func<string, float> getFlag = null)
+    {
+        if ((ConditionMode)mode == ConditionMode.Flags)
+        {
+            return condition.GetGeneralFlags() ? 1f : 0f;
+        }
+        else if ((ConditionMode)mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
+        {
+            return condition.getFloatSessionExpressionValue();
+        }
+        else
+        {
+            return condition.ParseMathExpression(getVariable, getFlag);
+        }
+    }
 }
