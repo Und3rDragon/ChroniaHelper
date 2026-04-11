@@ -148,7 +148,7 @@ public class SetFlagController : BaseEntity
         {
             if (Md.FrostHelperLoaded && mode == 11)
             {
-                state = paramater.getBoolSessionExpressionValue();
+                state = paramater.tryCreateSessionExpression().getBoolSessionExpressionValue();
             }
             else
             {

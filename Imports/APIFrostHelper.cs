@@ -13,7 +13,7 @@ namespace ChroniaHelper.Imports;
 [ModImportName("FrostHelper")] // registered in Module
 public static class APIFrostHelper
 {
-    public delegate bool TryCreateSessionExpression(string str, [NotNullWhen(true)] out object? expression, object context = null);
+    public delegate bool TryCreateSessionExpression(string str, object context, [NotNullWhen(true)] out object? expression);
     public static TryCreateSessionExpression _tryCreateSessionExpression;
     /// <summary>
     /// Creates an object which can evaluate a Session Expression.
@@ -22,7 +22,7 @@ public static class APIFrostHelper
     /// </summary>
     public static object tryCreateSessionExpression(this string str, object context = null)
     {
-        _tryCreateSessionExpression(str, out object expression, context);
+        _tryCreateSessionExpression(str, context, out object expression);
         return expression;
     }
 
@@ -84,6 +84,7 @@ public static class APIFrostHelper
     public delegate object CreateSessionExpressionContext(
         Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands,
         Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands);
+    public static CreateSessionExpressionContext _createSessionExpressionContext;
     /// <summary>
     /// Creates a Session Expression Context object, which can be passed to <see cref="TryCreateSessionExpression(string,object,out object?)"/>
     /// This allows you to register custom commands for specific entities.
@@ -95,7 +96,6 @@ public static class APIFrostHelper
     /// Dictionary keys are names under which the commands will be available. For example, if your key is 'coolValue',
     /// then it will be accessed as `$coolValue` in Session Expressions created using this context.
     /// </summary>
-    public static CreateSessionExpressionContext _createSessionExpressionContext;
     public static object createSessionExpressionContext(
         Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands,
         Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands)
