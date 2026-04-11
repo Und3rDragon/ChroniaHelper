@@ -13,9 +13,8 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using YamlDotNet.Core.Events;
 using Classic = On.Celeste.Pico8.Classic;
 
-namespace ChroniaHelper.WIPs.Entities;
+namespace ChroniaHelper.Entities.FormulaBlocks;
 
-[WorkingInProgress]
 [CustomEntity("ChroniaHelper/FormulaBlockLinear")]
 [Tracked]
 public class FormulaBlockLinear : GroupedBaseSolid

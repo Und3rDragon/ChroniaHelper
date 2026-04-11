@@ -16,11 +16,11 @@ public static class APICommunalHelper
     public static Func<int> GetDreamTunnelDashCount;
     public static int getDreamTunnelDashCount => GetDreamTunnelDashCount();
 
-    public delegate Component DreamTunnelInteraction(Action<Player> onPlayerEnter, Action<Player> onPlayerExit);
-    public static DreamTunnelInteraction _dreamTunnelInteraction;
+    public delegate Component DreamTunnelInteractionDelegate(Action<Player> onPlayerEnter, Action<Player> onPlayerExit);
+    public static DreamTunnelInteractionDelegate DreamTunnelInteraction;
     public static Component dreamTunnelInteraction(Action<Player> onPlayerEnter, Action<Player> onPlayerExit)
     {
-        return _dreamTunnelInteraction(onPlayerEnter, onPlayerExit);
+        return DreamTunnelInteraction(onPlayerEnter, onPlayerExit);
     }
 
     #endregion

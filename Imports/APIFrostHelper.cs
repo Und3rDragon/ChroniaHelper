@@ -13,80 +13,79 @@ namespace ChroniaHelper.Imports;
 [ModImportName("FrostHelper")] // registered in Module
 public static class APIFrostHelper
 {
-    public delegate bool TryCreateSessionExpression(string str, object context, [NotNullWhen(true)] out object? expression);
-    public static TryCreateSessionExpression _tryCreateSessionExpression;
+    public delegate bool TryCreateSessionExpressionDelegate(string str, object context, out object? expression);
+    public static TryCreateSessionExpressionDelegate TryCreateSessionExpression;
     /// <summary>
     /// Creates an object which can evaluate a Session Expression.
-    /// The returned object can be passed to <see cref="_getSessionExpressionValue"/>
+    /// The returned object can be passed to <see cref="GetSessionExpressionValue"/>
     /// Refer to https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions
     /// </summary>
     public static object tryCreateSessionExpression(this string str, object context = null)
     {
-        _tryCreateSessionExpression(str, context, out object expression);
+        TryCreateSessionExpression(str, context, out object expression);
         return expression;
     }
 
-    public delegate object GetSessionExpressionValue(object expression, Session session);
-    public static GetSessionExpressionValue _getSessionExpressionValue;
+    public delegate object GetSessionExpressionValueDelegate(object expression, Session session);
+    public static GetSessionExpressionValueDelegate GetSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression.
-    /// The object passed as the 1st argument needs to be created via <see cref="_tryCreateSessionExpression"/>
+    /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static object getSessionExpressionValue(this object expression)
     {
-        return _getSessionExpressionValue(expression, MaP.level.Session);
+        return GetSessionExpressionValue(expression, MaP.level.Session);
     }
 
-    public delegate Type GetSessionExpressionReturnedType(object expression);
-    public static GetSessionExpressionReturnedType _getSessionExpressionReturnedType;
+    public delegate Type GetSessionExpressionReturnedTypeDelegate(object expression);
+    public static GetSessionExpressionReturnedTypeDelegate GetSessionExpressionReturnedType;
     /// <summary>
     /// Returns the type that the given session expression will return, or typeof(object) if that's unknown.
-    /// The object passed as the 1st argument needs to be created via <see cref="_tryCreateSessionExpression"/>
+    /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static Type getSessionExpressionReturnedType(this object expression)
     {
-        return _getSessionExpressionReturnedType(expression);
+        return GetSessionExpressionReturnedType(expression);
     }
 
-    public delegate int GetIntSessionExpressionValue(object expression, Session session);
-    public static GetIntSessionExpressionValue _getIntSessionExpressionValue;
+    public delegate int GetIntSessionExpressionValueDelegate(object expression, Session session);
+    public static GetIntSessionExpressionValueDelegate GetIntSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression as an integer, coercing it if needed.
-    /// The object passed as the 1st argument needs to be created via <see cref="_tryCreateSessionExpression"/>
+    /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static int getIntSessionExpressionValue(this object expression)
     {
-        return _getIntSessionExpressionValue(expression, MaP.level.Session);
+        return GetIntSessionExpressionValue(expression, MaP.level.Session);
     }
 
-    public delegate float GetFloatSessionExpressionValue(object expression, Session session);
-    public static GetFloatSessionExpressionValue _getFloatSessionExpressionValue;
+    public delegate float GetFloatSessionExpressionValueDelegate(object expression, Session session);
+    public static GetFloatSessionExpressionValueDelegate GetFloatSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression as a float, coercing it if needed.
-    /// The object passed as the 1st argument needs to be created via <see cref="_tryCreateSessionExpression"/>
+    /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static float getFloatSessionExpressionValue(this object expression)
     {
-        return _getFloatSessionExpressionValue(expression, MaP.level.Session);
+        return GetFloatSessionExpressionValue(expression, MaP.level.Session);
     }
     
-    public delegate bool GetBoolSessionExpressionValue(object expression, Session session);
-    public static GetBoolSessionExpressionValue _getBoolSessionExpressionValue;
+    public delegate bool GetBoolSessionExpressionValueDelegate(object expression, Session session);
+    public static GetBoolSessionExpressionValueDelegate GetBoolSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression as a boolean, coercing it if needed.
-    /// The object passed as the 1st argument needs to be created via <see cref="_tryCreateSessionExpression"/>
+    /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static bool getBoolSessionExpressionValue(this object expression)
     {
-        return _getBoolSessionExpressionValue(expression, MaP.level.Session);
+        return GetBoolSessionExpressionValue(expression, MaP.level.Session);
     }
-
-    public delegate object CreateSessionExpressionContext(
-        Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands,
-        Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands);
-    public static CreateSessionExpressionContext _createSessionExpressionContext;
+    
+    public static Func<Dictionary<string, Func<Session, object? /* userdata */, object>>?,
+        Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>?,
+        object> CreateSessionExpressionContext;
     /// <summary>
-    /// Creates a Session Expression Context object, which can be passed to <see cref="TryCreateSessionExpression(string,object,out object?)"/>
+    /// Creates a Session Expression Context object, which can be passed to <see cref="TryCreateSessionExpressionDelegate"/>
     /// This allows you to register custom commands for specific entities.
     /// A context should be created once, and reused as much as possible.
     /// <br />
@@ -100,7 +99,7 @@ public static class APIFrostHelper
         Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands,
         Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands)
     {
-        return _createSessionExpressionContext(simpleCommands, functionCommands);
+        return CreateSessionExpressionContext(simpleCommands, functionCommands);
     }
 
     public static Func<Color> GetBloomColor;

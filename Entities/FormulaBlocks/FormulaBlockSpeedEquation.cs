@@ -5,11 +5,11 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.MathExpression;
 
-namespace ChroniaHelper.WIPs.Entities;
+namespace ChroniaHelper.Entities.FormulaBlocks;
 
 [CustomEntity("ChroniaHelper/FormulaBlockSpeedEquation")]
 [Tracked]
-[WorkingInProgress]
+[Credits("Thanks to AppleSheep for delegation help")]
 public class FormulaBlockSpeedEquation : GroupedBaseSolid
 {
     public FormulaBlockSpeedEquation(EntityData data, Vc2 offset) : base(data, offset)

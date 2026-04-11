@@ -43,7 +43,7 @@ public static class ConditionUtils
         }
         else if (mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
         {
-            return condition.getFloatSessionExpressionValue();
+            return condition.tryCreateSessionExpression().getFloatSessionExpressionValue();
         }
         else
         {
@@ -62,7 +62,7 @@ public static class ConditionUtils
         }
         else if ((ConditionMode)mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
         {
-            object context = APIFrostHelper.createSessionExpressionContext(simpleCommands, functionCommands);
+            object context = APIFrostHelper.CreateSessionExpressionContext(simpleCommands, functionCommands);
             object exp = condition.tryCreateSessionExpression(context);
             return exp.getFloatSessionExpressionValue();
         }
