@@ -1,9 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Monocle;
 
-using ChroniaHelper.WIPs.Entities;
+using ChroniaHelper.Cores;
+
+namespace ChroniaHelper.WIPs.Entities;
 
 [Tracked(true)]
+[WorkingInProgress]
 public class DirectionalJumpThru : Platform
 {
     public enum Direction

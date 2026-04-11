@@ -18,7 +18,7 @@ public static class ConditionUtils
         {
             if (Md.FrostHelperLoaded)
             {
-                return condition.getBoolSessionExpressionValue();
+                return condition.tryCreateSessionExpression().getBoolSessionExpressionValue();
             }
             else
             {
@@ -32,6 +32,43 @@ public static class ConditionUtils
         else
         {
             return condition.GetGeneralFlags();
+        }
+    }
+
+    public static float Calculate(this string condition, ConditionMode mode = ConditionMode.ChroniaMathExpression, Func<string, float> getVariable = null, Func<string, float> getFlag = null)
+    {
+        if (mode == ConditionMode.Flags)
+        {
+            return condition.GetGeneralFlags() ? 1f : 0f;
+        }
+        else if (mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
+        {
+            return condition.tryCreateSessionExpression().getFloatSessionExpressionValue();
+        }
+        else
+        {
+            return condition.ParseMathExpression(getVariable, getFlag);
+        }
+    }
+    
+    public static float Calculate(this string condition, int mode = 1, 
+        Func<string, float> getVariable = null, Func<string, float> getFlag = null,
+        Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands = null,
+        Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands = null)
+    {
+        if ((ConditionMode)mode == ConditionMode.Flags)
+        {
+            return condition.GetGeneralFlags() ? 1f : 0f;
+        }
+        else if ((ConditionMode)mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
+        {
+            object context = APIFrostHelper.CreateSessionExpressionContext(simpleCommands, functionCommands);
+            object exp = condition.tryCreateSessionExpression(context);
+            return exp.getFloatSessionExpressionValue();
+        }
+        else
+        {
+            return condition.ParseMathExpression(getVariable, getFlag);
         }
     }
 }

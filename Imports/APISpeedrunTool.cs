@@ -15,12 +15,12 @@ public static class APISpeedrunTool
     /// </summary>
     /// <param name="entity">Ignored entity</param>
     /// <param name="based">The Added/Removed method of the entity will not be triggered when based is true</param>
-    public static void IgnoreSaveState(this Entity entity, bool based = false)
+    public static void ignoreSaveState(this Entity entity, bool based = false)
     {
-        speedrunTool_IgnoreSaveState(entity, based);
+        IgnoreSaveState(entity, based);
     }
     public delegate void SpeedrunTool_IgnoreSaveState(Entity entity, bool based = false);
-    public static SpeedrunTool_IgnoreSaveState speedrunTool_IgnoreSaveState;
+    public static SpeedrunTool_IgnoreSaveState IgnoreSaveState;
 
     /// <summary>
     /// <para> Register SaveLoadAction. </para>
@@ -35,32 +35,30 @@ public static class APISpeedrunTool
     /// <param name="beforeLoadState"></param>
     /// <param name="preCloneEntities"></param>
     /// <returns>SaveLoadAction instance, used for unregister when your mod unloads </returns>
-    public static object RegisterSaveLoadAction(Action<Dictionary<Type, Dictionary<string, object>>, Level> saveState, 
+    public static object registerSaveLoadAction(Action<Dictionary<Type, Dictionary<string, object>>, Level> saveState, 
         Action<Dictionary<Type, Dictionary<string, object>>, Level> loadState, Action clearState,
         Action<Level> beforeSaveState, Action<Level> beforeLoadState, Action preCloneEntities)
     {
-        return speedrunTool_RegisterSaveLoadAction(saveState, loadState, clearState, beforeSaveState, beforeSaveState, preCloneEntities);
+        return RegisterSaveLoadAction(saveState, loadState, clearState, beforeSaveState, beforeSaveState, preCloneEntities);
     }
     public delegate object SpeedrunTool_RegisterSaveLoadAction(Action<Dictionary<Type, Dictionary<string, object>>, Level> saveState,
         Action<Dictionary<Type, Dictionary<string, object>>, Level> loadState, Action clearState,
         Action<Level> beforeSaveState, Action<Level> beforeLoadState, Action preCloneEntities);
-    public static SpeedrunTool_RegisterSaveLoadAction speedrunTool_RegisterSaveLoadAction;
+    public static SpeedrunTool_RegisterSaveLoadAction RegisterSaveLoadAction;
 
     /// <summary>
     /// Unregister the SaveLoadAction return from RegisterStaticTypes()/RegisterSaveLoadAction()
     /// </summary>
     /// <param name="obj">The object return from RegisterStaticTypes()/RegisterSaveLoadAction()</param>
-    public static void Unregister(this object obj)
+    public static void unregister(this object obj)
     {
-        speedrunTool_Unregister(obj);
+        Unregister(obj);
     }
     public delegate void SpeedrunTool_Unregister(object obj);
-    public static SpeedrunTool_Unregister speedrunTool_Unregister;
+    public static SpeedrunTool_Unregister Unregister;
 
     /// <summary>
     /// Name of the currently using save slot, appear after v3.25.0
     /// </summary>
-    public static string GetSlotName() => speedrunTool_GetSlotName();
-    public delegate string SpeedrunTool_GetSlotName();
-    public static SpeedrunTool_GetSlotName speedrunTool_GetSlotName;
+    public static Func<string> GetSlotName;
 }

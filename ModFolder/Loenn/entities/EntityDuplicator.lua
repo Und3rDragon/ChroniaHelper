@@ -1,6 +1,4 @@
-
-
-local e = {} return
+local e = {}
 
 e.name = "ChroniaHelper/EntityDuplicator"
 
@@ -45,4 +43,4 @@ e.sprite = function(room, entity, viewport)
     }
 end
 
-return e
+--return e

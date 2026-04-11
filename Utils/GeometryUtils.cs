@@ -442,4 +442,24 @@ public static partial class GeometryUtils
         // 有正面积的重叠区域
         return true;
     }
+
+    public static Vc2 ToPointer(this float value, Vc2 start, Vc2 reference)
+    {
+        if (start == reference)
+        {
+            return start;
+        }
+        
+        return start + (reference - start) * value;
+    }
+
+    public static Vc2 CalculatePointer(this Vc2 start, Vc2 reference, float mult)
+    {
+        if (start == reference)
+        {
+            return start;
+        }
+
+        return start + (reference - start) * mult;
+    }
 }
