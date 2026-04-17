@@ -36,6 +36,7 @@ ccm.placements = {
         parallax = 1.2,
         screenPosX = 160,
         screenPosY = 90,
+        displayFlag = "",
         detectSessionExpression = false,
         vanillaRenderDistanceBehaviour = true,
     }, 

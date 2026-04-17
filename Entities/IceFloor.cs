@@ -28,6 +28,11 @@ public class IceFloor : BaseEntity
     {
         if(self is null) { return orig(self); }
 
+        if (self.Scene is null)
+        {
+            return orig(self);
+        }
+
         if (self.CollideCheck<IceFloor>())
         {
             return false;
