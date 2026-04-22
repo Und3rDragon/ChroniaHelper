@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Formats.Tar;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Imports;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Entities;
@@ -103,8 +105,13 @@ public class ColoredCustomCoreMessage : Entity
 
         // align
         align = (AlignUtils.Aligns)data.Fetch("align", 5);
+
+        displayFlag = data.Attr("displayFlag");
+        flagOverride = displayFlag.HasValidContent();
     }
     AlignUtils.Aligns align;
+    private string displayFlag;
+    private bool flagOverride;
 
     public void TextProcess()
     {
@@ -207,13 +214,23 @@ public class ColoredCustomCoreMessage : Entity
                 }
                 q = alphaMult * (defaultFadedValue + (1 - defaultFadedValue) * EaseType(Calc.Max(f.ToArray())));
             }
+
             if (pausetype == PauseRenderTypes.Fade)
             {
-                alpha = Calc.Approach(alpha, q, 0.05f);
+                alpha = Calc.Approach(alpha,
+                    flagOverride ? (displayFlag.GetGeneralInvertedFlag() ? q : 0f) : q,
+                    0.05f);
             }
             else
             {
-                alpha = q;
+                if (flagOverride)
+                {
+                    alpha = Calc.Approach(alpha, displayFlag.GetGeneralInvertedFlag() ? q : 0f, 0.05f);
+                }
+                else
+                {
+                    alpha = q;
+                }
             }
         }
         base.Update();
