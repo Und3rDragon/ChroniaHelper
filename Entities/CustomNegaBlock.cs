@@ -27,6 +27,13 @@ public class CustomNegaBlock : NegaBlock
 
     public static bool WhenRefillDash(On.Celeste.Player.orig_RefillDash orig, Player self)
     {
+        if (self is null) { return orig(self); }
+
+        if (self.Scene is null)
+        {
+            return orig(self);
+        }
+
         if (self.CollideCheck<CustomNegaBlock>(self.Position + Vc2.UnitY))
         {
             return false;

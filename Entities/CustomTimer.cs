@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.StopwatchSystem;
 using YamlDotNet.Core.Tokens;
 
@@ -21,6 +22,7 @@ public class CustomTimer : Entity
 
     private string text;
     private string completeFlag;
+    private bool hasCompleteFlag;
     private long timeLimit;
     private bool useRawTime;
     private bool checkTimeLimit;
@@ -45,6 +47,7 @@ public class CustomTimer : Entity
     {
         text = data.Attr("text");
         completeFlag = data.Attr("completeFlag");
+        hasCompleteFlag = completeFlag.HasValidContent();
         timeLimit = ConvertStringToTicks(data.Attr("timeLimit"));
 
         overTimeLimitColor = Calc.HexToColor(data.Attr("overTimeLimitColor"));
@@ -85,8 +88,18 @@ public class CustomTimer : Entity
 
     public override void Update()
     {
-        if (!Md.Session.CustomTimer_TimerStarted || Md.Session.CustomTimer_TimerCompleted)
+        bool arg1 = Md.Session.CustomTimer_TimerStarted;
+        bool arg2 = Md.Session.CustomTimer_TimerCompleted;
+
+        if (!arg1 || arg2)
+        {
+            if (arg2 && hasCompleteFlag)
+            {
+                completeFlag.SetFlag(true);
+            }
+
             return;
+        }
 
         if (checkIsValidRun && !isValidRun)
         {
@@ -105,6 +118,7 @@ public class CustomTimer : Entity
             timerColor = overTimeLimitColor;
             return;
         }
+
         base.Update();
     }
 
