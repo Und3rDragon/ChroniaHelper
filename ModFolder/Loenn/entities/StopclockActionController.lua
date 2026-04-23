@@ -12,7 +12,9 @@ controller.placements = {
         stopclockTag = "stopclock",
         setFlag = "",
         exportToSessionKey = "",
+        countUpTimer = "0:30:0",
         killPlayer = false,
+        resetCountUpTimerWhenTriggered = false,
     },
 }
 

@@ -235,35 +235,35 @@ public static class StringUtils
         return baseString.Replace(newString, "");
     }
 
-    public static string ReplaceFirst(this string baseString, string newString)
+    public static string ReplaceFirst(this string baseString, string replaceFrom, string replaceTo)
     {
-        int n = baseString.IndexOf(newString);
-        string s1 = baseString.Substring(0, n + newString.Length);
-        string s2 = baseString.Substring(n + newString.Length);
-        string f = s1.Replace(baseString, newString) + s2;
+        int n = baseString.IndexOf(replaceFrom);
+        string s1 = baseString.Substring(0, n + replaceFrom.Length);
+        string s2 = baseString.Substring(n + replaceFrom.Length);
+        string f = s1.Replace(replaceFrom, replaceTo) + s2;
         return f;
     }
 
-    public static string ReplaceLast(this string baseString, string newString)
+    public static string ReplaceLast(this string baseString, string replaceFrom, string replaceTo)
     {
         string a = baseString;
-        int index = a.IndexOf(newString);
-        int start = a.IndexOf(newString) + newString.Length;
+        int index = a.IndexOf(replaceFrom);
+        int start = a.IndexOf(replaceFrom) + replaceFrom.Length;
         a = a.Substring(start);
-        while (a.Contains(newString))
+        while (a.Contains(replaceFrom))
         {
-            start = a.IndexOf(newString) + newString.Length;
+            start = a.IndexOf(replaceFrom) + replaceFrom.Length;
             index += start;
             a = a.Substring(start);
         }
         string s1 = baseString.Substring(0, index);
         string s2 = baseString.Substring(index);
-        return s1 + s2.Replace(baseString, newString);
+        return s1 + s2.Replace(replaceFrom, replaceTo);
     }
 
-    public static string ReplaceAll(this string baseString, string newString)
+    public static string ReplaceAll(this string baseString, string replaceFrom, string replaceTo)
     {
-        return baseString.Replace(baseString, newString);
+        return baseString.Replace(replaceFrom, replaceTo);
     }
 
     public static string Backspace(this string baseString)

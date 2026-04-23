@@ -34,7 +34,7 @@ public partial class Stopclock
     
     public void GetDeltaSystemTimeData(out int[] digitals)
     {
-        var dt = safeStartTime - DateTime.Now;
+        var dt = DateTime.Now - safeStartTime;
         int days = NumberUtils.Mod(dt.Days, 30);
         int months = NumberUtils.Mod(dt.Days, 360) / 30;
         int years = dt.Days / 360;
@@ -81,7 +81,7 @@ public partial class Stopclock
                 break;
         }
     }
-
+    
     public void GetClampedDeltaSystemTimeData(out int[] digitals, int minUnit = 0, int maxUnit = 6)
     {
         minUnit.Clamp(0, 6, out int min);
@@ -134,13 +134,13 @@ public partial class Stopclock
     public string GetTrimmedTimeString()
     {
         if (year > 0)
-            return $"{year}:{month}:{day}:{hour:00}:{minute:00}:{second:00}";
+            return $"{year}:{month}:{day}:{hour:00}:{minute:00}:{second:00}:{millisecond:000}";
         else if (month > 0)
-            return $"{month}:{day}:{hour:00}:{minute:00}:{second:00}";
+            return $"{month}:{day}:{hour:00}:{minute:00}:{second:00}:{millisecond:000}";
         else if (day > 0)
-            return $"{day}:{hour:00}:{minute:00}:{second:00}";
+            return $"{day}:{hour:00}:{minute:00}:{second:00}:{millisecond:000}";
         else if (hour > 0)
-            return $"{hour:00}:{minute:00}:{second:00}";
+            return $"{hour:00}:{minute:00}:{second:00}:{millisecond:000}";
         else if (minute > 0)
             return $"{minute:00}:{second:00}:{millisecond:000}";
         else if(second > 0)
@@ -185,6 +185,11 @@ public partial class Stopclock
     public void GetTrimmedDeltaSystemTimeString(out string str)
     {
         str = GetTrimmedDeltaSystemTimeString();
+    }
+
+    public TimeSpan ClockToTimeSpan()
+    {
+        return new TimeSpan(year * 365 + month * 30 + day, hour, minute, second, millisecond);
     }
 
 }
