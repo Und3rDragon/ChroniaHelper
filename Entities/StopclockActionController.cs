@@ -23,6 +23,23 @@ public class StopclockActionController : Entity
         killPlayer = d.Bool("killPlayer", false);
         sessionKey = d.Attr("exportToSessionKey", "");
         sessionKeyAvailable = !sessionKey.IsNullOrEmpty();
+        countUpTo = d.Attr("countUpTimer", "0:30:0");
+        countUpTo.Split(":", StringSplitOptions.TrimEntries).ApplyTo(out List<string> nums);
+        List<int> spanValue = new();
+        for (int i = nums.Count - 1; i >= 0; i--)
+        {
+            int n = 0;
+            int.TryParse(nums[i], out n);
+            spanValue.Add(n);
+        }
+        countUpSpan = new(
+            spanValue.SafeGet(6, 0) * 365 + spanValue.SafeGet(5, 0) * 30 + spanValue.SafeGet(4, 0),
+            spanValue.SafeGet(3, 0),
+            spanValue.SafeGet(2, 0),
+            spanValue.SafeGet(1, 0),
+            spanValue.SafeGet(0, 0)
+            );
+        resetCountUpTimer = d.Bool("resetCountUpTimerWhenTriggered", false);
 
         Tag = Tags.Persistent;
     }
@@ -32,6 +49,11 @@ public class StopclockActionController : Entity
     private bool killPlayer;
     private string sessionKey;
     private bool sessionKeyAvailable;
+    private string countUpTo;
+    private TimeSpan countUpSpan;
+    private bool resetCountUpTimer = false;
+
+    private bool countUpCheck = false, _countUpCheck = false;
 
     public override void Update()
     {
@@ -76,5 +98,31 @@ public class StopclockActionController : Entity
                     flag.SetFlag(true);
                 }
             });
+        
+        // if not a countdown, use following logic:
+        if (!clock.countdown)
+        {
+            countUpCheck = clock.ClockToTimeSpan() > countUpSpan;
+            
+            if (countUpCheck && !_countUpCheck)
+            {
+                if (killPlayer)
+                {
+                    PUt.player?.Die(Vc2.Zero);
+                }
+
+                if (flagAvailable)
+                {
+                    flag.SetFlag(true);
+                }
+
+                if (resetCountUpTimer)
+                {
+                    clock.Restart();
+                }
+            }
+            
+            _countUpCheck = countUpCheck;
+        }
     }
 }

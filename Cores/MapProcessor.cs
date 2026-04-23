@@ -48,7 +48,7 @@ public static class MapProcessor
     public static AreaKey areakey;
     public static MapData mapdata;
     public static int saveSlotIndex;
-    public static Level level;
+    public static Level level = null;
 
     /// <summary>
     /// Entity Dummies for Recycling Components
@@ -277,7 +277,6 @@ public static class MapProcessor
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)
     {
-        scene = self;
         orig(self);
 
         if (Md.SaveData.IsNotNull())
@@ -295,8 +294,8 @@ public static class MapProcessor
 
     // Shortcuts and Properties
 
-    public static Scene scene;
-    public static Level sLevel => scene as Level;
+    public static Scene scene => Monocle.Engine.Scene;
+    public static Level sceneAsLevel => scene is Level ? scene as Level : null;
     public static MouseState mouseState => Mouse.GetState();
     public static KeyboardState keyboardState => Keyboard.GetState();
     public static GamePadState gamePadState => GamePad.GetState(PlayerIndex.One);
