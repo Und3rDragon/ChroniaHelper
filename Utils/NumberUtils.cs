@@ -100,6 +100,11 @@ public static class NumberUtils
     {
         return ((x % m) + m) % m;
     }
+    
+    public static double Mod(double x, double m)
+    {
+        return ((x % m) + m) % m;
+    }
 
     public static int CheckTime(this string input)
     {
