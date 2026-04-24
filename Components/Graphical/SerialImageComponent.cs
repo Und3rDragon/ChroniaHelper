@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components.Graphical;
 
+[Note("For better usage, I think it's better to include SerialImageGroup component instead of SerialImage component")]
 public class SerialImageComponent : BaseComponent
 {
-    public SerialImageComponent(string path = "ChroniaHelper/DisplayFonts/font")
+    public SerialImageComponent(string path = "ChroniaHelper/DisplayFonts/font", string targetText = "")
     {
         if(!path.HasValidContent())
         {
@@ -19,6 +20,8 @@ public class SerialImageComponent : BaseComponent
         }
 
         Main = new(path);
+        
+        TargetText = targetText;
     }
     public SerialImage Main;
     public string TargetText;

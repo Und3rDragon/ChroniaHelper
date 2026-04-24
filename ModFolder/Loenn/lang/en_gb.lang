@@ -1443,3 +1443,7 @@ entities.ChroniaHelper/FormulaBlockSpeedEquation.attributes.description.tutorial
 # ================== BPM Counter
 
 entities.ChroniaHelper/BPMCounter.placements.name.controller=BPM Counter
+
+# ================== Entity Text Adder
+
+entities.ChroniaHelper/EntityTextAdder.placements.name.EntityTextAdder=Entity Text Adder
