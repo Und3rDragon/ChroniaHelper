@@ -11,6 +11,8 @@ public class BPMCounter : BaseEntity
 {
     public BPMCounter(EntityData data, Vc2 offset) : base(data, offset)
     {
+        Tag = Tags.FrozenUpdate | Tags.PauseUpdate | Tags.TransitionUpdate;
+        
         BPM = data.Int("bpm" , 144).ClampMin(1);
         Loop = data.Int("beatsPerLoop", 8).ClampMin(1);
         name = data.Attr("counter", "bpmCounter");
