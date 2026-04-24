@@ -18,15 +18,19 @@ public class BPMCounter : BaseEntity
         name = data.Attr("counter", "bpmCounter");
         flag = data.Attr("flag");
         mode = (Mode)data.Int("mode", 0);
+        double.TryParse(data.Attr("offsetSeconds"), out double _beatOffset);
+        beatOffset = new TimeSpan(0, 0,0,0, (int)(_beatOffset * 1000));
     }
     public string name, flag;
     public int BPM = 144;
     public int Loop = 8;
-    public double Beat => 60.0 / BPM;
+    public double Beat => 60000.0 / BPM;
     public int Index = 0;
     public enum Mode {RawLevelTime, RelativeTime}
     public Mode mode;
-    public double registerTime = 0, t = 0;
+    public DateTime registerTime = DateTime.Now;
+    public TimeSpan t = TimeSpan.Zero;
+    public TimeSpan beatOffset;
 
     public override void Update()
     {
@@ -36,21 +40,21 @@ public class BPMCounter : BaseEntity
         {
             if (!flag.GetGeneralInvertedFlag())
             {
-                registerTime = MaP.level?.RawTimeActive ?? 0;
+                registerTime = DateTime.Now;
                 return;
             }
         }
         
         if (mode == Mode.RelativeTime)
         {
-            t = (MaP.level?.RawTimeActive ?? 0) - registerTime;
+            t = DateTime.Now - registerTime + beatOffset;
         }
         else
         {
-            t = MaP.level?.RawTimeActive ?? 0;
+            t = DateTime.Now - Md.Session.LevelStartTime + beatOffset;
         }
         
-        Index = (int)NumberUtils.Mod(t / Beat, Loop);
+        Index = (int)NumberUtils.Mod(t.TotalMilliseconds / Beat, Loop);
         name.SetCounter(Index);
     }
 }

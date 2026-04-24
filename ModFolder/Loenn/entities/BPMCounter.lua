@@ -15,6 +15,7 @@ controller.placements = {
             counter = "bpmCounter",
             flag = "",
             mode = 0,
+            offsetSeconds = 0,
         }
     }
 }
