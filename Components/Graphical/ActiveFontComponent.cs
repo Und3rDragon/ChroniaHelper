@@ -13,13 +13,13 @@ namespace ChroniaHelper.Components.Graphical;
 
 public class ActiveFontComponent : BaseComponent
 {
-    public ActiveFontComponent()
+    public ActiveFontComponent(string targetText = "")
     {
-        
+        TargetText = targetText;
     }
     public string TargetText = string.Empty;
     public Vc2 RelativePosition = Vc2.Zero;
-    public bool Outlined;
+    public bool Outlined = false;
     public Vc2 Alignment = Alignments.Center;
     public Vc2 Scale = new(1f, 1f);
     public ChroniaColor Color = ChroniaColor.White;

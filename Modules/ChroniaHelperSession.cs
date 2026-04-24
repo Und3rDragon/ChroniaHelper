@@ -229,6 +229,9 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // Global Entity Registration
     public HashSet<EntityID> GlobalEntitiesRegistry = new();
+    
+    // BPM Counter
+    public DateTime LevelStartTime = DateTime.Now;
 
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
