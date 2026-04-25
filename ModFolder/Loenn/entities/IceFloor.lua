@@ -14,7 +14,7 @@ icyFloor.placements = {
         depth = -9999,
         width = 8,
         spriteXML = "iceFloor",
-        createStaticMover = false,
+        attached = false,
         onGroundSpriteOffset = false,
     }
 }
