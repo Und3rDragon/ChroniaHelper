@@ -221,8 +221,11 @@ public class ChroniaHelperSession : EverestModuleSession
     public Dictionary<string, CodeButtonTarget> codeButtonTargets = new();
 
     // Screenshake Data
-    public ScreenshakeAmount InitialScreenshake = Celeste.Settings.Instance.ScreenShake;
+    public ScreenshakeAmount RestoreScreenshake = Celeste.Settings.Instance.ScreenShake;
+    public ScreenshakeAmount _CurrentScreenshake = Celeste.Settings.Instance.ScreenShake;
     public ScreenshakeAmount CurrentScreenshake = Celeste.Settings.Instance.ScreenShake;
+    public ScreenshakeAmount _ModifiedScreenshake = Celeste.Settings.Instance.ScreenShake;
+    public ScreenshakeAmount ModifiedScreenshake = Celeste.Settings.Instance.ScreenShake;
 
     // Fish Pricer Data
     public Dictionary<string, Dictionary<int, List<int>>> FishPricers = new();
