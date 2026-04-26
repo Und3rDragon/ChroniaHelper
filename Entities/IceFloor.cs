@@ -51,7 +51,15 @@ public class IceFloor : BaseEntity
         xml = data.Attr("spriteXML", "iceFloor");
         onGroundSpriteOffset = data.Bool("onGroundSpriteOffset", false);
         this.tiles = this.BuildSprite();
-        createStaticMover = data.Bool("createStaticMover", false);
+        // delegate from old option
+        if (data.Has("createStaticMover"))
+        {
+            createStaticMover = data.Bool("createStaticMover", false);
+        }
+        else
+        {
+            createStaticMover = data.Bool("attached", false);
+        }
         
         if (createStaticMover)
         {

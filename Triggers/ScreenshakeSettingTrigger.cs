@@ -20,6 +20,6 @@ public class ScreenshakeSettingTrigger : BaseTrigger
     protected override void OnEnterExecute(Player player)
     {
         Celeste.Settings.Instance.ScreenShake = screenshake;
-        Md.Session.CurrentScreenshake = screenshake;
+        Md.Session.ModifiedScreenshake = screenshake;
     }
 }

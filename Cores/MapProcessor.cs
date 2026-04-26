@@ -101,8 +101,8 @@ public static class MapProcessor
         
         Md.Session.LevelStartTime = DateTime.Now;
 
-        Md.Session.InitialScreenshake = Celeste.Settings.Instance.ScreenShake;
-        Celeste.Settings.Instance.ScreenShake = Md.Session.CurrentScreenshake;
+        Md.Session.RestoreScreenshake = Celeste.Settings.Instance.ScreenShake;
+        Celeste.Settings.Instance.ScreenShake = Md.Session.ModifiedScreenshake;
 
         self.Add(dummyGlobal);
         self.Add(PlayerIndicatorZoneMonitor.Instance);
@@ -113,7 +113,7 @@ public static class MapProcessor
         dummyGlobal.RemoveSelf();
         PlayerIndicatorZoneMonitor.Instance.RemoveSelf();
 
-        Celeste.Settings.Instance.ScreenShake = Md.Session.InitialScreenshake;
+        Celeste.Settings.Instance.ScreenShake = Md.Session.RestoreScreenshake;
 
         orig(self);
     }
@@ -275,6 +275,17 @@ public static class MapProcessor
                 timer.SetFlag(false);
             }
         }
+        
+        // Screenshake update
+        Md.Session.CurrentScreenshake = Celeste.Settings.Instance.ScreenShake;
+        bool sc1 = Md.Session.CurrentScreenshake != Md.Session._CurrentScreenshake;
+        bool sc2 = Md.Session.ModifiedScreenshake == Md.Session._ModifiedScreenshake;
+        if (sc1 && sc2)
+        {
+            Md.Session.RestoreScreenshake = Md.Session.CurrentScreenshake;
+        }
+        Md.Session._CurrentScreenshake = Md.Session.CurrentScreenshake;
+        Md.Session._ModifiedScreenshake = Md.Session.ModifiedScreenshake;
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Monocle.Scene self)
