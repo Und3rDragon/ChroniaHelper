@@ -23,12 +23,11 @@ public static class PlayerUtils
     public static bool TryGetPlayer(out Player player)
     {
         player = Engine.Scene?.Tracker?.GetEntity<Player>();
-        return player != null;
+        return player != null && player.Scene != null;
     }
     public static bool TryGetAlivePlayer(out Player player)
     {
         player = Engine.Scene?.Tracker?.GetEntity<Player>();
         return !(player?.Dead ?? true);
     }
-
 }
