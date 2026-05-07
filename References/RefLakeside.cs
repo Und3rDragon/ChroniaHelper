@@ -132,6 +132,8 @@ public static class RefLakeside
 
     public static void CancelFishing(out List<Component> fishing)
     {
+        fishing = new();
+
         if(PUt.TryGetPlayer(out Player player))
         {
             List<Component> match = new();
@@ -146,12 +148,10 @@ public static class RefLakeside
             fishing = match;
             foreach (var item in match)
             {
-                item.Removed(player);
+                item.Active = false;
             }
 
             return;
         }
-
-        fishing = new();
     }
 }
