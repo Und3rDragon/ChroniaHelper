@@ -129,4 +129,29 @@ public static class RefLakeside
             return total;
         }
     }
+
+    public static void CancelFishing(out List<Component> fishing)
+    {
+        fishing = new();
+
+        if(PUt.TryGetPlayer(out Player player))
+        {
+            List<Component> match = new();
+            foreach (var comp in player.Components)
+            {
+                if (comp.GetType().ToString().Contains("Fishing"))
+                {
+                    match.Add(comp);
+                }
+            }
+
+            fishing = match;
+            foreach (var item in match)
+            {
+                item.Active = false;
+            }
+
+            return;
+        }
+    }
 }

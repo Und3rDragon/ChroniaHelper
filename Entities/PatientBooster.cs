@@ -29,6 +29,8 @@ public class PatientBooster : Booster
 	public PatientBooster(EntityData data, Vector2 offset)
 		: base(data.Position + offset, data.Bool("red"))
 	{
+		PrimaryPosition = data.Position + offset;
+		
 		// parsing hitbox data
 		string[] hitboxData = data.Attr("customHitbox").Split(';',StringSplitOptions.TrimEntries);
         //对于每组数据
@@ -106,6 +108,7 @@ public class PatientBooster : Booster
 		killTimer = data.Slider("killIfStayed", -1f);
         
         freeMoveSpeed = data.Slider("freeMoveSpeed", -1f);
+        offsetReset = data.Bool("freeMoveSpeedOffsetReset", true);
 
 		// out speed and boost speed from Custom Booster
 		outSpeed = data.Slider("outSpeedMultiplier", 1f);
@@ -148,6 +151,10 @@ public class PatientBooster : Booster
     private ParticleType customBurstParticleType, customAppearParticleType;
 
     private SelectiveSlider forceCoyoteTime = new(null, -1f);
+    
+    private Vc2 PrimaryPosition = Vc2.Zero;
+    private bool PositionReset = true;
+    private bool offsetReset = true;
 
     public override void Added(Scene scene)
     {
@@ -179,6 +186,7 @@ public class PatientBooster : Booster
 		{
 			BoostingPlayer = true;
 			player.boostTarget = Center;
+			/*
 			var targetPos = Center - player.Collider.Center + (Input.Aim.Value * 3f);
             if(freeMoveSpeed.Value > 0f)
 			{
@@ -186,9 +194,24 @@ public class PatientBooster : Booster
             }
 			targetPos += freeMoveOffset;
 			this.sprite.Position = freeMoveOffset;
+			*/
+			if(freeMoveSpeed.Value > 0f)
+			{
+				Position += freeMoveSpeed.Value * Engine.DeltaTime * Input.Aim.Value;
+			}
+			var targetPos = Center - player.Collider.Center + (Input.Aim.Value * 3f);
+			
 			player.MoveToX(targetPos.X);
 			player.MoveToY(targetPos.Y);
 		}
+		
+		// Reset Position when respawn timer hit zero
+		if (respawnTimer <= 0f && !PositionReset && offsetReset)
+		{
+			Position = PrimaryPosition;
+			PositionReset = true;
+		}
+		
 		var sprite = Sprite;
 		if (sprite.CurrentAnimationID == "pop")
 		{
@@ -280,6 +303,8 @@ public class PatientBooster : Booster
 		if (self is PatientBooster patientBooster)
 		{
 			patientBooster.respawnTimer = patientBooster.respawnDelay;
+			// Allow position resetting when player released, the respawn timer starts counting simultaneously
+			patientBooster.PositionReset = false;
 			patientBooster.timer_killTimer = patientBooster.killTimer.Value;
             
             patientBooster.freeMoveOffset = Vc2.Zero;
