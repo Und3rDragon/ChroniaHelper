@@ -67,9 +67,17 @@ public class MessageDisplayerNormal : SerialImageRenderer
     public string reference = Cons.DisplayFontsReference;
     public List<string> ParseRenderTarget()
     {
-        string text = content.StartsWith("#") ?
-            Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "") :
-            content.ParseDialogToString(Languages.English);
+        string text = content.ParseDialogToString(Languages.English);
+        bool arg1 = content.StartsWith("\"") && content.EndsWith("\"");
+        bool arg2 = content.StartsWith("#");
+        if (arg1)
+        {
+            text = content.TrimStart("\"").TrimEnd("\"").ToString();
+        }
+        else if (arg2)
+        {
+            text = Md.Session.keystrings.GetValueOrDefault(content.TrimStart('#'), "");
+        }
 
         var lines = text.Split(new char[] { '\n', '\r'}, StringSplitOptions.TrimEntries);
         var result = new List<string>();
