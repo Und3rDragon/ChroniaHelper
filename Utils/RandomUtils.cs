@@ -153,6 +153,54 @@ public static class RandomUtils
 
         N = RandomFloat(min ?? 0, max ?? 1f, seed);
     }
+    
+    /// <summary>
+    /// A random value 0 <= x < 1
+    /// </summary>
+    /// <param name="seed"></param>
+    /// <returns></returns>
+    public static double RandomDouble(int? seed = null)
+    {
+        return Rand(seed).NextDouble();
+    }
+
+    /// <summary>
+    /// A random value 0 <= x < max
+    /// </summary>
+    /// <param name="max">Exclusive max</param>
+    /// <param name="seed"></param>
+    /// <returns></returns>
+    public static double RandomDouble(double max, int? seed = null)
+    {
+        return RandomDouble(seed) * max;
+    }
+
+    public static double RandomDouble(double min, double max, int? seed = null)
+    {
+        return double.Min(min, max) + (double.Max(min, max) - double.Min(max, min)) * RandomDouble(seed);
+    }
+
+    public static void RandomDouble(out double N, double? min = null, double? max = null, int? seed = null)
+    {
+        if (min.IsNull() && max.IsNull())
+        {
+            N = RandomDouble(seed);
+            return;
+        }
+
+        if (min.IsNull())
+        {
+            N = RandomDouble(max ?? 1f, seed);
+            return;
+        }
+
+        if (max.IsNull())
+        {
+            N = RandomDouble(min ?? 1f, seed);
+        }
+
+        N = RandomDouble(min ?? 0, max ?? 1f, seed);
+    }
 
     public static Vc2[] GetRandomPoints(Vc2 a, Vc2 b, int count, int? seed = null)
     {

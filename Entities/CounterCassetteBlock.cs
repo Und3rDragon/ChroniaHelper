@@ -72,8 +72,8 @@ public class CounterCassetteBlock : CassetteBlock
     }
 
     public string prefix, counter;
-    private bool initialized;
     private ChroniaColor baseColor, backColor;
+    private string switchOnSfx, switchOffSfx;
     public CounterCassetteBlock(Vector2 position, EntityID id, EntityData data)
         : base(data.Position + position, id, data.Width, data.Height, data.Int("counterValue", 0), -1f)
     {
@@ -83,6 +83,9 @@ public class CounterCassetteBlock : CassetteBlock
 
         backColor = data.GetChroniaColor("disabledColor", "667da5");
         backColor.alpha = baseColor.alpha;
+
+        switchOnSfx = data.Attr("switchOnSfx");
+        switchOffSfx = data.Attr("switchOffSfx");
     }
 
     public CounterCassetteBlock(EntityData data, Vector2 offset, EntityID id)
@@ -108,21 +111,24 @@ public class CounterCassetteBlock : CassetteBlock
         }
     }
 
+    private bool _Activated = false;
     public override void Update()
     {
         base.Update();
-        if (!initialized)
+
+        Activated = Index == counter.GetCounter();
+        if (Activated != _Activated)
         {
-            var entity = Scene.Tracker.GetEntity<Player>();
-            if (entity != null)
+            if (Activated && switchOnSfx.HasValidContent())
             {
-                Activated = entity.Dashes == Index;
-                initialized = true;
+                Audio.Play(switchOnSfx, Position + new Vc2(Width, Height) * 0.5f);
+            }
+            else if (!Activated && switchOffSfx.HasValidContent())
+            {
+                Audio.Play(switchOffSfx, Position + new Vc2(Width, Height) * 0.5f);
             }
         }
-
-        if (Index == counter.GetCounter()) Activated = true;
-        else Activated = false;
+        _Activated = Activated;
     }
 
     public void FindInGroupOverride(CassetteBlock block)

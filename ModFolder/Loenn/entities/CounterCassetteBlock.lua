@@ -18,6 +18,18 @@ local dashToggleBlock = {
         disabledColor = {
             fieldType = "color",
         },
+        switchOnSfx = {
+            options = {
+                "event:/game/general/cassette_block_switch_1",
+            },
+            editable = true,
+        },
+        switchOffSfx = {
+            options = {
+                "event:/game/general/cassette_block_switch_2",
+            },
+            editable = true,
+        },
     },
     placements={
         name = "block",
@@ -29,6 +41,8 @@ local dashToggleBlock = {
             disabledColor = "667da5",
             directory = "objects/ChroniaHelper/counterCassetteBlock/",
             counter = "counterCassetteBlockCounter",
+            switchOnSfx = "",
+            switchOffSfx = "",
         },
     },
 }
