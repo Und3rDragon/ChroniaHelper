@@ -51,6 +51,8 @@ public class ModifiedAnimatedParallax : Parallax
         public int? ResetFrame { get; set; } = null;
         public string SpeedSlider { get; set; } = null;
         public string AlphaExpression { get; set; } = null;
+        public List<string> FrameIndexFlag { get; set; } = new();
+        public List<string> TextureIndexFlag { get; set; } = new();
     }
     private string alphaExpression = null;
     private string triggerFlag, resetFlag;
@@ -64,6 +66,8 @@ public class ModifiedAnimatedParallax : Parallax
 
     private int currentFrame;
     private float currentFrameTimer, orig_currentFrameTimer;
+
+    private List<string> frameIndexFlag = new(), textureIndexFlag = new();
 
     //public ModifiedAnimatedParallax(BinaryPacker.Element c, MTexture texture) : this(texture)
     //{
@@ -144,11 +148,67 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 alphaExpression = meta.AlphaExpression;
             }
+
+            frameIndexFlag = meta.FrameIndexFlag;
+            textureIndexFlag = meta.TextureIndexFlag;
         }
+        
+        AnalyzeIndexFlags();
         
         Texture = frames[frameOrder[0]];
         currentFrame = 0;
         orig_currentFrameTimer = currentFrameTimer = 1f / fps;
+    }
+
+    private Dictionary<int, List<string>> frameIndexFlags = new(),
+        textureIndexFlags = new();
+    private void AnalyzeIndexFlags()
+    {
+        foreach (var item in frameIndexFlag)
+        {
+            string[] pair = item.Split(';', StringSplitOptions.TrimEntries);
+            if (pair.Length < 2)
+            {
+                continue;
+            }
+
+            string[] indexes = pair[0].Split(',', StringSplitOptions.TrimEntries);
+            string[] flags = pair[1].Split(',', StringSplitOptions.TrimEntries);
+            foreach (var index in indexes)
+            {
+                if (int.TryParse(index, out int n))
+                {
+                    frameIndexFlags.Create(n, new());
+                    foreach (var flag in flags)
+                    {
+                        frameIndexFlags[n].Create(flag);
+                    }
+                }
+            }
+        }
+        
+        foreach (var item in textureIndexFlag)
+        {
+            string[] pair = item.Split(';', StringSplitOptions.TrimEntries);
+            if (pair.Length < 2)
+            {
+                continue;
+            }
+
+            string[] indexes = pair[0].Split(',', StringSplitOptions.TrimEntries);
+            string[] flags = pair[1].Split(',', StringSplitOptions.TrimEntries);
+            foreach (var index in indexes)
+            {
+                if (int.TryParse(index, out int n))
+                {
+                    textureIndexFlags.Create(n, new());
+                    foreach (var flag in flags)
+                    {
+                        textureIndexFlags[n].Create(flag);
+                    }
+                }
+            }
+        }
     }
 
     public override void Update(Scene scene)
@@ -195,6 +255,22 @@ public class ModifiedAnimatedParallax : Parallax
             currentFrame = currentFrame.ClampMin(0); // For frame index protection
             currentFrame %= frameOrder.Length;
             Texture = frames[frameOrder[currentFrame]];
+
+            if (frameIndexFlags.ContainsKey(currentFrame))
+            {
+                foreach (var indexFlag in frameIndexFlags[currentFrame])
+                {
+                    indexFlag.SetFlag(true);
+                }
+            }
+            
+            if (textureIndexFlags.ContainsKey(frameOrder[currentFrame]))
+            {
+                foreach (var indexFlag in textureIndexFlags[frameOrder[currentFrame]])
+                {
+                    indexFlag.SetFlag(true);
+                }
+            }
 
             if (!triggerFlag.IsNullOrEmpty())
             {
