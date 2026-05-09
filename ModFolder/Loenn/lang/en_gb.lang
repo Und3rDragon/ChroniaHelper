@@ -1456,3 +1456,17 @@ entities.ChroniaHelper/CustomTheoCrystal.attributes.description.displayTutorial=
 # ================== Force Movement Controller
 
 entities.ChroniaHelper/ForceMovementController.placements.name.controller=Force Movement Controller
+
+# ================= Set Counter Controller
+
+entities.ChroniaHelper/SetCounterController.placements.name.controller=Set Counter Controller
+entities.ChroniaHelper/SetCounterController.attributes.description.flags=Separate flags with a comma \nFlags contain "!" will disable \nFlags contain "*" will be global flag \nFlags contain "?" will be temporary
+entities.ChroniaHelper/SetCounterController.attributes.description.parameters=When mode is "On Interval", this field will be the interval \nWhen mode is "On Flags", enter a series of flags separated by comma \nFlag begins with "!" is inverted
+entities.ChroniaHelper/SetCounterController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
+
+# ================= Set Slider Controller
+
+entities.ChroniaHelper/SetSliderController.placements.name.controller=Set Slider Controller
+entities.ChroniaHelper/SetSliderController.attributes.description.flags=Separate flags with a comma \nFlags contain "!" will disable \nFlags contain "*" will be global flag \nFlags contain "?" will be temporary
+entities.ChroniaHelper/SetSliderController.attributes.description.parameters=When mode is "On Interval", this field will be the interval \nWhen mode is "On Flags", enter a series of flags separated by comma \nFlag begins with "!" is inverted
+entities.ChroniaHelper/SetSliderController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
