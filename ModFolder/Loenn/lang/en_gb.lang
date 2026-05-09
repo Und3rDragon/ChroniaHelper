@@ -1448,7 +1448,11 @@ entities.ChroniaHelper/BPMCounter.placements.name.controller=BPM Counter
 
 entities.ChroniaHelper/EntityTextAdder.placements.name.EntityTextAdder=Entity Text Adder
 
-# ==================
+# ================== Custom Theo Crystal
 
 entities.ChroniaHelper/CustomTheoCrystal.placements.name.theo_crystal=Custom Theo Crystal
 entities.ChroniaHelper/CustomTheoCrystal.attributes.description.displayTutorial=According to vanilla, this option requires flag "foundTheoInCrystal" to work
+
+# ================== Force Movement Controller
+
+entities.ChroniaHelper/ForceMovementController.placements.name.controller=Force Movement Controller
