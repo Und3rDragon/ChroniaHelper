@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using ChroniaHelper.Utils.ChroniaSystem;
+using MonoMod.Utils;
 using YoctoHelper.Cores;
 using static Celeste.FancyText;
 using static ChroniaHelper.ChroniaHelperModule;
@@ -614,7 +615,7 @@ public static class StringUtils
 
                         // 这里可以根据不同的dataName返回不同的值
                         // 示例中要求将{savedata name}替换成"Madeline"
-                        if (dataName == "Name")
+                        if (dataName.ToLower() == "name")
                         {
                             currentSegment += (Celeste.SaveData.Instance?.Name ?? "Madeline");
                         }
@@ -622,6 +623,29 @@ public static class StringUtils
                         {
                             // 可以根据需要处理其他savedata类型
                             currentSegment += ""; // 或者其他默认值
+                        }
+                    }
+                    // 处理{field fieldName}
+                    else if (cmd == "field" && parts.Length >= 2)
+                    {
+                        // fieldName: xxx.xxx.xxx.xxx
+                        string fieldName = parts[1];
+                        
+                        int lastWordIndex = fieldName.LastIndexOf('.');
+
+                        if (lastWordIndex != -1)
+                        {
+                            string className = fieldName.Substring(0, lastWordIndex);
+                            string attrName = fieldName.Substring(lastWordIndex + 1);
+                            
+                            Type arg = Type.GetType(className);
+                            if (arg != null)
+                            {
+                                if (new DynamicData(arg).TryGet(attrName, out object p))
+                                {
+                                    currentSegment += p.ToString();
+                                }
+                            }
                         }
                     }
                     // 其他大括号指令都替换为空
