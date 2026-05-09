@@ -648,6 +648,25 @@ public static class StringUtils
                             }
                         }
                     }
+                    // 处理{entity id name}
+                    else if (cmd == "entity" && parts.Length >= 3)
+                    {
+                        string _id = parts[1];
+                        string attr = parts[2];
+
+                        if (int.TryParse(_id, out int id))
+                        {
+                            List<Entity> L = MaP.level.Entities.Where(entity => entity.SourceData.ID == id).ToList();
+
+                            if (L.Count > 0)
+                            {
+                                if (new DynamicData(L.First()).TryGet(attr, out object p))
+                                {
+                                    currentSegment += p.ToString();
+                                }
+                            }
+                        }
+                    }
                     // 其他大括号指令都替换为空
                     else
                     {
