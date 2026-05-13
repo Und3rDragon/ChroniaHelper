@@ -10,16 +10,12 @@ namespace ChroniaHelper.Modules;
 
 public class ChroniaHelperGlobalSaveData : ChroniaHelperModuleGlobalSaveData
 {
-    [ChroniaGlobalSavePath]
-    public HashSet<string> flags = new();
-    [ChroniaGlobalSavePath]
-    public Dictionary<string, int> counters = new();
-    [ChroniaGlobalSavePath]
-    public Dictionary<string, float> sliders = new();
-    [ChroniaGlobalSavePath]
-    public Dictionary<string, string> permaKeys = new();
+    public HashSet<string> flags { get; set; }= new();
+    public Dictionary<string, int> counters { get; set; }= new();
+    public Dictionary<string, float> sliders { get; set; } = new();
+    public Dictionary<string, string> permaKeys { get; set; } = new();
 
-    [ChroniaGlobalSavePath("MapHider.xml")]
+    [ChroniaGlobalSavePath("MapHider.yaml")]
     public List<string> HelperMapsToHide { get; set; } = new List<string> {
         "AltSidesHelper",
         "bitsbolts",
