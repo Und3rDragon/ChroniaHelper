@@ -53,22 +53,22 @@ public class ForceMovementController : BaseEntity {
         hookCrouchDashPressed = null;
     }
 
-    private readonly bool up, down, left, right, jump, grab, dash;
-    private readonly string onlyIfFlag;
-    private float value;
+    public bool up, down, left, right, jump, grab, dash;
+    public string onlyIfFlag;
+    public float value = 1f;
 
     public ForceMovementController(EntityData data, Vector2 offset)
         : base(data, offset)
     {
 
         value = data.Float("value", 1f);
-        up = data.Bool("up");
-        down = data.Bool("down");
-        left = data.Bool("left");
-        right = data.Bool("right");
-        jump = data.Bool("jump");
-        grab = data.Bool("grab");
-        dash = data.Bool("dash");
+        up = data.Bool("up", false);
+        down = data.Bool("down", false);
+        left = data.Bool("left", false);
+        right = data.Bool("right", false);
+        jump = data.Bool("jump", false);
+        grab = data.Bool("grab", false);
+        dash = data.Bool("dash", false);
 
         onlyIfFlag = data.Attr("onlyIfFlag");
     }
