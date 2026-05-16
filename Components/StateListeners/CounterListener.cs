@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChroniaHelper.Components;
+namespace ChroniaHelper.Components.StateListeners;
 
 public class CounterListener :  StateListener
 {

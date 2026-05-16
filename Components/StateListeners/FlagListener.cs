@@ -7,7 +7,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils.ChroniaSystem;
 
-namespace ChroniaHelper.Components;
+namespace ChroniaHelper.Components.StateListeners;
 
 public class FlagListener : StateListener
 {
