@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using System;
@@ -61,7 +62,7 @@ public class CustomPuffer : Actor
     private float playerAliveFade;
     private float blastAngle;
     private float blastRadius;
-    private float launchSpeed;
+    private SelectiveSlider launchSpeed;
     private Player holder;
     private bool isHappy;
     private bool needsNewHome;
@@ -87,7 +88,7 @@ public class CustomPuffer : Actor
     private string pufferBoopSound, pufferExplodeSound, pufferShrinkSound, pufferReturnSound,
         pufferExpandSound, pufferReformSound;
 
-    public CustomPuffer(EntityData data, Vector2 position, bool faceRight, float angle = 0f, float radius = 32f, float launchSpeed = 280f, string spriteName = "pufferFish")
+    public CustomPuffer(EntityData data, Vector2 position, bool faceRight, float angle = 0f, float radius = 32f, string spriteName = "pufferFish")
         : base(position)
     {
         Collider = data.Attr("colliders", "r,12,10,-6,-5").ParseColliderList(new ColliderList(new Hitbox(12f, 10f, -6f, -5f)));
@@ -114,7 +115,7 @@ public class CustomPuffer : Actor
         breakWallsRadius = new Circle(radius / 2f);
         blastRadius = radius;
         blastAngle = WrapAngle(angle.ToRad());
-        this.launchSpeed = launchSpeed;
+        this.launchSpeed = data.Slider("launchSpeed", 280f);
         onCollideV = OnCollideV;
         onCollideH = OnCollideH;
         scale = Vector2.One;
@@ -143,7 +144,7 @@ public class CustomPuffer : Actor
     private int overrideOutline = 0;
 
     public CustomPuffer(EntityData data, Vector2 offset, EntityID id)
-        : this(data, data.Position + offset, data.Bool("right", false), data.Float("angle", 0f), data.Float("radius", 32f), data.Float("launchSpeed", 280f), data.Attr("sprite", "pufferFish"))
+        : this(data, data.Position + offset, data.Bool("right", false), data.Float("angle", 0f), data.Float("radius", 32f), data.Attr("sprite", "pufferFish"))
     {
         ID = id;
 
@@ -835,7 +836,7 @@ public class CustomPuffer : Actor
         }
         else
         {
-            player.Speed = launchSpeed * sideVector;
+            player.Speed = launchSpeed.Value * sideVector;
             if (boostMode == BoostModes.AddRedirectSpeed)
             {
                 player.Speed += oldSpeed * sideVector;
@@ -843,7 +844,7 @@ public class CustomPuffer : Actor
         }
         if (player.Speed.Y <= 50f)
         {
-            player.Speed.Y = Math.Min(Math.Max(-150f, -Math.Abs(launchSpeed)), player.Speed.Y);
+            player.Speed.Y = Math.Min(Math.Max(-150f, -Math.Abs(launchSpeed.Value)), player.Speed.Y);
             player.AutoJump = true;
         }
         if (Input.MoveX.Value == Math.Sign(player.Speed.X))

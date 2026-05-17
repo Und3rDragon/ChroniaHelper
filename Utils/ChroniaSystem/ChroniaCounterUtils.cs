@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
@@ -25,6 +26,19 @@ public static class ChroniaCounterUtils
     public static int GetCounter(this string name)
     {
         return MaP.level?.Session.GetCounter(name) ?? 0;
+    }
+
+    public static int GetCounter(this string name, int fallback)
+    {
+        foreach(var c in MaP.level?.Session?.Counters ?? new())
+        {
+            if(c.Key == name)
+            {
+                return c.Value;
+            }
+        }
+
+        return fallback;
     }
 
     public static void SetCounter(this string name, int value)

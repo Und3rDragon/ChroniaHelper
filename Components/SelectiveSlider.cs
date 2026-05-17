@@ -36,33 +36,7 @@ public class SelectiveSlider : SelectiveSessionValue
             return n;
         }
 
-        return Expression.GetSlider();
-    }
-
-    public override void EntityAdded(Scene scene)
-    {
-        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
-        {
-            return;
-        }
-
-        if (float.TryParse(Expression, out float f)) { return; }
-
-        var counters = MaP.level?.Session?.Sliders;
-
-        if (counters == null) { return; }
-
-        foreach (var counter in counters)
-        {
-            if (counter.Key == Expression)
-            {
-                return;
-            }
-        }
-
-        Expression.SetSlider(Fallback);
-
-        base.EntityAdded(scene);
+        return Expression.GetSlider(Fallback);
     }
 }
 

@@ -34,30 +34,7 @@ public class SelectiveCounter : SelectiveSessionValue
             return n;
         }
 
-        return Expression.GetCounter();
-    }
-
-    public override void EntityAdded(Scene scene)
-    {
-        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
-        {
-            return;
-        }
-
-        if (float.TryParse(Expression, out float f)) { return; }
-
-        var counters = MaP.level?.Session?.Counters ?? new();
-        foreach(var counter in counters)
-        {
-            if(counter.Key == Expression)
-            {
-                return;
-            }
-        }
-
-        Expression.SetCounter(Fallback);
-
-        base.EntityAdded(scene);
+        return Expression.GetCounter(Fallback);
     }
 }
 
