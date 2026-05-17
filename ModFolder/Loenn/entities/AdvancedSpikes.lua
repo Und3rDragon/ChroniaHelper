@@ -283,6 +283,15 @@ local fieldTable = {
             allowEmpty = false
         }
     },
+    canRefillDashAfterTriggered =
+    {
+        data = false,
+        info =
+        {
+            fieldType = "boolean",
+            allowEmpty = false
+        }
+    },
     dream =
     {
         data = false,

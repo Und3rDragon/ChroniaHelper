@@ -221,16 +221,54 @@ public class AdvancedSpikes : Entity
             cursor.EmitLdarg0();
             cursor.EmitDelegate<Func<bool, Player, bool>>(( origResult,  player)=>
             {
-                    if (player.CollideFirst<AdvancedSpikes>() is {} spike1)
+                if (player.CollideFirst<AdvancedSpikes>() is {} spike1)
+                {
+                    if (spike1.trigger)
                     {
-                        if (!spike1.CanRefillDashOnTouch || !spike1.trigger)
-                            return true;
+                        foreach (var i in spike1.spikes)
+                        {
+                            if (spike1.PlayerCheck(i.spikeIndex))
+                            {
+                                if (i.triggered)
+                                {
+                                    return !spike1.CanRefillDashAfterTriggered;
+                                }
+                                else
+                                {
+                                    return !spike1.CanRefillDashOnTouch;
+                                }
+                            }
+                        }
                     }
-                    if (player.CollideFirst<AnimatedSpikes>() is {} spike2)
+                    else
                     {
-                        if (!spike2.CanRefillDashOnTouch || !spike2.trigger)
-                            return true;
+                        return !spike1.CanRefillDashOnTouch;
                     }
+                }
+                if (player.CollideFirst<AnimatedSpikes>() is {} spike2)
+                {
+                    if (spike2.trigger)
+                    {
+                        foreach (var i in spike2.spikes)
+                        {
+                            if (spike2.PlayerCheck(i.spikeIndex))
+                            {
+                                if (i.triggered)
+                                {
+                                    return !spike2.CanRefillDashAfterTriggered;
+                                }
+                                else
+                                {
+                                    return !spike2.CanRefillDashOnTouch;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return !spike2.CanRefillDashOnTouch;
+                    }
+                }
                 return origResult;
             });
         }
@@ -238,7 +276,7 @@ public class AdvancedSpikes : Entity
 
 
     public CrystalStaticSpinner Spinner;
-    public bool CanRefillDashOnTouch;
+    public bool CanRefillDashOnTouch, CanRefillDashAfterTriggered;
     private int size;
 
     private DirectionMode direction;
@@ -436,6 +474,7 @@ public class AdvancedSpikes : Entity
 
         base.Depth = data.Int("depth", -50);
         CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
+        CanRefillDashAfterTriggered = data.Bool("canRefillDashAfterTriggered", false);
 
         childMode = data.Attr("childMode");
 

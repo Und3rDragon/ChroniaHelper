@@ -355,7 +355,16 @@ local fieldTable = {
             fieldType = "boolean",
             allowEmpty = false
         }
-    }
+    },
+    canRefillDashAfterTriggered =
+    {
+        data = false,
+        info =
+        {
+            fieldType = "boolean",
+            allowEmpty = false
+        }
+    },
 }
 
 function spikesFieldOrder(direction)

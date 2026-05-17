@@ -1,4 +1,4 @@
-mods.ChroniaHelper.name=ChroniaHelper
+﻿mods.ChroniaHelper.name=ChroniaHelper
 
 style.effects.ChroniaHelper/CustomRain.name=Custom Rain
 style.effects.ChroniaHelper/CustomRain.description.fadingX=Several faders separated by ";" \nEach fader contains 4 numbers separated by a comma, representing "positionFrom", "positionTo", "alphaFrom", "alphaTo" \nFor example: "100,200,0,1"
@@ -1478,3 +1478,30 @@ entities.ChroniaHelper/DrivableCar.placements.name.car=Drivable IntroCar (Reskin
 # ================= Auto Move Controller
 
 entities.ChroniaHelper/AutoMoveController.placements.name.controller=Auto Move Controller
+
+# ================= Custom Puffer
+
+entities.ChroniaHelper/CustomPuffer.placements.name.left=Custom Puffer (left)
+entities.ChroniaHelper/CustomPuffer.placements.name.right=Custom Puffer (right)
+entities.ChroniaHelper/CustomPuffer.attributes.description.colliders="r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer.attributes.description.playerColliders="r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer.attributes.description.right=The puffer's visual facing direction.
+entities.ChroniaHelper/CustomPuffer.attributes.description.static=Whether the puffer floats around idly.
+entities.ChroniaHelper/CustomPuffer.attributes.description.alwaysShowOutline=Whether the explosion radius is always visible.
+entities.ChroniaHelper/CustomPuffer.attributes.description.pushAnyDir=Whether the puffer can be pushed any direction, or only based on its angle.
+entities.ChroniaHelper/CustomPuffer.attributes.description.oneUse=Whether the puffer respawns after exploding.
+entities.ChroniaHelper/CustomPuffer.attributes.description.angle=Angle (in degrees) of the explosion half-circle. 0 = below, 90 = left, etc.
+entities.ChroniaHelper/CustomPuffer.attributes.description.radius=Size of the explosion radius.
+entities.ChroniaHelper/CustomPuffer.attributes.description.launchSpeed=How fast the explosion launches you.
+entities.ChroniaHelper/CustomPuffer.attributes.description.respawnTime=How fast the puffer respawns after exploding.
+entities.ChroniaHelper/CustomPuffer.attributes.description.sprite=Sprite name from Sprites.xml of the pufferfish. Not reflected in Lönn.
+entities.ChroniaHelper/CustomPuffer.attributes.description.deathFlag=Flag to set when the pufferfish explodes.
+entities.ChroniaHelper/CustomPuffer.attributes.description.holdable=Whether the player can pick up and throw the pufferfish.
+entities.ChroniaHelper/CustomPuffer.attributes.description.outlineColor=The color of the dotted radius outline.
+entities.ChroniaHelper/CustomPuffer.attributes.description.returnToStart=Whether the puffer will respawn at its starting position.
+entities.ChroniaHelper/CustomPuffer.attributes.description.holdFlip=Whether the puffer will flip with the player when held.
+entities.ChroniaHelper/CustomPuffer.attributes.description.boostMode=The way the puffer's explosion should affect the player.\nSet Speed: Default puffer behavior, sets the player's speed to the launch speed in the angle specified.\nRedirect Speed: If the player has a greater speed than the launch speed specified, apply that speed to the new angle instead.\nRedirect + Add Speed: Takes the player's current speed and redirects it, then adds the puffer's launch speed as well.
+entities.ChroniaHelper/CustomPuffer.attributes.description.legacyBoost=Whether the puffer boost should use the older, less lenient method of checking player input (only accepting input before the freeze frames, rather than after).
+entities.ChroniaHelper/CustomPuffer.attributes.description.absoluteVector=If true, the redirect modes for launch will use the player's full speed, including vertical and horizontal, rather than only horizontal speed.
+entities.ChroniaHelper/CustomPuffer.attributes.description.tangible=Controls if the puffer can be hit by the player.
+entities.ChroniaHelper/CustomPuffer.attributes.description.happyFlag=If enabled, the puffer will switch to happy sprite
