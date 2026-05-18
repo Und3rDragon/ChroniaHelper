@@ -29,7 +29,8 @@ public class FntDisplayerHD : HDRenderEntity
         template.distance = d.Float("letterDistance", 1f);
         template.color = d.GetChroniaColor("fontColor", Color.White);
         primaryAlpha = template.color.alpha;
-        
+        template.color.alpha = 0;
+
         renderer = new FntTextGroupHD(template, d.StringArray("textures"));
         renderer.groupOrigin = new Vc2(d.Float("overallOriginX", 0.5f), d.Float("overallOriginY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);

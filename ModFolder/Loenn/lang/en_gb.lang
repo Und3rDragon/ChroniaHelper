@@ -1514,3 +1514,11 @@ entities.ChroniaHelper/CustomPuffer.attributes.description.legacyBoost=Whether t
 entities.ChroniaHelper/CustomPuffer.attributes.description.absoluteVector=If true, the redirect modes for launch will use the player's full speed, including vertical and horizontal, rather than only horizontal speed.
 entities.ChroniaHelper/CustomPuffer.attributes.description.tangible=Controls if the puffer can be hit by the player.
 entities.ChroniaHelper/CustomPuffer.attributes.description.happyFlag=If enabled, the puffer will switch to happy sprite
+
+entities.ChroniaHelper/CustomPuffer2.placements.name.left=Custom Puffer 2 (left)
+entities.ChroniaHelper/CustomPuffer2.placements.name.right=Custom Puffer 2 (right)
+entities.ChroniaHelper/CustomPuffer2.attributes.description.colliders="r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer2.attributes.description.playerColliders="r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer2.attributes.description.right=The puffer's visual facing direction.
+entities.ChroniaHelper/CustomPuffer2.attributes.description.spriteXMLTag=Sprite name from Sprites.xml of the pufferfish. Not reflected in Lönn.
+entities.ChroniaHelper/CustomPuffer2.attributes.description.indicatorColor=The color of the dotted radius outline.
