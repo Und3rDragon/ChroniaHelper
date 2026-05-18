@@ -18,6 +18,16 @@ public static class ChroniaSliderUtils
         return 0f;
     }
 
+    public static float GetSlider(this string name, float fallback)
+    {
+        if (MaP.sliders.TryGetValue(name, out var slider))
+        {
+            return slider.Value;
+        }
+
+        return fallback;
+    }
+
     public static void SetSlider(this string name, float value)
     {
         MaP.level?.Session.SetSlider(name, value);

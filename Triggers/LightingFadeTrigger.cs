@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using AsmResolver.DotNet.Cloning;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
@@ -11,13 +12,13 @@ namespace ChroniaHelper.Triggers;
 public class LightingFadeTrigger : BaseTrigger
 {
 
-    private Color lightingColorFrom;
+    private string lightingColorFrom;
 
-    private Color lightingColorTo;
+    private string lightingColorTo;
 
-    private float lightingAlphaFrom;
+    private string lightingAlphaFrom;
 
-    private float lightingAlphaTo;
+    private string lightingAlphaTo;
 
     private PositionModes positionMode;
 
@@ -29,10 +30,10 @@ public class LightingFadeTrigger : BaseTrigger
 
     public LightingFadeTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        this.lightingColorFrom = data.HexColor("lightingColorFrom", Color.Black);
-        this.lightingColorTo = data.HexColor("lightingColorTo", Color.Black);
-        this.lightingAlphaFrom = data.Float("lightingAlphaFrom", 0F);
-        this.lightingAlphaTo = data.Float("lightingAlphaTo", 0F);
+        this.lightingColorFrom = data.Attr("lightingColorFrom");
+        this.lightingColorTo = data.Attr("lightingColorTo");
+        this.lightingAlphaFrom = data.Attr("lightingAlphaFrom");
+        this.lightingAlphaTo = data.Attr("lightingAlphaTo");
         this.positionMode = data.Enum<PositionModes>("positionMode", PositionModes.NoEffect);
         timed = data.Float("timed", -1f);
 
@@ -44,17 +45,15 @@ public class LightingFadeTrigger : BaseTrigger
 
     protected override void OnEnterExecute(Player player)
     {
-        if (base.leaveReset)
+        oldLighting = new OldLighting
         {
-            oldLighting = new OldLighting
-            {
-                lightingColor = base.level.Lighting.BaseColor,
-                lightingAlpha = base.level.Lighting.Alpha,
-                lightingAlphaAdd = base.session.LightingAlphaAdd,
-                baseLightingAlpha = base.level.BaseLightingAlpha,
-            };
-        }
-        if(timed > 0f)
+            lightingColor = base.level.Lighting.BaseColor,
+            lightingAlpha = base.level.Lighting.Alpha,
+            lightingAlphaAdd = base.session.LightingAlphaAdd,
+            baseLightingAlpha = base.level.BaseLightingAlpha,
+        };
+
+        if (timed > 0f)
         {
             timer = timed;
         }
@@ -68,15 +67,52 @@ public class LightingFadeTrigger : BaseTrigger
             {
                 timer = Calc.Approach(timer, -1f, Engine.DeltaTime);
                 float progress = FadeUtils.LerpValue(timer, timed, 0f, 0f, 1f);
-                level.Lighting.BaseColor = Color.Lerp(lightingColorFrom, lightingColorTo, progress);
-                level.Lighting.Alpha = FadeUtils.LerpValue(timer, timed, 0f, lightingAlphaFrom, lightingAlphaTo);
-                if(baseLightingAlphaFrom.IsNotNullOrEmpty() && baseLightingAlphaTo.IsNotNullOrEmpty())
+
+                if (lightingColorTo.HasValidContent())
                 {
-                    level.BaseLightingAlpha = FadeUtils.LerpValue(timer, timed, 0f, baseLightingAlphaFrom.ParseFloat(0f), baseLightingAlphaTo.ParseFloat(0f));
+                    Color _from = lightingColorFrom.HasValidContent() ?
+                        Calc.HexToColor(lightingColorFrom) : oldLighting.lightingColor;
+                    Color _to = Calc.HexToColor(lightingColorTo);
+                    level.Lighting.BaseColor = Color.Lerp(_from, _to, progress);
                 }
-                if(lightingAlphaAddFrom.IsNotNullOrEmpty() && lightingAlphaAddTo.IsNotNullOrEmpty())
+                
+                if (lightingAlphaTo.HasValidContent())
                 {
-                    level.Session.LightingAlphaAdd = FadeUtils.LerpValue(timer, timed, 0f, lightingAlphaAddFrom.ParseFloat(0f), lightingAlphaAddTo.ParseFloat(0f));
+                    float _from = oldLighting.lightingAlpha;
+                    if (lightingAlphaFrom.HasValidContent())
+                    {
+                        float.TryParse(lightingAlphaFrom, out _from);
+                    }
+                    float _to = 0f;
+                    float.TryParse(lightingAlphaTo, out _to);
+
+                    level.Lighting.Alpha = FadeUtils.LerpValue(timer, timed, 0f, _from, _to);
+                }
+
+                if(baseLightingAlphaTo.HasValidContent())
+                {
+                    float _from = oldLighting.baseLightingAlpha;
+                    if (baseLightingAlphaFrom.HasValidContent())
+                    {
+                        float.TryParse(baseLightingAlphaFrom, out _from);
+                    }
+                    float _to = 0f;
+                    float.TryParse(baseLightingAlphaTo, out _to);
+
+                    level.BaseLightingAlpha = FadeUtils.LerpValue(timer, timed, 0f, _from, _to);
+                }
+
+                if(lightingAlphaAddTo.HasValidContent())
+                {
+                    float _from = oldLighting.lightingAlphaAdd;
+                    if (lightingAlphaAddFrom.HasValidContent())
+                    {
+                        float.TryParse(lightingAlphaAddFrom, out _from);
+                    }
+                    float _to = 0f;
+                    float.TryParse(lightingAlphaAddTo, out _to);
+
+                    level.Session.LightingAlphaAdd = FadeUtils.LerpValue(timer, timed, 0f, _from, _to);
                 }
 
                 yield return null;
@@ -87,18 +123,53 @@ public class LightingFadeTrigger : BaseTrigger
     protected override void OnStayExecute(Player player)
     {
         float lerp = base.GetPositionLerp(player, this.positionMode);
-        float lightingAlpha = Calc.ClampedMap(lerp, 0f, 1f, this.lightingAlphaFrom, this.lightingAlphaTo);
         if(timed <= 0f)
         {
-            base.level.Lighting.BaseColor = this.lightingColorTo;
-            base.level.Lighting.Alpha = this.lightingAlphaTo;
-            if (lightingAlphaAddTo.IsNotNullOrEmpty())
+            if (lightingColorTo.HasValidContent())
             {
-                base.session.LightingAlphaAdd = this.lightingAlphaAddTo.ParseFloat(0f);
+                Color _from = lightingColorFrom.HasValidContent() ?
+                    Calc.HexToColor(lightingColorFrom) : oldLighting.lightingColor;
+                Color _to = Calc.HexToColor(lightingColorTo);
+                level.Lighting.BaseColor = Color.Lerp(_from, _to, lerp);
             }
-            if (baseLightingAlphaTo.IsNotNullOrEmpty())
+
+            if (lightingAlphaTo.HasValidContent())
             {
-                base.level.BaseLightingAlpha = this.baseLightingAlphaTo.ParseFloat(0f);
+                float _from = oldLighting.lightingAlpha;
+                if (lightingAlphaFrom.HasValidContent())
+                {
+                    float.TryParse(lightingAlphaFrom, out _from);
+                }
+                float _to = 0f;
+                float.TryParse(lightingAlphaTo, out _to);
+
+                level.Lighting.Alpha = FadeUtils.LerpValue(lerp, 0f, 1f, _from, _to);
+            }
+
+            if (baseLightingAlphaTo.HasValidContent())
+            {
+                float _from = oldLighting.baseLightingAlpha;
+                if (baseLightingAlphaFrom.HasValidContent())
+                {
+                    float.TryParse(baseLightingAlphaFrom, out _from);
+                }
+                float _to = 0f;
+                float.TryParse(baseLightingAlphaTo, out _to);
+
+                level.BaseLightingAlpha = FadeUtils.LerpValue(lerp, 0f, 1f, _from, _to);
+            }
+
+            if (lightingAlphaAddTo.HasValidContent())
+            {
+                float _from = oldLighting.lightingAlphaAdd;
+                if (lightingAlphaAddFrom.HasValidContent())
+                {
+                    float.TryParse(lightingAlphaAddFrom, out _from);
+                }
+                float _to = 0f;
+                float.TryParse(lightingAlphaAddTo, out _to);
+
+                level.Session.LightingAlphaAdd = FadeUtils.LerpValue(lerp, 0f, 1f, _from, _to);
             }
         }
     }

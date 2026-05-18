@@ -6,6 +6,9 @@ local drawableSprite = require("structs.drawable_sprite")
 local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local fieldTable = {
+    afterTriggerMinLerpArgument = {
+        data = 0.95,
+    },
     childMode = {
         data = "",
     },
@@ -275,6 +278,15 @@ local fieldTable = {
         }
     },
     canRefillDashOnTouch =
+    {
+        data = false,
+        info =
+        {
+            fieldType = "boolean",
+            allowEmpty = false
+        }
+    },
+    canRefillDashAfterTriggered =
     {
         data = false,
         info =

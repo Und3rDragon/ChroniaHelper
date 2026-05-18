@@ -221,16 +221,58 @@ public class AdvancedSpikes : Entity
             cursor.EmitLdarg0();
             cursor.EmitDelegate<Func<bool, Player, bool>>(( origResult,  player)=>
             {
-                    if (player.CollideFirst<AdvancedSpikes>() is {} spike1)
+                if (player.CollideFirst<AdvancedSpikes>() is {} spike1)
+                {
+                    if (spike1.trigger)
                     {
-                        if (!spike1.CanRefillDashOnTouch || !spike1.trigger)
-                            return true;
+                        List<bool> args = new();
+                        foreach (var i in spike1.spikes)
+                        {
+                            if (spike1.PlayerCheck(i.spikeIndex))
+                            {
+                                if (i.lerp >= spike1.afterTriggerMinLerpArgument) // lerp defines whether the spikes is fully triggered
+                                {
+                                    args.Add(true);
+                                }
+                                else
+                                {
+                                    args.Add(false);
+                                }
+                            }
+                        }
+                        return args.Contains(true) ? !spike1.CanRefillDashAfterTriggered : !spike1.CanRefillDashOnTouch;
                     }
-                    if (player.CollideFirst<AnimatedSpikes>() is {} spike2)
+                    else
                     {
-                        if (!spike2.CanRefillDashOnTouch || !spike2.trigger)
-                            return true;
+                        return !spike1.CanRefillDashOnTouch;
                     }
+                }
+                if (player.CollideFirst<AnimatedSpikes>() is {} spike2)
+                {
+                    if (spike2.trigger)
+                    {
+                        List<bool> args = new();
+                        foreach (var i in spike2.spikes)
+                        {
+                            if (spike2.PlayerCheck(i.spikeIndex))
+                            {
+                                if (i.lerp >= spike2.afterTriggerMinLerpArgument)
+                                {
+                                    args.Add(true);
+                                }
+                                else
+                                {
+                                    args.Add(false);
+                                }
+                            }
+                        }
+                        return args.Contains(true) ? !spike2.CanRefillDashAfterTriggered : !spike2.CanRefillDashOnTouch;
+                    }
+                    else
+                    {
+                        return !spike2.CanRefillDashOnTouch;
+                    }
+                }
                 return origResult;
             });
         }
@@ -238,7 +280,7 @@ public class AdvancedSpikes : Entity
 
 
     public CrystalStaticSpinner Spinner;
-    public bool CanRefillDashOnTouch;
+    public bool CanRefillDashOnTouch, CanRefillDashAfterTriggered;
     private int size;
 
     private DirectionMode direction;
@@ -321,6 +363,8 @@ public class AdvancedSpikes : Entity
     public static string DefaultTriggerSound;
 
     public static string DefaultRetractSound;
+
+    public float afterTriggerMinLerpArgument;
 
     static AdvancedSpikes()
     {
@@ -436,8 +480,11 @@ public class AdvancedSpikes : Entity
 
         base.Depth = data.Int("depth", -50);
         CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
+        CanRefillDashAfterTriggered = data.Bool("canRefillDashAfterTriggered", false);
 
         childMode = data.Attr("childMode");
+
+        afterTriggerMinLerpArgument = data.Float("afterTriggerMinLerpArgument", 0.95f).Clamp(0f, 1f);
 
         Tag |= Tags.TransitionUpdate;
     }

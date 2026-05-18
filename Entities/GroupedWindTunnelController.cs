@@ -7,11 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using AsmResolver.DotNet.Cloning;
 using Celeste.Mod.Entities;
-using ChroniaHelper.Components;
+using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
-using static ChroniaHelper.Modules.ChroniaHelperSession;
 
 namespace ChroniaHelper.Entities;
 

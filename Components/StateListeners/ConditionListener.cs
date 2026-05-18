@@ -11,7 +11,7 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.LogicExpression;
 using ChroniaHelper.Utils.MathExpression;
 
-namespace ChroniaHelper.Components;
+namespace ChroniaHelper.Components.StateListeners;
 
 public class ConditionListener : StateListener
 {

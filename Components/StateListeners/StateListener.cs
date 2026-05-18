@@ -1,11 +1,11 @@
-﻿using System;
+﻿using ChroniaHelper.Cores;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ChroniaHelper.Components.ConditionListener;
 
-namespace ChroniaHelper.Cores;
+namespace ChroniaHelper.Components.StateListeners;
 
 public class StateListener : BaseComponent
 {

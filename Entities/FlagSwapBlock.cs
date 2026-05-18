@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
+using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using FMOD.Studio;

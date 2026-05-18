@@ -37,10 +37,45 @@ public class SelectiveMathExpression : SelectiveSessionValue
     }
 }
 
+public class SelectiveMathExpressionRaw : SelectiveSessionValue
+{
+    public SelectiveMathExpressionRaw(string name, double fallback = 0f,
+        Clamper.Double restraints = null) : base(name)
+    {
+        this.Fallback = fallback;
+        this.Limiter = restraints ?? new();
+    }
+    public double Fallback;
+    public Clamper.Double Limiter = new();
+
+    public double Value => Limiter.Operate(GetValue());
+    private double GetValue()
+    {
+        double n = Fallback;
+
+        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
+        {
+            return n;
+        }
+
+        if (double.TryParse(Expression, out n))
+        {
+            return n;
+        }
+
+        return Expression.ParseMathExpressionRaw();
+    }
+}
+
 public static class SelectiveMathExpressionExtension
 {
     public static SelectiveMathExpression MathExpression(this EntityData data, string field, float fallback = 0f, Clamper.Float limiter = null)
     {
         return new SelectiveMathExpression(data.Attr(field), fallback, limiter);
+    }
+
+    public static SelectiveMathExpressionRaw MathExpressionRaw(this EntityData data, string field, float fallback = 0f, Clamper.Double limiter = null)
+    {
+        return new SelectiveMathExpressionRaw(data.Attr(field), fallback, limiter);
     }
 }

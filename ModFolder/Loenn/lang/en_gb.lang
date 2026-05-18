@@ -1,4 +1,4 @@
-mods.ChroniaHelper.name=ChroniaHelper
+﻿mods.ChroniaHelper.name=ChroniaHelper
 
 style.effects.ChroniaHelper/CustomRain.name=Custom Rain
 style.effects.ChroniaHelper/CustomRain.description.fadingX=Several faders separated by ";" \nEach fader contains 4 numbers separated by a comma, representing "positionFrom", "positionTo", "alphaFrom", "alphaTo" \nFor example: "100,200,0,1"
@@ -456,6 +456,7 @@ entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.retractDelay=If "
 entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
 entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
 
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -464,6 +465,7 @@ entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.retractDelay=If
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
 entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
 
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -472,6 +474,7 @@ entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.retractDelay=If
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
 entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
 
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -480,6 +483,7 @@ entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=I
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.randomTexture=If enabled, all spike sprites will be randomly chosen in game like the default spikes do\nIf disabled, only "texture_(direction)00.png" will be used
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
 entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.dream=Alow you to dash through the spikes
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
 
 # ================= Animated Spikes
 
@@ -515,10 +519,15 @@ entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.triggerDelay=If
 entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
 entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
 
-entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear
-entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
-entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
-entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.triggerDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to come out
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.retractDelay=If "trigger" enabled, this parameter will be the time it takes for the spikes to retract and be safe to interact again\nSetting Retract Delay <= 0 will disable the feature
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.childMode=If you don't want the entity to kill player, set up an ID of a Danger Bubbler as the return target here
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=The percentile of how much the spikes grow out can be defined as "fully triggered"\nThis parameter will affect the trigger of "Refill Dash After Triggered"\nThe value is between 0 and 1
 
 # ================= Crumble Block
 
@@ -1478,3 +1487,30 @@ entities.ChroniaHelper/DrivableCar.placements.name.car=Drivable IntroCar (Reskin
 # ================= Auto Move Controller
 
 entities.ChroniaHelper/AutoMoveController.placements.name.controller=Auto Move Controller
+
+# ================= Custom Puffer
+
+entities.ChroniaHelper/CustomPuffer.placements.name.left=Custom Puffer (left)
+entities.ChroniaHelper/CustomPuffer.placements.name.right=Custom Puffer (right)
+entities.ChroniaHelper/CustomPuffer.attributes.description.colliders="r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer.attributes.description.playerColliders="r" stands for Rectangles, and parameters should be "r, width, height, posX, posY"\n"c" stands for Circles, parameters should be "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer.attributes.description.right=The puffer's visual facing direction.
+entities.ChroniaHelper/CustomPuffer.attributes.description.static=Whether the puffer floats around idly.
+entities.ChroniaHelper/CustomPuffer.attributes.description.alwaysShowOutline=Whether the explosion radius is always visible.
+entities.ChroniaHelper/CustomPuffer.attributes.description.pushAnyDir=Whether the puffer can be pushed any direction, or only based on its angle.
+entities.ChroniaHelper/CustomPuffer.attributes.description.oneUse=Whether the puffer respawns after exploding.
+entities.ChroniaHelper/CustomPuffer.attributes.description.angle=Angle (in degrees) of the explosion half-circle. 0 = below, 90 = left, etc.
+entities.ChroniaHelper/CustomPuffer.attributes.description.radius=Size of the explosion radius.
+entities.ChroniaHelper/CustomPuffer.attributes.description.launchSpeed=How fast the explosion launches you.
+entities.ChroniaHelper/CustomPuffer.attributes.description.respawnTime=How fast the puffer respawns after exploding.
+entities.ChroniaHelper/CustomPuffer.attributes.description.sprite=Sprite name from Sprites.xml of the pufferfish. Not reflected in Lönn.
+entities.ChroniaHelper/CustomPuffer.attributes.description.deathFlag=Flag to set when the pufferfish explodes.
+entities.ChroniaHelper/CustomPuffer.attributes.description.holdable=Whether the player can pick up and throw the pufferfish.
+entities.ChroniaHelper/CustomPuffer.attributes.description.outlineColor=The color of the dotted radius outline.
+entities.ChroniaHelper/CustomPuffer.attributes.description.returnToStart=Whether the puffer will respawn at its starting position.
+entities.ChroniaHelper/CustomPuffer.attributes.description.holdFlip=Whether the puffer will flip with the player when held.
+entities.ChroniaHelper/CustomPuffer.attributes.description.boostMode=The way the puffer's explosion should affect the player.\nSet Speed: Default puffer behavior, sets the player's speed to the launch speed in the angle specified.\nRedirect Speed: If the player has a greater speed than the launch speed specified, apply that speed to the new angle instead.\nRedirect + Add Speed: Takes the player's current speed and redirects it, then adds the puffer's launch speed as well.
+entities.ChroniaHelper/CustomPuffer.attributes.description.legacyBoost=Whether the puffer boost should use the older, less lenient method of checking player input (only accepting input before the freeze frames, rather than after).
+entities.ChroniaHelper/CustomPuffer.attributes.description.absoluteVector=If true, the redirect modes for launch will use the player's full speed, including vertical and horizontal, rather than only horizontal speed.
+entities.ChroniaHelper/CustomPuffer.attributes.description.tangible=Controls if the puffer can be hit by the player.
+entities.ChroniaHelper/CustomPuffer.attributes.description.happyFlag=If enabled, the puffer will switch to happy sprite

@@ -8,10 +8,10 @@ return {
         name = "LightingFadeTrigger",
         data =
         {
-            lightingColorFrom = "000000",
-            lightingColorTo = "000000",
-            lightingAlphaFrom = 0,
-            lightingAlphaTo = 0,
+            lightingColorFrom = "",
+            lightingColorTo = "",
+            lightingAlphaFrom = "",
+            lightingAlphaTo = "",
             lightingAlphaAddFrom = "",
             lightingAlphaAddTo = "",
             baseLightingAlphaFrom = "",
@@ -36,11 +36,13 @@ return {
     {
         lightingColorFrom =
         {
-            fieldType = "color"
+            fieldType = "color",
+            allowEmpty = true,
         },
         lightingColorTo =
         {
-            fieldType = "color"
+            fieldType = "color",
+            allowEmpty = true,
         },
         lightingAlphaFrom =
         {

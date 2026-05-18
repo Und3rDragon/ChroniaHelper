@@ -36,7 +36,7 @@ public class AnimatedSpikes : Entity
         return new AnimatedSpikes(entityData, offset, DirectionMode.Right);
     }
 
-    private struct SpikeInfo
+    public struct SpikeInfo
     {
 
         public AnimatedSpikes parent;
@@ -190,7 +190,7 @@ public class AnimatedSpikes : Entity
 
     }
 
-    public bool CanRefillDashOnTouch;
+    public bool CanRefillDashOnTouch, CanRefillDashAfterTriggered;
     public CrystalStaticSpinner Spinner;
     private int size;
 
@@ -268,9 +268,9 @@ public class AnimatedSpikes : Entity
 
     private Level level;
 
-    private Vector2 outwards;
+    public Vector2 outwards;
 
-    private SpikeInfo[] spikes;
+    public SpikeInfo[] spikes;
 
     private Vector2 shakeOffset;
 
@@ -295,6 +295,8 @@ public class AnimatedSpikes : Entity
     public static string DefaultTriggerSound;
 
     public static string DefaultRetractSound;
+
+    public float afterTriggerMinLerpArgument;
 
     static AnimatedSpikes()
     {
@@ -457,9 +459,12 @@ public class AnimatedSpikes : Entity
         }
         base.Depth = data.Int("depth", -50);
         CanRefillDashOnTouch = data.Bool("canRefillDashOnTouch", true);
-        
+        CanRefillDashAfterTriggered = data.Bool("canRefillDashAfterTriggered", false);
+
         childMode = data.Attr("childMode");
         defragmentFrameOffset = data.Bool("defragmentFrameOffset", false);
+
+        afterTriggerMinLerpArgument = data.Float("afterTriggerMinLerpArgument", 0.95f).Clamp(0f, 1f);
 
         Tag |= Tags.TransitionUpdate;
     }
@@ -865,7 +870,7 @@ public class AnimatedSpikes : Entity
         }
     }
 
-    private bool PlayerCheck(int spikeIndex)
+    public bool PlayerCheck(int spikeIndex)
     {
         Player player = base.CollideFirst<Player>();
         if ((player is null) || (!this.waitPlayerLeave))

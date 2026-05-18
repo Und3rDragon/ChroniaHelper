@@ -12,6 +12,73 @@ public abstract class Clamper : BaseComponent
 {
     public bool Enabled = false;
 
+    public class Double : Clamper
+    {
+        private double Minimum = 0f;
+        private double Maximum = 1f;
+        public Double(double n1, double n2)
+        {
+            Minimum = double.Min(n1, n2);
+            Maximum = double.Max(n1, n2);
+            Enabled = true;
+        }
+
+        public Double()
+        {
+            Enabled = false;
+        }
+
+        public double Operate(double value)
+        {
+            if (!Enabled) { return value; }
+
+            if (value < Minimum) { return Minimum; }
+
+            if (value > Maximum) { return Maximum; }
+
+            return value;
+        }
+    }
+
+    public class DoubleTracker : Clamper
+    {
+        private double Minimum = 0f;
+        private double Maximum = 1f;
+        private Func<double> Getter;
+        private Action<double> Setter;
+        private double Fallback;
+        public DoubleTracker(double n1, double n2, Func<double> getter, Action<double> setter, double fallback = 0f)
+        {
+            Minimum = double.Min(n1, n2);
+            Maximum = double.Max(n1, n2);
+
+            Getter = getter;
+            Setter = setter;
+            Fallback = fallback;
+
+            Enabled = true;
+        }
+
+        public DoubleTracker()
+        {
+            Enabled = false;
+        }
+
+        private double f = 0f;
+        public override void Update()
+        {
+            if (!Enabled) { return; }
+
+            f = Getter?.Invoke() ?? Fallback;
+
+            if (f < Minimum) { Setter?.Invoke(Minimum); }
+
+            if (f > Maximum) { Setter?.Invoke(Maximum); }
+
+            Setter?.Invoke(f);
+        }
+    }
+
     public class Float : Clamper
     {
         private float Minimum = 0f;
