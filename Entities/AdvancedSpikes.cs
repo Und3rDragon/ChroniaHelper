@@ -225,20 +225,22 @@ public class AdvancedSpikes : Entity
                 {
                     if (spike1.trigger)
                     {
+                        List<bool> args = new();
                         foreach (var i in spike1.spikes)
                         {
                             if (spike1.PlayerCheck(i.spikeIndex))
                             {
-                                if (i.triggered)
+                                if (i.lerp >= spike1.afterTriggerMinLerpArgument) // lerp defines whether the spikes is fully triggered
                                 {
-                                    return !spike1.CanRefillDashAfterTriggered;
+                                    args.Add(true);
                                 }
                                 else
                                 {
-                                    return !spike1.CanRefillDashOnTouch;
+                                    args.Add(false);
                                 }
                             }
                         }
+                        return args.Contains(true) ? !spike1.CanRefillDashAfterTriggered : !spike1.CanRefillDashOnTouch;
                     }
                     else
                     {
@@ -249,20 +251,22 @@ public class AdvancedSpikes : Entity
                 {
                     if (spike2.trigger)
                     {
+                        List<bool> args = new();
                         foreach (var i in spike2.spikes)
                         {
                             if (spike2.PlayerCheck(i.spikeIndex))
                             {
-                                if (i.triggered)
+                                if (i.lerp >= spike2.afterTriggerMinLerpArgument)
                                 {
-                                    return !spike2.CanRefillDashAfterTriggered;
+                                    args.Add(true);
                                 }
                                 else
                                 {
-                                    return !spike2.CanRefillDashOnTouch;
+                                    args.Add(false);
                                 }
                             }
                         }
+                        return args.Contains(true) ? !spike2.CanRefillDashAfterTriggered : !spike2.CanRefillDashOnTouch;
                     }
                     else
                     {
@@ -359,6 +363,8 @@ public class AdvancedSpikes : Entity
     public static string DefaultTriggerSound;
 
     public static string DefaultRetractSound;
+
+    public float afterTriggerMinLerpArgument;
 
     static AdvancedSpikes()
     {
@@ -477,6 +483,8 @@ public class AdvancedSpikes : Entity
         CanRefillDashAfterTriggered = data.Bool("canRefillDashAfterTriggered", false);
 
         childMode = data.Attr("childMode");
+
+        afterTriggerMinLerpArgument = data.Float("afterTriggerMinLerpArgument", 0.95f).Clamp(0f, 1f);
 
         Tag |= Tags.TransitionUpdate;
     }

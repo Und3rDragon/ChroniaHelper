@@ -268,7 +268,7 @@ public class AnimatedSpikes : Entity
 
     private Level level;
 
-    private Vector2 outwards;
+    public Vector2 outwards;
 
     public SpikeInfo[] spikes;
 
@@ -295,6 +295,8 @@ public class AnimatedSpikes : Entity
     public static string DefaultTriggerSound;
 
     public static string DefaultRetractSound;
+
+    public float afterTriggerMinLerpArgument;
 
     static AnimatedSpikes()
     {
@@ -461,6 +463,8 @@ public class AnimatedSpikes : Entity
 
         childMode = data.Attr("childMode");
         defragmentFrameOffset = data.Bool("defragmentFrameOffset", false);
+
+        afterTriggerMinLerpArgument = data.Float("afterTriggerMinLerpArgument", 0.95f).Clamp(0f, 1f);
 
         Tag |= Tags.TransitionUpdate;
     }
