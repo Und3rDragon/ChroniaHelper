@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using Celeste.Mod.MaxHelpingHand.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
@@ -8,6 +9,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+//using FTS = Celeste.Mod.MaxHelpingHand.Entities.FlagTouchSwitch;
+//using FTSW = Celeste.Mod.MaxHelpingHand.Entities.FlagTouchSwitchWall;
 
 namespace ChroniaHelper.Entities;
 
@@ -426,6 +429,14 @@ public class CustomPuffer : Actor
         foreach (FlagButton2 entity in Scene.Tracker.GetEntities<FlagButton2>())
             if (CollideCheck(entity))
                 entity.TurnOn();
+
+        //foreach (FTS entity in Scene.Tracker.GetEntities<FTS>())
+        //    if (CollideCheck(entity))
+        //        entity.TurnOn();
+
+        //foreach (FTSW entity in Scene.Tracker.GetEntities<FTSW>())
+        //    if (CollideCheck(entity))
+        //        entity.TurnOn();
 
         foreach (FloatingDebris entity in base.Scene.Tracker.GetEntities<FloatingDebris>())
             if (CollideCheck(entity))

@@ -152,4 +152,4 @@ function customPuffer.scale(room, entity)
     return right and 1 or -1, 1
 end
 
-return customPuffer
+--return customPuffer
