@@ -18,6 +18,7 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/CustomPuffer")]
 [Credits("vitellary for Crystalline codes")]
 [Note("Included some paramaters I think the original coder shouldn't be interested in")]
+[Obsoleted("Due to actual use, not being suitable, keeping the class here for further study")]
 public class CustomPuffer : Actor
 {
     public enum States
