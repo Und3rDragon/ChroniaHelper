@@ -1,4 +1,5 @@
 ﻿using ChroniaHelper.Cores;
+using ChroniaHelper.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,21 @@ public class InnerData : BaseComponent
         }
 
         return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Tag.GetHashCode();
+    }
+
+    public static bool operator ==(InnerData a, InnerData b)
+    {
+        return a.Tag.Equals(b.Tag);
+    }
+
+    public static bool operator !=(InnerData a, InnerData b)
+    {
+        return !(a == b);
     }
 
     public InnerData(string tag)
