@@ -39,44 +39,54 @@ public static class FadeUtils
 
     public static int LerpValue(this float source, float clampA, float clampB, int valueA, int valueB, EaseMode ease = EaseMode.Linear)
     {
-        // redefine
-        Vector2 a = new(clampA, valueA), b = new Vector2(clampB, valueB), d = b - a;
-
         if (clampA == clampB) { return valueB; }
+
+        int a = valueA, b = valueB, d = b - a;
 
         float p = source.ClampProgress(clampA, clampB, ease);
 
-        var r = (a + d * p).Y;
+        var r = a + d * p;
 
         return (int)r;
     }
 
     public static float LerpValue(this float source, float clampA, float clampB, float valueA, float valueB, EaseMode ease = EaseMode.Linear)
     {
-        // redefine
-        Vector2 a = new(clampA, valueA), b = new Vector2(clampB, valueB), d = b - a;
-
         if (clampA == clampB) { return valueB; }
+
+        float a = valueA, b = valueB, d = b - a;
 
         float p = source.ClampProgress(clampA, clampB, ease);
 
-        var r = (a + d * p).Y;
+        var r = a + d * p;
+
+        return r;
+    }
+
+    public static double LerpValue(this float source, float clampA, float clampB, double valueA, double valueB, EaseMode ease = EaseMode.Linear)
+    {
+        if (clampA == clampB) { return valueB; }
+
+        double a = valueA, b = valueB, d = b - a;
+
+        float p = source.ClampProgress(clampA, clampB, ease);
+
+        var r = a + d * p;
 
         return r;
     }
 
     public static Vector2 LerpValue(this float source, float clampA, float clampB, Vector2 valueA, Vector2 valueB, EaseMode ease = EaseMode.Linear)
     {
-        Vector3 a = new(clampA, valueA.X, valueA.Y), b = new(clampB, valueB.X, valueB.Y);
-        Vector3 d = b - a;
-
         if (clampA == clampB) { return valueB; }
+
+        Vc2 a = valueA, b = valueB, d = b - a;
 
         float p = source.ClampProgress(clampA, clampB, ease);
 
         var r = a + d * p;
 
-        return new Vector2(r.Y, r.Z);
+        return r;
     }
 
     public enum ColorLerp { ColorLerp, HSLLerp, HSVLerp }

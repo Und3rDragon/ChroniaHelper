@@ -1,5 +1,6 @@
 ﻿using ChroniaHelper.Cores;
 using ChroniaHelper.Entities;
+using ChroniaHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,32 @@ public class InnerData : BaseComponent
             Value = value;
         }
         public int Value { get; set; }
+
+        private float duration = -1f, timer = -1f;
+        private int target = 0, source = 0;
+        private EaseMode easer = EaseMode.Linear;
+        /// <summary>
+        /// Disable by setting duration below 0
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="duration"></param>
+        public void FadeTo(int target, float duration, EaseMode ease = EaseMode.Linear)
+        {
+            source = Value;
+            this.target = target;
+            this.duration = this.timer = duration;
+            easer = ease;
+        }
+
+        public override void Update()
+        {
+            // Fader
+            if (timer > 0f)
+            {
+                timer = Calc.Approach(timer, 0f, Engine.DeltaTime);
+                Value = timer.LerpValue(duration, 0f, source, target, easer);
+            }
+        }
     }
 
     public class Float : InnerData
@@ -66,6 +93,31 @@ public class InnerData : BaseComponent
             Value = value;
         }
         public float Value { get; set; }
+
+        private float duration = -1f, timer = -1f, target = 0f, source = 0f;
+        private EaseMode easer = EaseMode.Linear;
+        /// <summary>
+        /// Disable by setting duration below 0
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="duration"></param>
+        public void FadeTo(float target, float duration, EaseMode ease = EaseMode.Linear)
+        {
+            source = Value;
+            this.target = target;
+            this.duration = this.timer = duration;
+            easer = ease;
+        }
+
+        public override void Update()
+        {
+            // Fader
+            if(timer > 0f)
+            {
+                timer = Calc.Approach(timer, 0f, Engine.DeltaTime);
+                Value = timer.LerpValue(duration, 0f, source, target, easer);
+            }
+        }
     }
 
     public class String : InnerData
@@ -84,6 +136,32 @@ public class InnerData : BaseComponent
             Value = value;
         }
         public double Value { get; set; }
+
+        private float duration = -1f, timer = -1f;
+        private double target = 0, source = 0;
+        private EaseMode easer = EaseMode.Linear;
+        /// <summary>
+        /// Disable by setting duration below 0
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="duration"></param>
+        public void FadeTo(double target, float duration, EaseMode ease = EaseMode.Linear)
+        {
+            source = Value;
+            this.target = target;
+            this.duration = this.timer = duration;
+            easer = ease;
+        }
+
+        public override void Update()
+        {
+            // Fader
+            if (timer > 0f)
+            {
+                timer = Calc.Approach(timer, 0f, Engine.DeltaTime);
+                Value = timer.LerpValue(duration, 0f, source, target, easer);
+            }
+        }
     }
 
     public class General<T> : InnerData
