@@ -17,6 +17,7 @@ public class StateListener : BaseComponent
 
     public bool state { get; private set; } = false;
     public bool lastState { get; private set; } = false;
+    public bool InstantState => GetState();
     public override void Update()
     {
         state = GetState();

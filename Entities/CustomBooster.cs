@@ -354,21 +354,7 @@ public class CustomBooster : Booster
         {
             c.Index += 1;
 
-            c.EmitDelegate<Func<float, float>>(fallback =>
-            {
-                if(PUt.TryGetPlayer(out var p))
-                {
-                    if(p.CurrentBooster is CustomBooster b)
-                    {
-                        if(b.redBoostMovingSpeed.Expression.ToLower() == "playerspeed")
-                        {
-                            return b.recordedSpeed.Length();
-                        }
-                        return b.redBoostMovingSpeed.Value;
-                    }
-                }
-                return fallback;
-            });
+            c.EmitDelegate(DelegateUtils.ModifyBoosterRedDashSpeed);
         }
     }
 
@@ -380,21 +366,7 @@ public class CustomBooster : Booster
         {
             c.Index += 1;
 
-            c.EmitDelegate<Func<float, float>>(fallback =>
-            {
-                if (PUt.TryGetPlayer(out var p))
-                {
-                    if (p.CurrentBooster is CustomBooster b)
-                    {
-                        if (b.greenBoostMovingSpeed.Expression.ToLower() == "playerspeed")
-                        {
-                            return b.recordedSpeed.Length();
-                        }
-                        return b.greenBoostMovingSpeed.Value;
-                    }
-                }
-                return fallback;
-            });
+            c.EmitDelegate(DelegateUtils.ModifyBoosterGreenDashSpeed);
         }
     }
 

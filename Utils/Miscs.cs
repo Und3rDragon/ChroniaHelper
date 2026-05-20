@@ -11,6 +11,7 @@ namespace ChroniaHelper.Utils;
 // This class was moved from CommunalHelperModule, so let's keep the same namespace.
 public static class Miscs
 {
+    public static void EmptyAction() { }
 
     public static int ToBitFlag(params bool[] b)
     {

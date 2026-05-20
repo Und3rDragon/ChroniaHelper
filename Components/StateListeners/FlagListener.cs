@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Triggers;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 
 namespace ChroniaHelper.Components.StateListeners;
@@ -19,6 +20,11 @@ public class FlagListener : StateListener
 
     protected override bool GetState()
     {
+        if (!Flag.HasValidContent())
+        {
+            return true;
+        }
+
         return Flag.GetFlag();
     }
 }

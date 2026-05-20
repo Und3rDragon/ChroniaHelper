@@ -1522,3 +1522,8 @@ entities.ChroniaHelper/CustomPuffer2.attributes.description.playerColliders="r" 
 entities.ChroniaHelper/CustomPuffer2.attributes.description.right=The puffer's visual facing direction.
 entities.ChroniaHelper/CustomPuffer2.attributes.description.spriteXMLTag=Sprite name from Sprites.xml of the pufferfish. Not reflected in Lönn.
 entities.ChroniaHelper/CustomPuffer2.attributes.description.indicatorColor=The color of the dotted radius outline.
+
+# ======================== Outliner
+
+entities.ChroniaHelper/OutlinerCircle.placements.name.circle=Outliner (Circle)
+entities.ChroniaHelper/OutlinerRectangle.placements.name.normal=Outliner (Rectangle)
