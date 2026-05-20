@@ -43,6 +43,7 @@ public class OutlinerRectangle : BaseEntity
     private EaseMode visibleFade = EaseMode.Linear;
 
     private string detectedColor, detectedFlag;
+    private FlagsListener detectFlags;
     private bool detectActor, detectPlayer;
 
     public OutlinerRectangle(EntityData data, Vector2 offset)
@@ -89,20 +90,26 @@ public class OutlinerRectangle : BaseEntity
 
         detectPlayer = data.Bool("detectPlayer", false);
         detectActor = data.Bool("detectActor", false);
+        detectFlags = new(data.Attr("detectFlags"), fallback: false);
+        Add(detectFlags);
     }
 
     public bool Detect()
     {
+        bool b = false;
+
+        b = b || detectFlags.InstantState;
+
         if (detectActor)
         {
-            return CollideCheck<Actor>();
+            b = b || CollideCheck<Actor>();
         }
         else if(detectPlayer)
         {
-            return CollideCheck<Player>();
+            b = b || CollideCheck<Player>();
         }
 
-        return false;
+        return b;
     }
 
     private bool IsRidingSolid(Solid solid)

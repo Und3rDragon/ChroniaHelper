@@ -26,6 +26,7 @@ local ConnectableOutline = {
             displayFadeTime = -1,
             detectedFlag = "",
             detectedColor = "",
+            detectFlags = "",
             detectActor = false,
             detectPlayer = false,
         }
@@ -51,6 +52,9 @@ local ConnectableOutline = {
             fieldType = "color",
             allowEmpty = true,
             useAlpha = true,
+        },
+        detectFlags = {
+            fieldType = "list",
         },
     }
 }
