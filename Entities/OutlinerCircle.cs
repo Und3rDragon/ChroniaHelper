@@ -1,6 +1,10 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
+using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
+using System.Runtime.InteropServices;
 
 namespace ChroniaHelper.Entities;
 
@@ -36,6 +40,14 @@ public class OutlinerCircle : BaseEntity
                 Visible = true,
             });
         }
+
+        visibleFlag = new(data.Attr("visibleFlag"));
+        Add(visibleFlag);
+        colorFade = new("fadeAlpha", 1f);
+        Add(colorFade);
+        visibleFade = (EaseMode)data.Int("visibleFade", 1);
+        displayFadeTime = data.Float("displayFadeTime", -1f);
+        noFade = displayFadeTime <= 0f;
     }
     private bool attached;
     private int innerStyle, borderStyle;
@@ -43,6 +55,52 @@ public class OutlinerCircle : BaseEntity
     private int pointStep;
     private int pointNumber;
     private CColor innerColor, borderColor;
+    private FlagListener visibleFlag;
+    private InnerData.Float colorFade;
+    private EaseMode visibleFade;
+    private float displayFadeTime;
+    private bool noFade;
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+
+        if (!visibleFlag.InstantState)
+        {
+            colorFade.Value = 0f;
+        }
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        visibleFlag.onEnable = () =>
+        {
+            float target = 1f;
+            if (noFade)
+            {
+                colorFade.Value = target;
+            }
+            else
+            {
+                colorFade.FadeTo(target, displayFadeTime, visibleFade);
+            }
+        };
+
+        visibleFlag.onDisable = () =>
+        {
+            float target = 0f;
+            if (noFade)
+            {
+                colorFade.Value = target;
+            }
+            else
+            {
+                colorFade.FadeTo(target, displayFadeTime, visibleFade);
+            }
+        };
+    }
 
     public override void Render()
     {
@@ -50,22 +108,22 @@ public class OutlinerCircle : BaseEntity
 
         if (innerStyle == 1)
         {
-            Draw.Circle(base.Position, radius, this.innerColor.Parsed(), 4 * pointNumber);
+            Draw.Circle(base.Position, radius, this.innerColor.Parsed(colorFade.Value), 4 * pointNumber);
         }
         else
         {
-            Draw.Circle(base.Position, radius / 2, this.innerColor.Parsed(), radius, 4 * pointNumber);
+            Draw.Circle(base.Position, radius / 2, this.innerColor.Parsed(colorFade.Value), radius, 4 * pointNumber);
         }
 
         if(borderStyle == 1)
         {
-            Draw.Circle(base.Position, radius + 2, this.borderColor.Parsed(), 4 * pointNumber);
+            Draw.Circle(base.Position, radius + 2, this.borderColor.Parsed(colorFade.Value), 4 * pointNumber);
         }
         else
         {
             float t = 1f;
             t = 1f + (float)Math.Sin((DateTime.Now - Md.Session.LevelStartTime).TotalSeconds);
-            Draw.Circle(base.Position, radius + t, this.borderColor.Parsed(), 4 * pointNumber);
+            Draw.Circle(base.Position, radius + t, this.borderColor.Parsed(colorFade.Value), 4 * pointNumber);
         }
     }
 

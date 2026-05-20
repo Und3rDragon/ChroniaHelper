@@ -15,6 +15,9 @@ outlineCircle.placements =
         borderStyle = 1,
         innerStyle = 1,
         attached = false,
+        visibleFlag = "",
+        displayFadeTime = -1,
+        visibleFade = 1,
     }
 }
 
@@ -55,7 +58,8 @@ outlineCircle.fieldInformation =
         fieldType = "number",
         allowEmpty = false,
         minimumValue = 0
-    }
+    },
+    visibleFade = require("mods").requireFromPlugin("helpers.field_options").easeModes,
 }
 
 outlineCircle.fieldOrder =
@@ -63,9 +67,11 @@ outlineCircle.fieldOrder =
 
 }
 
+--[[
 outlineCircle.ignoredFields = {
 
 }
+]]
 
 outlineCircle.sprite = function(room, entity, viewport)
     local path = "ChroniaHelper/Outliner/knot"

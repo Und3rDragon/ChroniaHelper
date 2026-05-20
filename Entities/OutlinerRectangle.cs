@@ -191,7 +191,7 @@ public class OutlinerRectangle : BaseEntity
         }
 
         // Instant opacity change on awake
-        if (!visibleFlag.Flag.GetFlag())
+        if (!visibleFlag.InstantState)
         {
             foreach (Image image in Components.GetAll<Image>())
             {
