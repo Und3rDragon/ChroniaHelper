@@ -147,7 +147,7 @@ public class PatientBooster : Booster
 	private SelectiveSlider freeMoveSpeed = new(null, -1f);
     private Vc2 freeMoveOffset = Vc2.Zero;
 
-	private SelectiveSlider outSpeed, redSpeed, greenSpeed;
+	public SelectiveSlider outSpeed, redSpeed, greenSpeed;
     private ParticleType customBurstParticleType, customAppearParticleType;
 
     private SelectiveSlider forceCoyoteTime = new(null, -1f);
@@ -438,17 +438,7 @@ public class PatientBooster : Booster
         {
             c.Index += 1;
 
-            c.EmitDelegate<Func<float, float>>(fallback =>
-            {
-                if (PUt.TryGetPlayer(out var p))
-                {
-                    if (p.CurrentBooster is PatientBooster b)
-                    {
-                        return b.redSpeed.Value;
-                    }
-                }
-                return fallback;
-            });
+			c.EmitDelegate(DelegateUtils.ModifyBoosterRedDashSpeed);
         }
     }
 
@@ -460,17 +450,7 @@ public class PatientBooster : Booster
         {
             c.Index += 1;
 
-            c.EmitDelegate<Func<float, float>>(fallback =>
-            {
-                if (PUt.TryGetPlayer(out var p))
-                {
-                    if (p.CurrentBooster is PatientBooster b)
-                    {
-                        return b.greenSpeed.Value;
-                    }
-                }
-                return fallback;
-            });
+			c.EmitDelegate(DelegateUtils.ModifyBoosterGreenDashSpeed);
         }
     }
 
