@@ -24,14 +24,34 @@ local ConnectableOutline = {
             texturePath = defaultTexture,
             visibleFade = 1, --EaseMode
             displayFadeTime = -1,
+            detectedFlag = "",
+            detectedColor = "",
+            detectActor = false,
+            detectPlayer = false,
         }
     },
     fieldInformation = {
-        texturePath = { fieldType = "path", allowFolders = false, allowFiles = true},
+        texturePath = { 
+            fieldType = "path", 
+            allowFolders = false, 
+            allowFiles = true,
+            --[[
+            options = {
+                ["filled"] = "ChroniaHelper/Outliner/outline_filled",
+                ["outline"] = "ChroniaHelper/Outliner/outline",
+            },
+            editable = true,
+            ]]
+        },
         groupTag = { fieldType = "integer", minimumValue = -1 },
         tintColor = { fieldType = "color", useAlpha = true },
         depth = require("mods").requireFromPlugin("helpers.field_options").depths,
         visibleFade = require("mods").requireFromPlugin("helpers.field_options").easeModes,
+        detectedColor = {
+            fieldType = "color",
+            allowEmpty = true,
+            useAlpha = true,
+        },
     }
 }
 ConnectableOutline.fieldOrder = {

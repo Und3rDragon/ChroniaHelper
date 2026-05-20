@@ -41,6 +41,10 @@ public class FlagsListener : StateListener
 
     protected override bool GetState()
     {
+        if (!flags.HasValidContent())
+        {
+            return true;
+        }
         return flags.GetGeneralFlags(separator, invertChar);
     }
 }

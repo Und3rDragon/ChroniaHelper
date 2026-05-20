@@ -27,7 +27,7 @@ public class OutlinerRectangle : BaseEntity
     public Wiggler wiggler;
     public Vector2 wigglerScaler;
 
-    private FlagListener visibleFlag;
+    private FlagsListener visibleFlag;
     private CColor tintColor, fillerColor;
     private readonly int groupTag;
     private readonly bool attached;
@@ -37,10 +37,13 @@ public class OutlinerRectangle : BaseEntity
     private bool flagAllow = true;
     private bool previousFlagAllow = true;
 
-    private InnerData.Float colorFade;
+    private InnerData.Float alphaFade, colorFade;
     private float fadeTime = -1f;
     private bool noFade = true;
     private EaseMode visibleFade = EaseMode.Linear;
+
+    private string detectedColor, detectedFlag;
+    private bool detectActor, detectPlayer;
 
     public OutlinerRectangle(EntityData data, Vector2 offset)
         : base(data, offset)
@@ -72,13 +75,34 @@ public class OutlinerRectangle : BaseEntity
             });
         }
 
-        colorFade = new($"fadeAlpha", 1f);
-        Add(colorFade);
+        alphaFade = new($"fadeAlpha", 1f);
+        Add(alphaFade);
 
         fadeTime = data.Float("displayFadeTime", -1f);
         noFade = fadeTime <= 0f;
 
         visibleFade = (EaseMode)data.Int("visibleFade", 1);
+
+        detectedColor = data.Attr("detectedColor");
+        detectedFlag = data.Attr("detectedFlag");
+        colorFade = new("fadeColor", 0f);
+
+        detectPlayer = data.Bool("detectPlayer", false);
+        detectActor = data.Bool("detectActor", false);
+    }
+
+    public bool Detect()
+    {
+        if (detectActor)
+        {
+            return CollideCheck<Actor>();
+        }
+        else if(detectPlayer)
+        {
+            return CollideCheck<Player>();
+        }
+
+        return false;
     }
 
     private bool IsRidingSolid(Solid solid)
@@ -191,13 +215,17 @@ public class OutlinerRectangle : BaseEntity
         }
 
         // Instant opacity change on awake
-        if (!visibleFlag.InstantState)
+        alphaFade.Value = visibleFlag.InstantState ? 1f : 0f;
+        colorFade.Value = Detect() ? 1f : 0f;
+        Color init = tintColor.Parsed(alphaFade.Value);
+        if (detectedColor.HasValidContent())
         {
-            foreach (Image image in Components.GetAll<Image>())
-            {
-                image.Color = tintColor.Parsed(0f);
-            }
-            colorFade.Value = 0f;
+            init = colorFade.Value.LerpValue(0f, 1f, tintColor.Parsed(alphaFade.Value),
+                new CColor(detectedColor).Parsed(alphaFade.Value));
+        }
+        foreach (Image image in Components.GetAll<Image>())
+        {
+            image.Color = init;
         }
     }
 
@@ -245,7 +273,7 @@ public class OutlinerRectangle : BaseEntity
         return image;
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    private bool detected = false, _detected = false;
     public override void Update()
     {
         visibleFlag.onEnable = () =>
@@ -254,11 +282,11 @@ public class OutlinerRectangle : BaseEntity
 
             if (noFade)
             {
-                colorFade.Value = final;
+                alphaFade.Value = final;
             }
             else
             {
-                colorFade.FadeTo(final, fadeTime);
+                alphaFade.FadeTo(final, fadeTime);
             }
             
         };
@@ -269,18 +297,44 @@ public class OutlinerRectangle : BaseEntity
 
             if (noFade)
             {
-                colorFade.Value = final;
+                alphaFade.Value = final;
             }
             else
             {
-                colorFade.FadeTo(final, fadeTime);
+                alphaFade.FadeTo(final, fadeTime);
             }
         };
 
+        detected = Detect();
+        if(_detected != detected)
+        {
+            if (noFade)
+            {
+                colorFade.Value = detected ? 1f : 0f;
+            }
+            else
+            {
+                colorFade.FadeTo(detected ? 1f : 0f, fadeTime, visibleFade);
+            }
+
+            if (detectedFlag.HasValidContent())
+            {
+                detectedFlag.SetFlag(detected);
+            }
+        }
+
+        Color set = tintColor.Parsed(alphaFade.Value);
+        if (detectedColor.HasValidContent())
+        {
+            set = colorFade.Value.LerpValue(0f, 1f, tintColor.Parsed(alphaFade.Value),
+                new CColor(detectedColor).Parsed(alphaFade.Value));
+        }
         foreach (Image image in Components.GetAll<Image>())
         {
-            image.Color = tintColor.Parsed(colorFade.Value);
+            image.Color = set;
         }
+
+        _detected = detected;
 
         base.Update();
     }
