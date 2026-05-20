@@ -12,17 +12,19 @@ namespace ChroniaHelper.Components.StateListeners;
 
 public class FlagListener : StateListener
 {
-    public FlagListener(string flag)
+    public FlagListener(string flag, bool fallback = true)
     {
         this.Flag = flag;
+        this.Fallback = fallback;
     }
     public string Flag;
+    public bool Fallback = true;
 
     protected override bool GetState()
     {
         if (!Flag.HasValidContent())
         {
-            return true;
+            return Fallback;
         }
 
         return Flag.GetFlag();
@@ -31,19 +33,22 @@ public class FlagListener : StateListener
 
 public class FlagsListener : StateListener
 {
-    public FlagsListener(string flags, string separator = ",", string invertChar = "!")
+    public FlagsListener(string flags, string separator = ",", string invertChar = "!",
+        bool fallback = true)
     {
         this.flags = flags;
         this.separator = separator;
         this.invertChar = invertChar;
+        this.Fallback = fallback;
     }
     public string flags, separator, invertChar;
+    public bool Fallback = true;
 
     protected override bool GetState()
     {
         if (!flags.HasValidContent())
         {
-            return true;
+            return Fallback;
         }
         return flags.GetGeneralFlags(separator, invertChar);
     }
