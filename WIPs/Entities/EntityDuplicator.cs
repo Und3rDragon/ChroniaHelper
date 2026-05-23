@@ -14,6 +14,8 @@ using VivHelper;
 namespace ChroniaHelper.WIPs.Entities;
 
 [WorkingInProgress]
+[Obsoleted("LuckyHelper provided a better version, will no longer develop this one," +
+    "unless the situation is necessary")]
 [Tracked]
 [CustomEntity("ChroniaHelper/EntityDuplicator")]
 public class EntityDuplicator : BaseEntity
@@ -96,6 +98,8 @@ public class EntityDuplicator : BaseEntity
 
 [Tracked]
 [CustomEntity("ChroniaHelper/EntityDuplicatorTarget")]
+[Obsoleted("LuckyHelper provided a better version, will no longer develop this one," +
+    "unless the situation is necessary")]
 public class EntityDuplicatorTarget : BaseEntity
 {
     public EntityDuplicatorTarget(EntityData data, Vc2 offset) : base(data, offset)

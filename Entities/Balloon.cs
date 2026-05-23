@@ -13,6 +13,7 @@ namespace ChroniaHelper.Entities;
 /// The entity is originated from Game Helper, ported for customization purposes
 /// Original source code published by EllaTAS
 /// </summary>
+[Obsoleted("EllaTAS supported all features in original version")]
 [CustomEntity("ChroniaHelper/Balloon")]
 public class Balloon : BaseEntity
 {

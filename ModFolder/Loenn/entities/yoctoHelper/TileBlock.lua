@@ -41,6 +41,6 @@ local entity = {
     sprite = fakeTilesHelper.getEntitySpriteFunction("tileType","blendIn")
 }
 
-baseEntity.invoke(entity)
+--baseEntity.invoke(entity)
 
-return entity
+--return entity
