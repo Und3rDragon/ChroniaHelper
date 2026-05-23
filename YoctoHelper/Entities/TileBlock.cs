@@ -1,9 +1,11 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 
 namespace YoctoHelper.Entities;
 
 [Tracked(false)]
 [CustomEntity("ChroniaHelper/TileBlock")]
+[Obsoleted("Replaced by ChroniaHelper/AnotherTileEntity")]
 public class TileBlock : CrumbleBlock
 {
 

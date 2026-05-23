@@ -16,6 +16,7 @@ namespace ChroniaHelper.Entities;
     "So this one comes in handy by delegating from vanilla")]
 [Tracked]
 [CustomEntity("ChroniaHelper/CustomPuffer2")]
+[Obsoleted("Bug found, kept class file for furture study purposes")]
 public class CustomPuffer2 : Puffer
 {
     public CustomPuffer2(EntityData data, Vc2 offset): base(data, offset)

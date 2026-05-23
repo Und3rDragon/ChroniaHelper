@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/ZaggingLine")]
+[Obsoleted]
 public class ZaggingLine : Entity
 {
     public ZaggingLine(EntityData data, Vector2 offset) : base(data.Position + offset)

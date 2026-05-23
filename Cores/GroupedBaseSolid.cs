@@ -20,8 +20,8 @@ public class GroupedBaseSolid : Solid
     public int PlayerTouch;
     public Vc2[] Nodes;
     #region Groupping
-    public List<GroupedBaseSolid> Group;
-    public List<JumpThru> Jumpthrus;
+    public List<GroupedBaseSolid> Group = new();
+    public List<JumpThru> Jumpthrus = new();
     public Point GroupBoundsMin;
     public Point GroupBoundsMax;
     public int GroupTag = 0;
@@ -34,6 +34,65 @@ public class GroupedBaseSolid : Solid
     public char tileType;
     public GroupedBaseSolid master;
     public TileGrid grid;
+
+    public override void Awake(Scene scene)
+    {
+        base.Awake(scene);
+
+        AddToGroupAndFindChildren();
+
+        PostGroupping();
+
+        GenerateGrid();
+
+        PostGridGenerating();
+    }
+
+    public virtual void PostGroupping() { }
+
+    public virtual void PostGridGenerating() { }
+
+    public virtual void GenerateGrid(bool bgTexture = false)
+    {
+        if (MasterOfGroup)
+        {
+            // After finding group, the GroupBoundMin and GroupBoundMax are modified
+            // Start building tilemap
+            Rectangle rectangle = new Rectangle(GroupBoundsMin.X / 8, GroupBoundsMin.Y / 8, (GroupBoundsMax - GroupBoundsMin).X / 8 + 1, (GroupBoundsMax - GroupBoundsMin).Y / 8 + 1);
+            VirtualMap<char> charMap = new(rectangle.Width, rectangle.Height, '0');
+            foreach (var item in Group)
+            {
+                int num = (int)(item.X / 8f) - rectangle.X; // Start X
+                int num2 = (int)(item.Y / 8f) - rectangle.Y; // Start Y
+                int num3 = (int)(item.Width / 8f); // Width
+                int num4 = (int)(item.Height / 8f); // Height
+                // Generate Tile Map
+                for (int i = num; i < num + num3; i++)
+                {
+                    for (int j = num2; j < num2 + num4; j++)
+                    {
+                        charMap[i, j] = tileType;
+                    }
+                }
+            }
+
+            // Start generating tiles
+            // Setting up tiling behaviour
+            Autotiler.Behaviour tilingBehaviour = new()
+            {
+                EdgesExtend = false,
+                EdgesIgnoreOutOfLevel = false,
+                PaddingIgnoreOutOfLevel = false,
+            };
+            grid = bgTexture
+                ? GFX.BGAutotiler.GenerateMap(charMap, tilingBehaviour).TileGrid
+                : GFX.FGAutotiler.GenerateMap(charMap, tilingBehaviour).TileGrid;
+            // Grid Position is relative to the entity
+            grid.Position = new Vc2(GroupBoundsMin.X - X, GroupBoundsMin.Y - Y);
+            Add(grid);
+            Add(new TileInterceptor(grid, false));
+        }
+    }
 
     public bool PlayerFallCheck()
     {
@@ -237,8 +296,8 @@ public class GroupedBaseSolid : Solid
         // Prepare to look for members
         MasterOfGroup = true;
         master = this;
-        Group = new();
-        Jumpthrus = new();
+        Group.Clear();
+        Jumpthrus.Clear();
         GroupBoundsMin = new((int)X, (int)Y);
         GroupBoundsMax = new((int)Right, (int)Bottom);
         

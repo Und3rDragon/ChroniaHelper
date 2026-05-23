@@ -71,11 +71,13 @@ public class FormulaBlockLinear : GroupedBaseSolid
         routineState = RoutineStates.None;
     }
 
-    public override void Awake(Scene scene)
+    public override void GenerateGrid(bool bg = false)
     {
-        base.Awake(scene);
-        
-        AddToGroupAndFindChildren();
+        base.GenerateGrid(bgTexture);
+    }
+
+    public override void PostGroupping()
+    {
         // Direction modulation, most of the blocks shouldn't have a direction
         // After groupping, the Group is settled, so we can use the Group to see if the direction should be modified
         foreach (var item in Group)
@@ -88,45 +90,6 @@ public class FormulaBlockLinear : GroupedBaseSolid
             (item as FormulaBlockLinear).maxDuration = (master as FormulaBlockLinear).maxDuration;
             (item as FormulaBlockLinear).duration = (master as FormulaBlockLinear).duration;
             (item as FormulaBlockLinear).startDelay = (master as FormulaBlockLinear).startDelay;
-        }
-        Point delta = GroupBoundsMax - GroupBoundsMin;
-        if (MasterOfGroup)
-        {
-            // After finding group, the GroupBoundMin and GroupBoundMax are modified
-            // Start building tilemap
-            Rectangle rectangle = new Rectangle(GroupBoundsMin.X / 8, GroupBoundsMin.Y / 8, delta.X / 8 + 1, delta.Y / 8 + 1);
-            VirtualMap<char> charMap = new(rectangle.Width, rectangle.Height, '0');
-            foreach (var item in Group)
-            {
-                int num = (int) (item.X / 8f) - rectangle.X; // Start X
-                int num2 = (int) (item.Y / 8f) - rectangle.Y; // Start Y
-                int num3 = (int) (item.Width / 8f); // Width
-                int num4 = (int) (item.Height / 8f); // Height
-                // Generate Tile Map
-                for (int i = num; i < num + num3; i++)
-                {
-                    for (int j = num2; j < num2 + num4; j++)
-                    {
-                        charMap[i, j] = tileType;
-                    }
-                }
-            }
-
-            // Start generating tiles
-            // Setting up tiling behaviour
-            Autotiler.Behaviour tilingBehaviour = new()
-            {
-                EdgesExtend = false,
-                EdgesIgnoreOutOfLevel = false,
-                PaddingIgnoreOutOfLevel = false,
-            };
-            grid = bgTexture
-                ? GFX.BGAutotiler.GenerateMap(charMap, tilingBehaviour).TileGrid
-                : GFX.FGAutotiler.GenerateMap(charMap, tilingBehaviour).TileGrid;
-            // Grid Position is relative to the entity
-            grid.Position = new Vc2(GroupBoundsMin.X - X, GroupBoundsMin.Y - Y);
-            Add(grid);
-            Add(new TileInterceptor(grid, false));
         }
     }
 

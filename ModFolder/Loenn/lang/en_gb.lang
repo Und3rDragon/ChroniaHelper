@@ -1540,3 +1540,7 @@ entities.ChroniaHelper/OutlinerRectangle.attributes.description.detectPlayer=Det
 entities.ChroniaHelper/OutlinerCircle.attributes.description.visibleFlag=A series of flags like "flagA, !flagB", which means:\nIn order for the outline to appear, flagA is required to be true and flagB is required to be false
 entities.ChroniaHelper/OutlinerCircle.attributes.description.visibleFade=The fader that defines how outline appears or changes color when detect condition met
 entities.ChroniaHelper/OutlinerCircle.attributes.description.displayFadeTime=If above 0, this refers to the time of transition\n(Fade in and out, color changes)
+
+# ======================== Another Tile Entity
+
+entities.ChroniaHelper/AnotherTileEntity.placements.name.tile=Another Tile Entity
