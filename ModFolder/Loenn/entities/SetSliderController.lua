@@ -18,6 +18,8 @@ controller.placements = {
         value = "0",
         parameters = "",
         mode = 0,
+        value2 = "",
+        randomizeValue = false,
     },
 }
 
