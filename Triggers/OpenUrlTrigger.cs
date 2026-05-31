@@ -30,7 +30,15 @@ public sealed class OpenUrlTrigger : Trigger
 
         if (safe)
         {
-            GenerateUI();
+            if (!(Md.Session?.SkipConfirmationThisSession ?? false))
+            {
+                GenerateUI();
+            }
+            else
+            {
+                ProcessStartInfo info = new(url) { UseShellExecute = true };
+                Process.Start(info);
+            }
         }
         else
         {
@@ -66,6 +74,13 @@ public sealed class OpenUrlTrigger : Trigger
         menu.Add(new TextMenu.SubHeader(url, false));
         menu.Add(new TextMenu.Button("Confirm").Pressed(delegate
         {
+            ProcessStartInfo info = new(url) { UseShellExecute = true };
+            Process.Start(info);
+            menu.OnCancel();
+        }));
+        menu.Add(new TextMenu.Button("Confirm All for this section").Pressed(delegate
+        {
+            Md.Session.SkipConfirmationThisSession = true;
             ProcessStartInfo info = new(url) { UseShellExecute = true };
             Process.Start(info);
             menu.OnCancel();

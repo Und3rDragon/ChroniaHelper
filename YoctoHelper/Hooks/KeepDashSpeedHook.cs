@@ -9,7 +9,7 @@ using ChroniaHelper.Utils;
 
 namespace YoctoHelper.Hooks;
 
-[HookRegister(id: HookId.KeepDashSpeed, useData: true)]
+//[HookRegister(id: HookId.KeepDashSpeed, useData: true)]
 public class KeepDashSpeedHook
 {
 
@@ -59,7 +59,7 @@ public class KeepDashSpeedHook
 
     private Vector2 GetDashSpeed(Player player)
     {
-        return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<bool>(HookId.KeepDashSpeed) ? player.Speed : (player.DashDir * 160F);
+        return (Md.Session.KeepDashSpeed.GetValueOrDefault(MaP.level.Session.Area.SID, false) ? player.Speed : (player.DashDir * 160F));
     }
 
 }
