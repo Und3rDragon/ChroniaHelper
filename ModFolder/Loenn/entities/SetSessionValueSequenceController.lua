@@ -38,7 +38,7 @@ controller.fieldInformation = {
         },
         editable = false,
     },
-    flagSequence = {
+    sequence = {
         fieldType = "list",
         elementSeparator = ";",
         elementOptions = {
