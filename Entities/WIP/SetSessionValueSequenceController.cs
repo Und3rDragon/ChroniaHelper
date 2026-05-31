@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Imports;
@@ -164,151 +165,6 @@ public class SetSessionValueSequenceController : GeneralSetupController
         }
     }
 
-    public IEnumerator MainSequence()
-    {
-        int index = 0;
-        int seqLength = seq.Count;
-
-        while (index < seqLength)
-        {
-            // 找到下一个命令的起始位置（跳过 Start 和 Command）
-            while (index < seqLength && (seq[index].Operation == Operations.Start || seq[index].Operation == Operations.Command))
-            {
-                index++;
-            }
-
-            if (index >= seqLength || seq[index].Operation == Operations.End)
-            {
-                break;
-            }
-
-            // 找到这个命令的结束位置
-            int commandStart = index;
-            int commandEnd = FindCommandEnd(index, seqLength);
-
-            // 解析并执行这个命令
-            IEnumerator result = ParseCommandSegment(commandStart, commandEnd);
-            if (result != null)
-            {
-                yield return new SwapImmediately(result);
-            }
-
-            // 移动到下一个命令
-            index = commandEnd + 1;
-        }
-
-        yield return null;
-    }
-
-    private int FindCommandEnd(int start, int seqLength)
-    {
-        for (int i = start + 1; i < seqLength; i++)
-        {
-            if (seq[i].Operation == Operations.Command || seq[i].Operation == Operations.End)
-            {
-                return i - 1;
-            }
-        }
-        return seqLength - 1;
-    }
-
-    public IEnumerator ParseCommandSegment(int start, int end)
-    {
-        if (start > end) yield break;
-
-        // 情况6: 单独的 Number（延迟命令）
-        if (start == end && seq[start].Operation == Operations.Number)
-        {
-            float delay = ConvertToFloat(seq[start].Value);
-            yield return new SwapImmediately(TryDelay(delay));
-            yield break;
-        }
-
-        // 收集这个片段中的所有非 SubCommand 元素
-        List<OpData> elements = new List<OpData>();
-        for (int i = start; i <= end; i++)
-        {
-            if (seq[i].Operation != Operations.SubCommand)
-            {
-                elements.Add(seq[i]);
-            }
-        }
-
-        if (elements.Count == 0) yield break;
-
-        // 构建 targets 列表和 source 位置
-        // 格式: [target, ValueFrom, target, ValueFrom, ..., source]
-        List<int> targetIndices = new List<int>();
-        int sourceIndex = -1;
-
-        for (int i = 0; i < elements.Count; i++)
-        {
-            if (elements[i].Operation == Operations.ValueFrom)
-            {
-                // ValueFrom 前面的元素是目标
-                if (i > 0)
-                {
-                    targetIndices.Add(i - 1);
-                }
-            }
-            else
-            {
-                // 检查这个元素后面是否有 ValueFrom
-                bool hasValueFromAfter = (i + 1 < elements.Count && elements[i + 1].Operation == Operations.ValueFrom);
-
-                if (!hasValueFromAfter)
-                {
-                    // 没有后续的 ValueFrom，这是值来源
-                    sourceIndex = i;
-                    break;
-                }
-            }
-        }
-
-        // 执行赋值
-        if (sourceIndex >= 0 && targetIndices.Count > 0)
-        {
-            // 获取 source 对应的原始终端索引
-            int actualSourceIndex = FindOriginalIndex(start, end, elements[sourceIndex]);
-
-            // 获取所有 target 对应的原始终端索引
-            List<int> actualTargetIndices = new List<int>();
-            foreach (int ti in targetIndices)
-            {
-                actualTargetIndices.Add(FindOriginalIndex(start, end, elements[ti]));
-            }
-
-            AssignValues(actualTargetIndices, actualSourceIndex);
-        }
-
-        yield return null;
-    }
-
-    private int FindOriginalIndex(int segmentStart, int segmentEnd, OpData targetElement)
-    {
-        for (int i = segmentStart; i <= segmentEnd; i++)
-        {
-            if (seq[i].Operation == targetElement.Operation &&
-                Equals(seq[i].Value, targetElement.Value))
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private float ConvertToFloat(object value)
-    {
-        if (value is int intVal) return intVal;
-        if (value is float floatVal) return floatVal;
-        return 0f;
-    }
-
-    private IEnumerator TryDelay(float seconds)
-    {
-        yield return seconds;
-    }
-
     public void AssignValues(List<int> targets, int value)
     {
         var source = seq[value];
@@ -336,6 +192,35 @@ public class SetSessionValueSequenceController : GeneralSetupController
                 {
                     name.SetFlag((bool)source.Value);
                 }
+                else if(source.Operation == Operations.FlagDeclaration)
+                {
+                    name.SetFlag(source.Value.ToString().GetFlag());
+                }
+                else if(source.Operation == Operations.CounterDeclaration)
+                {
+                    name.SetCounter(source.Value.ToString().GetCounter());
+                }
+                else if(source.Operation == Operations.SliderDeclaration)
+                {
+                    name.SetSlider(source.Value.ToString().GetSlider());
+                }
+                else if(source.Operation == Operations.Name)
+                {
+                    if (MaP.sliders.ContainsKey(source.Value.ToString()))
+                    {
+                        name.SetSlider(source.Value.ToString().GetSlider());
+                    }
+                    else if(MaP.level.Session.Counters.TryGet(
+                        (c) => c.Key == source.Value.ToString(), 
+                        out List<Session.Counter> n))
+                    {
+                        name.SetCounter(source.Value.ToString().GetCounter());
+                    }
+                    else
+                    {
+                        name.SetFlag(source.Value.ToString().GetFlag());
+                    }
+                }
             }
             else if(tar.Operation == Operations.FlagDeclaration)
             {
@@ -348,6 +233,35 @@ public class SetSessionValueSequenceController : GeneralSetupController
                 else if (source.Operation == Operations.Bool)
                 {
                     name.SetFlag((bool)source.Value);
+                }
+                else if (source.Operation == Operations.FlagDeclaration)
+                {
+                    name.SetFlag(source.Value.ToString().GetFlag());
+                }
+                else if (source.Operation == Operations.CounterDeclaration)
+                {
+                    name.SetFlag(source.Value.ToString().GetCounter() != 0);
+                }
+                else if (source.Operation == Operations.SliderDeclaration)
+                {
+                    name.SetFlag(source.Value.ToString().GetSlider() != 0);
+                }
+                else if (source.Operation == Operations.Name)
+                {
+                    if (MaP.sliders.ContainsKey(source.Value.ToString()))
+                    {
+                        name.SetFlag(source.Value.ToString().GetSlider() != 0);
+                    }
+                    else if (MaP.level.Session.Counters.TryGet(
+                        (c) => c.Key == source.Value.ToString(),
+                        out List<Session.Counter> n))
+                    {
+                        name.SetFlag(source.Value.ToString().GetCounter() != 0);
+                    }
+                    else
+                    {
+                        name.SetFlag(source.Value.ToString().GetFlag());
+                    }
                 }
             }
             else if(tar.Operation == Operations.CounterDeclaration)
@@ -362,6 +276,35 @@ public class SetSessionValueSequenceController : GeneralSetupController
                 {
                     name.SetCounter((bool)source.Value ? 1 : 0);
                 }
+                else if (source.Operation == Operations.FlagDeclaration)
+                {
+                    name.SetCounter(source.Value.ToString().GetFlag() ? 1 : 0);
+                }
+                else if (source.Operation == Operations.CounterDeclaration)
+                {
+                    name.SetCounter(source.Value.ToString().GetCounter());
+                }
+                else if (source.Operation == Operations.SliderDeclaration)
+                {
+                    name.SetCounter((int)source.Value.ToString().GetSlider());
+                }
+                else if (source.Operation == Operations.Name)
+                {
+                    if (MaP.sliders.ContainsKey(source.Value.ToString()))
+                    {
+                        name.SetCounter((int)source.Value.ToString().GetSlider());
+                    }
+                    else if (MaP.level.Session.Counters.TryGet(
+                        (c) => c.Key == source.Value.ToString(),
+                        out List<Session.Counter> n))
+                    {
+                        name.SetCounter(source.Value.ToString().GetCounter());
+                    }
+                    else
+                    {
+                        name.SetCounter(source.Value.ToString().GetFlag() ? 1 : 0);
+                    }
+                }
             }
             else if (tar.Operation == Operations.SliderDeclaration)
             {
@@ -375,7 +318,194 @@ public class SetSessionValueSequenceController : GeneralSetupController
                 {
                     name.SetSlider((bool)source.Value ? 1f : 0);
                 }
+                else if (source.Operation == Operations.FlagDeclaration)
+                {
+                    name.SetSlider(source.Value.ToString().GetFlag() ? 1f : 0);
+                }
+                else if (source.Operation == Operations.CounterDeclaration)
+                {
+                    name.SetSlider((float)source.Value.ToString().GetCounter());
+                }
+                else if (source.Operation == Operations.SliderDeclaration)
+                {
+                    name.SetSlider(source.Value.ToString().GetSlider());
+                }
+                else if (source.Operation == Operations.Name)
+                {
+                    if (MaP.sliders.ContainsKey(source.Value.ToString()))
+                    {
+                        name.SetSlider(source.Value.ToString().GetSlider());
+                    }
+                    else if (MaP.level.Session.Counters.TryGet(
+                        (c) => c.Key == source.Value.ToString(),
+                        out List<Session.Counter> n))
+                    {
+                        name.SetSlider((float)source.Value.ToString().GetCounter());
+                    }
+                    else
+                    {
+                        name.SetSlider(source.Value.ToString().GetFlag() ? 1f : 0);
+                    }
+                }
             }
         }
+    }
+
+    public IEnumerator MainSequence()
+    {
+        int index = 0;
+        int seqLength = seq.Count;
+
+        while (index < seqLength)
+        {
+            // Skip the Start operation
+            if (seq[index].Operation == Operations.Start)
+            {
+                index++;
+                continue;
+            }
+
+            // End with End operation
+            if (seq[index].Operation == Operations.End)
+            {
+                break;
+            }
+
+            // Command: represents a new command is coming
+            if (seq[index].Operation == Operations.Command)
+            {
+                index++;
+                continue;
+            }
+
+            // Find the end of this command
+            int commandStart = index;
+            int commandEnd = FindCommandEnd(index, seqLength);
+
+            // And execute this command
+            IEnumerator result = ParseCommandSegment(commandStart, commandEnd);
+            if (result != null)
+            {
+                yield return new SwapImmediately(result);
+            }
+
+            // Move on
+            index = commandEnd + 1;
+        }
+
+        yield return null;
+    }
+
+    private int FindCommandEnd(int start, int seqLength)
+    {
+        for (int i = start + 1; i < seqLength; i++)
+        {
+            if (seq[i].Operation == Operations.Command || seq[i].Operation == Operations.End)
+            {
+                return i - 1;
+            }
+        }
+        return seqLength - 1;
+    }
+
+    public IEnumerator ParseCommandSegment(int start, int end)
+    {
+        if (start > end) yield break;
+
+        // Standalone Number: Delay
+        if (start == end && seq[start].Operation == Operations.Number)
+        {
+            float delay = ConvertToFloat(seq[start].Value);
+            yield return new SwapImmediately(TryDelay(delay));
+            yield break;
+        }
+
+        // Subcommands
+        List<(int subStart, int subEnd)> subRanges = new List<(int, int)>();
+        int subStart = start;
+
+        for (int i = start; i <= end; i++)
+        {
+            if (seq[i].Operation == Operations.SubCommand)
+            {
+                // Save the current index range of the subcommand
+                if (subStart <= i - 1)
+                {
+                    subRanges.Add((subStart, i - 1));
+                }
+                subStart = i + 1;
+            }
+        }
+        // Add one last subcommand
+        if (subStart <= end)
+        {
+            subRanges.Add((subStart, end));
+        }
+
+        // Process subcommands
+        foreach (var range in subRanges)
+        {
+            yield return new SwapImmediately(ParseSubCommand(range.subStart, range.subEnd));
+        }
+
+        yield return null;
+    }
+
+    public IEnumerator ParseSubCommand(int start, int end)
+    {
+        if (start > end) yield break;
+
+        // Search for all indexes that's not ValueFrom
+        List<int> elementIndices = new List<int>();
+        for (int i = start; i <= end; i++)
+        {
+            if (seq[i].Operation != Operations.ValueFrom)
+            {
+                elementIndices.Add(i);
+            }
+        }
+
+        if (elementIndices.Count == 0) yield break;
+
+        // Check if it's valid source?
+        if (elementIndices.Count == 1)
+        {
+            var op = seq[elementIndices[0]];
+            // Standalone Number or Name has no meaning here, which can be ignored
+            yield break;
+        }
+
+        // Chain assignments
+        List<int> targets = new List<int>();
+        int sourceIndex = -1;
+
+        // Set the last value as Source
+        sourceIndex = elementIndices[elementIndices.Count - 1];
+
+        // The rest is set as Targets
+        for (int i = 0; i < elementIndices.Count - 1; i++)
+        {
+            targets.Add(elementIndices[i]);
+        }
+
+        // Start the assignment
+        if (sourceIndex >= 0 && targets.Count > 0)
+        {
+            AssignValues(targets, sourceIndex);
+        }
+
+        yield return null;
+    }
+
+    private float ConvertToFloat(object value)
+    {
+        if (value is int intVal) return intVal;
+        if (value is float floatVal) return floatVal;
+        return 0f;
+    }
+
+    private IEnumerator TryDelay(float seconds)
+    {
+        yield return seconds;
     }
 }

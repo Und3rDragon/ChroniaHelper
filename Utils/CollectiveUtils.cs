@@ -803,8 +803,8 @@ public static class CollectiveUtils
         return true;
     }
 
-    public static bool TryGet<T, Target>(this ICollection<T> source, Predicate<T> condition, out Target result)
-        where Target : ICollection<T>, new()
+    public static bool TryGet<T>(this ICollection<T> source, 
+        Predicate<T> condition, out List<T> result)
     {
         bool match = false;
         result = new();
