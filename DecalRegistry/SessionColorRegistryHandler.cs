@@ -11,15 +11,15 @@ using System.Xml;
 
 namespace ChroniaHelper.DecalRegistry;
 
-public class ChroniaSessionEditRegistryHandler : DecalRegistryHandler
+public class SessionColorRegistryHandler : DecalRegistryHandler
 {
     [LoadHook]
     public static void Load()
     {
-        Celeste.Mod.DecalRegistry.AddPropertyHandler<ChroniaSessionEditRegistryHandler>();
+        Celeste.Mod.DecalRegistry.AddPropertyHandler<SessionColorRegistryHandler>();
     }
 
-    public override string Name => "chronia.sessionEdit";
+    public override string Name => "chronia.sessioncolor";
 
     public override void Parse(XmlAttributeCollection xml)
     {
@@ -27,11 +27,7 @@ public class ChroniaSessionEditRegistryHandler : DecalRegistryHandler
             GetString(xml, "r", ""),
             GetString(xml, "g", ""),
             GetString(xml, "b", ""),
-            GetString(xml, "a", ""),
-            GetString(xml, "scaleX", ""),
-            GetString(xml, "scaleY", ""),
-            GetString(xml, "x", ""),
-            GetString(xml, "y", "")
+            GetString(xml, "a", "")
             );
     }
 
@@ -45,36 +41,22 @@ public class ChroniaSessionEditRegistryHandler : DecalRegistryHandler
 
 public class ChroniaSessionEditRegistry : BaseComponent
 {
-    public ChroniaSessionEditRegistry(string r, string g, string b, string a,
-        string scaleX, string scaleY, string x, string y)
+    public ChroniaSessionEditRegistry(string r, string g, string b, string a)
     {
         this.r = new(r, 255, new(0, 255));
         this.g = new(g, 255, new(0, 255));
         this.b = new(b, 255, new(0, 255));
         this.a = new(a, 1f, new(0, 1f));
-        this.sx = new(scaleX, 1f);
-        this.sy = new(scaleY, 1f);
-        this.x = new(x);
-        this.y = new(y);
     }
     public SelectiveCounter r, g, b;
-    public SelectiveSlider a, sx, sy, x, y;
+    public SelectiveSlider a;
 
     private Vc2 initPos;
     public override void Added(Entity entity)
     {
         base.Added(entity);
 
-        initPos = entity.Position;
-
-        entity.GetBaseComponents(r, g, b, a, sx, sy);
-    }
-
-    public override void Removed(Entity entity)
-    {
-        entity.Position = initPos;
-
-        base.Removed(entity);
+        entity.GetBaseComponents(r, g, b, a);
     }
 
     public override void Update()
@@ -111,33 +93,5 @@ public class ChroniaSessionEditRegistry : BaseComponent
         CColor color = new(_r, _g, _b, _a);
 
         decal.Color = color.Parsed();
-
-        float _sx = 1f, _sy = 1f;
-
-        if (sx.Expression.HasValidContent())
-        {
-            _sx = sx.Value;
-        }
-
-        if (sy.Expression.HasValidContent())
-        {
-            _sy = sy.Value;
-        }
-
-        decal.Scale = new Vc2(_sx, _sy);
-
-        Vc2 pos = initPos;
-
-        if (x.Expression.HasValidContent())
-        {
-            pos.X = x.Value;
-        }
-
-        if (y.Expression.HasValidContent())
-        {
-            pos.Y = y.Value;
-        }
-
-        Entity.Position = pos;
     }
 }
