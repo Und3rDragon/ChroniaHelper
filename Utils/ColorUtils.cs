@@ -307,6 +307,11 @@ public static class ColorUtils
 
     public struct ChroniaColor
     {
+        public override string ToString()
+        {
+            return $"ChroniaColor[{color.R}, {color.G}, {color.B}, {alpha}]";
+        }
+
         public static CColor White = new(Color.White);
         public static CColor Black = new(Color.Black);
         public static CColor Red = new(Color.Red);
@@ -328,9 +333,9 @@ public static class ColorUtils
             alpha = A / 255f;
         }
 
-        public ChroniaColor(float R = 0f, float G = 0f, float B = 0f, float A = 0f)
+        public ChroniaColor(int R = 0, int G = 0, int B = 0, float A = 0f)
         {
-            color = new Color((int)R, (int)G, (int)B);
+            color = new Color(R, G, B);
             alpha = Math.Clamp(A, 0f, 1f);
         }
 

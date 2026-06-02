@@ -153,21 +153,21 @@ public class ChroniaSystem
 
                 if (identifier.EndsWith("_R"))
                 {
-                    var current = Md.Session.chroniaColors.GetValueOrDefault(key, new());
+                    var current = Md.Session.chroniaColors.GetValueOrDefault(key, CColor.White);
                     current.color.R = (byte)counter.Value.Clamp(0, 255);
                     Md.Session.chroniaColors[key] = current;
                 }
 
                 if (identifier.EndsWith("_G"))
                 {
-                    var current = Md.Session.chroniaColors.GetValueOrDefault(key, new());
+                    var current = Md.Session.chroniaColors.GetValueOrDefault(key, CColor.White);
                     current.color.G = (byte)counter.Value.Clamp(0, 255);
                     Md.Session.chroniaColors[key] = current;
                 }
 
                 if (identifier.EndsWith("_B"))
                 {
-                    var current = Md.Session.chroniaColors.GetValueOrDefault(key, new());
+                    var current = Md.Session.chroniaColors.GetValueOrDefault(key, CColor.White);
                     current.color.B = (byte)counter.Value.Clamp(0, 255);
                     Md.Session.chroniaColors[key] = current;
                 }
@@ -185,11 +185,20 @@ public class ChroniaSystem
 
                 if (!valid) { continue; }
 
-                var current = Md.Session.chroniaColors.GetValueOrDefault(key, new());
+                var current = Md.Session.chroniaColors.GetValueOrDefault(key, CColor.White);
                 current.alpha = slider.Value.Value.Clamp(0f, 1f);
                 Md.Session.chroniaColors[key] = current;
             }
         }
+
+        //if (self.OnInterval(0.5f))
+        //{
+        //    foreach(var i in Md.Session.chroniaColors)
+        //    {
+        //        Log.Info(i.Key, i.Value);
+        //    }
+        //    Log.Error(Log.divider);
+        //}
     }
     
     public static PlayerDeadBody OnPlayerDeath(On.Celeste.Player.orig_Die orig, Player self, Vc2 dir, bool eii, bool reg)
