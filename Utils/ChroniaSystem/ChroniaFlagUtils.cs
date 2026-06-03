@@ -141,7 +141,7 @@ public static class ChroniaFlagUtils
             );
     }
 
-    public static void SetGeneralFlags(this string flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#")
+    public static void SetGeneralFlags(this string flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#", bool flip = false)
     {
         flags.Split(separator, StringSplitOptions.TrimEntries).ApplyTo(out string[] list);
 
@@ -153,11 +153,11 @@ public static class ChroniaFlagUtils
             bool _temporary = item.Contains(temporary);
             string name = item.RemoveAll(invert).RemoveAll(global).RemoveAll(temporary);
 
-            name.SetFlag(!_invert, _global, _temporary);
+            name.SetFlag(flip ? _invert : !_invert, _global, _temporary);
         }
     }
 
-    public static void SetGeneralFlags(this string[] flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#")
+    public static void SetGeneralFlags(this string[] flags, string separator = ",", string invert = "!", string global = "*", string temporary = "#", bool flip = false)
     {
         for (int i = 0; i < flags.Length; i++)
         {
@@ -167,7 +167,7 @@ public static class ChroniaFlagUtils
             bool _temporary = item.Contains(temporary);
             string name = item.RemoveAll(invert).RemoveAll(global).RemoveAll(temporary);
 
-            name.SetFlag(!_invert, _global, _temporary);
+            name.SetFlag(flip ? _invert : !_invert, _global, _temporary);
         }
     }
     

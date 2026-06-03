@@ -53,9 +53,6 @@ public class FrameIndexFlagRegistry : BaseComponent
 
         Decal decal = base.Entity as Decal;
 
-        if (Targets.Contains((int)decal.frame))
-        {
-            FlagExpression.SetGeneralFlags();
-        }
+        FlagExpression.SetGeneralFlags(flip: Targets.Contains((int)decal.frame));
     }
 }

@@ -69,10 +69,7 @@ public class TextureIndexFlagRegistry : BaseComponent
 
         MTexture t = decal.textures[(int)decal.frame];
 
-        if (Targets.Contains(ExtractIndex(t.AtlasPath)))
-        {
-            FlagExpression.SetGeneralFlags();
-        }
+        FlagExpression.SetGeneralFlags(flip: Targets.Contains(ExtractIndex(t.AtlasPath)));
     }
 
     public int ExtractIndex(string input)
