@@ -19,7 +19,7 @@ public class SessionColorRegistryHandler : DecalRegistryHandler
         Celeste.Mod.DecalRegistry.AddPropertyHandler<SessionColorRegistryHandler>();
     }
 
-    public override string Name => "chronia.sessioncolor";
+    public override string Name => "chronia.sessionColor";
 
     public override void Parse(XmlAttributeCollection xml)
     {

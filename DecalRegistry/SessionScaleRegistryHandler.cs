@@ -19,7 +19,7 @@ public class SessionScaleRegistryHandler : DecalRegistryHandler
         Celeste.Mod.DecalRegistry.AddPropertyHandler<SessionScaleRegistryHandler>();
     }
 
-    public override string Name => "chronia.sessionscale";
+    public override string Name => "chronia.sessionScale";
 
     public override void Parse(XmlAttributeCollection xml)
     {

@@ -19,7 +19,7 @@ public class SessionPositionRegistryHandler : DecalRegistryHandler
         Celeste.Mod.DecalRegistry.AddPropertyHandler<SessionPositionRegistryHandler>();
     }
 
-    public override string Name => "chronia.sessionposition";
+    public override string Name => "chronia.sessionPosition";
 
     public override void Parse(XmlAttributeCollection xml)
     {
