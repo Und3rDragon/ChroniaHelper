@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper;
+using ChroniaHelper.Utils;
 using YoctoHelper.Cores;
 using YoctoHelper.Hooks;
 
@@ -12,21 +13,26 @@ public class KeepDashSpeedTrigger : BaseTrigger
 
     public KeepDashSpeedTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
+        Set = data.Bool("set", true);
     }
+    private bool Set;
 
     protected override void OnEnterHandle(Player player)
     {
-        this.SetValue(true);
+        this.SetValue(Set);
     }
 
     protected override void RevertOnLeaveHandle(Player player)
     {
-        this.SetValue(false);
+        this.SetValue(!Set);
     }
 
     private void SetValue(bool value)
     {
-        ChroniaHelperModule.Instance.HookManager.SetHookDataValue<bool>(HookId.KeepDashSpeed, value, base.revertOnDeath);
+        if (MaP.level.Session.Area.SID.HasValidContent())
+        {
+            Md.Session.KeepDashSpeed.Enter(MaP.level.Session.Area.SID, value);
+        }
     }
 
 }

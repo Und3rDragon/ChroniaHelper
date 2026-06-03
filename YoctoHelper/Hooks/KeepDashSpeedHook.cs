@@ -6,18 +6,18 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using YoctoHelper.Cores;
 using ChroniaHelper.Utils;
+using ChroniaHelper.Cores;
 
-namespace YoctoHelper.Hooks;
+namespace ChroniaHelper.Hooks;
 
-[HookRegister(id: HookId.KeepDashSpeed, useData: true)]
+//[HookRegister(id: HookId.KeepDashSpeed, useData: true)]
 public class KeepDashSpeedHook
 {
-
     private ILHook dashCoroutineHook { get; set; }
 
     private ILHook birdDashTutorialCoroutineHook { get; set; }
 
-    [Load]
+    [LoadHook]
     private void Load()
     {
         MethodInfo dashCoroutine = typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic).GetStateMachineTarget();
@@ -26,7 +26,7 @@ public class KeepDashSpeedHook
         this.birdDashTutorialCoroutineHook = new ILHook(birdDashTutorialCoroutine, this.KeepDashSpeed);
     }
 
-    [Unload]
+    [UnloadHook]
     private void Unload()
     {
         if (ObjectUtils.IsNotNull(this.dashCoroutineHook))
@@ -41,11 +41,11 @@ public class KeepDashSpeedHook
         }
     }
 
-    [DefaultValue]
-    private bool DefaultValue()
-    {
-        return false;
-    }
+    //[DefaultValue]
+    //private bool DefaultValue()
+    //{
+    //    return false;
+    //}
 
     private void KeepDashSpeed(ILContext il)
     {
@@ -59,7 +59,7 @@ public class KeepDashSpeedHook
 
     private Vector2 GetDashSpeed(Player player)
     {
-        return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<bool>(HookId.KeepDashSpeed) ? player.Speed : (player.DashDir * 160F);
+        return (Md.Session.KeepDashSpeed.GetValueOrDefault(MaP.level.Session.Area.SID, false) ? player.Speed : (player.DashDir * 160F));
     }
 
 }

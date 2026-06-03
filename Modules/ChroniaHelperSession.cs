@@ -236,6 +236,12 @@ public class ChroniaHelperSession : EverestModuleSession
     // BPM Counter
     public DateTime LevelStartTime = DateTime.Now;
 
+    // Make-up for Keep Dash Speed Trigger
+    public Dictionary<string, bool> KeepDashSpeed = new();
+
+    // Open URL Trigger extension
+    public bool SkipConfirmationThisSession = false;
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]

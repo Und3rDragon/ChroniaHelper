@@ -8,7 +8,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using VivHelper.Triggers;
 
-namespace ChroniaHelper.WIPs.Components;
+namespace ChroniaHelper.Components.WIP;
 
 [WorkingInProgress]
 public class Passive3D : BaseComponent

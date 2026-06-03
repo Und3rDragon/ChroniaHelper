@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Components.StateListeners;
+using ChroniaHelper.Components.WIP;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils.ChroniaSystem;
-using ChroniaHelper.WIPs.Components;
 
 namespace ChroniaHelper.WIPs.Entities;
 

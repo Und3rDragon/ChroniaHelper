@@ -8,18 +8,16 @@ local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/SetCounterController"
+controller.name = "ChroniaHelper/SetSessionValueSequenceController"
 controller.placements = {
     name = "controller",
     data = {
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
-        counters = "counter",
-        value = "0",
+        sequence = "flag = true; 0.5; counter = 1, sliderA = sliderB = 2.5",
         parameters = "",
         mode = 0,
-        value2 = "",
-        randomizeValue = false,
+        globalCoroutine = false,
     },
 }
 
@@ -40,8 +38,13 @@ controller.fieldInformation = {
         },
         editable = false,
     },
-    flags = {
+    sequence = {
         fieldType = "list",
+        elementSeparator = ";",
+        elementOptions = {
+            fieldType = "list",
+            minimumElements = 1,
+        },
     },
     parameters = {
         fieldType = "list",
@@ -50,7 +53,7 @@ controller.fieldInformation = {
 
 controller.sprite = function(room, entity)
 	local sprite = {}
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Counter", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Flag", entity)
 
     table.insert(sprite, iconSprite)
     return sprite

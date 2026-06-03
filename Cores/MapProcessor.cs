@@ -5,6 +5,7 @@ using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
+using MoreDasheline;
 using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
@@ -106,6 +107,8 @@ public static class MapProcessor
 
         self.Add(dummyGlobal);
         self.Add(PlayerIndicatorZoneMonitor.Instance);
+
+        Md.Session.SkipConfirmationThisSession = false;
     }
     
     public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)

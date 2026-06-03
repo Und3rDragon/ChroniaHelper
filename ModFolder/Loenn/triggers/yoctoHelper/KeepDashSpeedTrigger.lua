@@ -5,7 +5,9 @@ local trigger = {
     placements =
     {
         name = "Keep Dash Speed Trigger",
-        data = { }
+        data = {
+            set = true,
+        },
     },
     fieldInformation = { },
     fieldOrder =

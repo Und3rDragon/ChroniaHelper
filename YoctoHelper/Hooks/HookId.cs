@@ -7,7 +7,7 @@ public enum HookId
     NoCoyoteTime,
     MoonBoost,
     FastFallCollider,
-    KeepDashSpeed,
+    //KeepDashSpeed, //obsoleted
     JumpListener,
     DustBunnyLoader
 }

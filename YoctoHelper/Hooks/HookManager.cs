@@ -90,10 +90,8 @@ public class HookManager
         {
             return;
         }
-        if (!Md.Session.HookManagerData.ContainsKey(hookId))
-        {
-            Md.Session.HookManagerData[hookId] = new HookData(this.HookDataDefaultValue[hookId]);
-        }
+
+        Md.Session.HookManagerData.Create(hookId, new HookData(this.HookDataDefaultValue[hookId]));
         Md.Session.HookManagerData[hookId].roomValue = value;
     }
 

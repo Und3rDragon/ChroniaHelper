@@ -8,18 +8,15 @@ local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/SetCounterController"
+controller.name = "ChroniaHelper/SetChroniaHelperRandomSeedController"
 controller.placements = {
     name = "controller",
     data = {
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
-        counters = "counter",
-        value = "0",
+        seed = 0,
         parameters = "",
         mode = 0,
-        value2 = "",
-        randomizeValue = false,
     },
 }
 
@@ -46,11 +43,14 @@ controller.fieldInformation = {
     parameters = {
         fieldType = "list",
     },
+    seed = {
+        fieldType = "integer",
+    },
 }
 
 controller.sprite = function(room, entity)
 	local sprite = {}
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Counter", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/RandomSeed", entity)
 
     table.insert(sprite, iconSprite)
     return sprite
