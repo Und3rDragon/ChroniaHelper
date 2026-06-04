@@ -11,14 +11,9 @@ using System.Xml;
 
 namespace ChroniaHelper.DecalRegistry;
 
+[RegistryHandler]
 public class SessionColorRegistryHandler : DecalRegistryHandler
 {
-    [LoadHook]
-    public static void Load()
-    {
-        Celeste.Mod.DecalRegistry.AddPropertyHandler<SessionColorRegistryHandler>();
-    }
-
     public override string Name => "chronia.sessionColor";
 
     public override void Parse(XmlAttributeCollection xml)

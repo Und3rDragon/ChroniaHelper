@@ -11,14 +11,9 @@ using System.Xml;
 
 namespace ChroniaHelper.DecalRegistry;
 
+[RegistryHandler]
 public class SessionPositionRegistryHandler : DecalRegistryHandler
 {
-    [LoadHook]
-    public static void Load()
-    {
-        Celeste.Mod.DecalRegistry.AddPropertyHandler<SessionPositionRegistryHandler>();
-    }
-
     public override string Name => "chronia.sessionPosition";
 
     public override void Parse(XmlAttributeCollection xml)

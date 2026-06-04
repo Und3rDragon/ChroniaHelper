@@ -96,7 +96,7 @@ public class ChroniaHelperModule : EverestModule
         ChroniaHelperModule.Instance.ChroniaHelperHandle.LoadHandle();
 
         GlobalData = new ChroniaHelperGlobalSaveData();
-        GlobalData.LoadAll(); // 自动从多个 XML 文件加载
+        GlobalData.LoadAll();
         
         On.Celeste.Celeste.OnExiting += OnGameExiting;
         
@@ -167,8 +167,7 @@ public class ChroniaHelperModule : EverestModule
         
         orig(self, sender, args);
     }
-
-    // 这个需要参数（UnhandledExceptionEventArgs）
+    
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         try
