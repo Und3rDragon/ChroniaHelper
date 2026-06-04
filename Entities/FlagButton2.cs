@@ -291,7 +291,9 @@ public class FlagButton2 : Entity {
         base.Added(scene);
 
         level = SceneAs<Level>();
-
+        
+        ResetStatus();
+        
         if (!persistent)
         {
             if (resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
@@ -307,8 +309,15 @@ public class FlagButton2 : Entity {
 
     public override void Removed(Scene scene)
     {
-        base.Removed(scene);
+        ResetStatus();
         
+        base.Removed(scene);
+    }
+
+    private void ResetStatus()
+    {
+        // Check flag status after just added
+        // If not persistent, reset the values
         if (!persistent)
         {
             if(resetMode != ResetMode.PerDeath)
@@ -326,14 +335,6 @@ public class FlagButton2 : Entity {
             level.Session.SetFlag(flag, false);
             level.Session.SetFlag($"playedSound_{flag}_button", false);
         }
-    }
-
-    public override void Awake(Scene scene)
-    {
-        
-        base.Awake(scene);
-
-
     }
 
     private bool finished = false;
