@@ -56,3 +56,11 @@ public class CreditsAttribute : Attribute
 {
     public CreditsAttribute(params string[] creditsInfo) { }
 }
+
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+public class RegistryHandlerAttribute : Attribute
+{
+    public RegistryHandlerAttribute(params string[] notes)
+    {
+    }
+}

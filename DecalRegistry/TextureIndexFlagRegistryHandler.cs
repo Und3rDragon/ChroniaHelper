@@ -11,14 +11,9 @@ using System.Xml;
 
 namespace ChroniaHelper.DecalRegistry;
 
+[RegistryHandler]
 public class TextureIndexFlagRegistryHandler :DecalRegistryHandler
 {
-    [LoadHook]
-    public static void Load()
-    {
-        Celeste.Mod.DecalRegistry.AddPropertyHandler<TextureIndexFlagRegistryHandler>();
-    }
-
     public override string Name => "chronia.textureIndexFlag";
 
     public override void Parse(XmlAttributeCollection xml)

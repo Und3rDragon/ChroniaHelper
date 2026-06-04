@@ -89,9 +89,8 @@ public class ChroniaHelperSession : EverestModuleSession
     }
 
     // Flag Button Data
-    // Can be migrated but not necessary?
-    public HashSet<string> FlagButtonStates = new();
-    public HashSet<string> FlagButtonTargetFlags = new HashSet<string>();
+    public Dictionary<string, List<string>> FlagButtonRegistry = new();
+    // Unused data
     public Dictionary<int, int> FlagButtonFrameIndex = new Dictionary<int, int>();
 
     // Flag Carousel Trigger extended

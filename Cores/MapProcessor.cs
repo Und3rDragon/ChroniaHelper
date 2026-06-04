@@ -151,11 +151,9 @@ public static class MapProcessor
                 flag.SetFlag(true);
             }
         }
-
-        // Check all the switches and save the flags
-        Md.Session.FlagButtonTargetFlags = new();
-        Md.Session.FlagButtonStates = new();
-        var levels = level.Session.MapData.Levels;
+        
+        // Pre whole-searching process
+        Md.Session.FlagButtonRegistry.Clear();
         string flagName;
         HashSet<string> switches = new()
         { 
@@ -171,6 +169,9 @@ public static class MapProcessor
             "ChroniaHelper/FntDisplayer"
         };
         List<string> fntSources = new();
+        
+        // Do a whole entity search
+        var levels = level.Session.MapData.Levels;
         foreach (var lv in levels)
         {
             foreach (var item in lv.Entities)
@@ -182,8 +183,6 @@ public static class MapProcessor
                     // Can get the Entity ID here
                     flagName = item.Values["flag"].ToString().Trim();
                     RegisterSwitchFlags(flagName, item.ID);
-                    
-                    Md.Session.FlagButtonTargetFlags.Enter(flagName);
                 }
 
                 if (fntEntities.Contains(item.Name))
@@ -196,9 +195,16 @@ public static class MapProcessor
                 }
             }
         }
+        
+        // Post-whole-search process
+        // Sort Flag Button lists
+        foreach (var item in Md.Session.FlagButtonRegistry)
+        {
+            Md.Session.FlagButtonRegistry[item.Key] = item.Value.Distinct().ToList();
+        }
+        // Create Fnt Session Data
         foreach(var item in fntSources.Distinct())
         {
-            //Md.Session.cachedFntData.Add(item, new FntData(item));
             new FntData.SessionData(item);
         }
 
@@ -259,13 +265,13 @@ public static class MapProcessor
         languageFlag.SetFlag(true);
         
         // Flag Button Flag setup
-        if (Md.Session.FlagButtonTargetFlags != null)
+        if (Md.Session.FlagButtonRegistry != null)
         {
-            foreach (var item in Md.Session.FlagButtonTargetFlags)
+            foreach (var item in Md.Session.FlagButtonRegistry)
             {
-                if (IsSwitchFlagCompleted(item))
+                if (IsSwitchFlagCompleted(item.Key))
                 {
-                    level.Session.SetFlag(item, true);
+                    level.Session.SetFlag(item.Key, true);
                 }
             }
         }
@@ -353,24 +359,29 @@ public static class MapProcessor
     // Touch Button
     
     // Check whether the group of touch switches is completed
-    public static bool IsSwitchFlagCompleted(string flagIndex)
+    public static bool IsSwitchFlagCompleted(string flag)
     {
-        bool b = true;
-        foreach (string key in Md.Session.FlagButtonStates)
+        if (!Md.Session.FlagButtonRegistry.ContainsKey(flag))
         {
-            if (key.StartsWith($"ChroniaButtonFlag-{flagIndex}-ButtonID-"))
+            return true;
+        }
+
+        foreach (var item in Md.Session.FlagButtonRegistry[flag])
+        {
+            if (!item.GetFlag())
             {
-                b.TryNegative(key.GetFlag());
+                return false;
             }
         }
-        
-        return b;
+
+        return true;
     }
 
     // Creating slots for the flags
     public static void RegisterSwitchFlags(string name, int ID)
     {
-        Md.Session.FlagButtonStates.Add($"ChroniaButtonFlag-{name}-ButtonID-{ID}");
+        Md.Session.FlagButtonRegistry.Create(name, new());
+        Md.Session.FlagButtonRegistry[name].Add($"ChroniaButtonFlag-{name}-ButtonID-{ID}");
     }
 
     // BG Tiles related

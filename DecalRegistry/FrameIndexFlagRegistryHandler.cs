@@ -10,14 +10,9 @@ using System.Xml;
 
 namespace ChroniaHelper.DecalRegistry;
 
+[RegistryHandler]
 public class FrameIndexFlagRegistryHandler : DecalRegistryHandler
 {
-    [LoadHook]
-    public static void Load()
-    {
-        Celeste.Mod.DecalRegistry.AddPropertyHandler<FrameIndexFlagRegistryHandler>();
-    }
-
     public override string Name => "chronia.frameIndexFlag";
 
     public override void Parse(XmlAttributeCollection xml)

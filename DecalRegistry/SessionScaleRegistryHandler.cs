@@ -11,14 +11,9 @@ using System.Xml;
 
 namespace ChroniaHelper.DecalRegistry;
 
+[RegistryHandler]
 public class SessionScaleRegistryHandler : DecalRegistryHandler
 {
-    [LoadHook]
-    public static void Load()
-    {
-        Celeste.Mod.DecalRegistry.AddPropertyHandler<SessionScaleRegistryHandler>();
-    }
-
     public override string Name => "chronia.sessionScale";
 
     public override void Parse(XmlAttributeCollection xml)
