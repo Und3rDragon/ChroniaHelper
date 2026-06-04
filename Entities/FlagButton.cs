@@ -204,7 +204,7 @@ public class FlagButton : Entity {
         // Password Keyboard
         passwordID = data.Attr("passwordID");
         password = data.Attr("password");
-        passwordProtected = !string.IsNullOrEmpty(passwordID) && !string.IsNullOrEmpty(password);
+        passwordProtected = passwordID.HasValidContent() && password.HasValidContent();
 
         // Reset Mode
         resetMode = (ResetMode)data.Int("resetMode", 0);
@@ -222,17 +222,8 @@ public class FlagButton : Entity {
             touchSfx.Play(hitSound);
 
             Activated(true);
-            if (!persistent)
-            {
-                if(resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
-                {
-                    Md.Session.flagsPerRoom.Add(flagID);
-                }
-                if(resetMode == ResetMode.Both || resetMode == ResetMode.PerDeath)
-                {
-                    Md.Session.flagsPerDeath.Add(flagID);
-                }
-            }
+            
+            SetIDAttribute();
 
             // animation
             wiggler.Start();
@@ -263,11 +254,6 @@ public class FlagButton : Entity {
         }
     }
     
-    public bool IsCompleted()
-    {
-        return MaP.IsSwitchFlagCompleted(flag);
-    }
-
     public bool inside = false;
     public void OnPlayer(Player player)
     {
@@ -288,7 +274,8 @@ public class FlagButton : Entity {
         {
             TurnOn();
         }
-        if (IsCompleted())
+        
+        if (MaP.IsSwitchFlagCompleted(flag))
         {
             if (!inside && !level.Session.GetFlag($"playedSound_{flag}_button"))
             {
@@ -317,8 +304,39 @@ public class FlagButton : Entity {
 
         level = SceneAs<Level>();
         
-        ResetStatus();
+        SetIDAttribute();
+        ReconfirmStatus();
+    }
 
+    public override void Removed(Scene scene)
+    {
+        base.Removed(scene);
+        
+        ReconfirmStatus();
+    }
+
+    private void ReconfirmStatus()
+    {
+        // Check flag status when just added
+        // If not persistent, reset the values
+        if (!persistent)
+        {
+            if(resetMode != ResetMode.PerDeath)
+            {
+                flagID.SetFlag(false);
+            }
+        }
+
+        // If not completed, we should reset the flag too
+        if (!MaP.IsSwitchFlagCompleted(flag))
+        {
+            level.Session.SetFlag(flag, false);
+            level.Session.SetFlag($"playedSound_{flag}_button", false);
+        }
+    }
+
+    private void SetIDAttribute()
+    {
         if (!persistent)
         {
             if (resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
@@ -332,33 +350,6 @@ public class FlagButton : Entity {
         }
     }
 
-    public override void Removed(Scene scene)
-    {
-        ResetStatus();
-        
-        base.Removed(scene);
-    }
-
-    private void ResetStatus()
-    {
-        // Check flag status when just added
-        // If not persistent, reset the values
-        if (!persistent)
-        {
-            if(resetMode != ResetMode.PerDeath)
-            {
-                flagID.SetFlag(false);
-            }
-        }
-
-        // If not completed, we should reset the flag too
-        if (!IsCompleted())
-        {
-            level.Session.SetFlag(flag, false);
-            level.Session.SetFlag($"playedSound_{flag}_button", false);
-        }
-    }
-
     public override void Update()
     {
         if (CollideCheck<Player>())
@@ -368,11 +359,11 @@ public class FlagButton : Entity {
         else { inside = false; }
 
         timer += Engine.DeltaTime * 8f;
-        ease = Calc.Approach(ease, (IsCompleted() || Activated()) ? 1f : 0f, Engine.DeltaTime * 2f);
-        icon.Color = Color.Lerp(inactiveColor, IsCompleted() ? finishColor : activeColor, ease);
+        ease = Calc.Approach(ease, (MaP.IsSwitchFlagCompleted(flag) || Activated()) ? 1f : 0f, Engine.DeltaTime * 2f);
+        icon.Color = Color.Lerp(inactiveColor, MaP.IsSwitchFlagCompleted(flag) ? finishColor : activeColor, ease);
         icon.Color *= 0.5f + ((float)Math.Sin(timer) + 1f) / 2f * (1f - ease) * 0.5f + 0.5f * ease;
         bloom.Alpha = ease;
-        if (IsCompleted())
+        if (MaP.IsSwitchFlagCompleted(flag))
         {
             if (icon.Rate > finishRate)
             {
