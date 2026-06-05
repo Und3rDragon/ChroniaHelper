@@ -67,7 +67,7 @@ public class FlagButton2 : Entity {
     private Vector2 pos;
 
     private int ID;
-    private string flagID;
+    private string flagID, soundID;
     
 
     public FlagButton2(EntityData data, Vector2 offset)
@@ -87,6 +87,7 @@ public class FlagButton2 : Entity {
         // Inputs
         flag = data.Attr("flag");
         flagID = $"ChroniaButtonFlag-{flag}-ButtonID-{ID}";
+        soundID = $"playedSound_{flag}_button";
         hitSound = data.Attr("hitSound");
         completeSound = data.Attr("completeSoundFromScene");
         hideFlag = data.Attr("hideIfFlag");
@@ -221,7 +222,7 @@ public class FlagButton2 : Entity {
             Activated(false);
             
             level.Session.SetFlag(flag, false);
-            level.Session.SetFlag($"playedSound_{flag}_button", false);
+            level.Session.SetFlag(soundID, false);
 
             // animation
             wiggler.Stop();
@@ -251,10 +252,10 @@ public class FlagButton2 : Entity {
         }
         if (MaP.IsSwitchFlagCompleted(flag))
         {
-            if (!inside && !level.Session.GetFlag($"playedSound_{flag}_button"))
+            if (!inside && !level.Session.GetFlag(soundID))
             {
                 SoundEmitter.Play(completeSound);
-                level.Session.SetFlag($"playedSound_{flag}_button", true);
+                level.Session.SetFlag(soundID, true);
             }
         }
     }
@@ -323,21 +324,21 @@ public class FlagButton2 : Entity {
         if (!MaP.IsSwitchFlagCompleted(flag))
         {
             level.Session.SetFlag(flag, false);
-            level.Session.SetFlag($"playedSound_{flag}_button", false);
+            level.Session.SetFlag(soundID, false);
         }
     }
 
     private bool finished = false;
     public override void Update()
     {
-        if (!ChroniaFlagUtils.GetFlag(flagID) && !MaP.IsSwitchFlagCompleted(flag))
+        if (!flagID.GetFlag() && !MaP.IsSwitchFlagCompleted(flag))
         {
             icon.Color = inactiveColor;
             border.Color = icon.Color;
             icon.Play("idle");
             Activated(false);
         }
-        else if (ChroniaFlagUtils.GetFlag(flagID) && !MaP.IsSwitchFlagCompleted(flag))
+        else if (flagID.GetFlag() && !MaP.IsSwitchFlagCompleted(flag))
         {
             icon.Color = activeColor;
             border.Color = icon.Color;

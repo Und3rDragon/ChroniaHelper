@@ -72,7 +72,7 @@ public class FlagButton : Entity {
     private Vector2 pos;
 
     private int ID;
-    private string flagID;
+    private string flagID, soundID;
     
 
     public FlagButton(EntityData data, Vector2 offset)
@@ -92,6 +92,7 @@ public class FlagButton : Entity {
         // Inputs
         flag = data.Attr("flag");
         flagID = $"ChroniaButtonFlag-{flag}-ButtonID-{ID}";
+        soundID = $"playedSound_{flag}_button";
         hitSound = data.Attr("hitSound");
         switchSound = data.Attr("completeSoundFromSwitch");
         completeSound = data.Attr("completeSoundFromScene");
@@ -245,7 +246,7 @@ public class FlagButton : Entity {
             Activated(false);
             
             level.Session.SetFlag(flag, false);
-            level.Session.SetFlag($"playedSound_{flag}_button", false);
+            level.Session.SetFlag(soundID, false);
 
             // animation
             wiggler.Stop();
@@ -277,10 +278,10 @@ public class FlagButton : Entity {
         
         if (MaP.IsSwitchFlagCompleted(flag))
         {
-            if (!inside && !level.Session.GetFlag($"playedSound_{flag}_button"))
+            if (!inside && !level.Session.GetFlag(soundID))
             {
                 SoundEmitter.Play(completeSound);
-                level.Session.SetFlag($"playedSound_{flag}_button", true);
+                level.Session.SetFlag(soundID, true);
             }
         }
     }
@@ -331,7 +332,7 @@ public class FlagButton : Entity {
         if (!MaP.IsSwitchFlagCompleted(flag))
         {
             level.Session.SetFlag(flag, false);
-            level.Session.SetFlag($"playedSound_{flag}_button", false);
+            level.Session.SetFlag(soundID, false);
         }
     }
 
