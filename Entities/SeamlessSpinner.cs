@@ -289,8 +289,20 @@ public class SeamlessSpinner : Entity
         hotCoreModeTriggerSpritePath = data.Attr("hotCoreModeTriggerSpritePath");
 
         childMode = data.Attr("childMode");
+        
+        float lightAlpha = data.Float("lightAlpha", 0f);
+        light = new(
+            data.HexColor("lightColor", Color.White),
+            lightAlpha,
+            data.Int("lightStartFade", 24),
+            data.Int("lightEndFade", 48));
+        if (lightAlpha > 0f)
+        {
+            Add(light);
+        }
     }
 
+    public VertexLight light;
     public string childMode;
     public DangerBubbler childModeParent = null;
     

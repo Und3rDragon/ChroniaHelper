@@ -445,4 +445,9 @@ public static class ColorUtils
     {
         return data.GetChroniaColor(colorAttributeName, defaultColor.RgbaToHex());
     }
+    
+    public static ChroniaColor GetChroniaColor(this EntityData data, string colorAttributeName, ChroniaColor defaultColor)
+    {
+        return data.GetChroniaColor(colorAttributeName, defaultColor.Parsed());
+    }
 }
