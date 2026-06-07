@@ -50,16 +50,43 @@ public class KeepDashSpeedHook
     private void KeepDashSpeed(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
-        while (cursor.TryGotoNext(MoveType.Before, [(instr) => (instr.MatchLdfld<Player>("DashDir")), (instr) => (instr.MatchLdcR4(160)), (instr) => (instr.MatchCall<Vector2>("op_Multiply")), (instr) => (instr.MatchStfld<Player>("Speed"))]))
+        // The function below is usable, but will be affected by bits & bolts hooks,
+        // also Faerie Helper hooks
+        // while (cursor.TryGotoNext(MoveType.Before, [(instr) => (instr.MatchLdfld<Player>("DashDir")), (instr) => (instr.MatchLdcR4(160)), (instr) => (instr.MatchCall<Vector2>("op_Multiply")), (instr) => (instr.MatchStfld<Player>("Speed"))]))
+        // {
+        //     cursor.RemoveRange(3);
+        //     cursor.EmitDelegate<Func<Player, Vector2>>(this.GetDashSpeed);
+        // }
+        
+        // Only delegating speed variables
+        // 找到开头的两个连续 ldloc.1
+        while (cursor.TryGotoNext(MoveType.Before,
+                instr => instr.MatchLdloc(1),
+                instr => instr.MatchLdloc(1)))
         {
-            cursor.RemoveRange(3);
-            cursor.EmitDelegate<Func<Player, Vector2>>(this.GetDashSpeed);
+            int startIndex = cursor.Index;
+        
+            // 向后查找 stfld（不限制中间有多少指令）
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchStfld<Player>("Speed")))
+            {
+                // 确保找到的 stfld 在起始位置之后
+                if (cursor.Index > startIndex)
+                {
+                    // 光标现在在 stfld 之前
+                    cursor.EmitDelegate<Func<Vc2, Vector2>>(GetDashSpeed);
+                }
+            }
         }
     }
 
-    private Vector2 GetDashSpeed(Player player)
+    // private Vector2 GetDashSpeed(Player player)
+    // {
+    //     return (Md.Session.KeepDashSpeed.GetValueOrDefault(MaP.level.Session.Area.SID, false) ? player.Speed : (player.DashDir * 160F));
+    // }
+    
+    private Vector2 GetDashSpeed(Vc2 oldSpeed)
     {
-        return (Md.Session.KeepDashSpeed.GetValueOrDefault(MaP.level.Session.Area.SID, false) ? player.Speed : (player.DashDir * 160F));
+        return (Md.Session.KeepDashSpeed.GetValueOrDefault(MaP.level.Session.Area.SID, false) ? (PUt.TryGetPlayer(out Player player) ? player.Speed : oldSpeed) : oldSpeed);
     }
 
 }

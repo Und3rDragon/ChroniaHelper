@@ -46,6 +46,11 @@ seamlessSpinner.placements = {
         hotCoreModeTriggerSpritePath = "objects/ChroniaHelper/timedSpinner/red/fg_red_base",
         
         childMode = "",
+        
+        lightColor = "ffffff",
+        lightAlpha = 0,
+        lightStartFade = 24,
+        lightEndFade = 48,
     },
 }
 seamlessSpinner.depth = function(room,entity) return entity.depth or -8500 end
@@ -95,6 +100,9 @@ seamlessSpinner.fieldInformation = {
     bgFlipY = {
         options = {"none", "flipped", "random"},
         editable = false,
+    },
+    lightColor = {
+        fieldType = "color",
     },
 }
 
