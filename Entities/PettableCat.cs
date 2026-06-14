@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using System;
 using System.Collections;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/PettableCat")]
+[Credits("HollyMagala for HonlyHelper source code")]
 public class PettableCat : NPC
 {
 
