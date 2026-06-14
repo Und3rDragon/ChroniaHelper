@@ -243,13 +243,14 @@
 	</iceFloor>
 
 	<ChroniaHelper_Cat path="characters/HonlyHelper/pettableCat/" start="idle">
+		<Justify x="0.5" y="1"/>
 		<Loop id="pet" path="spoons_pet" delay="0.15"/>
 		<Loop id="idle" path="spoons_idle" delay="0.15"/>
 	</ChroniaHelper_Cat>
 
-	<ChroniaHelper_CatPetter path="characters/HonlyHelper/pettableCat/ThePetter/" start="idle">
+	<ChroniaHelper_CatPetter path="characters/HonlyHelper/pettableCat/ThePetter/" start="pet">
+		<Justify x="0.5" y="1"/>
 		<Loop id="pet" path="player_pet" delay="0.15"/>
-		<Loop id="idle" path="player_idle" delay="0.1"/>
 	</ChroniaHelper_CatPetter>
 	
 </Sprites>

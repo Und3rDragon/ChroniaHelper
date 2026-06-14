@@ -24,7 +24,11 @@ cat.fieldInformation = {
 }
 
 cat.sprite = function(room, entity)
-    return require("structs.drawable_sprite").fromTexture("characters/HonlyHelper/pettableCat/spoons_idle00", entity):addPosition(4,4)
+    local s = require("structs.drawable_sprite").fromTexture("characters/HonlyHelper/pettableCat/spoons_idle00", entity)
+
+    s:setJustification(0.5,1)
+
+    return s
 end
 
 return cat

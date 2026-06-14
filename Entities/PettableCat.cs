@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +15,6 @@ public class PettableCat : NPC
 
     private Coroutine pettingRoutine;
     private Sprite CatSprite;
-    private Vector2 CatAnchor;
     private Sprite ThePetterSprite;
     private bool PettingInProgress = false;
     private PlayerSprite backup;
@@ -33,8 +33,17 @@ public class PettableCat : NPC
 
         ThePetterSprite = GFX.SpriteBank.Create(
             data.Attr("petterSpriteXML", "ChroniaHelper_CatPetter"));
+        // check sprite path
+        //if(ThePetterSprite.animations["idle"].Frames.Count() == 1)
+        //{
+        //    if(ThePetterSprite.animations["idle"].Frames[0].AtlasPath == "__fallback")
+        //    {
+        //        //Use default setup
+        //        ThePetterSprite.animations["idle"] = GFX.SpriteBank.Create("player").animations["idle"];
+        //    }
+        //}
         Add(ThePetterSprite);
-        ThePetterSprite.Position = CatSprite.Position + new Vector2(-22f, -24f);
+        ThePetterSprite.Position = CatSprite.Position + new Vector2(-8f, 0f);
 
         catFlag = data.Attr("catFlag");
 
@@ -47,15 +56,16 @@ public class PettableCat : NPC
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        Add(Talker = new TalkComponent(new Rectangle(-30, 0, 64, 8), new Vector2(2f, -4f), OnPetting));
-        CatAnchor = CatSprite.Position;
+        Add(Talker = new TalkComponent(new Rectangle(-32, -8, 64, 8), new Vector2(0f, -4f), OnPetting));
+        //CatAnchor = CatSprite.Position;
     }
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
         CatSprite.Play("idle");
-        ThePetterSprite.Play("idle");
+        //ThePetterSprite.Play("idle");
+        ThePetterSprite.Visible = false;
     }
 
     private void OnPetting(Player player)
@@ -70,7 +80,8 @@ public class PettableCat : NPC
         friendposition = player.Sprite.Position;
         PettingInProgress = true;
         CatSprite.Play("pet");
-        CatSprite.Position = CatAnchor + new Vector2(-4f, -8f);
+        //CatSprite.Position = CatAnchor + new Vector2(-4f, -8f);
+        ThePetterSprite.Visible = true;
         ThePetterSprite.Play("pet");
         backup = player.Sprite;
         player.Sprite.Position = friendposition + Vector2.UnitY * 1000f;
@@ -81,9 +92,8 @@ public class PettableCat : NPC
         Level.EndCutscene();
         OnPettingEnd(Level);
         CatSprite.Play("idle");
-        CatSprite.Position = CatAnchor;
+        //CatSprite.Position = CatAnchor;
         base.SceneAs<Level>().Session.SetFlag(catFlag);
-
     }
 
     private void OnPettingEnd(Level level)
@@ -98,13 +108,14 @@ public class PettableCat : NPC
         pettingRoutine.Cancel();
         pettingRoutine.RemoveSelf();
         CatSprite.Play("idle");
-        CatSprite.Position = CatAnchor;
+        //CatSprite.Position = CatAnchor;
         if (PettingInProgress == true)
         {
             entity.Sprite.Position = friendposition;
         }
         entity.Sprite.Play("idle");
-        ThePetterSprite.Play("idle");
+        //ThePetterSprite.Play("idle");
+        ThePetterSprite.Visible = false;
         PettingInProgress = false;
     }
 
