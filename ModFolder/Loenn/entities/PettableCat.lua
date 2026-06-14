@@ -7,6 +7,7 @@ cat.depth = function(entity) return entity.depth or 0 end
 cat.placements = {
     name = "default",
     data = {
+        interactorY = -4,
         catSpriteXML = "ChroniaHelper_Cat",
         petterSpriteXML = "ChroniaHelper_CatPetter",
         catPetSound = "event:/HonlyHelper/catsfx",

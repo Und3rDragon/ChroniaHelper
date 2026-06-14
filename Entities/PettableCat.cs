@@ -24,6 +24,8 @@ public class PettableCat : NPC
     public int petGroup;
     private string catPetSound;
 
+    private Vc2 interactor;
+
     public PettableCat(EntityData data, Vector2 offset)
        : base(data.Position + offset)
     {
@@ -51,12 +53,14 @@ public class PettableCat : NPC
         catPetSound = data.Attr("catPetSound", "event:/HonlyHelper/catsfx");
 
         Depth = data.Int("depth", 0);
+
+        interactor = new Vc2(0f, data.Float("interactorY", -4f));
     }
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        Add(Talker = new TalkComponent(new Rectangle(-32, -8, 64, 8), new Vector2(0f, -4f), OnPetting));
+        Add(Talker = new TalkComponent(new Rectangle(-32, -8, 64, 8), interactor, OnPetting));
         //CatAnchor = CatSprite.Position;
     }
 
