@@ -9,7 +9,7 @@ cat.placements = {
     data = {
         interactorY = -4,
         catSpriteXML = "ChroniaHelper_Cat",
-        petterSpriteXML = "ChroniaHelper_CatPetter",
+        petterSpriteXML = "HonlyHelper_CatPetter",
         catPetSound = "event:/HonlyHelper/catsfx",
         petCatFlag = "CatHasBeenPet",
         catGroup = -1,
@@ -21,6 +21,13 @@ cat.fieldInformation = {
     depth = require("mods").requireFromPlugin("helpers.field_options").depths,
     catGroup = {
         fieldType = "integer",
+    },
+    petterSpriteXML = {
+        options = {
+            "HonlyHelper_CatPetter",
+            "ChroniaHelper_CatPetter",
+        },
+        editable = true,
     },
 }
 

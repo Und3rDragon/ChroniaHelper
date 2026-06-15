@@ -33,10 +33,11 @@ public class PettableCat : NPC
     {
         CatSprite = GFX.SpriteBank.Create(data.Attr(
             "catSpriteXML", "ChroniaHelper_Cat"));
+        CatSprite.Justify = new Vc2(0.5f, 1f);
         Add(CatSprite);
 
         ThePetterSprite = GFX.SpriteBank.Create(
-            data.Attr("petterSpriteXML", "ChroniaHelper_CatPetter"));
+            data.Attr("petterSpriteXML", "HonlyHelper_CatPetter"));
         // check sprite path
         //if(ThePetterSprite.animations["idle"].Frames.Count() == 1)
         //{
@@ -46,6 +47,7 @@ public class PettableCat : NPC
         //        ThePetterSprite.animations["idle"] = GFX.SpriteBank.Create("player").animations["idle"];
         //    }
         //}
+        ThePetterSprite.Justify = new Vc2(0.5f, 1f);
         Add(ThePetterSprite);
         ThePetterSprite.Position = CatSprite.Position + new Vector2(-8f, 0f);
 
