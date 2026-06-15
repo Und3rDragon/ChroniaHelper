@@ -53,6 +53,8 @@ public class ModifiedAnimatedParallax : Parallax
         public string AlphaExpression { get; set; } = null;
         public List<string> FrameIndexFlag { get; set; } = new();
         public List<string> TextureIndexFlag { get; set; } = new();
+        public string OverrideFrameCounter { get; set; } = null;
+        public string OverrideTextureCounter { get; set; } = null;
     }
     private string alphaExpression = null;
     private string triggerFlag, resetFlag;
@@ -68,6 +70,9 @@ public class ModifiedAnimatedParallax : Parallax
     private float currentFrameTimer, orig_currentFrameTimer;
 
     private List<string> frameIndexFlag = new(), textureIndexFlag = new();
+
+    private string overrideFrameCounter = null;
+    private string overrideTextureCounter = null;
 
     //public ModifiedAnimatedParallax(BinaryPacker.Element c, MTexture texture) : this(texture)
     //{
@@ -151,6 +156,16 @@ public class ModifiedAnimatedParallax : Parallax
 
             frameIndexFlag = meta.FrameIndexFlag;
             textureIndexFlag = meta.TextureIndexFlag;
+
+            if(meta.OverrideFrameCounter != null)
+            {
+                overrideFrameCounter = meta.OverrideFrameCounter;
+            }
+
+            if(meta.OverrideTextureCounter != null)
+            {
+                overrideTextureCounter = meta.OverrideTextureCounter;
+            }
         }
         
         AnalyzeIndexFlags();
@@ -230,6 +245,24 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 Alpha = alphaExpression.ParseMathExpression();
             }
+        }
+
+        // If frame or index is overrided by counter
+        if(overrideFrameCounter.HasValidContent())
+        {
+            int n = overrideFrameCounter.GetCounter();
+            n %= frameOrder.Length;
+            Texture = frames[frameOrder[n]];
+
+            return;
+        }
+        if (overrideTextureCounter.HasValidContent())
+        {
+            int n = overrideTextureCounter.GetCounter();
+            n %= frames.Count;
+            Texture = frames[n];
+
+            return;
         }
 
         if (speedSlider != null)

@@ -58,3 +58,13 @@ FrameIndexFlag:
 TextureIndexFlag:
   - 0, 1, 2; FirstFlagAlt
   - 3, 4, 5; SecondFlagAlt, ThirdFlagAlt
+
+# OverrideFrameCounter, if the content is not empty, the frame of the parallax will be forced to that specific frame which equals to the value of the setup counter
+# OverrideFrameCounter: counter name
+# WARNING: USE THIS WITH CAUTION
+# OverrideFrameCounter: overrideCounterA
+
+# OverrideTextureCounter, if the content is not empty, the frame of the parallax will be forced to that specific frame which uses the texture index that equals to the value of the setup counter
+# OverrideTextureCounter: counter name
+# WARNING: USE THIS WITH CAUTION
+# OverrideTextureCounter: overrideCounterB
