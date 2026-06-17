@@ -23,7 +23,7 @@ public class SetChroniaHelperRandomSeedController : GeneralSetupController
     }
     private int seed;
 
-    public override void ApplyValue()
+    public override void Execute()
     {
         RandomUtils.RandomSeed = seed;
     }

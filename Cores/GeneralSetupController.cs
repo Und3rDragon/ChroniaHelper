@@ -40,7 +40,7 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 0)
             {
-                i.ApplyValue();
+                i.Execute();
             }
         }
     }
@@ -56,7 +56,7 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 5)
             {
-                i.ApplyValue();
+                i.Execute();
             }
         }
 
@@ -74,7 +74,7 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 6)
             {
-                i.ApplyValue();
+                i.Execute();
             }
         }
     }
@@ -90,7 +90,7 @@ public abstract class GeneralSetupController : BaseEntity
     }
     public string paramater;
 
-    public abstract void ApplyValue();
+    public abstract void Execute();
 
     /// <summary>
     /// On Level Load = 0, Always Set = 1, On Scene Start = 2, On Scene End = 3, On Interval = 4
@@ -105,7 +105,7 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 7)
         {
-            ApplyValue();
+            Execute();
         }
     }
 
@@ -113,7 +113,7 @@ public abstract class GeneralSetupController : BaseEntity
     {
         if (mode == 8)
         {
-            ApplyValue();
+            Execute();
         }
 
         base.Removed(scene);
@@ -126,14 +126,14 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 1)
         {
-            ApplyValue();
+            Execute();
         }
 
         if (mode == 4)
         {
             if (Scene.OnInterval(paramater.ParseFloat(0f).GetAbs()))
             {
-                ApplyValue();
+                Execute();
             }
         }
 
@@ -148,7 +148,7 @@ public abstract class GeneralSetupController : BaseEntity
 
             if (_state != state && state)
             {
-                ApplyValue();
+                Execute();
             }
         }
 
@@ -165,7 +165,7 @@ public abstract class GeneralSetupController : BaseEntity
 
             if (_state != state && state)
             {
-                ApplyValue();
+                Execute();
             }
         }
 
@@ -178,7 +178,7 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 2)
         {
-            ApplyValue();
+            Execute();
         }
     }
 
@@ -186,7 +186,7 @@ public abstract class GeneralSetupController : BaseEntity
     {
         if (mode == 3)
         {
-            ApplyValue();
+            Execute();
         }
 
         base.SceneEnd(scene);

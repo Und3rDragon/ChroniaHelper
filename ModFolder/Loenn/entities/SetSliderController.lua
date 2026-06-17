@@ -20,6 +20,7 @@ controller.placements = {
         mode = 0,
         value2 = "",
         randomizeValue = false,
+        valueType = 0,
     },
 }
 
@@ -45,6 +46,17 @@ controller.fieldInformation = {
     },
     parameters = {
         fieldType = "list",
+    },
+    valueType = {
+        fieldType = "integer",
+        options = {
+            ["Set"] = 0,
+            ["Add"] = 1,
+            ["Minus"] = 2,
+            ["Multiply"] = 3,
+            ["Divide"] = 4,
+        },
+        editable = false,
     },
 }
 

@@ -19,12 +19,19 @@ public class SetCounterController : GeneralSetupController
         value2 = data.Attr("value2");
         randomize = data.Bool("randomizeValue", false);
         canRandomize = value2.HasValidContent();
+
+        valueType = (ValueType)data.Int("valueType", 0);
     }
     private string[] counters;
     private string value, value2;
     private bool randomize, canRandomize;
+    private enum ValueType
+    {
+        Set, Add, Minus, Multiply, Divide
+    }
+    private ValueType valueType;
 
-    public override void ApplyValue()
+    public override void Execute()
     {
         int target = 0, alt = 0;
         foreach (var i in counters)
@@ -35,7 +42,34 @@ public class SetCounterController : GeneralSetupController
                 alt = (int)value2.ParseMathExpression();
                 target = RandomUtils.RandomInt(target, alt);
             }
-            i.SetCounter(target);
+            
+            if(valueType == ValueType.Add)
+            {
+                i.SetCounter(i.GetCounter() + target);
+            }
+            else if(valueType == ValueType.Minus)
+            {
+                i.SetCounter(i.GetCounter() - target);
+            }
+            else if(valueType == ValueType.Multiply)
+            {
+                i.SetCounter(i.GetCounter() * target);
+            }
+            else if(valueType == ValueType.Divide)
+            {
+                if(target == 0)
+                {
+                    i.SetCounter(10000000); // represents a rather large value, not specifically
+                }
+                else
+                {
+                    i.SetCounter(i.GetCounter() / target);
+                }
+            }
+            else
+            {
+                i.SetCounter(target);
+            }
         }
     }
 }

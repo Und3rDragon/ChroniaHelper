@@ -17,6 +17,7 @@ controller.placements = {
         flags = "flag",
         parameters = "",
         mode = 0,
+        valueType = 0,
     },
 }
 
@@ -42,6 +43,14 @@ controller.fieldInformation = {
     },
     parameters = {
         fieldType = "list",
+    },
+    valueType = {
+        fieldType = "integer",
+        options = {
+            ["General Set"] = 0,
+            ["General Toggle"] = 1,
+        },
+        editable = false,
     },
 }
 
