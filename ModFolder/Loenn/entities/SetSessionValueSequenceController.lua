@@ -12,6 +12,7 @@ controller.name = "ChroniaHelper/SetSessionValueSequenceController"
 controller.placements = {
     name = "controller",
     data = {
+        chroniaFlagLogicExpression = "See tooltip",
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
         sequence = "flag = true; 0.5; counter = 1, sliderA = sliderB = 2.5",
@@ -27,6 +28,9 @@ controller.fieldOrder = {
 }
 
 controller.fieldInformation = {
+    chroniaFlagLogicExpression = {
+        editable = false,
+    },
     chroniaMathExpession = {
         editable = false,
     },

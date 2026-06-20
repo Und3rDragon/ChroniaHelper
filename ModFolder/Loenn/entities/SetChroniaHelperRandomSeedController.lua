@@ -12,6 +12,7 @@ controller.name = "ChroniaHelper/SetChroniaHelperRandomSeedController"
 controller.placements = {
     name = "controller",
     data = {
+        chroniaFlagLogicExpression = "See tooltip",
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
         seed = 0,
@@ -26,6 +27,9 @@ controller.fieldOrder = {
 }
 
 controller.fieldInformation = {
+    chroniaFlagLogicExpression = {
+        editable = false,
+    },
     chroniaMathExpession = {
         editable = false,
     },
