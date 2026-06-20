@@ -64,3 +64,9 @@ public class RegistryHandlerAttribute : Attribute
     {
     }
 }
+
+[AttributeUsage(AttributeTargets.All)]
+public class TodoAttribute : Attribute
+{
+    public TodoAttribute(params string[] creditsInfo) { }
+}

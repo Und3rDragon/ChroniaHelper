@@ -355,6 +355,25 @@ public static class MapProcessor
     public static Vc2 LevelPos(this Scene scene) => new Vc2((scene as Level)?.Bounds.Left ?? 0, (scene as Level)?.Bounds.Top ?? 0);
     
     // Methods and functions
+
+    public static bool NormalRunCheck()
+    {
+        return level.Session.StartedFromBeginning || level.Session.RestartedFromGolden || PlayerCarryGolden();
+    }
+    
+    public static bool PlayerCarryGolden()
+    {
+        Player entity = level.Tracker.GetEntity<Player>();
+        if (entity == null)
+            return false;
+
+        foreach (Follower follower in entity.Leader.Followers)
+        {
+            if (follower.Entity is Strawberry && (follower.Entity as Strawberry).Golden && !(follower.Entity as Strawberry).Winged)
+                return true;
+        }
+        return false;
+    }
     
     // Touch Button
     

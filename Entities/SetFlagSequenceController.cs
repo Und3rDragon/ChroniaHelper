@@ -20,7 +20,7 @@ public class SetFlagSequenceController : GeneralSetupController
     private string[] flags;
     private bool global;
 
-    public override void ApplyValue()
+    public override void Execute()
     {
         PrepareSequence();
     }

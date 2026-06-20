@@ -148,7 +148,7 @@ public class SetSessionValueSequenceController : GeneralSetupController
         }
     }
 
-    public override void ApplyValue()
+    public override void Execute()
     {
         PrepareSequence();
     }

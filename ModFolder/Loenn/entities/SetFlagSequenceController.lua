@@ -12,6 +12,7 @@ controller.name = "ChroniaHelper/SetFlagSequenceController"
 controller.placements = {
     name = "controller",
     data = {
+        chroniaFlagLogicExpression = "See tooltip",
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
         flagSequence = "flag1,flag2;0.5;flag3,!flag4,*flag5,?flag6",
@@ -27,17 +28,13 @@ controller.fieldOrder = {
 }
 
 controller.fieldInformation = {
+    chroniaFlagLogicExpression = {
+        editable = false,
+    },
     chroniaMathExpession = {
         editable = false,
     },
-    mode = {
-        options = {
-            ["On Level Load"] = 0, ["Always Set"] = 1, ["On Scene Start"] = 2, ["On Scene End"] = 3, ["On Interval"] = 4,
-            ["On Player Die"] = 5, ["On Player Respawn"] = 6, ["On Entity Added"] = 7, ["On Entity Removed"] = 8,
-            ["On Flags"] = 9, ["On Chronia Expression"] = 10, ["On Frost Session Expression"] = 11
-        },
-        editable = false,
-    },
+    mode = require("mods").requireFromPlugin("consts.field_options").generalSetup,
     flagSequence = {
         fieldType = "list",
         elementSeparator = ";",

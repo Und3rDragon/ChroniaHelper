@@ -19,12 +19,19 @@ public class SetSliderController : GeneralSetupController
         value2 = data.Attr("value2");
         randomize = data.Bool("randomizeValue", false);
         canRandomize = value2.HasValidContent();
+
+        valueType = (ValueType)data.Int("valueType", 0);
     }
     private string[] sliders;
     private string value, value2;
     private bool randomize, canRandomize;
+    private enum ValueType
+    {
+        Set, Add, Minus, Multiply, Divide
+    }
+    private ValueType valueType;
 
-    public override void ApplyValue()
+    public override void Execute()
     {
         float target = 0f, alt = 0f;
         foreach (var i in sliders)
@@ -35,7 +42,34 @@ public class SetSliderController : GeneralSetupController
                 alt = value2.ParseMathExpression();
                 target = RandomUtils.RandomFloat(target, alt);
             }
-            i.SetSlider(target);
+            
+            if(valueType == ValueType.Add)
+            {
+                i.SetSlider(i.GetSlider() + target);
+            }
+            else if(valueType == ValueType.Minus)
+            {
+                i.SetSlider(i.GetSlider() - target);
+            }
+            else if(valueType == ValueType.Multiply)
+            {
+                i.SetSlider(i.GetSlider() * target);
+            }
+            else if(valueType == ValueType.Divide)
+            {
+                if(target == 0f)
+                {
+                    i.SetSlider(1e+10f); // represents a rather large value, not specifically
+                }
+                else
+                {
+                    i.SetSlider(i.GetSlider() / target);
+                }
+            }
+            else
+            {
+                i.SetSlider(target);
+            }
         }
     }
 }

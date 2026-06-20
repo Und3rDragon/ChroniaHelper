@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChroniaHelper.Utils.LogicExpression;
 using YamlDotNet.Core.Tokens;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -40,7 +41,7 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 0)
             {
-                i.ApplyValue();
+                i.Execute();
             }
         }
     }
@@ -56,7 +57,7 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 5)
             {
-                i.ApplyValue();
+                i.Execute();
             }
         }
 
@@ -74,7 +75,7 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 6)
             {
-                i.ApplyValue();
+                i.Execute();
             }
         }
     }
@@ -90,12 +91,13 @@ public abstract class GeneralSetupController : BaseEntity
     }
     public string paramater;
 
-    public abstract void ApplyValue();
+    public abstract void Execute();
 
     /// <summary>
     /// On Level Load = 0, Always Set = 1, On Scene Start = 2, On Scene End = 3, On Interval = 4
     /// On Player Die = 5, On Player Respawn = 6, On Entity Added = 7, On Entity Removed = 8,
-    /// On Flags = 9, On Chronia Expression = 10, On Frost Session Expression = 11
+    /// On Flags = 9, On Chronia Expression = 10, On Frost Session Expression = 11,
+    /// On Chronia Flag Logic Expression = 12,
     /// </summary>
     public int mode = 0;
 
@@ -105,7 +107,7 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 7)
         {
-            ApplyValue();
+            Execute();
         }
     }
 
@@ -113,7 +115,7 @@ public abstract class GeneralSetupController : BaseEntity
     {
         if (mode == 8)
         {
-            ApplyValue();
+            Execute();
         }
 
         base.Removed(scene);
@@ -126,14 +128,14 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 1)
         {
-            ApplyValue();
+            Execute();
         }
 
         if (mode == 4)
         {
             if (Scene.OnInterval(paramater.ParseFloat(0f).GetAbs()))
             {
-                ApplyValue();
+                Execute();
             }
         }
 
@@ -148,7 +150,7 @@ public abstract class GeneralSetupController : BaseEntity
 
             if (_state != state && state)
             {
-                ApplyValue();
+                Execute();
             }
         }
 
@@ -165,7 +167,17 @@ public abstract class GeneralSetupController : BaseEntity
 
             if (_state != state && state)
             {
-                ApplyValue();
+                Execute();
+            }
+        }
+
+        if (mode == 12)
+        {
+            state = paramater.ParseLogicExpression();
+            
+            if (_state != state && state)
+            {
+                Execute();
             }
         }
 
@@ -178,7 +190,7 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 2)
         {
-            ApplyValue();
+            Execute();
         }
     }
 
@@ -186,7 +198,7 @@ public abstract class GeneralSetupController : BaseEntity
     {
         if (mode == 3)
         {
-            ApplyValue();
+            Execute();
         }
 
         base.SceneEnd(scene);

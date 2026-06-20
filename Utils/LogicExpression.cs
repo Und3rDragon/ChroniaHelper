@@ -17,10 +17,12 @@ public static class LogicExpression
     /// <param name="expression">要计算的逻辑表达式字符串。</param>
     /// <param name="getVariableValue">一个函数，用于根据变量名获取其布尔值。如果变量未定义，默认返回 false。</param>
     /// <returns>表达式的布尔计算结果。</returns>
-    public static bool ParseLogicExpression(this string expression, Func<string, bool> getVariableValue = null)
+    public static bool ParseLogicExpression(this string expression, Func<string, bool> getVariableValue = null, bool fallback = false)
     {
-        if (string.IsNullOrWhiteSpace(expression))
-            throw new ArgumentException("表达式不能为空。", nameof(expression));
+        if (!expression.HasValidContent())
+        {
+            return fallback;
+        }
 
         var lexer = new Lexer(expression);
         var tokens = lexer.Tokenize();
@@ -101,7 +103,7 @@ internal class Lexer
                         }
                         else
                         {
-                            throw new FormatException("期望 '&&'。");
+                            throw new FormatException("Expect '&&'");
                         }
                         break;
                     case '|':
@@ -113,11 +115,11 @@ internal class Lexer
                         }
                         else
                         {
-                            throw new FormatException("期望 '||'。");
+                            throw new FormatException("Expect '||'");
                         }
                         break;
                     default:
-                        throw new FormatException($"意外字符: '{c}'。");
+                        throw new FormatException($"Unecpected character: '{c}'");
                 }
             }
         }
@@ -165,7 +167,7 @@ internal class Parser
     {
         bool result = ParseOr();
         if (Current.Type != TokenType.End)
-            throw new FormatException($"表达式后存在意外内容: {Current.Type}。");
+            throw new FormatException($"Unexpected content behind expression: {Current.Type}");
         return result;
     }
 
@@ -209,11 +211,11 @@ internal class Parser
                 Consume(); // 消费 '('
                 bool exprValue = ParseOr();
                 if (Consume().Type != TokenType.RightParen)
-                    throw new FormatException("期望 ')'。");
+                    throw new FormatException("Expected ')'");
                 return exprValue;
 
             default:
-                throw new FormatException($"在因子位置遇到意外符号: {token.Type}。");
+                throw new FormatException($"Unexpected character at where identifier is expected: {token.Type}");
         }
     }
 }
