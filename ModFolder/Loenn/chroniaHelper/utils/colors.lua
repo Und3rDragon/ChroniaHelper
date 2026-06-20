@@ -9,10 +9,10 @@ local colors = {}
 
 --- Converts a hex color string to a {r, g, b, a} table with float values in [0, 1].
 -- Supports:
---   3-digit: "rgb" or "#rgb"          ¡ú rrggbb, a=1
---   6-digit: "rrggbb" or "#rrggbb"    ¡ú rrggbb, a=1
---   8-digit: "rrggbbaa" or "#rrggbbaa" ¡ú if leadingAlpha=false (default)
---            "aabbggrr" or "#aabbggrr" ¡ú if leadingAlpha=true
+--   3-digit: "rgb" or "#rgb"          â†’ rrggbb, a=1
+--   6-digit: "rrggbb" or "#rrggbb"    â†’ rrggbb, a=1
+--   8-digit: "rrggbbaa" or "#rrggbbaa" â†’ if leadingAlpha=false (default)
+--            "aabbggrr" or "#aabbggrr" â†’ if leadingAlpha=true
 -- @param hex string: hex color string
 -- @param leadingAlpha boolean: if true, 8-digit format is AABBGGRR; else RRGGBBAA (default: false)
 -- @return table: {r=..., g=..., b=..., a=...} with values in [0.0, 1.0]

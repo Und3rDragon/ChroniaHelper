@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChroniaHelper.Utils.LogicExpression;
 using YamlDotNet.Core.Tokens;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -95,7 +96,8 @@ public abstract class GeneralSetupController : BaseEntity
     /// <summary>
     /// On Level Load = 0, Always Set = 1, On Scene Start = 2, On Scene End = 3, On Interval = 4
     /// On Player Die = 5, On Player Respawn = 6, On Entity Added = 7, On Entity Removed = 8,
-    /// On Flags = 9, On Chronia Expression = 10, On Frost Session Expression = 11
+    /// On Flags = 9, On Chronia Expression = 10, On Frost Session Expression = 11,
+    /// On Chronia Flag Logic Expression = 12,
     /// </summary>
     public int mode = 0;
 
@@ -163,6 +165,16 @@ public abstract class GeneralSetupController : BaseEntity
                 state = paramater.ParseMathExpression() != 0;
             }
 
+            if (_state != state && state)
+            {
+                Execute();
+            }
+        }
+
+        if (mode == 12)
+        {
+            state = paramater.ParseLogicExpression();
+            
             if (_state != state && state)
             {
                 Execute();

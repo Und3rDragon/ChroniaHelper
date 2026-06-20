@@ -1,7 +1,7 @@
 ﻿local fieldOptions = { }
 
 --[[
-local fieldOptions = require("mods").requireFromPlugin("helpers.field_options")
+local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
 ]]
 
 fieldOptions.boolMode =
@@ -81,6 +81,17 @@ fieldOptions.positionPoint =
         "BottomRight"
     },
     editable = false
+}
+
+fieldOptions.generalSetup = {
+    fieldType = "integer",
+    options = {
+        ["On Level Load"] = 0, ["Always Set"] = 1, ["On Scene Start"] = 2, ["On Scene End"] = 3, ["On Interval"] = 4,
+        ["On Player Die"] = 5, ["On Player Respawn"] = 6, ["On Entity Added"] = 7, ["On Entity Removed"] = 8,
+        ["On Flags"] = 9, ["On Chronia Expression"] = 10, ["On Frost Session Expression"] = 11,
+        ["On Chronia Flag Logic Expression"] = 12,
+    },
+    editable = false,
 }
 
 return fieldOptions
