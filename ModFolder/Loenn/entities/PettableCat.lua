@@ -8,7 +8,7 @@ cat.placements = {
     name = "default",
     data = {
         interactorY = -4,
-        catSpriteXML = "ChroniaHelper_Cat",
+        catSpriteXML = "ChroniaHelper_Fox",
         petterSpriteXML = "HonlyHelper_CatPetter",
         catPetSound = "event:/HonlyHelper/catsfx",
         petCatFlag = "CatHasBeenPet",
@@ -22,6 +22,13 @@ cat.fieldInformation = {
     catGroup = {
         fieldType = "integer",
     },
+    catSpriteXML = {
+        options = {
+            "ChroniaHelper_Fox",
+            "ChroniaHelper_Cat",
+        },
+        editable = true,
+    },
     petterSpriteXML = {
         options = {
             "HonlyHelper_CatPetter",
@@ -32,7 +39,7 @@ cat.fieldInformation = {
 }
 
 cat.sprite = function(room, entity)
-    local s = require("structs.drawable_sprite").fromTexture("characters/HonlyHelper/pettableCat/spoons_idle00", entity)
+    local s = require("structs.drawable_sprite").fromTexture("ChroniaHelper/PettableFox/idle00", entity)
 
     s:setJustification(0.5,1)
 
