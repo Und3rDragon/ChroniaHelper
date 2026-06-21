@@ -1573,7 +1573,7 @@ entities.ChroniaHelper/SetSessionValueSequenceController.attributes.description.
 
 # ======================== Reskinned Pet Cat
 
-entities.ChroniaHelper/PettableCat.placements.name.default=Pettable Cat (Reskinnable)
+entities.ChroniaHelper/PettableCat.placements.name.default=Pettable Fox (Reskinnable)
 
 # ======================== Anti Gravity Glider
 

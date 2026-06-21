@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/PettableCat")]
-[Credits("HollyMagala for HonlyHelper source code")]
+[Credits("HollyMagala for HonlyHelper source code" +
+         "zXnder for default fox sprite")]
 public class PettableCat : NPC
 {
 

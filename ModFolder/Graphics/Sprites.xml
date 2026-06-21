@@ -242,6 +242,11 @@
 		<Loop id="bottom" path="bottom" delay="0.1" frames="0*20,1-4"/>
 	</iceFloor>
 
+	<ChroniaHelper_Fox path="ChroniaHelper/PettableFox/" start="idle">
+		<Loop id="pet" path="pet" delay="0.15"/>
+		<Loop id="idle" path="idle" delay="0.15"/>
+	</ChroniaHelper_Fox>
+	
 	<ChroniaHelper_Cat path="characters/HonlyHelper/pettableCat/" start="idle">
 		<Loop id="pet" path="spoons_pet" delay="0.15"/>
 		<Loop id="idle" path="spoons_idle" delay="0.15"/>
