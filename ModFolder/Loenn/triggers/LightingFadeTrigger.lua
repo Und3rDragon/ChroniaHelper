@@ -72,6 +72,8 @@ return {
         "height",
         "lightingColorFrom",
         "lightingColorTo",
+        "baseLightingAlphaFrom",
+        "baseLightingAlphaTo",
         "lightingAlphaFrom",
         "lightingAlphaTo",
         "positionMode",

@@ -86,6 +86,11 @@ public class LightingFadeTrigger : BaseTrigger
                     float _to = 0f;
                     float.TryParse(lightingAlphaTo, out _to);
 
+                    if (!baseLightingAlphaFrom.HasValidContent() && !baseLightingAlphaTo.HasValidContent())
+                    {
+                        level.BaseLightingAlpha = FadeUtils.LerpValue(timer, timed, 0f, _from, _to);
+                    }
+
                     level.Lighting.Alpha = FadeUtils.LerpValue(timer, timed, 0f, _from, _to);
                 }
 
@@ -142,6 +147,11 @@ public class LightingFadeTrigger : BaseTrigger
                 }
                 float _to = 0f;
                 float.TryParse(lightingAlphaTo, out _to);
+
+                if (!baseLightingAlphaFrom.HasValidContent() && !baseLightingAlphaTo.HasValidContent())
+                {
+                    level.BaseLightingAlpha = FadeUtils.LerpValue(lerp, 0f, 1f, _from, _to);
+                }
 
                 level.Lighting.Alpha = FadeUtils.LerpValue(lerp, 0f, 1f, _from, _to);
             }

@@ -68,6 +68,10 @@ public class LightingTrigger : BaseTrigger
             }
             if (_lalpha)
             {
+                if (!_lbase)
+                {
+                    base.level.BaseLightingAlpha = this.lightingAlpha;
+                }
                 base.level.Lighting.Alpha = this.lightingAlpha;
             }
             if (_lalphaadd)
@@ -99,6 +103,10 @@ public class LightingTrigger : BaseTrigger
                 }
                 if (_lalpha)
                 {
+                    if (!_lbase)
+                    {
+                        level.BaseLightingAlpha = FadeUtils.LerpValue(timer, timed, 0f, oldLighting.baseLightingAlpha, baseLightingAlpha);
+                    }
                     level.Lighting.Alpha = FadeUtils.LerpValue(timer, timed, 0f, oldLighting.lightingAlpha, lightingAlpha);
                 }
                 if (_lalphaadd)
