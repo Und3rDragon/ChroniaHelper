@@ -1,8 +1,8 @@
 ﻿using ChroniaHelper.Cores;
 
-namespace ChroniaHelper.Entities.SwimmingFish;
+namespace ChroniaHelper.Components.SwimmingFish;
 
-public class FishMotion : BaseComponent
+public class OriginalFishMotion : BaseComponent
 {
     // Position and Speed
 
@@ -45,7 +45,7 @@ public class FishMotion : BaseComponent
     /// </summary>
     private float _fleeInfluence;
 
-    public FishMotion(
+    public OriginalFishMotion(
         Vector2 startPosition,
         Vector2 topLeft,
         Vector2 bottomRight,
