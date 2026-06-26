@@ -19,9 +19,9 @@ public class FishMotion : BaseComponent
     public enum FishState
     {
         Idle,       // 常规随机游动
-        Fright,     // 正在进入躲避状态（过渡）
+        Fright,     // 正在进入躲避状态
         Dodging,    // 受惊吓躲避中
-        Recover     // 正在恢复常规状态（过渡）
+        Recover     // 正在恢复常规状态
     }
 
     // ==================== 私有字段 ====================
@@ -30,105 +30,137 @@ public class FishMotion : BaseComponent
     private FishState _state = FishState.Idle;
     private float _stateTimer = 0f;
     
-    // 边界数据
-    private List<Vector2> _polygonPoints;
-    private List<Rectangle> _rectangles;
-    private bool _isPolygonMode;
-    private float _gapProtection;
+    // ========== 点集边界（核心） ==========
+    private HashSet<(int x, int y)> _boundaryPoints;
+    private int _minX, _maxX, _minY, _maxY;
+    private Vector2 _center;
     
     // 位置和速度
     private Vector2 _velocity;
     
     // 游动参数
     private float _maxSpeed = 30f;
-    private float _acceleration = 150f;
-    private float _damping = 0.94f;
+    private float _acceleration = 250f;
+    private float _damping = 0.96f;
     
     // 随机游动
     private float _noiseTimer;
-    private float _noiseSpeed = 0.3f;
-    private float _noiseAmplitude = 2.5f;
+    private float _noiseSpeed = 0.8f;
+    private float _noiseAmplitude = 1.5f;
     
     // 躲避
-    private float _fleeRadius = 80f;
+    private float _fleeRadius = 24f;
     private float _fleeStrength = 400f;
-    private float _frightDuration = 0.3f;   // 进入躲避的过渡时间
-    private float _recoverDuration = 0.5f;  // 恢复的过渡时间
-    private float _dodgeDuration = 1.5f;    // 躲避持续时间
+    private float _frightDuration = 0.3f;
+    private float _recoverDuration = 0.5f;
+    private float _dodgeDuration = 1.5f;
     
-    // 边界状态
-    private float _boundarySafeZone = 35f;
-    private List<GeometryUtils.Line> _edges;
-    private List<Vector2> _vertices;
-    private Vector2 _center;
-    private float _boundsMinX, _boundsMaxX, _boundsMinY, _boundsMaxY;
+    // 边界安全距离
+    private float _gapProtection = 2f;
+    private float _boundarySafeZone = 4f;
     
-    // 矩形组缓存
-    private List<HashSet<Rectangle>> _rectangleGroups;
-    private int _currentGroupIndex = -1;
-    private float _groupSwitchCooldown = 0f;
-    
-    // 随机数
-    private Random _random;
-
     // ==================== 构造函数 ====================
     
-    /// <summary>
-    /// 多边形边界模式
-    /// </summary>
-    public FishMotion(Vector2 startPosition, List<Vector2> borders, float gapProtection = 12f)
+    public FishMotion(Vector2 startPosition, List<Vector2> borders, float gapProtection = 2f)
     {
-        Initialize(startPosition, borders, null, gapProtection);
-        _isPolygonMode = true;
-    }
-    
-    /// <summary>
-    /// 矩形边界模式（自动分组）
-    /// </summary>
-    public FishMotion(Vector2 startPosition, List<Rectangle> borders, float gapProtection = 4f)
-    {
-        _rectangles = borders;
-        _rectangleGroups = GroupRectangles(borders);
-        _currentGroupIndex = FindGroupContainingPoint(startPosition);
-        
-        if (_currentGroupIndex == -1 && _rectangleGroups.Count > 0)
-            _currentGroupIndex = 0;
-        
-        if (_currentGroupIndex == -1)
-        {
-            _rectangleGroups = new List<HashSet<Rectangle>> { new HashSet<Rectangle> { new Rectangle(-200, -200, 400, 400) } };
-            _currentGroupIndex = 0;
-        }
-        
-        var polygon = RectanglesToPolygon(_rectangleGroups[_currentGroupIndex]);
-        Initialize(startPosition, polygon, borders, gapProtection);
-        _isPolygonMode = false;
-    }
-
-    // ==================== 初始化 ====================
-    
-    private void Initialize(Vector2 startPosition, List<Vector2> polygon, List<Rectangle> rectangles, float gapProtection)
-    {
-        _random = new Random();
+        _gapProtection = Math.Max(gapProtection, 0f);
         InitialPosition = startPosition;
         Position = startPosition;
         _velocity = Vector2.Zero;
-        _polygonPoints = polygon;
-        _rectangles = rectangles;
-        _gapProtection = Math.Max(gapProtection, 4f);
-        _noiseTimer = (float)_random.NextDouble() * 100f;
+        _noiseTimer = (float)Rd.Random.NextDouble() * 100f;
         
-        BuildBoundaryCache();
+        BuildBoundaryPointSet(borders);
+        Position = ClampToBoundary(Position);
+    }
+    
+    public FishMotion(Vector2 startPosition, List<Rectangle> borders, float gapProtection = 2f)
+    {
+        _gapProtection = Math.Max(gapProtection, 0f);
+        InitialPosition = startPosition;
+        Position = startPosition;
+        _velocity = Vector2.Zero;
+        _noiseTimer = (float)Rd.Random.NextDouble() * 100f;
+        
+        var points = RectanglesToPoints(borders);
+        BuildBoundaryPointSet(points);
         Position = ClampToBoundary(Position);
     }
 
-    // ==================== 边界缓存 ====================
+    // ==================== 几何工具函数（自包含） ====================
     
-    private void BuildBoundaryCache()
+    /// <summary>
+    /// 点到线段的最短距离
+    /// </summary>
+    private float DistanceToSegment(Vector2 point, Vector2 a, Vector2 b)
     {
-        if (_polygonPoints == null || _polygonPoints.Count < 3)
+        Vector2 ap = point - a;
+        Vector2 ab = b - a;
+        float abSq = ab.X * ab.X + ab.Y * ab.Y;
+        
+        if (abSq < 0.0001f)
+            return Vector2.Distance(point, a);
+        
+        float t = (ap.X * ab.X + ap.Y * ab.Y) / abSq;
+        t = MathHelper.Clamp(t, 0f, 1f);
+        
+        Vector2 closest = a + ab * t;
+        return Vector2.Distance(point, closest);
+    }
+    
+    /// <summary>
+    /// 判断点是否在多边形内（射线法，含边界检测）
+    /// </summary>
+    private bool IsPointInPolygon(Vector2 p, List<Vector2> polygon)
+    {
+        int n = polygon.Count;
+        bool inside = false;
+        
+        for (int i = 0, j = n - 1; i < n; j = i++)
         {
-            _polygonPoints = new List<Vector2>
+            Vector2 vi = polygon[i];
+            Vector2 vj = polygon[j];
+            
+            // 检查点是否在边上
+            if (IsPointOnSegment(p, vi, vj))
+                return true;
+            
+            if ((vi.Y > p.Y) != (vj.Y > p.Y))
+            {
+                // 计算射线与边的交点X坐标
+                float intersectX = vi.X + (p.Y - vi.Y) * (vj.X - vi.X) / (vj.Y - vi.Y);
+                if (p.X < intersectX)
+                    inside = !inside;
+            }
+        }
+        
+        return inside;
+    }
+    
+    /// <summary>
+    /// 判断点是否在线段上（含端点）
+    /// </summary>
+    private bool IsPointOnSegment(Vector2 p, Vector2 a, Vector2 b)
+    {
+        Vector2 ab = b - a;
+        Vector2 ap = p - a;
+        float cross = ab.X * ap.Y - ab.Y * ap.X;
+        if (Math.Abs(cross) > 0.001f)
+            return false;
+        
+        float dot = ap.X * ab.X + ap.Y * ab.Y;
+        if (dot < 0) return false;
+        
+        float abSq = ab.X * ab.X + ab.Y * ab.Y;
+        return dot <= abSq;
+    }
+
+    // ==================== 核心：点集边界构建 ====================
+    
+    private void BuildBoundaryPointSet(List<Vector2> polygon)
+    {
+        if (polygon == null || polygon.Count == 0)
+        {
+            polygon = new List<Vector2>
             {
                 new Vector2(-100, -100),
                 new Vector2(100, -100),
@@ -137,102 +169,182 @@ public class FishMotion : BaseComponent
             };
         }
         
-        _boundsMinX = _polygonPoints.Min(p => p.X) - _gapProtection;
-        _boundsMaxX = _polygonPoints.Max(p => p.X) + _gapProtection;
-        _boundsMinY = _polygonPoints.Min(p => p.Y) - _gapProtection;
-        _boundsMaxY = _polygonPoints.Max(p => p.Y) + _gapProtection;
-        
-        _center = GeometryUtils.ComputeCentroid(_polygonPoints.ToArray());
-        
-        _edges = new List<GeometryUtils.Line>();
-        for (int i = 0; i < _polygonPoints.Count; i++)
+        // 特殊情况：1个点 → 圆形
+        if (polygon.Count == 1)
         {
-            int next = (i + 1) % _polygonPoints.Count;
-            _edges.Add(new GeometryUtils.Line(_polygonPoints[i], _polygonPoints[next]));
+            BuildCircleBoundary(polygon[0], _gapProtection);
+            return;
         }
-        _vertices = new List<Vector2>(_polygonPoints);
-    }
-    
-    private void RebuildBoundaryCache(List<Vector2> newPolygon)
-    {
-        _polygonPoints = newPolygon;
-        BuildBoundaryCache();
-    }
-
-    // ==================== 矩形分组 ====================
-    
-    private List<HashSet<Rectangle>> GroupRectangles(List<Rectangle> rectangles)
-    {
-        if (rectangles == null || rectangles.Count == 0)
-            return new List<HashSet<Rectangle>>();
         
-        var groups = new List<HashSet<Rectangle>>();
-        var used = new HashSet<Rectangle>();
-        
-        foreach (var rect in rectangles)
+        // 特殊情况：2个点 → 胶囊形
+        if (polygon.Count == 2)
         {
-            if (used.Contains(rect)) continue;
-            
-            var group = new HashSet<Rectangle> { rect };
-            used.Add(rect);
-            
-            bool added;
-            do
+            BuildCapsuleBoundary(polygon[0], polygon[1], _gapProtection);
+            return;
+        }
+        
+        // 计算边界范围
+        _minX = (int)Math.Floor(polygon.Min(p => p.X) - _gapProtection);
+        _maxX = (int)Math.Ceiling(polygon.Max(p => p.X) + _gapProtection);
+        _minY = (int)Math.Floor(polygon.Min(p => p.Y) - _gapProtection);
+        _maxY = (int)Math.Ceiling(polygon.Max(p => p.Y) + _gapProtection);
+        
+        _center = ComputeCentroid(polygon);
+        
+        _boundaryPoints = new HashSet<(int x, int y)>();
+        
+        for (int x = _minX; x <= _maxX; x++)
+        {
+            for (int y = _minY; y <= _maxY; y++)
             {
-                added = false;
-                foreach (var other in rectangles)
+                Vector2 point = new Vector2(x, y);
+                
+                if (IsPointInPolygon(point, polygon))
                 {
-                    if (used.Contains(other)) continue;
-                    foreach (var gr in group.ToList())
-                    {
-                        if (RectanglesTouch(gr, other, _gapProtection * 2f))
-                        {
-                            group.Add(other);
-                            used.Add(other);
-                            added = true;
-                            break;
-                        }
-                    }
+                    _boundaryPoints.Add((x, y));
+                    continue;
                 }
-            } while (added);
-            
-            groups.Add(group);
-        }
-        return groups;
-    }
-    
-    private bool RectanglesTouch(Rectangle a, Rectangle b, float gap)
-    {
-        int g = (int)Math.Ceiling(gap);
-        return new Rectangle(a.X - g, a.Y - g, a.Width + g * 2, a.Height + g * 2).Intersects(b);
-    }
-    
-    private int FindGroupContainingPoint(Vector2 point)
-    {
-        for (int i = 0; i < _rectangleGroups.Count; i++)
-        {
-            foreach (var rect in _rectangleGroups[i])
-            {
-                if (point.X >= rect.X && point.X <= rect.X + rect.Width &&
-                    point.Y >= rect.Y && point.Y <= rect.Y + rect.Height)
-                    return i;
+                
+                if (IsPointWithinGap(point, polygon))
+                {
+                    _boundaryPoints.Add((x, y));
+                }
             }
         }
-        return -1;
     }
     
-    private List<Vector2> RectanglesToPolygon(HashSet<Rectangle> rects)
+    private void BuildCircleBoundary(Vector2 center, float radius)
     {
-        var pts = new List<Vector2>();
-        float exp = _gapProtection * 0.3f;
-        foreach (var r in rects)
+        int r = (int)Math.Ceiling(radius);
+        _minX = (int)Math.Floor(center.X - r);
+        _maxX = (int)Math.Ceiling(center.X + r);
+        _minY = (int)Math.Floor(center.Y - r);
+        _maxY = (int)Math.Ceiling(center.Y + r);
+        _center = center;
+        
+        _boundaryPoints = new HashSet<(int x, int y)>();
+        float rSq = radius * radius;
+        
+        for (int x = _minX; x <= _maxX; x++)
         {
-            pts.Add(new Vector2(r.X - exp, r.Y - exp));
-            pts.Add(new Vector2(r.X + r.Width + exp, r.Y - exp));
-            pts.Add(new Vector2(r.X + r.Width + exp, r.Y + r.Height + exp));
-            pts.Add(new Vector2(r.X - exp, r.Y + r.Height + exp));
+            for (int y = _minY; y <= _maxY; y++)
+            {
+                float dx = x - center.X;
+                float dy = y - center.Y;
+                if (dx * dx + dy * dy <= rSq)
+                {
+                    _boundaryPoints.Add((x, y));
+                }
+            }
         }
-        return ComputeConvexHull(pts);
+    }
+    
+    private void BuildCapsuleBoundary(Vector2 a, Vector2 b, float radius)
+    {
+        _center = (a + b) / 2f;
+        float r = radius;
+        
+        _minX = (int)Math.Floor(Math.Min(a.X, b.X) - r);
+        _maxX = (int)Math.Ceiling(Math.Max(a.X, b.X) + r);
+        _minY = (int)Math.Floor(Math.Min(a.Y, b.Y) - r);
+        _maxY = (int)Math.Ceiling(Math.Max(a.Y, b.Y) + r);
+        
+        _boundaryPoints = new HashSet<(int x, int y)>();
+        float rSq = r * r;
+        
+        for (int x = _minX; x <= _maxX; x++)
+        {
+            for (int y = _minY; y <= _maxY; y++)
+            {
+                Vector2 p = new Vector2(x, y);
+                float dist = DistanceToSegment(p, a, b);
+                if (dist <= r)
+                {
+                    _boundaryPoints.Add((x, y));
+                }
+            }
+        }
+    }
+    
+    private bool IsPointWithinGap(Vector2 point, List<Vector2> polygon)
+    {
+        for (int i = 0; i < polygon.Count; i++)
+        {
+            int next = (i + 1) % polygon.Count;
+            if (DistanceToSegment(point, polygon[i], polygon[next]) <= _gapProtection)
+                return true;
+        }
+        
+        foreach (var v in polygon)
+        {
+            if (Vector2.Distance(point, v) <= _gapProtection)
+                return true;
+        }
+        
+        return false;
+    }
+    
+    private Vector2 ComputeCentroid(List<Vector2> points)
+    {
+        var pts = points.ToList();
+        if (pts.Count > 0 && pts[0] != pts[pts.Count - 1])
+            pts.Add(pts[0]);
+        
+        float cx = 0, cy = 0, area = 0;
+        int n = pts.Count - 1;
+        
+        for (int i = 0; i < n; i++)
+        {
+            float cross = pts[i].X * pts[i + 1].Y - pts[i + 1].X * pts[i].Y;
+            area += cross;
+            cx += (pts[i].X + pts[i + 1].X) * cross;
+            cy += (pts[i].Y + pts[i + 1].Y) * cross;
+        }
+        
+        area *= 0.5f;
+        if (Math.Abs(area) < 1e-6f) return pts[0];
+        cx /= (6 * area);
+        cy /= (6 * area);
+        return new Vector2(cx, cy);
+    }
+    
+    private List<Vector2> RectanglesToPoints(List<Rectangle> rectangles)
+    {
+        if (rectangles == null || rectangles.Count == 0)
+        {
+            return new List<Vector2>
+            {
+                new Vector2(-100, -100),
+                new Vector2(100, -100),
+                new Vector2(100, 100),
+                new Vector2(-100, 100)
+            };
+        }
+        
+        if (rectangles.Count == 1)
+        {
+            var r = rectangles[0];
+            float _exp = _gapProtection * 0.3f;
+            return new List<Vector2>
+            {
+                new Vector2(r.X - _exp, r.Y - _exp),
+                new Vector2(r.X + r.Width + _exp, r.Y - _exp),
+                new Vector2(r.X + r.Width + _exp, r.Y + r.Height + _exp),
+                new Vector2(r.X - _exp, r.Y + r.Height + _exp)
+            };
+        }
+        
+        var allPoints = new List<Vector2>();
+        float exp = _gapProtection * 0.3f;
+        foreach (var r in rectangles)
+        {
+            allPoints.Add(new Vector2(r.X - exp, r.Y - exp));
+            allPoints.Add(new Vector2(r.X + r.Width + exp, r.Y - exp));
+            allPoints.Add(new Vector2(r.X + r.Width + exp, r.Y + r.Height + exp));
+            allPoints.Add(new Vector2(r.X - exp, r.Y + r.Height + exp));
+        }
+        
+        return ComputeConvexHull(allPoints);
     }
     
     private List<Vector2> ComputeConvexHull(List<Vector2> pts)
@@ -249,45 +361,162 @@ public class FishMotion : BaseComponent
         var hull = new List<Vector2>();
         foreach (var p in sorted)
         {
-            while (hull.Count >= 2 && Cross(hull[^2], hull[^1], p) <= 0)
+            while (hull.Count >= 2)
+            {
+                Vector2 a = hull[hull.Count - 2];
+                Vector2 b = hull[hull.Count - 1];
+                float cross = (b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X);
+                if (cross > 0) break;
                 hull.RemoveAt(hull.Count - 1);
+            }
             hull.Add(p);
         }
         return hull;
     }
-    
-    private float Cross(Vector2 o, Vector2 a, Vector2 b) 
-        => (a.X - o.X) * (b.Y - o.Y) - (a.Y - o.Y) * (b.X - o.X);
 
-    // ==================== 核心更新 ====================
+    // ==================== 点集边界查询 ====================
     
-    public override void Update()
+    private bool IsPointInBoundary(Vector2 point)
     {
-        float dt = Engine.DeltaTime;
-        if (dt <= 0) return;
-        dt = Math.Min(dt, 0.05f);
+        int x = (int)Math.Round(point.X);
+        int y = (int)Math.Round(point.Y);
         
-        // 1. 检查矩形组切换
-        if (!_isPolygonMode && _rectangleGroups != null && _rectangleGroups.Count > 1)
+        if (x < _minX || x > _maxX || y < _minY || y > _maxY)
+            return false;
+        
+        return _boundaryPoints.Contains((x, y));
+    }
+    
+    private Vector2 ClampToBoundary(Vector2 point)
+    {
+        if (IsPointInBoundary(point))
+            return point;
+        
+        int startX = (int)Math.Round(point.X);
+        int startY = (int)Math.Round(point.Y);
+        
+        for (int radius = 1; radius <= 30; radius++)
         {
-            CheckGroupSwitch(dt);
+            for (int dx = -radius; dx <= radius; dx++)
+            {
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    if (Math.Abs(dx) != radius && Math.Abs(dy) != radius)
+                        continue;
+                    
+                    int testX = startX + dx;
+                    int testY = startY + dy;
+                    
+                    if (testX < _minX || testX > _maxX || testY < _minY || testY > _maxY)
+                        continue;
+                    
+                    if (_boundaryPoints.Contains((testX, testY)))
+                    {
+                        return new Vector2(testX, testY);
+                    }
+                }
+            }
         }
         
-        // 2. 获取干扰点
-        var interferes = GetInterferePoints?.Invoke() ?? new List<Vector2>();
-        float dangerLevel = GetDangerLevel(interferes);
+        return _center;
+    }
+    
+    private bool IsNearBoundary()
+    {
+        int x = (int)Math.Round(Position.X);
+        int y = (int)Math.Round(Position.Y);
         
-        // 3. 状态更新
-        UpdateState(dt, dangerLevel);
+        int checkRadius = (int)Math.Ceiling(_boundarySafeZone + _gapProtection);
         
-        // 4. 计算目标方向
-        Vector2 targetDir = CalculateTargetDirection(interferes, dangerLevel);
+        for (int dx = -checkRadius; dx <= checkRadius; dx++)
+        {
+            for (int dy = -checkRadius; dy <= checkRadius; dy++)
+            {
+                int tx = x + dx;
+                int ty = y + dy;
+                if (tx < _minX || tx > _maxX || ty < _minY || ty > _maxY)
+                    return true;
+                
+                if (!_boundaryPoints.Contains((tx, ty)))
+                {
+                    float dist = (float)Math.Sqrt(dx * dx + dy * dy);
+                    if (dist < _boundarySafeZone + _gapProtection)
+                        return true;
+                }
+            }
+        }
         
-        // 5. 应用运动
-        ApplyMovement(dt, targetDir);
+        return false;
+    }
+    
+    private Vector2 GetBoundaryPushForce()
+    {
+        int x = (int)Math.Round(Position.X);
+        int y = (int)Math.Round(Position.Y);
         
-        // 6. 边界夹紧
-        Position = ClampToBoundary(Position);
+        if (!_boundaryPoints.Contains((x, y)))
+        {
+            Vector2 toCenter = _center - Position;
+            if (toCenter.LengthSquared() > 0.01f)
+                toCenter.Normalize();
+            return toCenter;
+        }
+        
+        int checkRadius = (int)Math.Ceiling(_boundarySafeZone + _gapProtection);
+        Vector2 pushForce = Vector2.Zero;
+        int count = 0;
+        
+        for (int dx = -checkRadius; dx <= checkRadius; dx++)
+        {
+            for (int dy = -checkRadius; dy <= checkRadius; dy++)
+            {
+                int tx = x + dx;
+                int ty = y + dy;
+                if (tx < _minX || tx > _maxX || ty < _minY || ty > _maxY)
+                {
+                    float dist = (float)Math.Sqrt(dx * dx + dy * dy);
+                    if (dist < 0.01f) continue;
+                    
+                    float strength = 1f - dist / checkRadius;
+                    strength = Math.Max(strength, 0f);
+                    
+                    Vector2 dir = new Vector2(-dx / dist, -dy / dist);
+                    pushForce += dir * strength;
+                    count++;
+                }
+                else if (!_boundaryPoints.Contains((tx, ty)))
+                {
+                    float dist = (float)Math.Sqrt(dx * dx + dy * dy);
+                    if (dist < 0.01f) continue;
+                    
+                    float strength = 1f - dist / checkRadius;
+                    strength = Math.Max(strength, 0f);
+                    
+                    Vector2 dir = new Vector2(-dx / dist, -dy / dist);
+                    pushForce += dir * strength;
+                    count++;
+                }
+            }
+        }
+        
+        if (count > 0)
+        {
+            pushForce /= count;
+            if (pushForce.LengthSquared() > 0.01f)
+            {
+                pushForce.Normalize();
+                return pushForce;
+            }
+        }
+        
+        Vector2 toCenter2 = _center - Position;
+        if (toCenter2.LengthSquared() > 0.01f)
+        {
+            toCenter2.Normalize();
+            return toCenter2;
+        }
+        
+        return Vector2.Zero;
     }
 
     // ==================== 状态机 ====================
@@ -314,7 +543,6 @@ public class FishMotion : BaseComponent
                 }
                 else if (dangerLevel < 0.1f)
                 {
-                    // 威胁消失，直接恢复
                     _state = FishState.Recover;
                     _stateTimer = 0f;
                 }
@@ -369,7 +597,6 @@ public class FishMotion : BaseComponent
                 break;
                 
             case FishState.Fright:
-                // 过渡期：混合游动和躲避
                 Vector2 idle = GetIdleDirection();
                 Vector2 flee = GetFleeDirection(interferes);
                 float mix = Math.Min(_stateTimer / _frightDuration, 1f);
@@ -381,7 +608,6 @@ public class FishMotion : BaseComponent
                 break;
                 
             case FishState.Recover:
-                // 恢复期：逐渐回到游动
                 Vector2 idle2 = GetIdleDirection();
                 Vector2 flee2 = GetFleeDirection(interferes);
                 float mix2 = 1f - Math.Min(_stateTimer / _recoverDuration, 1f);
@@ -393,11 +619,11 @@ public class FishMotion : BaseComponent
             dir = new Vector2(1, 0);
         dir.Normalize();
         
-        // 边界推力微调
         Vector2 boundaryForce = GetBoundaryPushForce();
         if (boundaryForce.LengthSquared() > 0.01f)
         {
-            dir = Vector2.Lerp(dir, boundaryForce, 0.2f);
+            float blend = IsNearBoundary() ? 0.4f : 0.1f;
+            dir = Vector2.Lerp(dir, boundaryForce, blend);
             dir.Normalize();
         }
         
@@ -409,20 +635,16 @@ public class FishMotion : BaseComponent
         _noiseTimer += Engine.DeltaTime * _noiseSpeed;
         float t = _noiseTimer;
         
-        // 多频率正弦波生成平滑随机方向
         float angle = 0f;
         angle += (float)Math.Sin(t * 0.25f) * 1.2f;
         angle += (float)Math.Sin(t * 0.6f + 1.3f) * 0.8f;
         angle += (float)Math.Sin(t * 1.1f + 2.7f) * 0.5f;
         angle += (float)Math.Sin(t * 1.8f + 4.2f) * 0.3f;
         
-        // 偶尔大转向
         if ((int)(t * 0.3f) % 7 == 0 && (int)(t * 8f) % 5 == 0)
-            angle += (float)(_random.NextDouble() - 0.5) * 2.5f;
+            angle += (float)(Rd.Random.NextDouble() - 0.5) * 2.5f;
         
-        // 边界附近减小随机幅度
         float amp = IsNearBoundary() ? _noiseAmplitude * 0.4f : _noiseAmplitude;
-        
         return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
     }
     
@@ -443,7 +665,6 @@ public class FishMotion : BaseComponent
             Vector2 flee = Position - p;
             flee.Normalize();
             
-            // 边界附近调整方向
             if (IsNearBoundary())
             {
                 Vector2 bf = GetBoundaryPushForce();
@@ -468,7 +689,6 @@ public class FishMotion : BaseComponent
     
     private void ApplyMovement(float dt, Vector2 targetDir)
     {
-        // 根据状态调整速度和加速度
         float speed = _maxSpeed;
         float accel = _acceleration;
         float damp = _damping;
@@ -476,218 +696,67 @@ public class FishMotion : BaseComponent
         switch (_state)
         {
             case FishState.Idle:
-                // 正常游动
                 break;
             case FishState.Fright:
-                // 加速进入躲避
                 accel *= 1.5f;
                 damp *= 0.98f;
                 break;
             case FishState.Dodging:
-                // 全力躲避
                 speed *= 1.3f;
                 accel *= 2f;
                 damp *= 0.95f;
                 break;
             case FishState.Recover:
-                // 逐渐恢复
                 speed *= 0.8f;
                 break;
         }
         
-        // 加速度
         _velocity += targetDir * accel * dt;
-        
-        // 阻尼
         _velocity *= damp;
         
-        // 限速
         float len = _velocity.Length();
         if (len > speed)
             _velocity = _velocity / len * speed;
         
-        // 边界速度限制
-        if (IsNearBoundary())
+        Vector2 newPos = Position + _velocity * dt;
+        if (!IsPointInBoundary(newPos))
         {
-            _velocity = ClampVelocityToBoundary(_velocity);
-        }
-        
-        // 更新位置
-        Position += _velocity * dt;
-    }
-
-    // ==================== 边界检测 ====================
-    
-    private bool IsNearBoundary()
-    {
-        float totalZone = _boundarySafeZone + _gapProtection;
-        float margin = totalZone * 1.5f;
-        return !(Position.X > _boundsMinX + margin && Position.X < _boundsMaxX - margin &&
-                 Position.Y > _boundsMinY + margin && Position.Y < _boundsMaxY - margin);
-    }
-    
-    private Vector2 GetBoundaryPushForce()
-    {
-        float totalZone = _boundarySafeZone + _gapProtection;
-        float margin = totalZone * 1.5f;
-        if (Position.X > _boundsMinX + margin && Position.X < _boundsMaxX - margin &&
-            Position.Y > _boundsMinY + margin && Position.Y < _boundsMaxY - margin)
-            return Vector2.Zero;
-        
-        float minDist = float.MaxValue;
-        Vector2 normal = Vector2.Zero;
-        
-        foreach (var edge in _edges)
-        {
-            float dist = edge.GetDistance(Position);
-            if (dist < minDist)
+            Vector2 boundaryForce = GetBoundaryPushForce();
+            if (boundaryForce.LengthSquared() > 0.01f)
             {
-                minDist = dist;
-                Vector2 dir = edge.B - edge.A;
-                float len = dir.Length();
-                if (len > 0.001f)
+                float proj = _velocity.X * boundaryForce.X + _velocity.Y * boundaryForce.Y;
+                if (proj < 0)
                 {
-                    normal = new Vector2(-dir.Y / len, dir.X / len);
-                    Vector2 _toCenter = _center - edge.A;
-                    if (Vector2.Dot(_toCenter, normal) < 0) normal = -normal;
+                    _velocity = boundaryForce * Math.Abs(proj) * 0.3f;
                 }
             }
-        }
-        
-        foreach (var v in _vertices)
-        {
-            float dist = Vector2.Distance(Position, v);
-            if (dist < minDist)
+            else
             {
-                minDist = dist;
-                normal = Position - v;
-                if (normal.LengthSquared() > 0.001f)
-                    normal.Normalize();
-                else
-                    normal = _center - v;
-                if (normal.LengthSquared() > 0.001f) normal.Normalize();
+                _velocity *= 0.3f;
             }
         }
         
-        if (minDist > totalZone * 1.5f || normal.LengthSquared() < 0.01f)
-            return Vector2.Zero;
-        
-        float strength = 1f - minDist / (totalZone * 1.5f);
-        strength = MathHelper.Clamp(strength, 0f, 1f);
-        strength = strength * strength * (3f - 2f * strength);
-        
-        Vector2 toCenter = _center - Position;
-        if (toCenter.LengthSquared() > 0.01f && Vector2.Dot(normal, toCenter) < 0)
-            normal = -normal;
-        
-        return normal * strength;
-    }
-    
-    private Vector2 ClampVelocityToBoundary(Vector2 vel)
-    {
-        if (vel.LengthSquared() < 0.01f) return vel;
-        Vector2 dir = Vector2.Normalize(vel);
-        Vector2 test = Position + dir * 10f;
-        
-        if (!IsPointInBoundary(test))
-        {
-            Vector2 push = GetBoundaryPushForce();
-            if (push.LengthSquared() > 0.01f)
-            {
-                Vector2 inward = Vector2.Normalize(push);
-                float proj = Vector2.Dot(vel, inward);
-                if (proj < 0) return -vel * 0.3f;
-                return inward * proj * 0.6f;
-            }
-            return vel * 0.2f;
-        }
-        return vel;
-    }
-    
-    private bool IsPointInBoundary(Vector2 point)
-    {
-        if (point.X < _boundsMinX || point.X > _boundsMaxX ||
-            point.Y < _boundsMinY || point.Y > _boundsMaxY)
-            return false;
-        return GeometryUtils.IsPointInPolygon(point, _vertices);
-    }
-    
-    private Vector2 ClampToBoundary(Vector2 point)
-    {
-        if (IsPointInBoundary(point)) return point;
-        
-        Vector2 nearest = point;
-        float minDist = float.MaxValue;
-        
-        foreach (var edge in _edges)
-        {
-            Vector2 closest = edge.GetFootPointD(point);
-            float dist = Vector2.Distance(point, closest);
-            if (dist < minDist) { minDist = dist; nearest = closest; }
-        }
-        foreach (var v in _vertices)
-        {
-            float dist = Vector2.Distance(point, v);
-            if (dist < minDist) { minDist = dist; nearest = v; }
-        }
-        
-        Vector2 toCenter = _center - nearest;
-        if (toCenter.LengthSquared() > 0.01f)
-        {
-            toCenter.Normalize();
-            Vector2 test = nearest + toCenter * 4f;
-            if (IsPointInBoundary(test)) return test;
-        }
-        
-        for (int i = 0; i < 12; i++)
-        {
-            float ang = i * MathHelper.Pi / 6f;
-            Vector2 dir = new Vector2((float)Math.Cos(ang), (float)Math.Sin(ang));
-            Vector2 test = nearest + dir * 5f;
-            if (IsPointInBoundary(test)) return test;
-        }
-        
-        return _center;
-    }
-
-    // ==================== 矩形组切换 ====================
-    
-    private void CheckGroupSwitch(float dt)
-    {
-        if (_groupSwitchCooldown > 0)
-        {
-            _groupSwitchCooldown -= dt;
-            return;
-        }
-        
-        bool stillIn = false;
-        float expand = _gapProtection * 2f;
-        foreach (var rect in _rectangleGroups[_currentGroupIndex])
-        {
-            var r = new Rectangle(
-                rect.X - (int)expand, rect.Y - (int)expand,
-                rect.Width + (int)(expand * 2), rect.Height + (int)(expand * 2)
-            );
-            if (Position.X >= r.X && Position.X <= r.X + r.Width &&
-                Position.Y >= r.Y && Position.Y <= r.Y + r.Height)
-            { stillIn = true; break; }
-        }
-        
-        if (!stillIn)
-        {
-            int newGroup = FindGroupContainingPoint(Position);
-            if (newGroup != -1 && newGroup != _currentGroupIndex)
-            {
-                _currentGroupIndex = newGroup;
-                var poly = RectanglesToPolygon(_rectangleGroups[newGroup]);
-                RebuildBoundaryCache(poly);
-                _groupSwitchCooldown = 0.5f;
-                Position = ClampToBoundary(Position);
-            }
-        }
+        Position += _velocity * dt;
+        Position = ClampToBoundary(Position);
     }
 
     // ==================== 公共方法 ====================
     
+    public override void Update()
+    {
+        float dt = Engine.DeltaTime;
+        if (dt <= 0) return;
+        dt = Math.Min(dt, 0.05f);
+        
+        var interferes = GetInterferePoints?.Invoke() ?? new List<Vector2>();
+        float dangerLevel = GetDangerLevel(interferes);
+        
+        UpdateState(dt, dangerLevel);
+        Vector2 targetDir = CalculateTargetDirection(interferes, dangerLevel);
+        ApplyMovement(dt, targetDir);
+        Position = ClampToBoundary(Position);
+    }
+    
     public FishState GetState() => _state;
+    public int GetBoundaryPointCount() => _boundaryPoints?.Count ?? 0;
 }
