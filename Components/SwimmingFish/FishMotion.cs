@@ -182,8 +182,6 @@ public class FishMotion : BaseComponent
         Position = _boundary.ClampToBoundary(Position);
     }
     
-    // ... 其他方法保持不变（GetRandomDirection, GetFleeDirection, AngleDifference等）
-    
     private Vector2 GetRandomDirection(float deltaTime)
     {
         _randomTimer += deltaTime;

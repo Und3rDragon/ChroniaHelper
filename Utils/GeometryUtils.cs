@@ -422,37 +422,7 @@ public static partial class GeometryUtils
         int bottom = Math.Min(orig.Bottom, target.Bottom);
 
         // 检查是否有交集
-        if (left >= right || top >= bottom)
-        {
-            // 完全无交集
-            return false;
-        }
-
-        // 此时存在交集区域
-        int width = right - left;
-        int height = bottom - top;
-
-        if (width == 0 || height == 0)
-        {
-            // 理论上由于上面的 >= 判断，这里不会发生，
-            // 但为了逻辑清晰：如果交集退化为线或点（面积为0）
-            return abstractConditionValue;
-        }
-
-        // 有正面积的重叠区域
-        return true;
-    }
-    
-    public static bool Crossover(this Vc2 rect1A, Vc2 rect1B, Vc2 rect2A, Vc2 rect2B, bool abstractConditionValue = false)
-    {
-        // 计算交集区域的边界
-        int left = new List<float>{rect1A.X, rect1B.X, rect2A.X, rect2B.X}.GetMax(n => (int)n);
-        int right = new List<float>{rect1A.X, rect1B.X, rect2A.X, rect2B.X}.GetMin(n => (int)n);
-        int top = new List<float>{rect1A.Y, rect1B.Y, rect2A.Y, rect2B.Y}.GetMax(n => (int)n);
-        int bottom = new List<float>{rect1A.Y, rect1B.Y, rect2A.Y, rect2B.Y}.GetMin(n => (int)n);
-
-        // 检查是否有交集
-        if (left >= right || top >= bottom)
+        if (left > right || top > bottom)
         {
             // 完全无交集
             return false;

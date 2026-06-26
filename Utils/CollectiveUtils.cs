@@ -776,31 +776,14 @@ public static class CollectiveUtils
         values = new List<TValue>(dic.Values); // 或 dic.Select(kvp => kvp.Value).ToList()
     }
 
-    public static bool CombineDictionary<TKey, TValue>(
-        this IList<TKey> keys,
-        IList<TValue> values,
-        out IDictionary<TKey, TValue> dic,
-        bool allowDuplicateKeys = false)
+    public static Dictionary<T1, T2> Overwrite<T1, T2>(this Dictionary<T1, T2> orig, Dictionary<T1, T2> input)
     {
-        dic = null;
-
-        if (keys == null || values == null || keys.Count != values.Count || keys.Count == 0)
-            return false;
-
-        dic = new Dictionary<TKey, TValue>();
-
-        for (int i = 0; i < keys.Count; i++)
+        foreach (var key in input.Keys)
         {
-            if (dic.ContainsKey(keys[i]))
-            {
-                if (!allowDuplicateKeys)
-                    return false; // 或抛异常
-                continue;
-            }
-            dic[keys[i]] = values[i];
+            orig[key] = input[key];
         }
 
-        return true;
+        return orig;
     }
 
     public static bool TryGet<T>(this ICollection<T> source, 

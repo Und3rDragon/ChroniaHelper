@@ -51,6 +51,27 @@ public static class MapProcessor
     public static int saveSlotIndex;
     public static Level level = null;
 
+    public static Dictionary<int, Entity> SlicedEntities(List<Entity> specificList = null)
+    {
+        Dictionary<int, Entity> e = new();
+        if (specificList == null)
+        {
+            foreach (var item in level.Entities)
+            {
+                e[item.GetID()] = item;
+            }
+        }
+        else
+        {
+            foreach (var item in specificList)
+            {
+                e[item.GetID()] = item;
+            }
+        }
+
+        return e;
+    }
+
     /// <summary>
     /// Entity Dummies for Recycling Components
     /// </summary>
@@ -392,7 +413,7 @@ public static class MapProcessor
                 return false;
             }
         }
-
+        
         return true;
     }
 

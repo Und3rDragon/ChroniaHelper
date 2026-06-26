@@ -1,3 +1,5 @@
+using ChroniaHelper.Utils;
+
 namespace ChroniaHelper.Components.SwimmingFish;
 
 /// <summary>
