@@ -43,10 +43,14 @@ public class FishMotion : BaseComponent
     private float _acceleration = 250f;
     private float _damping = 0.96f;
     
-    // 随机游动
-    private float _noiseTimer;
-    private float _noiseSpeed = 0.8f;
-    private float _noiseAmplitude = 1.5f;
+    // ========== 动态正弦波（替代原有噪声） ==========
+    private DynamicSineWave _xWave;   // X方向运动
+    private DynamicSineWave _yWave;   // Y方向运动
+    
+    // 动态波形参数范围
+    private (float Min, float Max) _ampRange = (0.8f, 2.5f);
+    private (float Min, float Max) _freqRange = (0.8f, 1.2f);
+    private (float Min, float Max) _phaseRange = (0f, 2 * Single.Pi);
     
     // 躲避
     private float _fleeRadius = 24f;
@@ -59,6 +63,10 @@ public class FishMotion : BaseComponent
     private float _gapProtection = 2f;
     private float _boundarySafeZone = 4f;
     
+    // 中心吸引力
+    private float _centerAttractionStrength = 0.3f;
+    private float _centerAttractionRadius = 60f;
+
     // ==================== 构造函数 ====================
     
     public FishMotion(Vector2 startPosition, List<Vector2> borders, float gapProtection = 2f)
@@ -67,7 +75,9 @@ public class FishMotion : BaseComponent
         InitialPosition = startPosition;
         Position = startPosition;
         _velocity = Vector2.Zero;
-        _noiseTimer = (float)Rd.Random.NextDouble() * 100f;
+        
+        // 初始化动态波形
+        InitializeWaves();
         
         BuildBoundaryPointSet(borders);
         Position = ClampToBoundary(Position);
@@ -79,18 +89,38 @@ public class FishMotion : BaseComponent
         InitialPosition = startPosition;
         Position = startPosition;
         _velocity = Vector2.Zero;
-        _noiseTimer = (float)Rd.Random.NextDouble() * 100f;
+        
+        // 初始化动态波形
+        InitializeWaves();
         
         var points = RectanglesToPoints(borders);
         BuildBoundaryPointSet(points);
         Position = ClampToBoundary(Position);
     }
 
+    // ==================== 动态波形初始化 ====================
+    
+    private void InitializeWaves()
+    {
+        // X方向波形
+        _xWave = new DynamicSineWave(
+            ampRange: _ampRange,
+            freqRange: _freqRange,
+            phaseRange: _phaseRange,
+            useSystemTime: false
+        );
+        
+        // Y方向波形（独立参数，产生不同的运动模式）
+        _yWave = new DynamicSineWave(
+            ampRange: _ampRange,
+            freqRange: _freqRange,
+            phaseRange: _phaseRange,
+            useSystemTime: false
+        );
+    }
+
     // ==================== 几何工具函数（自包含） ====================
     
-    /// <summary>
-    /// 点到线段的最短距离
-    /// </summary>
     private float DistanceToSegment(Vector2 point, Vector2 a, Vector2 b)
     {
         Vector2 ap = point - a;
@@ -107,9 +137,6 @@ public class FishMotion : BaseComponent
         return Vector2.Distance(point, closest);
     }
     
-    /// <summary>
-    /// 判断点是否在多边形内（射线法，含边界检测）
-    /// </summary>
     private bool IsPointInPolygon(Vector2 p, List<Vector2> polygon)
     {
         int n = polygon.Count;
@@ -120,13 +147,11 @@ public class FishMotion : BaseComponent
             Vector2 vi = polygon[i];
             Vector2 vj = polygon[j];
             
-            // 检查点是否在边上
             if (IsPointOnSegment(p, vi, vj))
                 return true;
             
             if ((vi.Y > p.Y) != (vj.Y > p.Y))
             {
-                // 计算射线与边的交点X坐标
                 float intersectX = vi.X + (p.Y - vi.Y) * (vj.X - vi.X) / (vj.Y - vi.Y);
                 if (p.X < intersectX)
                     inside = !inside;
@@ -136,9 +161,6 @@ public class FishMotion : BaseComponent
         return inside;
     }
     
-    /// <summary>
-    /// 判断点是否在线段上（含端点）
-    /// </summary>
     private bool IsPointOnSegment(Vector2 p, Vector2 a, Vector2 b)
     {
         Vector2 ab = b - a;
@@ -169,21 +191,18 @@ public class FishMotion : BaseComponent
             };
         }
         
-        // 特殊情况：1个点 → 圆形
         if (polygon.Count == 1)
         {
             BuildCircleBoundary(polygon[0], _gapProtection);
             return;
         }
         
-        // 特殊情况：2个点 → 胶囊形
         if (polygon.Count == 2)
         {
             BuildCapsuleBoundary(polygon[0], polygon[1], _gapProtection);
             return;
         }
         
-        // 计算边界范围
         _minX = (int)Math.Floor(polygon.Min(p => p.X) - _gapProtection);
         _maxX = (int)Math.Ceiling(polygon.Max(p => p.X) + _gapProtection);
         _minY = (int)Math.Floor(polygon.Min(p => p.Y) - _gapProtection);
@@ -519,6 +538,23 @@ public class FishMotion : BaseComponent
         return Vector2.Zero;
     }
 
+    // ==================== 中心吸引力 ====================
+    
+    private Vector2 GetCenterAttraction()
+    {
+        Vector2 toCenter = _center - Position;
+        float dist = toCenter.Length();
+        
+        if (dist < 0.01f || dist > _centerAttractionRadius)
+            return Vector2.Zero;
+        
+        // 距离越远吸引力越大（平方曲线）
+        float normalizedDist = dist / _centerAttractionRadius;
+        float strength = normalizedDist * normalizedDist * _centerAttractionStrength;
+        
+        return Vector2.Normalize(toCenter) * strength;
+    }
+
     // ==================== 状态机 ====================
     
     private void UpdateState(float dt, float dangerLevel)
@@ -584,34 +620,76 @@ public class FishMotion : BaseComponent
         return maxDanger;
     }
 
-    // ==================== 方向计算 ====================
+    // ==================== 方向计算（使用动态波形） ====================
     
     private Vector2 CalculateTargetDirection(List<Vector2> interferes, float dangerLevel)
     {
         Vector2 dir = Vector2.Zero;
         
+        // 更新动态波形
+        _xWave.Update();
+        _yWave.Update();
+        
+        // 从动态波形获取方向
+        float waveX = (float)_xWave.GetValue();
+        float waveY = (float)_yWave.GetValue();
+        
+        // 边界附近减小波形幅度
+        float ampScale = IsNearBoundary() ? 0.5f : 1f;
+        Vector2 waveDir = new Vector2(waveX * ampScale, waveY * ampScale);
+        
+        // 如果波形方向太小，使用随机方向兜底
+        if (waveDir.LengthSquared() < 0.01f)
+        {
+            float angle = (float)(Rd.Random.NextDouble() * Math.PI * 2);
+            waveDir = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+        }
+        waveDir.Normalize();
+        
+        // 计算其他力
+        Vector2 fleeDir = GetFleeDirection(interferes);
+        Vector2 boundaryForce = GetBoundaryPushForce();
+        Vector2 centerAttraction = GetCenterAttraction();
+        
+        bool nearBoundary = IsNearBoundary();
+        
         switch (_state)
         {
             case FishState.Idle:
-                dir = GetIdleDirection();
+                dir = waveDir;
+                
+                // 中心吸引力微调
+                if (centerAttraction.LengthSquared() > 0.01f)
+                {
+                    float blend = nearBoundary ? 0.4f : 0.1f;
+                    dir = Vector2.Lerp(dir, centerAttraction, blend);
+                }
                 break;
                 
             case FishState.Fright:
-                Vector2 idle = GetIdleDirection();
-                Vector2 flee = GetFleeDirection(interferes);
                 float mix = Math.Min(_stateTimer / _frightDuration, 1f);
-                dir = Vector2.Lerp(idle, flee, mix);
+                dir = Vector2.Lerp(waveDir, fleeDir, mix);
+                
+                if (centerAttraction.LengthSquared() > 0.01f)
+                {
+                    float blend = nearBoundary ? 0.2f : 0.05f;
+                    dir = Vector2.Lerp(dir, centerAttraction, blend);
+                }
                 break;
                 
             case FishState.Dodging:
-                dir = GetFleeDirection(interferes);
+                dir = fleeDir;
                 break;
                 
             case FishState.Recover:
-                Vector2 idle2 = GetIdleDirection();
-                Vector2 flee2 = GetFleeDirection(interferes);
                 float mix2 = 1f - Math.Min(_stateTimer / _recoverDuration, 1f);
-                dir = Vector2.Lerp(flee2, idle2, mix2);
+                dir = Vector2.Lerp(fleeDir, waveDir, mix2);
+                
+                if (centerAttraction.LengthSquared() > 0.01f)
+                {
+                    float blend = nearBoundary ? 0.3f : 0.08f;
+                    dir = Vector2.Lerp(dir, centerAttraction, blend);
+                }
                 break;
         }
         
@@ -619,33 +697,14 @@ public class FishMotion : BaseComponent
             dir = new Vector2(1, 0);
         dir.Normalize();
         
-        Vector2 boundaryForce = GetBoundaryPushForce();
-        if (boundaryForce.LengthSquared() > 0.01f)
+        // 边界推力作为最后保障
+        if (boundaryForce.LengthSquared() > 0.01f && nearBoundary)
         {
-            float blend = IsNearBoundary() ? 0.4f : 0.1f;
-            dir = Vector2.Lerp(dir, boundaryForce, blend);
+            dir = Vector2.Lerp(dir, boundaryForce, 0.3f);
             dir.Normalize();
         }
         
         return dir;
-    }
-    
-    private Vector2 GetIdleDirection()
-    {
-        _noiseTimer += Engine.DeltaTime * _noiseSpeed;
-        float t = _noiseTimer;
-        
-        float angle = 0f;
-        angle += (float)Math.Sin(t * 0.25f) * 1.2f;
-        angle += (float)Math.Sin(t * 0.6f + 1.3f) * 0.8f;
-        angle += (float)Math.Sin(t * 1.1f + 2.7f) * 0.5f;
-        angle += (float)Math.Sin(t * 1.8f + 4.2f) * 0.3f;
-        
-        if ((int)(t * 0.3f) % 7 == 0 && (int)(t * 8f) % 5 == 0)
-            angle += (float)(Rd.Random.NextDouble() - 0.5) * 2.5f;
-        
-        float amp = IsNearBoundary() ? _noiseAmplitude * 0.4f : _noiseAmplitude;
-        return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
     }
     
     private Vector2 GetFleeDirection(List<Vector2> interferes)
@@ -670,7 +729,7 @@ public class FishMotion : BaseComponent
                 Vector2 bf = GetBoundaryPushForce();
                 if (bf.LengthSquared() > 0.01f)
                 {
-                    flee = Vector2.Lerp(flee, bf, 0.3f);
+                    flee = Vector2.Lerp(flee, bf, 0.2f);
                     flee.Normalize();
                 }
             }
@@ -759,4 +818,32 @@ public class FishMotion : BaseComponent
     
     public FishState GetState() => _state;
     public int GetBoundaryPointCount() => _boundaryPoints?.Count ?? 0;
+    
+    /// <summary>
+    /// 设置动态波形参数范围
+    /// </summary>
+    public void SetWaveParameters(
+        (float Min, float Max)? ampRange = null,
+        (float Min, float Max)? freqRange = null,
+        (float Min, float Max)? phaseRange = null)
+    {
+        if (ampRange.HasValue)
+            _ampRange = ampRange.Value;
+        if (freqRange.HasValue)
+            _freqRange = freqRange.Value;
+        if (phaseRange.HasValue)
+            _phaseRange = phaseRange.Value;
+        
+        // 重新初始化波形
+        InitializeWaves();
+    }
+    
+    /// <summary>
+    /// 设置中心吸引力参数
+    /// </summary>
+    public void SetCenterAttraction(float strength, float radius)
+    {
+        _centerAttractionStrength = MathHelper.Clamp(strength, 0f, 1f);
+        _centerAttractionRadius = Math.Max(radius, 1f);
+    }
 }
