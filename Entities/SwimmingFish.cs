@@ -13,7 +13,7 @@ public class SwimmingFish : BaseEntity
     {
         Collider = new Circle(4f);
     }
-    // private FishMotion motion;
+    private FishMotion motion;
 
     private int WaterGroup = -1;
     protected override void AwakeExecute(Scene scene)
@@ -75,15 +75,25 @@ public class SwimmingFish : BaseEntity
             }
         }
 
-        // motion = new(Position, borders.ToArray());
-        // motion.AddTo(this);
+        motion = new(Position, borders);
+        motion.GetInterferePoints = () =>
+        {
+            List<Vc2> p = new();
+            if (PUt.TryGetPlayer(out Player player))
+            {
+                p.Add(player.Center);
+            }
+
+            return p;
+        };
+        motion.AddTo(this);
     }
 
     public override void Render()
     {
         base.Render();
         
-        // Draw.Rect(motion.Position - Vc2.One * 2f, 4f, 4f, Color.Red);
+        Draw.Rect(motion.Position - Vc2.One * 2f, 4f, 4f, Color.Red);
     }
     
     public bool WaterCrossover(Water a, Water b)
