@@ -240,6 +240,9 @@ public class ChroniaHelperSession : EverestModuleSession
 
     // Open URL Trigger extension
     public bool SkipConfirmationThisSession = false;
+    
+    // Water groupping
+    public Dictionary<int, List<int>> GroupedWaters = new();
 
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();

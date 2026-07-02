@@ -422,7 +422,7 @@ public static partial class GeometryUtils
         int bottom = Math.Min(orig.Bottom, target.Bottom);
 
         // 检查是否有交集
-        if (left >= right || top >= bottom)
+        if (left > right || top > bottom)
         {
             // 完全无交集
             return false;
@@ -442,7 +442,7 @@ public static partial class GeometryUtils
         // 有正面积的重叠区域
         return true;
     }
-
+    
     public static Vc2 ToPointer(this float value, Vc2 start, Vc2 reference)
     {
         if (start == reference)
@@ -461,5 +461,10 @@ public static partial class GeometryUtils
         }
 
         return start + (reference - start) * mult;
+    }
+    
+    public static Vector2 RectToVector2(this Rectangle rect)
+    {
+        return new Vector2(rect.X + rect.Width / 2f, rect.Y + rect.Height / 2f);
     }
 }

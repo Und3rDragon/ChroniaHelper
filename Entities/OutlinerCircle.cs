@@ -56,7 +56,7 @@ public class OutlinerCircle : BaseEntity
     private int pointNumber;
     private CColor innerColor, borderColor;
     private FlagsListener visibleFlag;
-    private InnerData.Float colorFade;
+    private DataComponent.Float colorFade;
     private EaseMode visibleFade;
     private float displayFadeTime;
     private bool noFade;

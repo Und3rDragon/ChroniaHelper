@@ -48,5 +48,13 @@ return {
         nearLineColor = {
             fieldType = "color",
         },
+        particleCount = {
+            fieldType = "integer",
+            minimumValue = 0,
+        },
+        backParticleCount = {
+            fieldType = "integer",
+            minimumValue = 0,
+        },
     },
 }
