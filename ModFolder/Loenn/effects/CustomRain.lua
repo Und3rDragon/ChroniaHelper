@@ -34,5 +34,9 @@ return {
             },
             elementSeparator = ";",
         },
+        Amount = {
+            fieldType = "integer",
+            minimumValue = 0,
+        },
     },
 }

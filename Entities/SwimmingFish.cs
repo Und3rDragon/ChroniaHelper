@@ -6,7 +6,7 @@ using ChroniaHelper.Utils;
 namespace ChroniaHelper.Entities;
 
 [Tracked]
-[CustomEntity("ChroniaHelper/SwimmingFish")]
+// [CustomEntity("ChroniaHelper/SwimmingFish")]
 public class SwimmingFish : BaseEntity
 {
     public SwimmingFish(EntityData data, Vc2 offset) : base(data, offset)
