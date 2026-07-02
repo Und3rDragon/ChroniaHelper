@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class InnerData : BaseComponent
+public class DataComponent : BaseComponent
 {
     public override bool Equals(object obj)
     {
-        if(obj is InnerData data)
+        if(obj is DataComponent data)
         {
             return string.Equals(data.Tag, Tag);
         }
@@ -26,23 +26,23 @@ public class InnerData : BaseComponent
         return Tag.GetHashCode();
     }
 
-    public static bool operator ==(InnerData a, InnerData b)
+    public static bool operator ==(DataComponent a, DataComponent b)
     {
         return a.Tag.Equals(b.Tag);
     }
 
-    public static bool operator !=(InnerData a, InnerData b)
+    public static bool operator !=(DataComponent a, DataComponent b)
     {
         return !(a == b);
     }
 
-    public InnerData(string tag)
+    public DataComponent(string tag)
     {
         Tag = tag;
     }
     public string Tag { get; set; }
 
-    public class Bool : InnerData
+    public class Bool : DataComponent
     {
         public Bool(string tag, bool value) : base(tag)
         {
@@ -51,7 +51,7 @@ public class InnerData : BaseComponent
         public bool Value { get; set; }
     }
 
-    public class Int : InnerData
+    public class Int : DataComponent
     {
         public Int(string tag, int value) : base(tag)
         {
@@ -86,7 +86,7 @@ public class InnerData : BaseComponent
         }
     }
 
-    public class Float : InnerData
+    public class Float : DataComponent
     {
         public Float(string tag, float value) : base(tag)
         {
@@ -120,7 +120,7 @@ public class InnerData : BaseComponent
         }
     }
 
-    public class String : InnerData
+    public class String : DataComponent
     {
         public String(string tag, string value) : base(tag)
         {
@@ -129,7 +129,7 @@ public class InnerData : BaseComponent
         public string Value { get; set; }
     }
 
-    public class Double : InnerData
+    public class Double : DataComponent
     {
         public Double(string tag, double value) : base(tag)
         {
@@ -164,7 +164,7 @@ public class InnerData : BaseComponent
         }
     }
 
-    public class General<T> : InnerData
+    public class General<T> : DataComponent
     {
         public General(string tag, T value) : base(tag)
         {
@@ -173,7 +173,7 @@ public class InnerData : BaseComponent
         public T Value { get; set; }
     }
 
-    public class InList<T> : InnerData
+    public class InList<T> : DataComponent
     {
         public InList(string tag, List<T> value) : base(tag)
         {
@@ -182,7 +182,7 @@ public class InnerData : BaseComponent
         public List<T> Value { get; set; }
     }
 
-    public class InDic<TKey, TValue> : InnerData
+    public class InDic<TKey, TValue> : DataComponent
     {
         public InDic(string tag, Dictionary<TKey, TValue> value) : base(tag)
         {
