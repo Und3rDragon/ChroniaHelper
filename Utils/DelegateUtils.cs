@@ -52,4 +52,9 @@ public static class DelegateUtils
         }
         return fallback;
     }
+
+    public static Vc2 SetDecalParallaxStatic(Vc2 fallback)
+    {
+        return fallback;
+    }
 }
