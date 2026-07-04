@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VivHelper.Triggers;
 using YoctoHelper.Cores;
+using AreaDataExt = On.Celeste.AreaDataExt;
 
 namespace ChroniaHelper.Utils;
 
@@ -1162,4 +1163,26 @@ public static class CollectiveUtils
 
         return true;
     }
+
+    public static Dictionary<TKey, List<TItem>> CatagorizeList<TKey, TItem>(
+        this List<TItem> source,
+        Func<int, TItem, TKey> keyCreator)
+    where TItem : new()
+    {
+        Dictionary<TKey, List<TItem>> dict = new();
+        
+        int index = 0;
+        for (index = 0; index < source.Count; index++)
+        {
+            TItem item = source[index];
+            TKey key = keyCreator(index, item);
+            
+            dict.Create(key, new());
+            dict[key].Add(item);
+        }
+
+        return dict;
+    }
+
+    public static int DefaultKeyifyWithIndex<Item>(int index, Item item) => index;
 }
