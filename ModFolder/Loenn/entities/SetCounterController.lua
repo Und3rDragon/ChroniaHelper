@@ -62,6 +62,23 @@ controller.sprite = function(room, entity)
     local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Counter", entity)
 
     table.insert(sprite, iconSprite)
+    
+    local _text = entity.counters .. "\n=\n"
+    
+    if entity.value2 ~= nil then
+        if entity.value2 ~= "" then
+            _text = _text .. "(" .. entity.value .. ", " .. entity.value2 .. ")"
+        else
+            _text = _text .. entity.value
+        end
+    else
+        _text = _text .. entity.value
+    end
+    
+    local text = require("structs.drawable_text").fromText(_text, entity.x + 12, entity.y - 12, 48, 24)
+    
+    table.insert(sprite, text)
+    
     return sprite
 end
 

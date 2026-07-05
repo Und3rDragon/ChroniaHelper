@@ -53,6 +53,11 @@ controller.sprite = function(room, entity)
     local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Flag", entity)
 
     table.insert(sprite, iconSprite)
+    
+    local text = require("structs.drawable_text").fromText(entity.flagSequence, entity.x + 12, entity.y - 12, 48, 24)
+    
+    table.insert(sprite, text)
+    
     return sprite
 end
 

@@ -3,7 +3,7 @@ using ChroniaHelper.Components.SwimmingFish;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 
-namespace ChroniaHelper.Entities;
+namespace ChroniaHelper.Entities.WIP;
 
 [Tracked]
 // [CustomEntity("ChroniaHelper/SwimmingFish")]
