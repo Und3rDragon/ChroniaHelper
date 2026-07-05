@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using Celeste.Mod.Registry.DecalRegistryHandlers;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Mono.Cecil;
@@ -17,12 +18,11 @@ public class ParallaxStaticRegistryHandler : DecalRegistryHandler
 
     public override void Parse(XmlAttributeCollection xml)
     {
-        StaticValue.X = this.Get<float>(xml, "x", 160f);
-        StaticValue.Y = this.Get<float>(xml, "y", 90f);
-        Handler = new(StaticValue);
+        x = this.GetString(xml, "x", "160");
+        y = this.GetString(xml, "y", "90");
+        Handler = new(x, y);
     }
-
-    public Vc2 StaticValue = new Vc2(160f, 90f);
+    private string x, y;
     private ParallaxStatic Handler;
 
     public override void ApplyTo(Decal decal)
@@ -36,12 +36,19 @@ public class ParallaxStaticRegistryHandler : DecalRegistryHandler
 
 public class ParallaxStatic : BaseComponent
 {
-    public ParallaxStatic(Vc2 staticValue)
+    public ParallaxStatic(string x, string y)
     {
-        StaticValue = staticValue;
+        StaticValueX = new(x, 160f);
+        StaticValueY = new(y, 90f);
     }
+    public SelectiveSlider StaticValueX, StaticValueY;
+    public Vc2 StaticValue => new Vc2(StaticValueX.Value, StaticValueY.Value);
 
-    public Vc2 StaticValue = Vc2.One;
+    public override void Update()
+    {
+        StaticValueX?.Update();
+        StaticValueY?.Update();
+    }
 
     [LoadHook]
     public static void Load()
