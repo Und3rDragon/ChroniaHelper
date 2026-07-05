@@ -6,6 +6,7 @@ using ChroniaHelper.Utils;
 namespace ChroniaHelper.Entities.WIP;
 
 [Tracked]
+[WorkingInProgress]
 // [CustomEntity("ChroniaHelper/SwimmingFish")]
 public class SwimmingFish : BaseEntity
 {

@@ -11,31 +11,6 @@ namespace ChroniaHelper.Components;
 
 public class DataComponent : BaseComponent
 {
-    public override bool Equals(object obj)
-    {
-        if(obj is DataComponent data)
-        {
-            return string.Equals(data.Tag, Tag);
-        }
-
-        return false;
-    }
-
-    public override int GetHashCode()
-    {
-        return Tag.GetHashCode();
-    }
-
-    public static bool operator ==(DataComponent a, DataComponent b)
-    {
-        return a.Tag.Equals(b.Tag);
-    }
-
-    public static bool operator !=(DataComponent a, DataComponent b)
-    {
-        return !(a == b);
-    }
-
     public DataComponent(string tag)
     {
         Tag = tag;

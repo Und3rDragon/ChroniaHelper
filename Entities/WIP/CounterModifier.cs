@@ -7,6 +7,7 @@ using ChroniaHelper.Cores.Graphical;
 namespace ChroniaHelper.Entities.WIP;
 
 [Tracked]
+[WorkingInProgress]
 // [CustomEntity("ChroniaHelper/CounterModifier")]
 public class CounterModifier : BaseEntity
 {

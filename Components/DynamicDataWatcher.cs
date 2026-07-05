@@ -5,31 +5,6 @@ namespace ChroniaHelper.Components;
 
 public class DynamicDataWatcher : BaseComponent
 {
-    public override bool Equals(object obj)
-    {
-        if (obj is DynamicDataWatcher watcher)
-        {
-            return this.Field == watcher.Field;
-        }
-        
-        return base.Equals(obj);
-    }
-    
-    public override int GetHashCode()
-    {
-        return Field.GetHashCode();
-    }
-
-    public static bool operator ==(DynamicDataWatcher a, DynamicDataWatcher b)
-    {
-        return a.Field.Equals(b.Field);
-    }
-    
-    public static bool operator !=(DynamicDataWatcher a, DynamicDataWatcher b)
-    {
-        return !(a == b);
-    }
-
     public DynamicDataWatcher(string field)
     {
         Field = field;
@@ -130,31 +105,6 @@ public class DynamicDataWatcher : BaseComponent
 
 public class GeneralDynamicDataWatcher<T> : BaseComponent where T : IConvertible
 {
-    public override bool Equals(object obj)
-    {
-        if (obj is GeneralDynamicDataWatcher<T> watcher)
-        {
-            return this.Field == watcher.Field;
-        }
-        
-        return base.Equals(obj);
-    }
-    
-    public override int GetHashCode()
-    {
-        return Field.GetHashCode();
-    }
-
-    public static bool operator ==(GeneralDynamicDataWatcher<T> a, GeneralDynamicDataWatcher<T> b)
-    {
-        return a.Field.Equals(b.Field);
-    }
-    
-    public static bool operator !=(GeneralDynamicDataWatcher<T> a, GeneralDynamicDataWatcher<T> b)
-    {
-        return !(a == b);
-    }
-
     public GeneralDynamicDataWatcher(string field)
     {
         Field = field;
