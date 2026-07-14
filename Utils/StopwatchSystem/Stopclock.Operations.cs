@@ -117,6 +117,8 @@ public partial class Stopclock
         Reset();
 
         signal = (int)Signal.Initial;
+        
+        Ldm.LoadHook<Stopclock>();
     }
     
     /// <summary>

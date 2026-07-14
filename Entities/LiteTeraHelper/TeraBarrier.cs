@@ -23,6 +23,8 @@ public class TeraBarrier : Solid
     public TeraBarrier(Vector2 position, float width, float height, TeraType tera)
         : base(position, width, height, safe: false)
     {
+        Ldm.LoadHook(typeof(TeraBarrier));
+        
         Collidable = false;
         for (int i = 0; (float)i < Width * Height / 16f; i++)
         {
@@ -38,12 +40,12 @@ public class TeraBarrier : Solid
         : this(data.Position + offset, data.Width, data.Height, data.Enum("tera", TeraType.Normal))
     {
     }
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void OnLoad()
     {
         playerUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), UpdateTeraBarrier);
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void OnUnload()
     {
         playerUpdateHook?.Dispose();

@@ -34,6 +34,8 @@ class ReversedGravityJelly : Actor
     private float downholdSpeed, windUpholdSpeed, upholdSpeed, upwindSpeed, neutralSpeed;
     public ReversedGravityJelly(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
+        Ldm.LoadHook<ReversedGravityJelly>();
+        
         this.bubble = data.Bool("bubble", false);
         this.downThrowMultiplier = data.Float("downThrowMultiplier", 1.8f);
         this.diagThrowYMultiplier = data.Float("diagThrowYMultiplier", 1.6f);
@@ -72,14 +74,14 @@ class ReversedGravityJelly : Actor
         InitiateParticles();
     }
 
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Player.PickupCoroutine += OnPickupCoroutine;
         IL.Celeste.Player.NormalUpdate += patchPlayerNormalUpdate;
         On.Celeste.Player.Throw += patchPlayerThrow;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Player.PickupCoroutine -= OnPickupCoroutine;

@@ -20,6 +20,9 @@ namespace ChroniaHelper.Entities
         public TeraDashBlock(EntityData data, Vector2 offset, EntityID id)
             : base(data.Position + offset, data.Char("tiletype", '3'), data.Width, data.Height, data.Bool("blendin"), data.Bool("permanent", defaultValue: true), data.Bool("canDash", defaultValue: true), id)
         {
+            Ldm.LoadHook(typeof(TeraBlock));
+            Ldm.LoadHook(typeof(TeraDashBlock));
+            
             tera = data.Enum("tera", TeraType.Normal);
         }
         public override void Awake(Scene scene)
@@ -29,14 +32,14 @@ namespace ChroniaHelper.Entities
             image.CenterOrigin();
             image.Position = new Vector2(Width / 2, Height / 2);
         }
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             On.Celeste.DashBlock.OnDashed += OnTeraDashed;
             IL.Celeste.Platform.MoveHExactCollideSolids += SolidCheckH;
             IL.Celeste.Platform.MoveVExactCollideSolids += SolidCheckV;
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             On.Celeste.DashBlock.OnDashed -= OnTeraDashed;

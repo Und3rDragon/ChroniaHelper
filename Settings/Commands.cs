@@ -367,7 +367,13 @@ public class Commands
     [Command("chronia_debug", "")]
     public static void _test(string inputs)
     {
-        inputs.LogCommand();
+        // inputs.LogCommand();
+
+        foreach (var i in Ldm.hookLoaded)
+        {
+            string s = i.Key.ToString();
+            s.LogCommand();
+        }
     }
 
     [Command("chronia_seed", "Set ChroniaHelper Random Seed")]

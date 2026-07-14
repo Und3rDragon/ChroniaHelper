@@ -21,6 +21,9 @@ namespace ChroniaHelper.Entities
         public TeraDreamBlock(EntityData data, Vector2 offset)
             : base(data.Position + offset, data.Width, data.Height, data.FirstNodeNullable(offset), data.Bool("fastMoving"), data.Bool("oneUse"), data.Bool("below"))
         {
+            Ldm.LoadHook(typeof(TeraBlock));
+            Ldm.LoadHook(typeof(TeraDreamBlock));
+            
             tera = data.Enum("tera", TeraType.Normal);
             Add(image = new Image(GFX.Game[TeraUtil.GetImagePath(tera)]));
             image.CenterOrigin();
@@ -32,14 +35,14 @@ namespace ChroniaHelper.Entities
             image.Position = new Vector2(Width / 2, Height / 2) + shake;
             image.Render();
         }
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             IL.Celeste.Player.DreamDashCheck += TeraDreamCheck;
             IL.Celeste.Player.DreamDashUpdate += TeraDreamUpdate;
             On.Celeste.Player.DreamDashUpdate += TeraDreamUpdateSpeed;
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             IL.Celeste.Player.DreamDashCheck -= TeraDreamCheck;

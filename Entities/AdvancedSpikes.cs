@@ -198,12 +198,12 @@ public class AdvancedSpikes : Entity
 
     public static ILHook PlayerOrigUpdateHook;
 
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void OnLoad()
     {
         PlayerOrigUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update", BindingFlags.Instance | BindingFlags.Public), PlayerOnOrigUpdate);
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void OnUnload()
     {
         PlayerOrigUpdateHook?.Dispose();
@@ -397,6 +397,8 @@ public class AdvancedSpikes : Entity
 
     public AdvancedSpikes(Vector2 position, EntityData data, DirectionMode direction) : base(position)
     {
+        Ldm.LoadHook(typeof(AdvancedSpikes));
+        
         Old(data);
         this.direction = direction;
         this.spikeType = data.Enum<SpikeType>("spikeType", SpikeType.Default);

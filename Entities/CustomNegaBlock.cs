@@ -13,13 +13,13 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/CustomNegaBlock")]
 public class CustomNegaBlock : NegaBlock
 {
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Player.RefillDash += WhenRefillDash;
     }
 
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Player.RefillDash -= WhenRefillDash;
@@ -46,6 +46,8 @@ public class CustomNegaBlock : NegaBlock
 
     public CustomNegaBlock(EntityData data, Vc2 offset) : base(data.Position + offset, data.Width, data.Height)
     {
+        Ldm.LoadHook(typeof(CustomNegaBlock));
+        
         Depth = data.Int("depth", -9000);
         tileType = data.Char("tileType", '3');
         lightOcclude = data.Float("lightOcclude", 1F, 0F, 1F);

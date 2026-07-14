@@ -20,18 +20,20 @@ public class HUDController : BaseEntity
 {
     public HUDController(EntityData data, Vc2 offset) : base(data, offset)
     {
+        Ldm.LoadHook(typeof(HUDController));
+        
         Tag = Tags.Global;
         
         condition = data.Attr("condition", "y < 90");
     }
     public string condition;
 
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Level.End += LevelEnd;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.End -= LevelEnd;

@@ -19,14 +19,14 @@ namespace ChroniaHelper.Entities;
 [Credits("Kyfex for Dash Toggle Heelper")]
 public class CounterCassetteBlock : CassetteBlock
 {
-    [ChroniaHelper.Cores.LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.CassetteBlock.FindInGroup += FindInGroupOverride;
         On.Celeste.CassetteBlock.CheckForSame += CheckForSameOverride;
         On.Celeste.CassetteBlock.SetImage += SetImageOverride;
     }
-    [ChroniaHelper.Cores.UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.CassetteBlock.FindInGroup -= FindInGroupOverride;
@@ -77,6 +77,8 @@ public class CounterCassetteBlock : CassetteBlock
     public CounterCassetteBlock(Vector2 position, EntityID id, EntityData data)
         : base(data.Position + position, id, data.Width, data.Height, data.Int("counterValue", 0), -1f)
     {
+        Ldm.LoadHook(typeof(CounterCassetteBlock));
+        
         color = (baseColor = data.GetChroniaColor("color", Color.White)).Parsed();
         this.prefix = data.Attr("directory", "objects/ChroniaHelper/counterCassetteBlock/").TrimEnd('/') + '/';
         this.counter = data.Attr("counter", "counterCassetteBlockCounter");

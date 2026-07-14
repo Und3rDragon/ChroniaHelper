@@ -22,12 +22,13 @@ namespace ChroniaHelper.Entities
         public TeraEffect EffectAsDefender(TeraType t);
         public void ChangeTera(TeraType newTera);
     }
+    
     public static class TeraBlock
     {
         private static ILHook playerUpdateHook;
         private static Hook liftSpeedHook;
         private static ILHook liftBoostHook;
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             On.Celeste.CrystalStaticSpinner.OnPlayer += SpinnerCheck;
@@ -49,7 +50,7 @@ namespace ChroniaHelper.Entities
             IL.Celeste.Solid.MoveVExact += OnSolidMoveV;
             liftBoostHook = new ILHook(typeof(Player).GetMethod("get_LiftBoost", BindingFlags.NonPublic | BindingFlags.Instance), ModifyLiftBoost);
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             On.Celeste.CrystalStaticSpinner.OnPlayer -= SpinnerCheck;

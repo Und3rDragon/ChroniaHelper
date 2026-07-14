@@ -16,6 +16,8 @@ public class ActiveTera : Entity
 
     public ActiveTera(EntityData data, Vector2 offset, EntityID id) : base(data.Position + offset)
     {
+        Ldm.LoadHook(typeof(ActiveTera));
+        
         ID = id;
         active = data.Bool("active");
         tera = data.Enum("tera", TeraType.Normal);
@@ -53,13 +55,13 @@ public class ActiveTera : Entity
         }
         
     }
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void OnLoad()
     {
         On.Celeste.Player.ctor += CreatePlayerTera;
         On.Celeste.Session.UpdateLevelStartDashes += UpdateLevelTera;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void OnUnload()
     {
         On.Celeste.Player.ctor -= CreatePlayerTera;

@@ -52,13 +52,13 @@ public class SpriteEntity : Actor
         Command.Change_Tag, Command.Kill_On_Collide, Command.Repeat_Times, Command.Random_Flag
     };
 
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         // break directions
         On.Celeste.Player.Update += breakTheControls;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Player.Update -= breakTheControls;
@@ -71,6 +71,8 @@ public class SpriteEntity : Actor
     }
     public SpriteEntity(Vector2 position, EntityData data) : base(position)
     {
+        Ldm.LoadHook<SpriteEntity>();
+        
         spriteName = data.Attr("xmlLabel", "SpriteEntity");
         sprite = GFX.SpriteBank.Create(spriteName);
         Add(sprite);

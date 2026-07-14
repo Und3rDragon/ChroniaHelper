@@ -11,14 +11,14 @@ public partial class Stopclock : IDisposable
 
     private static Dictionary<string, Stopclock> clocksToGlobal = new();
     private static Dictionary<string, Stopclock> clocksToSession = new();
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Monocle.Scene.Update += SessionUpdate;
         On.Monocle.Scene.Update += GlobalUpdate;
         On.Celeste.Level.UpdateTime += SessionPersistent;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Monocle.Scene.Update -= SessionUpdate;

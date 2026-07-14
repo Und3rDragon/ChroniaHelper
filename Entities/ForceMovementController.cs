@@ -19,7 +19,7 @@ public class ForceMovementController : BaseEntity {
     private static Hook hookDashPressed;
     private static Hook hookCrouchDashPressed;
     
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load() {
         // break directions
         On.Celeste.Player.Update += breakTheControls;
@@ -34,7 +34,7 @@ public class ForceMovementController : BaseEntity {
         hookDashPressed = new Hook(typeof(Input).GetMethod("get_DashPressed"), typeof(ForceMovementController).GetMethod("modDashResult", BindingFlags.NonPublic | BindingFlags.Static));
         hookCrouchDashPressed = new Hook(typeof(Input).GetMethod("get_CrouchDashPressed"), typeof(ForceMovementController).GetMethod("modDashResult", BindingFlags.NonPublic | BindingFlags.Static));
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload() {
         On.Celeste.Player.Update -= breakTheControls;
 
@@ -60,6 +60,7 @@ public class ForceMovementController : BaseEntity {
     public ForceMovementController(EntityData data, Vector2 offset)
         : base(data, offset)
     {
+        Ldm.LoadHook(typeof(ForceMovementController));
 
         value = data.Float("value", 1f);
         up = data.Bool("up", false);

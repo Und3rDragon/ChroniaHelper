@@ -16,27 +16,15 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/DangerBubbler")]
 public class DangerBubbler : BaseEntity
 {
-    private static bool HooksLoaded;
-
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void LoadHooksIfNeeded()
     {
-        if (HooksLoaded)
-        {
-            return;
-        }
-        HooksLoaded = true;
-
         On.Celeste.Player.NormalBegin += Player_NormalBegin;
     }
 
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
-        if (!HooksLoaded)
-            return;
-        HooksLoaded = false;
-
         On.Celeste.Player.NormalBegin -= Player_NormalBegin;
     }
 
@@ -55,7 +43,7 @@ public class DangerBubbler : BaseEntity
     
     public DangerBubbler(EntityData d, Vc2 o) : base(d, o)
     {
-        
+        Ldm.LoadHook(typeof(DangerBubbler));
     }
 
     public bool InBubbler;

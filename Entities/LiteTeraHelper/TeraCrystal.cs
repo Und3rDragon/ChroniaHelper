@@ -30,6 +30,8 @@ public class TeraCrystal : Actor
     private Image image;
     public TeraCrystal(EntityData e, Vector2 offset) : base(e.Position + offset)
     {
+        Ldm.LoadHook<TeraCrystal>();
+        
         var position = e.Position + offset;
         previousPosition = position;
         tera = e.Enum("tera", TeraType.Normal);
@@ -63,13 +65,13 @@ public class TeraCrystal : Actor
             Speed = speed;
         };
     }
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void OnLoad()
     {
         On.Celeste.Actor.MoveHExact += TeraMoveHExact;
         On.Celeste.Actor.MoveVExact += TeraMoveVExact;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void OnUnload()
     {
         On.Celeste.Actor.MoveHExact -= TeraMoveHExact;

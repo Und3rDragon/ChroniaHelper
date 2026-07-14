@@ -23,6 +23,9 @@ namespace ChroniaHelper.Entities
         public TeraMoveBlock(EntityData data, Vector2 offset)
             : base(data.Position + offset, data.Width, data.Height, data.Enum("direction", Directions.Left), data.Bool("canSteer", defaultValue: true), data.Bool("fast")) 
         { 
+            Ldm.LoadHook(typeof(TeraBlock));
+            Ldm.LoadHook(typeof(TeraMoveBlock));
+            
             tera = data.Enum("tera", TeraType.Normal);
             Add(image = new Image(GFX.Game["ChroniaHelper/objects/tera/Player/" + tera.ToString()]));
             image.CenterOrigin();
@@ -58,12 +61,12 @@ namespace ChroniaHelper.Entities
             lastEffect = TeraEffect.Normal;
             return;
         }
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             sequenceHook = new ILHook(typeof(MoveBlock).GetMethod("Controller", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), TeraSequence);
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             sequenceHook?.Dispose();

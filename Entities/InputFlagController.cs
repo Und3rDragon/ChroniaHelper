@@ -290,18 +290,24 @@ public class InputFlagController : AbstractInputController
 [Tracked(true)]
 public abstract class AbstractInputController : Entity
 {
-    public AbstractInputController() : base() { }
+    public AbstractInputController() : base()
+    {
+        Ldm.LoadHook(typeof(AbstractInputController));
+    }
 
-    public AbstractInputController(Vector2 position) : base(position) { }
+    public AbstractInputController(Vector2 position) : base(position)
+    {
+        Ldm.LoadHook(typeof(AbstractInputController));
+    }
 
     public abstract void FrozenUpdate();
 
-    [LoadHook]
+    [SelectiveLoadHook]
     internal static void Load()
     {
         IL.Monocle.Engine.Update += Engine_Update;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     internal static void Unload()
     {
         IL.Monocle.Engine.Update -= Engine_Update;

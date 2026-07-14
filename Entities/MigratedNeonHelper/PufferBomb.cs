@@ -109,6 +109,8 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 		public PufferBomb(Vector2 position, bool oneUse, bool moreFreezeFrames, bool alwaysBoost, bool longRange, bool ignoreSolids, EntityData data)
 				: base(position)
 		{
+			Ldm.LoadHook<PufferBomb>();
+			
 			this.oneUse = true;
 			this.moreFreezeFrames = moreFreezeFrames;
 			this.alwaysBoost = alwaysBoost;
@@ -156,12 +158,12 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 
 		private static MethodInfo springBounceAnimate = typeof(Spring).GetMethod("BounceAnimate", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void Load()
 		{
 			On.Celeste.Spring.ctor_Vector2_Orientations_bool += springOrientHook;
 		}
-		[UnloadHook]
+		[SelectiveUnloadHook]
 		public static void Unload()
 		{
 			On.Celeste.Spring.ctor_Vector2_Orientations_bool -= springOrientHook;

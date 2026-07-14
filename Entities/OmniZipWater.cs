@@ -416,6 +416,8 @@ public class OmniZipWater : OmniZipEntity
         )
         : base(data, position)
     {
+        Ldm.LoadHook<OmniZipWater>();
+        
         #region common params
 
         Depth = Depths.FGTerrain + 1;
@@ -557,7 +559,7 @@ public class OmniZipWater : OmniZipEntity
     }
 
     #region Water funcs
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Player.SwimCheck += Player_SwimCheck;
@@ -566,7 +568,7 @@ public class OmniZipWater : OmniZipEntity
         On.Celeste.Player.SwimRiseCheck += Player_SwimRiseCheck;
         On.Celeste.Player.UnderwaterMusicCheck += Player_UnderwaterMusicCheck;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Player.SwimCheck -= Player_SwimCheck;

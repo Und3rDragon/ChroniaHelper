@@ -25,18 +25,21 @@ namespace ChroniaHelper.Entities
         public TeraCrushBlock(EntityData data, Vector2 offset)
             : base(data.Position + offset, data.Width, data.Height, data.Enum("axes", Axes.Both), false)
         {
+            Ldm.LoadHook(typeof(TeraBlock));
+            Ldm.LoadHook(typeof(TeraCrushBlock));
+            
             tera = data.Enum("tera", TeraType.Normal);
             Add(image = new Image(GFX.Game[TeraUtil.GetImagePath(tera)]));
             image.CenterOrigin();
             image.Position = new Vector2(data.Width / 2, data.Height / 2 - 12);
         }
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             On.Celeste.CrushBlock.CanActivate += TeraCanActivate;
             sequenceHook = new ILHook(typeof(CrushBlock).GetMethod("AttackSequence", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), TeraSequence);
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             On.Celeste.CrushBlock.CanActivate -= TeraCanActivate;

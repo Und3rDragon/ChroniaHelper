@@ -26,6 +26,9 @@ namespace ChroniaHelper.Entities
         public TeraFallingBlock(EntityData data, Vector2 offset)
             : base(data.Position + offset, data)
         {
+            Ldm.LoadHook(typeof(TeraBlock));
+            Ldm.LoadHook(typeof(TeraFallingBlock));
+            
             tera = data.Enum("tera", TeraType.Normal);
             Add(image = new Image(GFX.Game[TeraUtil.GetImagePath(tera)]));
             image.CenterOrigin();
@@ -61,7 +64,7 @@ namespace ChroniaHelper.Entities
             lastEffect = TeraEffect.Normal;
             return;
         }
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             IL.Celeste.FallingBlock.PlayerFallCheck += TeraFallCheck;
@@ -74,7 +77,7 @@ namespace ChroniaHelper.Entities
 
             crushSequenceHook = new ILHook(typeof(CrushBlock).GetMethod("AttackSequence", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), TeraCrushSequence);
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             IL.Celeste.FallingBlock.PlayerFallCheck -= TeraFallCheck;

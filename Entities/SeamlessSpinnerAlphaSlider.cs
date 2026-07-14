@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using YamlDotNet.Serialization;
@@ -13,13 +14,13 @@ public class SeamlessSpinnerAlphaSlider
 {
     public const string SliderName = "SeamlessSpinnerAlphaSlider";
 
-    [Cores.LoadHook]
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.Level.LoadLevel += OnLoadLevel;
         On.Celeste.Level.Update += LevelUpdate;
     }
-    [Cores.UnloadHook]
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.LoadLevel -= OnLoadLevel;

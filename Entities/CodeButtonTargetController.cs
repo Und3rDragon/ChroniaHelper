@@ -13,12 +13,12 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/CodeButtonTargetController")]
 public class CodeButtonTargetController : BaseEntity
 {
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Level.Update += OnLevelUpdate;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.Update -= OnLevelUpdate;
@@ -46,6 +46,8 @@ public class CodeButtonTargetController : BaseEntity
 
     public CodeButtonTargetController(EntityData data, Vc2 offset) : base(data, offset)
     {
+        Ldm.LoadHook(typeof(CodeButtonTargetController));
+        
         sessionKeyID = data.Attr("sessionKeyID", "buttonKey");
         buttonCodeTarget = data.Attr("buttonCodeTarget", "000000");
         hitEnterNeeded = data.Bool("hitEnterToConfirm", true);

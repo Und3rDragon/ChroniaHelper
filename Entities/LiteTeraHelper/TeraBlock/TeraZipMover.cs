@@ -25,6 +25,9 @@ namespace ChroniaHelper.Entities
         public TeraZipMover(EntityData data, Vector2 offset)
             : base(data.Position + offset, data.Width, data.Height, data.Nodes[0] + offset, data.Enum("theme", Themes.Normal))
         {
+            Ldm.LoadHook(typeof(TeraBlock));
+            Ldm.LoadHook(typeof(TeraZipMover));
+            
             tera = data.Enum("tera", TeraType.Normal);
             Add(image = new Image(GFX.Game[TeraUtil.GetImagePath(tera)]));
             image.CenterOrigin();
@@ -32,12 +35,12 @@ namespace ChroniaHelper.Entities
             var bloom = Get<BloomPoint>();
             bloom.Alpha = 0.3f;
         }
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             sequenceHook = new ILHook(typeof(ZipMover).GetMethod("Sequence", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), TeraSequence);
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             sequenceHook?.Dispose();

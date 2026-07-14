@@ -69,6 +69,8 @@ public class DreamKevin : Solid
     public DreamKevin(Vector2 position, Vector2 size, Axes axe)
         : base(position, size.X, size.Y, true)
     {
+        Ldm.LoadHook<DreamKevin>();
+        
         OnDashCollide = OnDashed;
         returnStack = new List<MoveState>();
         canActivate = true;
@@ -143,7 +145,7 @@ public class DreamKevin : Solid
 
     }
 
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         //if (Md.CommunalHelperLoaded)
@@ -161,7 +163,7 @@ public class DreamKevin : Solid
     //        Logger.Error("FASF2025/DelegateHelper", "Failed to create field getter for CommunalHelper.DashStates.DreamTunnelDash.dreamTunnelDashAttacking");
     //}
 
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.DreamBlock.FootstepRipple -= DreamBlock_FootstepRipple;

@@ -13,7 +13,7 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/PlatformLineController")]
 public class PlatformLineController : Entity
 {
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.MovingPlatformLine.Added += MP_Added_Modify;
@@ -21,7 +21,7 @@ public class PlatformLineController : Entity
         On.Celeste.SinkingPlatformLine.Added += SP_Added_Modify;
         On.Celeste.SinkingPlatformLine.Render += SP_Render_Modify;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.MovingPlatformLine.Added -= MP_Added_Modify;
@@ -36,6 +36,8 @@ public class PlatformLineController : Entity
     }
     public PlatformLineController(EntityData data, Vector2 position) : base(position)
     {
+        Ldm.LoadHook<PlatformLineController>();
+        
         Color edgeColor = Calc.HexToColor(data.Attr("edgeColor", "a4464a"));
         Color centerColor = Calc.HexToColor(data.Attr("centerColor", "86354e"));
 

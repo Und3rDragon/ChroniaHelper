@@ -15,6 +15,8 @@ public class TeraBooster : Booster
 
     public TeraBooster(EntityData data, Vector2 offset) : base(data.Position + offset, data.Bool("red"))
     {
+        Ldm.LoadHook(typeof(TeraBooster));
+        
         Ch9HubBooster = false;
         tera = data.Enum("tera", TeraType.Normal);
         Add(image = new Image(GFX.Game[TeraUtil.GetImagePath(tera)]));
@@ -29,12 +31,12 @@ public class TeraBooster : Booster
         base.Render();
         image.Position = position;
     }
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void OnLoad()
     {
         On.Celeste.Player.Render += PlayerRenderInTeraBooster;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void OnUnload()
     {
         On.Celeste.Player.Render -= PlayerRenderInTeraBooster;

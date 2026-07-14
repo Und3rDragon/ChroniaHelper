@@ -6,6 +6,70 @@ namespace ChroniaHelper.Cores;
 
 public class LoadingManager
 {
+    public static Dictionary<Type, bool> hookLoaded { get; private set; } = new();
+
+    /// <summary>
+    /// Manually load hooks with [SelectiveLoadHook] labelled
+    /// </summary>
+    /// <param name="t"></param>
+    public static void LoadHook(Type t)
+    {
+        // if registered and loaded, return
+        if (hookLoaded.GetValueOrDefault(t, false))
+        {
+            return;
+        }
+        
+        // if not, load the hook
+        MethodInfo[] methods = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+        foreach (var method in methods)
+        {
+            if (method.GetCustomAttribute(typeof(SelectiveLoadHook)) != null)
+            {
+                object instance = method.IsStatic ? null : Activator.CreateInstance(t);
+                method.Invoke(instance, null);
+            }
+        }
+        
+        hookLoaded[t] = true;
+    }
+
+    public static void LoadHook<T>()
+    {
+        LoadHook(typeof(T));
+    }
+    
+    /// <summary>
+    /// Manually unload hooks with [SelectiveUnloadHook] labelled
+    /// </summary>
+    /// <param name="t"></param>
+    public static void UnloadHook(Type t)
+    {
+        // if unregistered or unloaded, return
+        if (hookLoaded.GetValueOrDefault(t, true))
+        {
+            return;
+        }
+        
+        // if not, unload the hook
+        MethodInfo[] methods = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+        foreach (var method in methods)
+        {
+            if (method.GetCustomAttribute(typeof(SelectiveUnloadHook)) != null)
+            {
+                object instance = method.IsStatic ? null : Activator.CreateInstance(t);
+                method.Invoke(instance, null);
+            }
+        }
+        
+        hookLoaded[t] = false;
+    }
+
+    public static void UnloadHook<T>()
+    {
+        UnloadHook(typeof(T));
+    }
+    
     public static void Load()
     {
         Execute(typeof(LoadHook), "ChroniaHelper");
@@ -15,6 +79,17 @@ public class LoadingManager
     public static void Unload()
     {
         Execute(typeof(UnloadHook), "ChroniaHelper");
+        
+        // do Selective Unload here
+        Type[] types = Assembly.GetExecutingAssembly().GetTypesSafe();
+
+        foreach (var t in types)
+        {
+            if (!t.FullName.StartsWith("ChroniaHelper"))
+                continue;
+
+            UnloadHook(t);
+        }
     }
     
     private static void Execute(Type attributeType, string targetNamespace = null)

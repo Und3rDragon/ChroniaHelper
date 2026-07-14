@@ -71,6 +71,8 @@ public class BubblePushField : Entity
         string flag, bool liftOff, bool makeWind,
         string particleDirs, bool noParticles, bool instant)
     {
+        Ldm.LoadHook(typeof(BubblePushField));
+        
         Position = position;
         Strength = strength;
         this.activationMode = activationMode;
@@ -208,7 +210,7 @@ public class BubblePushField : Entity
             }
         }
     }
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         playerWindTimeout = typeof(Player).GetField("windTimeout", BindingFlags.NonPublic | BindingFlags.Instance);

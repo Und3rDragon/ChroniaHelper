@@ -25,6 +25,8 @@ public class OperationCodesListener : BaseEntity
     public OperationCodeData data = new();
     public OperationCodesListener(EntityData d, Vc2 o) : base(d, o)
     {
+        Ldm.LoadHook<OperationCodesListener>();
+        
         data = new();
         
         data.InterceptLength = d.Int("interceptLength", 5);
@@ -160,12 +162,12 @@ public class OperationCodesListener : BaseEntity
         }
     }
     
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Level.Update += LevelUpdate;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.Update -= LevelUpdate;

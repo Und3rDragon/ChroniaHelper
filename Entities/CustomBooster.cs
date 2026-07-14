@@ -25,7 +25,7 @@ public class CustomBooster : Booster
     private static ILHook redDashCoroutineHook, greenDashCoroutineHook;
     private static ILHook dashCoroutineHook;
 
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Booster.PlayerReleased += Booster_PlayerReleased;
@@ -56,7 +56,7 @@ public class CustomBooster : Booster
         greenDashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), Player_GreenDashHook);
     }
 
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Booster.PlayerReleased -= Booster_PlayerReleased;
@@ -115,6 +115,8 @@ public class CustomBooster : Booster
     public CustomBooster(EntityData data, Vector2 position, bool red)
         : base(position, red)
     {
+        Ldm.LoadHook(typeof(CustomBooster));
+        
         base.Depth = data.Int("depth", -8500);
         Ch9HubBooster = data.Bool("ch9_hub_booster", false);
         allowDashout = data.Bool("allowDashOutWhenBoosting", true);

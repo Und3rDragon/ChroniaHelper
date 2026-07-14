@@ -29,6 +29,8 @@ public class PatientBooster : Booster
 	public PatientBooster(EntityData data, Vector2 offset)
 		: base(data.Position + offset, data.Bool("red"))
 	{
+		Ldm.LoadHook<PatientBooster>();
+		
 		PrimaryPosition = data.Position + offset;
 		
 		// parsing hitbox data
@@ -231,7 +233,7 @@ public class PatientBooster : Booster
 	private static ILHook origBoostBeginHook;
     private static ILHook redDashCoroutineHook, greenDashCoroutineHook;
 
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
 	{
 		On.Celeste.Player.Boost += Player_Boost;
@@ -248,7 +250,7 @@ public class PatientBooster : Booster
 
         On.Celeste.Booster.AppearParticles += Booster_AppearParticles;
     }
-	[UnloadHook]
+	[SelectiveUnloadHook]
     public static void Unload()
 	{
 		On.Celeste.Player.Boost -= Player_Boost;

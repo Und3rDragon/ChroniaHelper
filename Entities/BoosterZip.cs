@@ -20,6 +20,8 @@ namespace ChroniaHelper.Entities
     {
         public BoosterZipper(EntityData data, Vector2 offset) : base(data.Position + offset, false)
         {
+            Ldm.LoadHook(typeof(BoosterZipper));
+            
             this.respawnTime = data.Float("boosterRespawnTime", 1f);
             this.zipperMoveTime = data.Float("zipperMoveTime", 0.5f);
             bool flag = this.zipperMoveTime < 0.017f;
@@ -44,7 +46,7 @@ namespace ChroniaHelper.Entities
         }
         private Color ropeColor, ropeLightColor;
 
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void Load()
         {
             On.Celeste.Player.BoostCoroutine += Player_BoostCoroutine;
@@ -54,7 +56,7 @@ namespace ChroniaHelper.Entities
             On.Celeste.Booster.OnPlayer += Booster_OnPlayer;
             On.Celeste.Booster.Respawn += Booster_Respawn;
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void Unload()
         {
             On.Celeste.Player.BoostCoroutine -= Player_BoostCoroutine;

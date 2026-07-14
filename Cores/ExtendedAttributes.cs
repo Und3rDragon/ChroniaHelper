@@ -16,6 +16,16 @@ public class UnloadHook : Attribute
 {
 }
 
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+public class SelectiveLoadHook : Attribute
+{
+}
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+public class SelectiveUnloadHook : Attribute
+{
+}
+
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public class ChroniaGlobalSavePathAttribute : Attribute
 {

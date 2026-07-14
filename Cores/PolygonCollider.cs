@@ -11,11 +11,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ChroniaHelper.Cores {
     public class PolygonCollider : Collider {
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void Load() {
             On.Monocle.Collider.Collide_Collider += Collider_Collide_Collider;
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void Unload() {
             On.Monocle.Collider.Collide_Collider -= Collider_Collide_Collider;
         }
@@ -92,6 +92,8 @@ namespace ChroniaHelper.Cores {
             AABB = new Rectangle((int) (offset.X + z[0]), (int) (offset.Y + z[2]), (int) (z[1] - z[0]), (int) (z[3] - z[2]));
             Points = vectors;
             Triangulator.Triangulator.Triangulate(vectors, Triangulator.WindingOrder.Clockwise, out TriangulatedPoints, out Indices);
+            
+            Ldm.LoadHook(typeof(PolygonCollider));
         }
 
         public PolygonCollider(Vc2[] vectors)
@@ -109,6 +111,8 @@ namespace ChroniaHelper.Cores {
             AABB = new Rectangle((int)(offset.X + z[0]), (int)(offset.Y + z[2]), (int)(z[1] - z[0]), (int)(z[3] - z[2]));
             Points = vectors;
             Triangulator.Triangulator.Triangulate(vectors, Triangulator.WindingOrder.Clockwise, out TriangulatedPoints, out Indices);
+            
+            Ldm.LoadHook(typeof(PolygonCollider));
         }
 
         internal static bool GetConvexity(Vc2[] _vertices, ref float[] z) {

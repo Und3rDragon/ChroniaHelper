@@ -23,17 +23,20 @@ namespace ChroniaHelper.Entities
         public TeraBounceBlock(EntityData data, Vector2 offset)
             : base(data, offset)
         {
+            Ldm.LoadHook(typeof(TeraBlock));
+            Ldm.LoadHook(typeof(TeraBounceBlock));
+            
             tera = data.Enum("tera", TeraType.Normal);
             Add(image = new Image(GFX.Game[TeraUtil.GetImagePath(tera)]));
             image.CenterOrigin();
             image.Position = new Vector2(data.Width / 2, data.Height / 2);
         }
-        [LoadHook]
+        [SelectiveLoadHook]
         public static void OnLoad()
         {
             IL.Celeste.BounceBlock.Update += TeraBounceUpdate;
         }
-        [UnloadHook]
+        [SelectiveUnloadHook]
         public static void OnUnload()
         {
             IL.Celeste.BounceBlock.Update -= TeraBounceUpdate;

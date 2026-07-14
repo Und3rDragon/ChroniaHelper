@@ -12,13 +12,13 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/IceFloor")]
 public class IceFloor : BaseEntity
 {
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Player.RefillDash += WhenRefillDash;
     }
 
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.Player.RefillDash -= WhenRefillDash;
@@ -46,6 +46,8 @@ public class IceFloor : BaseEntity
     public IceFloor(EntityData data, Vector2 offset)
         : base(data, offset)
     {
+        Ldm.LoadHook(typeof(IceFloor));
+        
         base.Depth = data.Int("depth", -9999);
         base.Collider = new Hitbox((float)data.Width, 2f, 0f, 6f);
         xml = data.Attr("spriteXML", "iceFloor");

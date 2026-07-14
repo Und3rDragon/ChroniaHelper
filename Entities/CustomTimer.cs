@@ -38,6 +38,8 @@ public class CustomTimer : Entity
     public CustomTimer(Vector2 position, Vector2 size)
         : base(position)
     {
+        Ldm.LoadHook(typeof(CustomTimer));
+        
         Collider = new Hitbox(16f, 16f);
         Tag = TagsExt.SubHUD | Tags.PauseUpdate | Tags.TransitionUpdate;
     }
@@ -142,12 +144,12 @@ public class CustomTimer : Entity
 
         base.Render();
     }
-    [LoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.Level.UpdateTime += Level_UpdateTime;
     }
-    [UnloadHook]
+    [SelectiveUnloadHook]
     public static void UnLoad()
     {
         On.Celeste.Level.UpdateTime -= Level_UpdateTime;
