@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 
 namespace ChroniaHelper.Entities;
 
-[WorkingInProgress]
 [CustomEntity("ChroniaHelper/CustomCloud")]
 public class CustomCloud : JumpThru
 {

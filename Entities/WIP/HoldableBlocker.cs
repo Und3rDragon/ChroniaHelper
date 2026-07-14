@@ -13,7 +13,7 @@ namespace ChroniaHelper.WIPs.Entities;
 
 [Tracked]
 [Credits("Originated from DJ Map Helper")]
-[CustomEntity("ChroniaHelper/HoldableBlocker")]
+// [CustomEntity("ChroniaHelper/HoldableBlocker")]
 [WorkingInProgress]
 public class HoldableBlocker : Solid
 {

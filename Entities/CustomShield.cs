@@ -7,7 +7,6 @@ using ChroniaHelper.Utils.MathExpression;
 
 namespace ChroniaHelper.Entities;
 
-[WorkingInProgress]
 [CustomEntity("ChroniaHelper/CustomShield")]
 public class CustomShield : BaseEntity
 {
