@@ -64,7 +64,7 @@ public class OperationCodesListener : BaseEntity
 
     protected override void RemovedExecute(Scene scene)
     {
-        Md.Session.OperationCodeListeners.SafeRemove(this.ID);
+        Md.Session.OperationCodeListeners.Remove(this.ID);
     }
     
     public class OperationCodeData

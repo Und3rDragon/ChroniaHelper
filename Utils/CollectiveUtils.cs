@@ -139,69 +139,6 @@ public static class CollectiveUtils
         }
     }
 
-    public static void SafeRemove<TKey, TValue>(
-    this ICollection<KeyValuePair<TKey, TValue>> collection,
-    TKey key)
-    {
-        if (collection is IDictionary<TKey, TValue> dict)
-        {
-            dict.Remove(key);
-            return;
-        }
-
-        var itemsToRemove = collection
-            .Where(kvp => Equals(kvp.Key, key))
-            .ToList();
-
-        foreach (var item in itemsToRemove)
-        {
-            collection.Remove(item);
-        }
-    }
-
-    public static void SafeRemove<TypeA>(this ICollection<TypeA> list, TypeA key)
-    {
-        if (list.Contains(key))
-        {
-            list.Remove(key);
-        }
-    }
-
-    public static TValue SafeGet<TKey, TValue>(
-    this ICollection<KeyValuePair<TKey, TValue>> collection,
-    TKey key, TValue defaultValue)
-    {
-        foreach (var item in collection)
-        {
-            if (item.Key.Equals(key))
-            {
-                return item.Value;
-            }
-        }
-
-        return defaultValue;
-    }
-
-    public static TypeA SafeGet<TypeA>(this ICollection<TypeA> list, TypeA key, TypeA ifNotExist)
-    {
-        if (list.Contains(key))
-        {
-            return key;
-        }
-
-        return ifNotExist;
-    }
-
-    public static TypeA SafeGet<TypeA>(this IList<TypeA> list, int at, TypeA ifNotExist)
-    {
-        if (at < list.Count)
-        {
-            return list[at];
-        }
-
-        return ifNotExist;
-    }
-
     public static void Replace<T>(this ICollection<T> dic, T find, T replaceWith)
     {
         foreach (var i in dic)
@@ -215,7 +152,7 @@ public static class CollectiveUtils
     }
     public static void Replace<TypeA, TypeB>(this Dictionary<TypeA, TypeB> dictionary, TypeA oldKey, TypeA newKey, TypeB newValue)
     {
-        dictionary.SafeRemove(oldKey);
+        dictionary.Remove(oldKey);
         dictionary.Enter(newKey, newValue);
     }
 
@@ -560,7 +497,6 @@ public static class CollectiveUtils
 
         return result;
     }
-
 
     /// <summary>
     /// 对集合中的每个元素执行指定操作，并传递索引

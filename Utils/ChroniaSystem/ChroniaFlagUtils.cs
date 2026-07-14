@@ -35,7 +35,7 @@ public static class ChroniaFlagUtils
             }
             else
             {
-                Md.SaveData.flags.SafeRemove(name);
+                Md.SaveData.flags.Remove(name);
             }
         }
     }
@@ -52,7 +52,7 @@ public static class ChroniaFlagUtils
             }
             else
             {
-                Md.Session.flagsPerDeath.SafeRemove(name);
+                Md.Session.flagsPerDeath.Remove(name);
             }
         }
         else if (global)
@@ -63,7 +63,7 @@ public static class ChroniaFlagUtils
             }
             else
             {
-                Md.SaveData.flags.SafeRemove(name);
+                Md.SaveData.flags.Remove(name);
             }
         }
     }

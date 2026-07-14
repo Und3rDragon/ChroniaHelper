@@ -147,7 +147,7 @@ public class TriggerExtension : BaseTrigger
     private bool CollideOther(Player player)
     {
         var triggers = GetExtensionsList();
-        triggers.SafeRemove(this);
+        triggers.Remove(this);
         
         foreach (var i in triggers)
         {

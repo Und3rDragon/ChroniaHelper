@@ -89,11 +89,11 @@ public class EquivalentCollider : Collider
         {
             if (negative)
             {
-                NegativeColliders.SafeRemove(collider);
+                NegativeColliders.Remove(collider);
             }
             else
             {
-                PositiveColliders.SafeRemove(collider);
+                PositiveColliders.Remove(collider);
             }
         }
     }

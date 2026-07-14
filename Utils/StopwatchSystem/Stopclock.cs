@@ -65,7 +65,7 @@ public partial class Stopclock : IDisposable
 
         foreach (var item in toRemove)
         {
-            Md.SaveData.stopclocks.SafeRemove(item);
+            Md.SaveData.stopclocks.Remove(item);
         }
     }
 
@@ -139,7 +139,7 @@ public partial class Stopclock : IDisposable
         }
         foreach (var item in toRemove)
         {
-            Md.Session.Stopclocks.SafeRemove(item);
+            Md.Session.Stopclocks.Remove(item);
         }
     }
 

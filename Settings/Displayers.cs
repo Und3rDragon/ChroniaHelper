@@ -412,7 +412,7 @@ public class Displayers : HDRenderEntity
             {
                 string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
                 bool dialogHas = Dialog.Has(ssid + "_author", lang);
-                string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).SafeGet(0, "null");
+                string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).TryGet(0, "null");
                 target = target + $" -> {(dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor)}";
             }
 
@@ -460,7 +460,7 @@ public class Displayers : HDRenderEntity
             string sid = MaP.level?.Session.Area.SID ?? "null";
             string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
             bool dialogHas = Dialog.Has(ssid + "_author", lang);
-            string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).SafeGet(0, "null");
+            string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).TryGet(0, "null");
             target = dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor;
             
             if (displayer.prefix)

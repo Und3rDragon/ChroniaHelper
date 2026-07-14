@@ -82,18 +82,18 @@ public class AnimatedImageRaw
             {
                 currentFrame += reversed ? -1 : 1;
                 
-                if (currentFrame < 0) { currentFrame = loop.SafeGet(currentAnimation, true)? 
+                if (currentFrame < 0) { currentFrame = loop.GetValueOrDefault(currentAnimation, true)? 
                         textures[currentAnimation].Count - 1 : 0; }
-                if (currentFrame > textures[currentAnimation].Count - 1) { currentFrame = loop.SafeGet(currentAnimation, true) ? 
+                if (currentFrame > textures[currentAnimation].Count - 1) { currentFrame = loop.GetValueOrDefault(currentAnimation, true) ? 
                         0 : textures[currentAnimation].Count - 1; }
             }
             else
             {
                 frameSetIndex += reversed ? -1 : 1;
 
-                if (frameSetIndex < 0) { frameSetIndex = loop.SafeGet(currentAnimation, true) ? 
+                if (frameSetIndex < 0) { frameSetIndex = loop.GetValueOrDefault(currentAnimation, true) ? 
                         frameSet[currentAnimation].Count - 1 : 0; }
-                if (frameSetIndex > frameSet[currentAnimation].Count - 1) { frameSetIndex = loop.SafeGet(currentAnimation, true) ? 
+                if (frameSetIndex > frameSet[currentAnimation].Count - 1) { frameSetIndex = loop.GetValueOrDefault(currentAnimation, true) ? 
                         0 : frameSet[currentAnimation].Count - 1; }
 
                 currentFrame = frameSet[currentAnimation][frameSetIndex];

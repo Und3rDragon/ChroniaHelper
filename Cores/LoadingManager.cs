@@ -6,7 +6,8 @@ namespace ChroniaHelper.Cores;
 
 public class LoadingManager
 {
-    public static Dictionary<Type, bool> hookLoaded { get; private set; } = new();
+    public static HashSet<Type> forceLoadingHooks { get; private set; } = new();
+    public static HashSet<Type> selectiveLoadingHooks { get; private set; } = new();
 
     /// <summary>
     /// Manually load hooks with [SelectiveLoadHook] labelled
@@ -15,7 +16,7 @@ public class LoadingManager
     public static void LoadHook(Type t)
     {
         // if registered and loaded, return
-        if (hookLoaded.GetValueOrDefault(t, false))
+        if (selectiveLoadingHooks.Contains(t))
         {
             return;
         }
@@ -31,7 +32,7 @@ public class LoadingManager
             }
         }
         
-        hookLoaded[t] = true;
+        selectiveLoadingHooks.Add(t);
     }
 
     public static void LoadHook<T>()
@@ -46,7 +47,7 @@ public class LoadingManager
     public static void UnloadHook(Type t)
     {
         // if unregistered or unloaded, return
-        if (hookLoaded.GetValueOrDefault(t, true))
+        if (!selectiveLoadingHooks.Contains(t))
         {
             return;
         }
@@ -62,7 +63,7 @@ public class LoadingManager
             }
         }
         
-        hookLoaded[t] = false;
+        selectiveLoadingHooks.Remove(t);
     }
 
     public static void UnloadHook<T>()
@@ -100,6 +101,15 @@ public class LoadingManager
         {
             if (!string.IsNullOrEmpty(targetNamespace) && !t.FullName.StartsWith(targetNamespace))
                 continue;
+
+            if (attributeType == typeof(LoadHook))
+            {
+                forceLoadingHooks.Add(t);
+            }
+            else if (attributeType == typeof(UnloadHook))
+            {
+                forceLoadingHooks.Remove(t);
+            }
 
             MethodInfo[] methods = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
             foreach (var method in methods)

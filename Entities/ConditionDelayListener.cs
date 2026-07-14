@@ -38,21 +38,21 @@ public class ConditionDelayListenerOperator
             
             if (listener.constant == 1)
             {
-                if(state != Md.Session.SessionConditionListener_LastState.SafeGet(item.Key, false))
+                if(state != Md.Session.SessionConditionListener_LastState.GetValueOrDefault(item.Key, false))
                 {
                     Md.Session.SessionConditionListener_TimerState[item.Key] = true;
                 }
             }
             else if(listener.constant == 2)
             {
-                if (state && !Md.Session.SessionConditionListener_LastState.SafeGet(item.Key, false))
+                if (state && !Md.Session.SessionConditionListener_LastState.GetValueOrDefault(item.Key, false))
                 {
                     Md.Session.SessionConditionListener_TimerState[item.Key] = true;
                 }
             }
             else if(listener.constant == 3)
             {
-                if (!state && Md.Session.SessionConditionListener_LastState.SafeGet(item.Key, false))
+                if (!state && Md.Session.SessionConditionListener_LastState.GetValueOrDefault(item.Key, false))
                 {
                     Md.Session.SessionConditionListener_TimerState[item.Key] = true;
                 }
@@ -62,14 +62,14 @@ public class ConditionDelayListenerOperator
                 Md.Session.SessionConditionListener_TimerState[item.Key] = state;
             }
 
-            if (Md.Session.SessionConditionListener_TimerState.SafeGet(item.Key, false))
+            if (Md.Session.SessionConditionListener_TimerState.GetValueOrDefault(item.Key, false))
             {
                 Md.Session.SessionConditionListener_Timer.Create(item.Key, 0f);
                 Md.Session.SessionConditionListener_Timer[item.Key] += Engine.DeltaTime;
             }
             
-            if (Md.Session.SessionConditionListener_Timer.SafeGet(item.Key, 0f) >= listener.time.GetAbs() &&
-                Md.Session.SessionConditionListener_TimerState.SafeGet(item.Key, false))
+            if (Md.Session.SessionConditionListener_Timer.GetValueOrDefault(item.Key, 0f) >= listener.time.GetAbs() &&
+                Md.Session.SessionConditionListener_TimerState.GetValueOrDefault(item.Key, false))
             {
                 Md.Session.SessionConditionListener_TimerState[item.Key] = false;
                 Md.Session.SessionConditionListener_Timer[item.Key] = 0f;

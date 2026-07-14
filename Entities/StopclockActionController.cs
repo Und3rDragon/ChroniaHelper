@@ -33,11 +33,11 @@ public class StopclockActionController : Entity
             spanValue.Add(n);
         }
         countUpSpan = new(
-            spanValue.SafeGet(6, 0) * 365 + spanValue.SafeGet(5, 0) * 30 + spanValue.SafeGet(4, 0),
-            spanValue.SafeGet(3, 0),
-            spanValue.SafeGet(2, 0),
-            spanValue.SafeGet(1, 0),
-            spanValue.SafeGet(0, 0)
+            spanValue.TryGet(6, 0) * 365 + spanValue.TryGet(5, 0) * 30 + spanValue.TryGet(4, 0),
+            spanValue.TryGet(3, 0),
+            spanValue.TryGet(2, 0),
+            spanValue.TryGet(1, 0),
+            spanValue.TryGet(0, 0)
             );
         resetCountUpTimer = d.Bool("resetCountUpTimerWhenTriggered", false);
 

@@ -296,7 +296,7 @@ public class ChroniaGeneralPosition :  BaseComponent
         }
 
         BasePosition += StoredOffsets[$"routine_move_{id}"];
-        StoredOffsets.SafeRemove($"routine_move_{id}");
+        StoredOffsets.Remove($"routine_move_{id}");
 
         RoutineRunning[$"routine_move_{id}"] = false;
     }

@@ -57,18 +57,18 @@ public class RandomPackedFlagTrigger : BaseTrigger
         {
             _flag.RemoveFirst("!").SetFlag(true);
             Md.Session.flagsPerDeath.Add(_flag.RemoveFirst("!"));
-            Md.SaveData.CurrentPackedFlags[label].SafeRemove(_flag);
+            Md.SaveData.CurrentPackedFlags[label].Remove(_flag);
         }
         else if (_flag.StartsWith("*"))
         {
             _flag.RemoveFirst("*").SetFlag(true);
             Md.SaveData.flags.Add(_flag.RemoveFirst("*"));
-            Md.SaveData.CurrentPackedFlags[label].SafeRemove(_flag);
+            Md.SaveData.CurrentPackedFlags[label].Remove(_flag);
         }
         else
         {
             _flag.SetFlag(true);
-            Md.SaveData.CurrentPackedFlags[label].SafeRemove(_flag);
+            Md.SaveData.CurrentPackedFlags[label].Remove(_flag);
         }
     }
 }

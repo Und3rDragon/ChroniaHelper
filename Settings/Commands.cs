@@ -81,7 +81,7 @@ public class Commands
         }
         else
         {
-            Md.Session.flagsPerRoom.SafeRemove(name);
+            Md.Session.flagsPerRoom.Remove(name);
         }
     }
 
@@ -369,9 +369,19 @@ public class Commands
     {
         // inputs.LogCommand();
 
-        foreach (var i in Ldm.hookLoaded)
+        "Forced Loading Hooks".LogCommand(Color.Yellow);
+        
+        foreach (var i in Ldm.forceLoadingHooks)
         {
-            string s = i.Key.ToString();
+            string s = i.ToString();
+            s.LogCommand();
+        }
+        
+        "Selective Loading Hooks".LogCommand(Color.Yellow);
+        
+        foreach (var i in Ldm.selectiveLoadingHooks)
+        {
+            string s = i.ToString();
             s.LogCommand();
         }
     }

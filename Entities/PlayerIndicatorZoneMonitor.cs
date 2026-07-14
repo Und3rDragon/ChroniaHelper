@@ -38,7 +38,7 @@ public class PlayerIndicatorZoneMonitor : Entity
             {
                 zone.Visible = false;
                 
-                if(zone.flagMode is FlagMode.Zone && !flagReset.SafeGet(zone.SourceData.ID, false))
+                if(zone.flagMode is FlagMode.Zone && !flagReset.GetValueOrDefault(zone.SourceData.ID, false))
                 {
                     zone.flag.SetFlag(false);
                     flagReset.Enter(zone.SourceData.ID, true);
@@ -82,7 +82,7 @@ public class PlayerIndicatorZoneMonitor : Entity
 
                 innerFlagReset.Enter(zone.SourceData.ID, false);
             }
-            else if(collided && zone.playerIn && zone.flagMode is FlagMode.Zone && !innerFlagReset.SafeGet(zone.SourceData.ID, false)) // always inside
+            else if(collided && zone.playerIn && zone.flagMode is FlagMode.Zone && !innerFlagReset.GetValueOrDefault(zone.SourceData.ID, false)) // always inside
             {
                 zone.flag.SetFlag(true);
 
