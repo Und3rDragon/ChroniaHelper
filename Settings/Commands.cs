@@ -364,25 +364,23 @@ public class Commands
         }
     }
 
-    [Command("chronia_debug", "")]
-    public static void _test(string inputs)
+    [Command("chronia_hooks", "")]
+    public static void _hooks(string inputs)
     {
-        // inputs.LogCommand();
-
-        "Forced Loading Hooks".LogCommand(Color.Yellow);
+        "Forced Loading Hooks".Print(ConsoleColor.Magenta);
         
         foreach (var i in Ldm.forceLoadingHooks)
         {
             string s = i.ToString();
-            s.LogCommand();
+            s.Print(ConsoleColor.DarkMagenta);
         }
         
-        "Selective Loading Hooks".LogCommand(Color.Yellow);
+        "Selective Loading Hooks".Print(ConsoleColor.Magenta);
         
         foreach (var i in Ldm.selectiveLoadingHooks)
         {
             string s = i.ToString();
-            s.LogCommand();
+            s.Print(ConsoleColor.DarkMagenta);
         }
     }
 

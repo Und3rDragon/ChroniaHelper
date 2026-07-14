@@ -102,20 +102,20 @@ public class LoadingManager
             if (!string.IsNullOrEmpty(targetNamespace) && !t.FullName.StartsWith(targetNamespace))
                 continue;
 
-            if (attributeType == typeof(LoadHook))
-            {
-                forceLoadingHooks.Add(t);
-            }
-            else if (attributeType == typeof(UnloadHook))
-            {
-                forceLoadingHooks.Remove(t);
-            }
-
             MethodInfo[] methods = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
             foreach (var method in methods)
             {
                 if (method.GetCustomAttribute(attributeType) != null)
                 {
+                    if (attributeType == typeof(LoadHook))
+                    {
+                        forceLoadingHooks.Add(t);
+                    }
+                    else if (attributeType == typeof(UnloadHook))
+                    {
+                        forceLoadingHooks.Remove(t);
+                    }
+                    
                     object instance = method.IsStatic ? null : Activator.CreateInstance(t);
                     method.Invoke(instance, null);
                 }
