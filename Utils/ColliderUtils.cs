@@ -1,6 +1,7 @@
 ﻿using System.Net.NetworkInformation;
 using System.Runtime.Serialization;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Utils;
 
@@ -292,7 +293,7 @@ public static class ColliderUtils
         return ParseCollider(singleColliderData, master, postProcess, out bool a, abandonSafeSetting);
     }
 
-    public static Collider ParseCollider(this string singleColliderData,out bool success, bool abandonSafeSetting = false)
+    public static Collider ParseCollider(this string singleColliderData, out bool success, bool abandonSafeSetting = false)
     {
         Collider safeSetting = abandonSafeSetting? null : new Hitbox(8f, 8f);
         success = false;
@@ -432,14 +433,218 @@ public static class ColliderUtils
                 {
                     pc.Points[i] += master.Position;
                 }
-                Triangulator.Triangulator.Triangulate(pc.Points, Triangulator.WindingOrder.Clockwise, out pc.TriangulatedPoints, out pc.Indices);
+                Triangulate(pc.Points, true, out pc.TriangulatedPoints, out pc.Indices);
             }
             return pc;
         }
 
         return safeSetting;
     }
+    /// <summary>
+    /// 对多边形进行三角化（耳剪裁算法）
+    /// </summary>
+    /// <param name="inputVertices">输入顶点数组（按顺序）</param>
+    /// <param name="clockwiseWinding">是否要求顺时针输出</param>
+    /// <param name="outputVertices">输出顶点数组</param>
+    /// <param name="indices">三角形索引数组（每3个一组）</param>
+    public static void Triangulate(
+        Vector2[] inputVertices,
+        bool clockwiseWinding,
+        out Vector2[] outputVertices,
+        out int[] indices)
+    {
+        // 1. 验证输入
+        if (inputVertices == null || inputVertices.Length < 3)
+        {
+            outputVertices = Array.Empty<Vector2>();
+            indices = Array.Empty<int>();
+            return;
+        }
 
+        // 2. 确保顶点顺序符合要求
+        bool isClockwise = GeometryUtils.IsClockwise(inputVertices);
+        outputVertices = clockwiseWinding == isClockwise 
+            ? (Vector2[])inputVertices.Clone() 
+            : ReverseWinding(inputVertices);
+
+        // 3. 构建双向链表节点列表
+        List<GeometryUtils.Vertex> vertexList = new List<GeometryUtils.Vertex>();
+        for (int i = 0; i < outputVertices.Length; i++)
+        {
+            vertexList.Add(new GeometryUtils.Vertex(outputVertices[i], i));
+        }
+
+        // 4. 构建链表连接关系
+        for (int i = 0; i < vertexList.Count; i++)
+        {
+            int prev = (i - 1 + vertexList.Count) % vertexList.Count;
+            int next = (i + 1) % vertexList.Count;
+            // 使用 LinkedListNode 来管理关系
+        }
+
+        // 使用 LinkedList 来方便移除节点
+        LinkedList<GeometryUtils.Vertex> polygon = new LinkedList<GeometryUtils.Vertex>(vertexList);
+
+        // 5. 三角化
+        List<GeometryUtils.Triangle> triangles = new List<GeometryUtils.Triangle>();
+        TriangulatePolygon(polygon, triangles);
+
+        // 6. 构建索引数组
+        indices = new int[triangles.Count * 3];
+        
+        if (clockwiseWinding)
+        {
+            for (int i = 0; i < triangles.Count; i++)
+            {
+                indices[i * 3] = triangles[i].A.Index;
+                indices[i * 3 + 1] = triangles[i].B.Index;
+                indices[i * 3 + 2] = triangles[i].C.Index;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < triangles.Count; i++)
+            {
+                indices[i * 3] = triangles[i].C.Index;
+                indices[i * 3 + 1] = triangles[i].B.Index;
+                indices[i * 3 + 2] = triangles[i].A.Index;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 耳剪裁算法主循环
+    /// </summary>
+    private static void TriangulatePolygon(LinkedList<GeometryUtils.Vertex> polygon, 
+        List<GeometryUtils.Triangle> triangles)
+    {
+        if (polygon.Count < 3) return;
+
+        // 如果正好是三角形，直接添加
+        if (polygon.Count == 3)
+        {
+            var nodes = polygon.ToList();
+            triangles.Add(new GeometryUtils.Triangle(nodes[0], nodes[1], nodes[2]));
+            return;
+        }
+
+        int maxIterations = polygon.Count * polygon.Count;
+        int iteration = 0;
+
+        while (polygon.Count > 3 && iteration < maxIterations)
+        {
+            iteration++;
+            bool earFound = false;
+
+            var current = polygon.First;
+            while (current != null)
+            {
+                var next = current.Next ?? polygon.First;
+                var prev = current.Previous ?? polygon.Last;
+
+                GeometryUtils.Vertex a = prev.Value;
+                GeometryUtils.Vertex b = current.Value;
+                GeometryUtils.Vertex c = next.Value;
+
+                // 检查是否是凸顶点
+                if (IsConvex(a.Position, b.Position, c.Position))
+                {
+                    // 检查三角形内是否包含其他顶点（使用已有的 ContainsPoint）
+                    bool containsOther = false;
+                    var checker = polygon.First;
+                    while (checker != null)
+                    {
+                        if (!checker.Value.Equals(a) && !checker.Value.Equals(b) && !checker.Value.Equals(c))
+                        {
+                            // 使用 Triangle.ContainsPoint 检测
+                            if (GeometryUtils.Triangle.ContainsPoint(a, b, c, checker.Value))
+                            {
+                                containsOther = true;
+                                break;
+                            }
+                        }
+                        checker = checker.Next;
+                    }
+
+                    if (!containsOther)
+                    {
+                        // 找到耳尖，添加三角形
+                        triangles.Add(new GeometryUtils.Triangle(a, b, c));
+
+                        // 移除耳尖
+                        var toRemove = current;
+                        current = current.Next;
+                        polygon.Remove(toRemove);
+                        earFound = true;
+                        break;
+                    }
+                }
+
+                current = current.Next;
+            }
+
+            // 如果没有找到耳尖，使用备用策略
+            if (!earFound && polygon.Count > 3)
+            {
+                var nodes = polygon.ToList();
+                // 取前三个顶点强制三角化
+                if (nodes.Count >= 3)
+                {
+                    triangles.Add(new GeometryUtils.Triangle(nodes[0], nodes[1], nodes[2]));
+                    polygon.Remove(nodes[1]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // 处理剩余三角形
+        if (polygon.Count == 3)
+        {
+            var nodes = polygon.ToList();
+            triangles.Add(new GeometryUtils.Triangle(nodes[0], nodes[1], nodes[2]));
+        }
+    }
+
+    /// <summary>
+    /// 判断三个点是否构成凸顶点
+    /// </summary>
+    private static bool IsConvex(Vector2 a, Vector2 b, Vector2 c)
+    {
+        float cross = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+        // 对于逆时针多边形，cross > 0 表示凸顶点
+        // 注意：这里假设多边形已经是逆时针方向
+        return cross > 0.0001f;
+    }
+
+    /// <summary>
+    /// 反转顶点顺序
+    /// </summary>
+    private static Vector2[] ReverseWinding(Vector2[] vertices)
+    {
+        Vector2[] reversed = new Vector2[vertices.Length];
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            reversed[i] = vertices[vertices.Length - 1 - i];
+        }
+        return reversed;
+    }
+
+    /// <summary>
+    /// 将顶点列表转换为 Vector2 数组（用于调试）
+    /// </summary>
+    public static Vector2[] VerticesToVector2Array(List<GeometryUtils.Vertex> vertices)
+    {
+        Vector2[] result = new Vector2[vertices.Count];
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            result[i] = vertices[i].Position;
+        }
+        return result;
+    }
+    
     /// <summary>
     /// 判断两个 Collider 集合是否完全一致（包括顺序、类型、属性）。
     /// 支持 IEnumerable<Collider>，因此兼容 ColliderList, List<Collider>, Collider[] 等。

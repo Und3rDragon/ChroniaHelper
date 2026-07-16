@@ -191,5 +191,80 @@ public static partial class GeometryUtils
     {
         return a.X * b.Y - a.Y * b.X;
     }
+    
+    public struct Triangle(Vertex a, Vertex b, Vertex c)
+    {
+        public readonly Vertex A = a;
+        public readonly Vertex B = b;
+        public readonly Vertex C = c;
 
+        public bool ContainsPoint(Vertex point)
+        {
+            if (point.Equals(this.A) || point.Equals(this.B) || point.Equals(this.C))
+                return true;
+            bool flag = false;
+            if (Triangle.checkPointToSegment(this.C, this.A, point))
+                flag = !flag;
+            if (Triangle.checkPointToSegment(this.A, this.B, point))
+                flag = !flag;
+            if (Triangle.checkPointToSegment(this.B, this.C, point))
+                flag = !flag;
+            return flag;
+        }
+
+        public static bool ContainsPoint(Vertex a, Vertex b, Vertex c, Vertex point)
+        {
+            return new Triangle(a, b, c).ContainsPoint(point);
+        }
+
+        private static bool checkPointToSegment(Vertex sA, Vertex sB, Vertex point)
+        {
+            return ((double) sA.Position.Y < (double) point.Position.Y && (double) sB.Position.Y >= (double) point.Position.Y || (double) sB.Position.Y < (double) point.Position.Y && (double) sA.Position.Y >= (double) point.Position.Y) && (double) (sA.Position.X + (float) (((double) point.Position.Y - (double) sA.Position.Y) / ((double) sB.Position.Y - (double) sA.Position.Y) * ((double) sB.Position.X - (double) sA.Position.X))) < (double) point.Position.X;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return !(obj.GetType() != typeof (Triangle)) && this.Equals((Triangle) obj);
+        }
+
+        public bool Equals(Triangle obj)
+        {
+            int num;
+            if (obj.A.Equals(this.A))
+            {
+                Vertex vertex = obj.B;
+                if (vertex.Equals(this.B))
+                {
+                    vertex = obj.C;
+                    num = vertex.Equals(this.C) ? 1 : 0;
+                    goto label_4;
+                }
+            }
+            num = 0;
+            label_4:
+            return num != 0;
+        }
+
+        public override int GetHashCode()
+        {
+            return (this.A.GetHashCode() * 397 ^ this.B.GetHashCode()) * 397 ^ this.C.GetHashCode();
+        }
+    }
+    
+    public struct Vertex(Vector2 position, int index)
+    {
+        public readonly Vector2 Position = position;
+        public readonly int Index = index;
+
+        public override bool Equals(object obj)
+        {
+            return !(obj.GetType() != typeof (Vertex)) && this.Equals((Vertex) obj);
+        }
+
+        public bool Equals(Vertex obj) => obj.Position.Equals(this.Position) && obj.Index == this.Index;
+
+        public override int GetHashCode() => this.Position.GetHashCode() * 397 ^ this.Index;
+
+        public override string ToString() => $"{this.Position} ({this.Index})";
+    }
 }
