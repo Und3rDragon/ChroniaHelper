@@ -106,10 +106,10 @@ entities.ChroniaHelper/SpringBlockWall.attributes.description.springBlockOverrid
 
 # ================= Spikes
 
-entities.ChroniaHelper/UpSpikes.placements.name.UpSpikes=Spikes (Up)
-entities.ChroniaHelper/DownSpikes.placements.name.DownSpikes=Spikes (Down)
-entities.ChroniaHelper/LeftSpikes.placements.name.LeftSpikes=Spikes (Left)
-entities.ChroniaHelper/RightSpikes.placements.name.RightSpikes=Spikes (Right)
+entities.ChroniaHelper/UpSpikes.placements.name.UpSpikes=Spikes (Multi-Featured) (Up)
+entities.ChroniaHelper/DownSpikes.placements.name.DownSpikes=Spikes (Multi-Featured) (Down)
+entities.ChroniaHelper/LeftSpikes.placements.name.LeftSpikes=Spikes (Multi-Featured) (Left)
+entities.ChroniaHelper/RightSpikes.placements.name.RightSpikes=Spikes (Multi-Featured) (Right)
 
 entities.ChroniaHelper/UpSpikes.attributes.description.sprite=The texture of the spikes, relative to "Gameplay/"\nExample path: "path/to/file/texture"\nThen the files should be like this: "texture_up00.png"
 entities.ChroniaHelper/UpSpikes.attributes.description.trigger=If enabled, the spikes will work like timed spikes\nIf disabled, the spikes would work like normal spikes\nNotice! If you enable "Wait For Player Leave", the "Trigger Delay" timer would work\nas the interval between your jump-off from the spikes and the spikes appear\nENABLE TO SEE MORE OPTIONS
@@ -408,8 +408,8 @@ entities.ChroniaHelper/FlagSwitchGate.attributes.description.surfaceIndex=Footst
 
 # ================= Camera Offset
 
-triggers.ChroniaHelper/AxisCameraOffset.placements.name.AxisCameraOffset=Camera Offset
-triggers.ChroniaHelper/SmoothToOffsetCamera.placements.name.SmoothToOffsetCamera=Smooth Camera Offset
+triggers.ChroniaHelper/AxisCameraOffset.placements.name.AxisCameraOffset=Camera Offset (Single Axis Support)
+triggers.ChroniaHelper/SmoothToOffsetCamera.placements.name.SmoothToOffsetCamera=Smooth Camera Offset (Adaptive Start)
 triggers.ChroniaHelper/AxisCameraOffset.attributes.description.units=The offset length unit presets\n"offset", using the default setting\n"offsetSquared", offset 1.0 = 48 px\n"tiles", offset 1.0 = 8 px
 
 # ================= Refill
