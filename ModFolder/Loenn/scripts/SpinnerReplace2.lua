@@ -45,4 +45,4 @@ function script.run(room, args)
     end
 end
 
-return script
+--return script
