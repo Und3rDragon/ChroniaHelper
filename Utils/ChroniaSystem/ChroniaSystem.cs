@@ -39,41 +39,8 @@ public class ChroniaSystem
 
     public static IEnumerator OnLevelTransition(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData levelData, Vector2 dir)
     {
-        foreach (var item in Md.Session.flagsPerRoom)
-        {
-            item.SetFlag(false);
-        }
-
-        Md.Session.flagsPerRoom.Clear();
-
-        foreach (var item in Md.Session.countersPerRoom)
-        {
-            item.Key.SetCounter(item.Value);
-        }
-
-        Md.Session.countersPerRoom.Clear();
-
-        foreach (var item in Md.Session.slidersPerRoom)
-        {
-            item.Key.SetSlider(item.Value);
-        }
-
-        Md.Session.slidersPerRoom.Clear();
-
-        foreach (var item in Md.SaveData.flags)
-        {
-            item.SetFlag(true);
-        }
-        
-        foreach(var item in Md.SaveData.counters)
-        {
-            item.Key.SetCounter(item.Value);
-        }
-        
-        foreach(var item in Md.SaveData.sliders)
-        {
-            item.Key.SetSlider(item.Value);
-        }
+        ResetPerRoom(self);
+        ApplyGlobals(self);
 
         yield return new SwapImmediately(orig(self, levelData, dir)); //On transition
     }
@@ -89,41 +56,8 @@ public class ChroniaSystem
     {
         orig(self, intro, fromLoader); // Once per level load, also reload
 
-        foreach (var item in Md.Session.flagsPerRoom)
-        {
-            item.SetFlag(false);
-        }
-
-        Md.Session.flagsPerRoom.Clear();
-
-        foreach (var item in Md.Session.countersPerRoom)
-        {
-            item.Key.SetCounter(item.Value);
-        }
-
-        Md.Session.countersPerRoom.Clear();
-
-        foreach (var item in Md.Session.slidersPerRoom)
-        {
-            item.Key.SetSlider(item.Value);
-        }
-
-        Md.Session.slidersPerRoom.Clear();
-
-        foreach (var item in Md.SaveData.flags)
-        {
-            item.SetFlag(true);
-        }
-
-        foreach (var item in Md.SaveData.counters)
-        {
-            item.Key.SetCounter(item.Value);
-        }
-
-        foreach (var item in Md.SaveData.sliders)
-        {
-            item.Key.SetSlider(item.Value);
-        }
+        ResetPerRoom(self);
+        ApplyGlobals(self);
     }
 
     public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
@@ -203,26 +137,7 @@ public class ChroniaSystem
     
     public static PlayerDeadBody OnPlayerDeath(On.Celeste.Player.orig_Die orig, Player self, Vc2 dir, bool eii, bool reg)
     {
-        foreach (var item in Md.Session.flagsPerDeath)
-        {
-            item.SetFlag(false);
-        }
-
-        Md.Session.flagsPerRoom.Clear();
-
-        foreach (var item in Md.Session.countersPerDeath)
-        {
-            item.Key.SetCounter(item.Value);
-        }
-
-        Md.Session.countersPerRoom.Clear();
-
-        foreach (var item in Md.Session.slidersPerDeath)
-        {
-            item.Key.SetSlider(item.Value);
-        }
-
-        Md.Session.slidersPerRoom.Clear();
+        ResetPerDeath(MaP.level);
         
         return orig(self, dir, eii, reg);
     }
@@ -256,5 +171,71 @@ public class ChroniaSystem
     {
 
         orig(self);
+    }
+
+    public static void ResetPerRoom(Level self)
+    {
+        foreach (var item in Md.Session.flagsPerRoom)
+        {
+            self.Session.SetFlag(item, false);
+        }
+
+        Md.Session.flagsPerRoom.Clear();
+
+        foreach (var item in Md.Session.countersPerRoom)
+        {
+            self.Session.SetCounter(item.Key, item.Value);
+        }
+
+        Md.Session.countersPerRoom.Clear();
+
+        foreach (var item in Md.Session.slidersPerRoom)
+        {
+            self.Session.SetSlider(item.Key, item.Value);
+        }
+
+        Md.Session.slidersPerRoom.Clear();
+    }
+
+    public static void ResetPerDeath(Level self)
+    {
+        foreach (var item in Md.Session.flagsPerDeath)
+        {
+            self.Session.SetFlag(item, false);
+        }
+
+        Md.Session.flagsPerDeath.Clear();
+
+        foreach (var item in Md.Session.countersPerDeath)
+        {
+            self.Session.SetCounter(item.Key, item.Value);
+        }
+
+        Md.Session.countersPerDeath.Clear();
+
+        foreach (var item in Md.Session.slidersPerDeath)
+        {
+            self.Session.SetSlider(item.Key, item.Value);
+        }
+
+        Md.Session.slidersPerDeath.Clear();
+    }
+
+    public static void ApplyGlobals(Level self)
+    {
+        foreach (var item in Md.SaveData.flags)
+        {
+            self.Session.SetFlag(item, true);
+        }
+
+        foreach (var item in Md.SaveData.counters)
+        {
+            self.Session.SetCounter(item.Key, item.Value);
+        }
+
+        foreach (var item in Md.SaveData.sliders)
+        {
+            self.Session.SetSlider(item.Key, item.Value);
+        }
     }
 }
