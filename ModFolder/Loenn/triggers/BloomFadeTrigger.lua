@@ -8,12 +8,12 @@ return {
         name = "BloomFadeTrigger",
         data =
         {
-            bloomBaseFrom = 0,
-            bloomBaseTo = 0,
-            bloomStrengthFrom = 1,
-            bloomStrengthTo = 1,
-            bloomColorFrom = "ffffff",
-            bloomColorTo = "ffffff",
+            bloomBaseFrom = "",
+            bloomBaseTo = "",
+            bloomStrengthFrom = "",
+            bloomStrengthTo = "",
+            bloomColorFrom = "",
+            bloomColorTo = "",
             positionMode = "NoEffect",
             timedFade = -1,
             levelDeath = "-1",
@@ -32,29 +32,15 @@ return {
     },
     fieldInformation =
     {
-        bloomBaseFrom =
-        {
-            minimumValue = 0
-        },
-        bloomBaseTo =
-        {
-            minimumValue = 0
-        },
-        bloomStrengthFrom =
-        {
-            minimumValue = 0
-        },
-        bloomStrengthTo =
-        {
-            minimumValue = 0
-        },
         bloomColorFrom =
         {
-            fieldType = "color"
+            fieldType = "color",
+            allowEmpty = true,
         },
         bloomColorTo =
         {
-            fieldType = "color"
+            fieldType = "color",
+            allowEmpty = true,
         },
         positionMode = fieldOptions.positionMode,
         enterMode = fieldOptions.enterMode,

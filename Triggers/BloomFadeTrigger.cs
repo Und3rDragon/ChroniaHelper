@@ -11,17 +11,17 @@ namespace ChroniaHelper.Triggers;
 public class BloomFadeTrigger : BaseTrigger
 {
 
-    private float bloomBaseFrom;
+    private string bloomBaseFrom;
 
-    private float bloomBaseTo;
+    private string bloomBaseTo;
 
-    private float bloomStrengthFrom;
+    private string bloomStrengthFrom;
 
-    private float bloomStrengthTo;
+    private string bloomStrengthTo;
 
-    private Color bloomColorFrom;
+    private string bloomColorFrom;
 
-    private Color bloomColorTo;
+    private string bloomColorTo;
 
     private PositionModes positionMode;
 
@@ -33,12 +33,12 @@ public class BloomFadeTrigger : BaseTrigger
 
     public BloomFadeTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
-        this.bloomBaseFrom = data.Float("bloomBaseFrom", 0F);
-        this.bloomBaseTo = data.Float("bloomBaseTo", 0F);
-        this.bloomStrengthFrom = data.Float("bloomStrengthFrom", 1F);
-        this.bloomStrengthTo = data.Float("bloomStrengthTo", 1F);
-        this.bloomColorFrom = data.HexColor("bloomColorFrom", Color.White);
-        this.bloomColorTo = data.HexColor("bloomColorTo", Color.White);
+        this.bloomBaseFrom = data.Attr("bloomBaseFrom");
+        this.bloomBaseTo = data.Attr("bloomBaseTo");
+        this.bloomStrengthFrom = data.Attr("bloomStrengthFrom");
+        this.bloomStrengthTo = data.Attr("bloomStrengthTo");
+        this.bloomColorFrom = data.Attr("bloomColorFrom");
+        this.bloomColorTo = data.Attr("bloomColorTo");
         this.positionMode = data.Enum<PositionModes>("positionMode", PositionModes.NoEffect);
         this.timer = data.Float("timedFade", -1f);
         timedFade = timer > 0;
@@ -50,13 +50,10 @@ public class BloomFadeTrigger : BaseTrigger
         {
             t = timer;
         }
-        if (base.leaveReset)
-        {
-            this.oldBloom.bloomBase = base.level.Bloom.Base;
-            this.oldBloom.bloomBaseAdd = base.session.BloomBaseAdd;
-            this.oldBloom.bloomStrength = base.level.Bloom.Strength;
-            this.oldBloom.bloomColor = this.GetBloomColor();
-        }
+        this.oldBloom.bloomBase = base.level.Bloom.Base;
+        this.oldBloom.bloomBaseAdd = base.session.BloomBaseAdd;
+        this.oldBloom.bloomStrength = base.level.Bloom.Strength;
+        this.oldBloom.bloomColor = this.GetBloomColor();
     }
 
     protected override IEnumerator OnEnterRoutine(Player player)
@@ -67,11 +64,32 @@ public class BloomFadeTrigger : BaseTrigger
             {
                 t = Calc.Approach(t, -1f, Engine.DeltaTime);
                 float progress = ((timer - t) / timer).Clamp(0f, 1f);
-                float bloomBase = Calc.ClampedMap(progress, 0f, 1f, this.bloomBaseFrom, this.bloomBaseTo);
-                base.level.Bloom.Base = bloomBase;
-                base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
-                base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, this.bloomStrengthFrom, this.bloomStrengthTo);
-                this.SetBloomColor(Color.Lerp(this.bloomColorFrom, this.bloomColorTo, progress));
+
+                bool _from = float.TryParse(bloomBaseFrom, out float from);
+                bool _to = float.TryParse(bloomBaseTo, out float to);
+
+                if (_to)
+                {
+                    float bloomBase = Calc.ClampedMap(progress, 0f, 1f, _from ? from : oldBloom.bloomBase, to);
+                    base.level.Bloom.Base = bloomBase;
+                    base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
+                }
+
+                bool _sfrom = float.TryParse(bloomStrengthFrom, out float sfrom);
+                bool _sto = float.TryParse(bloomStrengthTo, out float sto);
+
+                if (_sto)
+                {
+                    base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, _sfrom ? sfrom : oldBloom.bloomStrength, sto);
+                }
+
+                Color cfrom = Calc.HexToColor(bloomColorFrom);
+                Color cto = Calc.HexToColor(bloomColorTo);
+
+                if (bloomColorTo.HasValidContent())
+                {
+                    this.SetBloomColor(Color.Lerp(cfrom, cto, progress));
+                }
 
                 yield return null;
             }
@@ -82,12 +100,33 @@ public class BloomFadeTrigger : BaseTrigger
     {
         if (!timedFade)
         {
-            float lerp = base.GetPositionLerp(player, this.positionMode);
-            float bloomBase = Calc.ClampedMap(lerp, 0f, 1f, this.bloomBaseFrom, this.bloomBaseTo);
-            base.level.Bloom.Base = bloomBase;
-            base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
-            base.level.Bloom.Strength = Calc.ClampedMap(lerp, 0f, 1f, this.bloomStrengthFrom, this.bloomStrengthTo);
-            this.SetBloomColor(Color.Lerp(this.bloomColorFrom, this.bloomColorTo, lerp));
+            float progress = base.GetPositionLerp(player, this.positionMode);
+
+            bool _from = float.TryParse(bloomBaseFrom, out float from);
+            bool _to = float.TryParse(bloomBaseTo, out float to);
+
+            if (_to)
+            {
+                float bloomBase = Calc.ClampedMap(progress, 0f, 1f, _from ? from : oldBloom.bloomBase, to);
+                base.level.Bloom.Base = bloomBase;
+                base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
+            }
+
+            bool _sfrom = float.TryParse(bloomStrengthFrom, out float sfrom);
+            bool _sto = float.TryParse(bloomStrengthTo, out float sto);
+
+            if (_sto)
+            {
+                base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, _sfrom ? sfrom : oldBloom.bloomStrength, sto);
+            }
+
+            Color cfrom = Calc.HexToColor(bloomColorFrom);
+            Color cto = Calc.HexToColor(bloomColorTo);
+
+            if (bloomColorTo.HasValidContent())
+            {
+                this.SetBloomColor(Color.Lerp(cfrom, cto, progress));
+            }
         }
     }
 
