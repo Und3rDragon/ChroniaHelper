@@ -69,11 +69,7 @@ cloud.fieldInformation = {
         useAlpha = true,
         allowEmpty = true,
     },
-    soundIndex = {
-        fieldType = "integer",
-        options = require("consts.celeste_enums").tileset_sound_ids,
-        editable = false,
-    },
+    soundIndex = require("mods").requireFromPlugin("consts.sounds").soundIDs,
     lightOcclude = {
         minimumValue = 0,
         maximumValue = 1,

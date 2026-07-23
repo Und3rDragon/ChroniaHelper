@@ -59,6 +59,8 @@ block.fieldInformation = function(entity)
         editable = false,
     }
 
+    orig["surfaceSoundIndex"] = require("mods").requireFromPlugin("consts.sounds").soundIDs
+
     return orig
 end
 

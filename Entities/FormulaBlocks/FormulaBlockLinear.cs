@@ -145,6 +145,7 @@ public class FormulaBlockLinear : GroupedBaseSolid
 
             if (maxDuration > 0f && elapsed >= maxDuration)
             {
+                elapsed = maxDuration;
                 break;
             }
 

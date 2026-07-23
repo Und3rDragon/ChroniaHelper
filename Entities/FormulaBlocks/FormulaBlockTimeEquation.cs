@@ -126,6 +126,10 @@ public class FormulaBlockTimeEquation : GroupedBaseSolid
     public void RoutineUpdate()
     {
         elapsed += Engine.DeltaTime;
+        if(maxMoveDuration > 0 && elapsed > maxMoveDuration)
+        {
+            elapsed = maxMoveDuration;
+        }
         normalRoutine.Update();
     }
 
