@@ -55,6 +55,12 @@ public class ModifiedAnimatedParallax : Parallax
         public List<string> TextureIndexFlag { get; set; } = new();
         public string OverrideFrameCounter { get; set; } = null;
         public string OverrideTextureCounter { get; set; } = null;
+        public string OverridePositionX { get; set; } = null;
+        public string OverridePositionY { get; set; } = null;
+        public string OverrideSpeedX { get; set; } = null;
+        public string OverrideSpeedY { get; set; } = null;
+        public string DeltaPositionX { get; set; } = null;
+        public string DeltaPositionY { get; set; } = null;
     }
     private string alphaExpression = null;
     private string triggerFlag, resetFlag;
@@ -73,10 +79,15 @@ public class ModifiedAnimatedParallax : Parallax
 
     private string overrideFrameCounter = null;
     private string overrideTextureCounter = null;
+    private string overridePositionX = null;
+    private string overridePositionY = null;
+    private string overrideSpeedX = null;
+    private string overrideSpeedY = null;
+    private string deltaPosX = null, deltaPosY = null;
 
     //public ModifiedAnimatedParallax(BinaryPacker.Element c, MTexture texture) : this(texture)
     //{
-        
+
     //}
     public ModifiedAnimatedParallax(MTexture texture) : base(texture)
     {
@@ -166,6 +177,36 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 overrideTextureCounter = meta.OverrideTextureCounter;
             }
+
+            if(meta.OverridePositionX != null)
+            {
+                overridePositionX = meta.OverridePositionX;
+            }
+
+            if(meta.OverridePositionY != null)
+            {
+                overridePositionY = meta.OverridePositionY;
+            }
+
+            if(meta.OverrideSpeedX != null)
+            {
+                overrideSpeedX = meta.OverrideSpeedX;
+            }
+
+            if(meta.OverrideSpeedY != null)
+            {
+                overrideSpeedY = meta.OverrideSpeedY;
+            }
+
+            if(meta.DeltaPositionX != null)
+            {
+                deltaPosX = meta.DeltaPositionX;
+            }
+
+            if(meta.DeltaPositionY != null)
+            {
+                deltaPosY = meta.DeltaPositionY;
+            }
         }
         
         AnalyzeIndexFlags();
@@ -226,9 +267,44 @@ public class ModifiedAnimatedParallax : Parallax
         }
     }
 
+    public Vc2? originalPosition = null;
     public override void Update(Scene scene)
     {
+        if(originalPosition != null)
+        {
+            Position = (Vc2)originalPosition;
+        }
+
+        originalPosition = Position;
+
         base.Update(scene);
+
+        // override speed and position first
+        if (overridePositionX.HasValidContent())
+        {
+            Position.X = overridePositionX.GetSlider();
+        }
+        if (overridePositionY.HasValidContent())
+        {
+            Position.Y = overridePositionY.GetSlider();
+        }
+        if (overrideSpeedX.HasValidContent())
+        {
+            Speed.X = overrideSpeedX.GetSlider();
+        }
+        if (overrideSpeedY.HasValidContent())
+        {
+            Speed.Y = overrideSpeedY.GetSlider();
+        }
+
+        if (deltaPosX.HasValidContent())
+        {
+            Position.X += deltaPosX.GetSlider();
+        }
+        if (deltaPosY.HasValidContent())
+        {
+            Position.Y += deltaPosY.GetSlider();
+        }
 
         if (!resetFlag.IsNullOrEmpty())
         {

@@ -68,3 +68,33 @@ TextureIndexFlag:
 # OverrideTextureCounter: counter name
 # WARNING: USE THIS WITH CAUTION
 # OverrideTextureCounter: overrideCounterB
+
+# OverridePositionX, override position with a slider value
+# OverridePositionX: slider name
+# WARNING: USE THIS WITH CAUTION
+# OverridePositionX: overrideSliderA
+
+# OverridePositionY, override position with a slider value
+# OverridePositionY: slider name
+# WARNING: USE THIS WITH CAUTION
+# OverridePositionY: overrideSliderB
+
+# OverrideSpeedX, override speed with a slider value
+# OverrideSpeedX: slider name
+# WARNING: USE THIS WITH CAUTION
+# OverrideSpeedX: overrideSliderC
+
+# OverrideSpeedY, override speed with a slider value
+# OverrideSpeedY: slider name
+# WARNING: USE THIS WITH CAUTION
+# OverrideSpeedY: overrideSliderD
+
+# DeltaPositionX, give delta position with a slider value
+# DeltaPositionX: slider name
+# WARNING: USE THIS WITH CAUTION
+# DeltaPositionX: deltaX
+
+# DeltaPositionY, give delta position with a slider value
+# DeltaPositionY: slider name
+# WARNING: USE THIS WITH CAUTION
+# DeltaPositionY: deltaY
