@@ -343,7 +343,7 @@ public static class MapProcessor
     public static KeyboardState keyboardState => Keyboard.GetState();
     public static GamePadState gamePadState => GamePad.GetState(PlayerIndex.One);
 
-    public static Vc2 cameraPos => level?.Camera.Position ?? Vc2.Zero;
+    public static Vc2 cameraPos => level?.Camera?.Position ?? Vc2.Zero;
     public static Vc2 cameraCenter => cameraPos + new Vc2(160f, 90f);
     public static Vc2 levelPos => new Vc2(level?.Bounds.Left ?? 0, level?.Bounds.Top ?? 0);
     public static Vc2 InParallax(this Vc2 position, Vc2 parallax)
