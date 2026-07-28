@@ -326,7 +326,7 @@ public class Displayers : HDRenderEntity
             var displayer = Md.Settings.deathsDisplayer;
             var displayUI = deaths_UI;
             
-            string target = $"{MaP.level?.Session.DeathsInCurrentLevel ?? 0}";
+            string target = $"{MaP.level?.Session?.DeathsInCurrentLevel ?? 0}";
 
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
@@ -344,7 +344,7 @@ public class Displayers : HDRenderEntity
             var displayer = Md.Settings.totalDeathsDisplayer;
             var displayUI = totalDeaths_UI;
             
-            string target = $"{MaP.level?.Session.Deaths ?? 0}";
+            string target = $"{MaP.level?.Session?.Deaths ?? 0}";
 
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
@@ -383,7 +383,7 @@ public class Displayers : HDRenderEntity
             Language lang = Dialog.Languages["english"];
             
             string target = string.Empty;
-            string sid = MaP.level?.Session.Area.SID ?? "null";
+            string sid = MaP.level?.Session?.Area.SID ?? "null";
             if (sid.StartsWith("Celeste/"))
             {
                 target = sid.Remove(0, sid.IndexOf('-') + 1);
@@ -432,7 +432,7 @@ public class Displayers : HDRenderEntity
             var displayer = Md.Settings.roomNameDisplayer;
             var displayUI = roomName_UI;
             
-            string target = MaP.level?.Session.LevelData.Name ?? "null";
+            string target = MaP.level?.Session?.LevelData.Name ?? "null";
             if (displayer.prefix)
             {
                 target = "Room Name: " + target;
@@ -457,7 +457,7 @@ public class Displayers : HDRenderEntity
             Language lang = Dialog.Languages["english"];
 
             string target = string.Empty;
-            string sid = MaP.level?.Session.Area.SID ?? "null";
+            string sid = MaP.level?.Session?.Area.SID ?? "null";
             string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
             bool dialogHas = Dialog.Has(ssid + "_author", lang);
             string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).TryGet(0, "null");
