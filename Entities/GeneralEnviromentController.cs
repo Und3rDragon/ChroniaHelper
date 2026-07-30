@@ -75,13 +75,15 @@ public class GeneralEnviromentController : GeneralSetupController
 
     private IEnumerator Changing()
     {
+        Level level = MaP.level;
+
+        TryRegisterOldParams(null);
+
         if (!fade)
         {
             ChangeEnvironmentImmediately();
             yield break;
         }
-
-        Level level = MaP.level;
 
         float progress = 0f;
 
