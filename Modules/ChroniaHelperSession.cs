@@ -244,6 +244,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // Water groupping
     public Dictionary<int, List<int>> GroupedWaters = new();
 
+    // Formula Converter Timers
+    public HashSet<string> FormulaConverterTimers = new();
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]

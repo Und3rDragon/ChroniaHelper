@@ -98,3 +98,10 @@ TextureIndexFlag:
 # DeltaPositionY: slider name
 # WARNING: USE THIS WITH CAUTION
 # DeltaPositionY: deltaY
+
+# OverrideScrollX, OverrideScrollY, replacing the original scroll
+# OverrideScrollX: slider name
+# OverrideScrollY: slider name
+# WARNING: USE THIS WITH CAUTION
+# OverrideScrollX: scrollX
+# OverrideScrollY: scrollY

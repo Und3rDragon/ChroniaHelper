@@ -61,6 +61,8 @@ public class ModifiedAnimatedParallax : Parallax
         public string OverrideSpeedY { get; set; } = null;
         public string DeltaPositionX { get; set; } = null;
         public string DeltaPositionY { get; set; } = null;
+        public string OverrideScrollX { get; set; } = null;
+        public string OverrideScrollY { get; set; } = null;
     }
     private string alphaExpression = null;
     private string triggerFlag, resetFlag;
@@ -84,6 +86,7 @@ public class ModifiedAnimatedParallax : Parallax
     private string overrideSpeedX = null;
     private string overrideSpeedY = null;
     private string deltaPosX = null, deltaPosY = null;
+    private string overrideScrollX = null, overrideScrollY = null;
 
     //public ModifiedAnimatedParallax(BinaryPacker.Element c, MTexture texture) : this(texture)
     //{
@@ -207,6 +210,16 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 deltaPosY = meta.DeltaPositionY;
             }
+            
+            if(meta.OverrideScrollX != null)
+            {
+                overrideScrollX = meta.OverrideScrollX;
+            }
+
+            if (meta.OverrideScrollY != null)
+            {
+                overrideScrollY = meta.OverrideScrollY;
+            }
         }
         
         AnalyzeIndexFlags();
@@ -304,6 +317,15 @@ public class ModifiedAnimatedParallax : Parallax
         if (deltaPosY.HasValidContent())
         {
             Position.Y += deltaPosY.GetSlider();
+        }
+
+        if (overrideScrollX.HasValidContent())
+        {
+            Scroll.X = overrideScrollX.GetSlider();
+        }
+        if (overrideScrollY.HasValidContent())
+        {
+            Scroll.Y = overrideScrollY.GetSlider();
         }
 
         if (!resetFlag.IsNullOrEmpty())

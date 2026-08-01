@@ -1583,3 +1583,7 @@ entities.ChroniaHelper/ReversedGravityJelly.placements.name.glider=Reversed Grav
 
 entities.ChroniaHelper/GeneralEnviromentController.placements.name.controller=General Environment Fade Controller
 entities.ChroniaHelper/GeneralEnviromentController.attributes.description.fadeTime=If equals or below zero, the values will be changed immediately. Otherwise it works as fading duration
+
+# ======================== Formula Converter
+
+entities.ChroniaHelper/FormulaConverter.placements.name.controller=Formula Converter

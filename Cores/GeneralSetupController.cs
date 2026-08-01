@@ -41,6 +41,8 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 0)
             {
+                i.SetState(true);
+
                 i.Execute();
             }
         }
@@ -57,6 +59,8 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 5)
             {
+                i.SetState(true);
+
                 i.Execute();
             }
         }
@@ -75,6 +79,8 @@ public static class GeneralSetupControllerUtils
         {
             if (i.mode == 6)
             {
+                i.SetState(true);
+
                 i.Execute();
             }
         }
@@ -88,10 +94,15 @@ public abstract class GeneralSetupController : BaseEntity
     {
         paramater = data.Attr("parameters");
         mode = data.Int("mode", 0);
+
+        state = false;
     }
     public string paramater;
 
     public abstract void Execute();
+    public virtual void ExecuteOnce() { }
+    public virtual void ExecuteConstantly() { }
+    public virtual void ExecuteByUpdateState(bool current, bool last) { }
 
     /// <summary>
     /// On Level Load = 0, Always Set = 1, On Scene Start = 2, On Scene End = 3, On Interval = 4
@@ -107,6 +118,9 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 7)
         {
+            state = true;
+
+            ExecuteOnce();
             Execute();
         }
     }
@@ -115,7 +129,10 @@ public abstract class GeneralSetupController : BaseEntity
     {
         if (mode == 8)
         {
+            state = true;
+
             Execute();
+            ExecuteOnce();
         }
 
         base.Removed(scene);
@@ -128,6 +145,9 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 1)
         {
+            state = true;
+
+            ExecuteConstantly();
             Execute();
         }
 
@@ -135,7 +155,14 @@ public abstract class GeneralSetupController : BaseEntity
         {
             if (Scene.OnInterval(paramater.ParseFloat(0f).GetAbs()))
             {
+                state = true;
+
+                ExecuteConstantly();
                 Execute();
+            }
+            else
+            {
+                state = false;
             }
         }
 
@@ -150,6 +177,7 @@ public abstract class GeneralSetupController : BaseEntity
 
             if (_state != state && state)
             {
+                ExecuteConstantly();
                 Execute();
             }
         }
@@ -167,6 +195,7 @@ public abstract class GeneralSetupController : BaseEntity
 
             if (_state != state && state)
             {
+                ExecuteConstantly();
                 Execute();
             }
         }
@@ -177,9 +206,12 @@ public abstract class GeneralSetupController : BaseEntity
             
             if (_state != state && state)
             {
+                ExecuteConstantly();
                 Execute();
             }
         }
+
+        ExecuteByUpdateState(state, _state);
 
         _state = state;
     }
@@ -190,6 +222,7 @@ public abstract class GeneralSetupController : BaseEntity
 
         if (mode == 2)
         {
+            ExecuteOnce();
             Execute();
         }
     }
@@ -199,8 +232,14 @@ public abstract class GeneralSetupController : BaseEntity
         if (mode == 3)
         {
             Execute();
+            ExecuteOnce();
         }
 
         base.SceneEnd(scene);
+    }
+
+    public void SetState(bool set)
+    {
+        state = set;
     }
 }
