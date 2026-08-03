@@ -296,8 +296,6 @@ public class ModifiedAnimatedParallax : Parallax
             Position = (Vc2)originalPosition;
         }
         
-        originalPosition = Position;
-
         base.Update(scene);
 
         // override speed and position first
@@ -335,6 +333,9 @@ public class ModifiedAnimatedParallax : Parallax
         {
             Scroll.Y = overrideScrollY.GetSlider();
         }
+
+        // bugfix: setting new position
+        originalPosition = Position;
 
         if (!resetFlag.IsNullOrEmpty())
         {
