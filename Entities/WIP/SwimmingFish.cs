@@ -7,14 +7,21 @@ namespace ChroniaHelper.Entities.WIP;
 
 [Tracked]
 [WorkingInProgress]
-// [CustomEntity("ChroniaHelper/SwimmingFish")]
+[CustomEntity("ChroniaHelper/SwimmingFish")]
 public class SwimmingFish : BaseEntity
 {
     public SwimmingFish(EntityData data, Vc2 offset) : base(data, offset)
     {
         Collider = new Circle(4f);
+
+        sprite = new(GFX.Game, "ChroniaHelper/SwimmingFish/");
+        sprite.Add("idle", "fish");
+        Add(sprite);
+        sprite.Justify = Vc2.One * 0.5f;
+        sprite.Play("idle");
     }
     private FishMotion motion;
+    private Sprite sprite;
 
     private int WaterGroup = -1;
     protected override void AwakeExecute(Scene scene)
@@ -90,11 +97,20 @@ public class SwimmingFish : BaseEntity
         motion.AddTo(this);
     }
 
-    public override void Render()
+    //public override void Render()
+    //{
+    //    base.Render();
+
+    //    Draw.Rect(motion.Position - Vc2.One * 2f, 4f, 4f, Color.Red);
+    //}
+
+    public override void Update()
     {
-        base.Render();
-        
-        Draw.Rect(motion.Position - Vc2.One * 2f, 4f, 4f, Color.Red);
+        base.Update();
+
+        sprite.Scale.X = -Math.Sign(motion.Position.X - Position.X);
+
+        Position = motion.Position;
     }
     
     public bool WaterCrossover(Water a, Water b)
