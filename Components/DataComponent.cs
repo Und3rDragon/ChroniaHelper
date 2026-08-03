@@ -9,30 +9,22 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class DataComponent : BaseComponent
+public class DataComponent<T> : BaseComponent
 {
-    public DataComponent(string tag)
+    public DataComponent(string tag, T value)
     {
         Tag = tag;
+        Value = value;
     }
     public string Tag { get; set; }
+    public T Value { get; set; }
+}
 
-    public class Bool : DataComponent
+public class DataComponentPrs
+{
+    public class Int : DataComponent<int>
     {
-        public Bool(string tag, bool value) : base(tag)
-        {
-            Value = value;
-        }
-        public bool Value { get; set; }
-    }
-
-    public class Int : DataComponent
-    {
-        public Int(string tag, int value) : base(tag)
-        {
-            Value = value;
-        }
-        public int Value { get; set; }
+        public Int(string tag, int value) : base(tag, value) { }
 
         private float duration = -1f, timer = -1f;
         private int target = 0, source = 0;
@@ -61,13 +53,9 @@ public class DataComponent : BaseComponent
         }
     }
 
-    public class Float : DataComponent
+    public class Float : DataComponent<float>
     {
-        public Float(string tag, float value) : base(tag)
-        {
-            Value = value;
-        }
-        public float Value { get; set; }
+        public Float(string tag, float value) : base(tag, value) { }
 
         private float duration = -1f, timer = -1f, target = 0f, source = 0f;
         private EaseMode easer = EaseMode.Linear;
@@ -87,7 +75,7 @@ public class DataComponent : BaseComponent
         public override void Update()
         {
             // Fader
-            if(timer > 0f)
+            if (timer > 0f)
             {
                 timer = Calc.Approach(timer, 0f, Engine.DeltaTime);
                 Value = timer.LerpValue(duration, 0f, source, target, easer);
@@ -95,22 +83,9 @@ public class DataComponent : BaseComponent
         }
     }
 
-    public class String : DataComponent
+    public class Double : DataComponent<double>
     {
-        public String(string tag, string value) : base(tag)
-        {
-            Value = value;
-        }
-        public string Value { get; set; }
-    }
-
-    public class Double : DataComponent
-    {
-        public Double(string tag, double value) : base(tag)
-        {
-            Value = value;
-        }
-        public double Value { get; set; }
+        public Double(string tag, double value) : base(tag, value) { }
 
         private float duration = -1f, timer = -1f;
         private double target = 0, source = 0;
@@ -137,32 +112,5 @@ public class DataComponent : BaseComponent
                 Value = timer.LerpValue(duration, 0f, source, target, easer);
             }
         }
-    }
-
-    public class General<T> : DataComponent
-    {
-        public General(string tag, T value) : base(tag)
-        {
-            Value = value;
-        }
-        public T Value { get; set; }
-    }
-
-    public class InList<T> : DataComponent
-    {
-        public InList(string tag, List<T> value) : base(tag)
-        {
-            Value = value;
-        }
-        public List<T> Value { get; set; }
-    }
-
-    public class InDic<TKey, TValue> : DataComponent
-    {
-        public InDic(string tag, Dictionary<TKey, TValue> value) : base(tag)
-        {
-            Value = value;
-        }
-        public Dictionary<TKey, TValue> Value { get; set; }
     }
 }
