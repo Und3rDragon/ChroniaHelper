@@ -105,3 +105,8 @@ TextureIndexFlag:
 # WARNING: USE THIS WITH CAUTION
 # OverrideScrollX: scrollX
 # OverrideScrollY: scrollY
+
+# OverrideScale, replacing the original parallax scale fix
+# OverrideScale: a slider name or a value
+# WARNING: USE THIS WITH CAUTION
+# OverrideScale: bgScale
