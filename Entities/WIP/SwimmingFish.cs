@@ -19,6 +19,9 @@ public class SwimmingFish : BaseEntity
         Add(sprite);
         sprite.Justify = Vc2.One * 0.5f;
         sprite.Play("idle");
+
+        motion = new(Position, new());
+        Add(motion);
     }
     private FishMotion motion;
     private Sprite sprite;
@@ -83,18 +86,10 @@ public class SwimmingFish : BaseEntity
             }
         }
 
-        motion = new(Position, borders);
-        motion.GetInterferePoints = () =>
+        if (PUt.TryGetPlayer(out Player player))
         {
-            List<Vc2> p = new();
-            if (PUt.TryGetPlayer(out Player player))
-            {
-                p.Add(player.Center);
-            }
-
-            return p;
-        };
-        motion.AddTo(this);
+            motion.InterferePoints.Add(player.Center);
+        }
     }
 
     //public override void Render()

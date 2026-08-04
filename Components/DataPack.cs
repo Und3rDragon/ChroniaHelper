@@ -9,20 +9,27 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Components;
 
-public class DataComponent<T> : BaseComponent
+public class DataPack<T> : BaseComponent
 {
-    public DataComponent(string tag, T value)
+    public DataPack(string tag, T baseValue)
     {
         Tag = tag;
-        Value = value;
+        _Value = Value = baseValue;
     }
     public string Tag { get; set; }
     public T Value { get; set; }
+
+    public T _Value { get; private set; }
+    public void SetValue(T newValue)
+    {
+        _Value = Value;
+        Value = newValue;
+    }
 }
 
-public class DataComponentPrs
+public class DataPackPreset
 {
-    public class Int : DataComponent<int>
+    public class Int : DataPack<int>
     {
         public Int(string tag, int value) : base(tag, value) { }
 
@@ -53,7 +60,7 @@ public class DataComponentPrs
         }
     }
 
-    public class Float : DataComponent<float>
+    public class Float : DataPack<float>
     {
         public Float(string tag, float value) : base(tag, value) { }
 
@@ -83,7 +90,7 @@ public class DataComponentPrs
         }
     }
 
-    public class Double : DataComponent<double>
+    public class Double : DataPack<double>
     {
         public Double(string tag, double value) : base(tag, value) { }
 
