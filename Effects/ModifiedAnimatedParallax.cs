@@ -316,15 +316,6 @@ public class ModifiedAnimatedParallax : Parallax
             Speed.Y = overrideSpeedY.GetSlider();
         }
 
-        if (deltaPosX.HasValidContent())
-        {
-            Position.X += deltaPosX.GetSlider();
-        }
-        if (deltaPosY.HasValidContent())
-        {
-            Position.Y += deltaPosY.GetSlider();
-        }
-
         if (overrideScrollX.HasValidContent())
         {
             Scroll.X = overrideScrollX.GetSlider();
@@ -336,6 +327,15 @@ public class ModifiedAnimatedParallax : Parallax
 
         // bugfix: setting new position
         originalPosition = Position;
+
+        if (deltaPosX.HasValidContent())
+        {
+            Position.X += deltaPosX.GetSlider();
+        }
+        if (deltaPosY.HasValidContent())
+        {
+            Position.Y += deltaPosY.GetSlider();
+        }
 
         if (!resetFlag.IsNullOrEmpty())
         {
