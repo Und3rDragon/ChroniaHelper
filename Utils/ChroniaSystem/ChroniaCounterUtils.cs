@@ -25,7 +25,7 @@ public static class ChroniaCounterUtils
     
     public static int GetCounter(this string name)
     {
-        return MaP.level?.Session.GetCounter(name) ?? 0;
+        return MaP.level?.Session?.GetCounter(name) ?? 0;
     }
 
     public static int GetCounter(this string name, int fallback)
@@ -43,7 +43,7 @@ public static class ChroniaCounterUtils
 
     public static void SetCounter(this string name, int value)
     {
-        MaP.level?.Session.SetCounter(name, value);
+        MaP.level?.Session?.SetCounter(name, value);
     }
 
     public static void SetCounter(this ICollection<string> source, int state)

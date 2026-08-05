@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
 using Celeste.Mod.KoseiHelper.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Imports;
@@ -23,30 +24,36 @@ public class Displayers : HDRenderEntity
     [LoadHook]
     public static void Load()
     {
-        On.Celeste.Level.Begin += OnLevelBegin;
-        On.Celeste.Level.End += OnLevelEnd;
+        On.Celeste.Level.Update += LevelUpdate;
     }
     [UnloadHook]
     public static void Unload()
     {
-        On.Celeste.Level.Begin -= OnLevelBegin;
-        On.Celeste.Level.End -= OnLevelEnd;
+        On.Celeste.Level.Update -= LevelUpdate;
     }
 
     public static Displayers Instance = null;
-    public static void OnLevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
+    public static DataPack<bool> HUDState = new("HUDState", false);
+    public static void LevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
         orig(self);
 
-        self.Add(Instance = new Displayers(new EntityData(), Vc2.Zero));
-    }
+        if (Md.Settings == null) { return; }
 
-    public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
-    {
-        Instance.Buffer?.Dispose();
-        self.Remove(Instance);
+        HUDState.SetValue(Md.Settings.HUDMainControl);
 
-        orig(self);
+        if (HUDState.Value != HUDState._Value)
+        {
+            if (HUDState.Value)
+            {
+                self.Add(Instance = new Displayers(new EntityData(), Vc2.Zero));
+            }
+            else
+            {
+                Instance.Buffer?.Dispose();
+                self.Remove(Instance);
+            }
+        }
     }
 
     public Displayers(EntityData d,Vc2 o) : base(d, o)
