@@ -3,9 +3,9 @@ using MonoMod.Utils;
 
 namespace ChroniaHelper.Components;
 
-public class DynamicDataWatcher<T> : BaseComponent
+public class DynamicDataGetter<T> : BaseComponent
 {
-    public DynamicDataWatcher(string field)
+    public DynamicDataGetter(string field)
     {
         Field = field;
     }

@@ -37,7 +37,7 @@ public class OutlinerRectangle : BaseEntity
     private bool flagAllow = true;
     private bool previousFlagAllow = true;
 
-    private DataComponentPrs.Float alphaFade, colorFade;
+    private DataPackPreset.Float alphaFade, colorFade;
     private float fadeTime = -1f;
     private bool noFade = true;
     private EaseMode visibleFade = EaseMode.Linear;

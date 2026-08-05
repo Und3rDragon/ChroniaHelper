@@ -19,7 +19,7 @@ public class HDRenderEntity : BaseEntity
         nodes = d.NodesWithPosition(o);
         ID = d.ID;
 
-        Prepare(d, o);
+        PrepareBeforeRenderHook(d, o);
 
         Tag |= TagsExt.SubHUD;
 
@@ -30,13 +30,13 @@ public class HDRenderEntity : BaseEntity
     public Vc2 StaticScreen = new Vc2(160f, 90f);
     public CColor DrawColor = new CColor(Color.White);
     
-    public virtual void Prepare(EntityData data, Vc2 offset) { }
+    public virtual void PrepareBeforeRenderHook(EntityData data, Vc2 offset) { }
 
     [Credits("SSM24 for some technical bugfix")]
     public void BeforeRender()
     {
         // Create a new render target for later renders
-        if (Buffer?.Target is null)
+        if (Buffer?.Target == null)
         {
             Buffer = VirtualContent.CreateRenderTarget("ChroniaHelper_HDEntity_" + ID.ToString(), 1920, 1080);
         }
@@ -79,22 +79,25 @@ public class HDRenderEntity : BaseEntity
         // Normal Render
         base.Render();
 
-        // SubHud SpriteBatch end and start rendering
-        SubHudRenderer.EndRender();
+        if(Buffer?.Target != null)
+        {
+            // SubHud SpriteBatch end and start rendering
+            SubHudRenderer.EndRender();
 
-        // Start a new SpriteBatch
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
+            // Start a new SpriteBatch
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, ColorGrade.Effect, Engine.ScreenMatrix.M11 * 6 < 6 ? Matrix.Identity : Engine.ScreenMatrix);
 
-        // Send my canvas to the SpriteBatch
-        Draw.SpriteBatch.Draw(Buffer, Vc2.Zero, null, DrawColor.Parsed(),
-            0, Vector2.Zero, 1,
-            SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            // Send my canvas to the SpriteBatch
+            Draw.SpriteBatch.Draw(Buffer, Vc2.Zero, null, DrawColor.Parsed(),
+                0, Vector2.Zero, 1,
+                SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
 
-        // End the batch and start rendering
-        SubHudRenderer.EndRender();
+            // End the batch and start rendering
+            SubHudRenderer.EndRender();
 
-        // Recover to the normal render SpriteBatch
-        SubHudRenderer.BeginRender();
+            // Recover to the normal render SpriteBatch
+            SubHudRenderer.BeginRender();
+        }
     }
     
     public Vc2 ParseLevelPositionToHDPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)
