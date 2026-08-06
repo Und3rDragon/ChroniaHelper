@@ -1,5 +1,6 @@
 ﻿local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
 
+--[[
 return {
     name = "ChroniaHelper/TeleportTargetTrigger",
     placements =
@@ -70,3 +71,4 @@ return {
         "positionOffset"
     }
 }
+]]
