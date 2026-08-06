@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using Celeste.Mod.KoseiHelper.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
@@ -14,6 +7,14 @@ using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.StopwatchSystem;
 using Microsoft.Xna.Framework.Media;
+using MonoMod.Logs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
 
 namespace ChroniaHelper.Settings;
@@ -25,11 +26,13 @@ public class Displayers : HDRenderEntity
     public static void Load()
     {
         On.Celeste.Level.Update += LevelUpdate;
+        On.Celeste.Level.LoadLevel += LoadLevel;
     }
     [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.Update -= LevelUpdate;
+        On.Celeste.Level.LoadLevel -= LoadLevel;
     }
 
     public static Displayers Instance = null;
@@ -54,6 +57,14 @@ public class Displayers : HDRenderEntity
                 self.Remove(Instance);
             }
         }
+    }
+
+    public static void LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self,
+        Player.IntroTypes intro, bool loader)
+    {
+        orig(self, intro, loader);
+
+        HUDState.SetValue(false);
     }
 
     public Displayers(EntityData d,Vc2 o) : base(d, o)
