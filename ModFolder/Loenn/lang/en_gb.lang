@@ -1584,3 +1584,7 @@ entities.ChroniaHelper/ReversedGravityJelly.placements.name.glider=Reversed Grav
 entities.ChroniaHelper/GeneralEnviromentController.placements.name.controller=General Environment Fade Controller
 entities.ChroniaHelper/GeneralEnviromentController.attributes.description.fadeTime=If equals or below zero, the values will be changed immediately. Otherwise it works as fading duration
 entities.ChroniaHelper/GeneralEnviromentController.attributes.description.parameters=When mode is "On Interval", this field will be the interval \nWhen mode is "On Flags", enter a series of flags separated by comma \nFlag begins with "!" is inverted
+
+# ======================== Lighting Trigger 2
+
+triggers.ChroniaHelper/LightingTrigger2.placements.name.LightingTrigger2=Lighting Trigger

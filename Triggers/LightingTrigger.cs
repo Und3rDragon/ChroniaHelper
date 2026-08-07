@@ -7,6 +7,7 @@ namespace ChroniaHelper.Triggers;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/LightingTrigger")]
+[Obsoleted("Recoded for stable performance")]
 public class LightingTrigger : BaseTrigger
 {
 
