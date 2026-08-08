@@ -66,7 +66,7 @@ public class RandomMusicController : BaseEntity
         {
             SetRandomMusic();
         }
-
+        
         timer -= Engine.DeltaTime;
     }
 
@@ -102,9 +102,9 @@ public class RandomMusicController : BaseEntity
             //Log.Info($"Equal, extend [{choose[0]}] by {interval}");
             return;
         }
-
+        
         timer = interval;
-
+        
         ApplyMusic(choose[0]);
         //Log.Info($"Different, play [{choose[0]}] for {interval}");
     }
@@ -112,7 +112,9 @@ public class RandomMusicController : BaseEntity
     public void ApplyMusic(string name)
     {
         MaP.level.Session.Audio.Music.Event = SFX.EventnameByHandle(name);
+        MaP.level.Session.Audio.Music.Progress = 0;
         MaP.level.Session.Audio.Apply();
+        
         lastPlayed = name;
     }
 }

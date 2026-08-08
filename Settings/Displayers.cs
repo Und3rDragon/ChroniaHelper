@@ -25,46 +25,39 @@ public class Displayers : HDRenderEntity
     [LoadHook]
     public static void Load()
     {
+        On.Celeste.Level.Begin += LevelBegin;
+        On.Celeste.Level.End += LevelEnd;
         On.Celeste.Level.Update += LevelUpdate;
-        On.Celeste.Level.LoadLevel += LoadLevel;
     }
     [UnloadHook]
     public static void Unload()
     {
+        On.Celeste.Level.Begin -= LevelBegin;
+        On.Celeste.Level.End -= LevelEnd;
         On.Celeste.Level.Update -= LevelUpdate;
-        On.Celeste.Level.LoadLevel -= LoadLevel;
     }
 
     public static Displayers Instance = null;
-    public static DataPack<bool> HUDState = new("HUDState", false);
+    public static void LevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
+    {
+        orig(self);
+
+        self.Add(Instance = new Displayers(new EntityData(), Vc2.Zero));
+    }
+
+    public static void LevelEnd(On.Celeste.Level.orig_End orig, Level self)
+    {
+        Instance.Buffer?.Dispose();
+        self.Remove(Instance);
+
+        orig(self);
+    }
+
     public static void LevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
     {
         orig(self);
 
-        if (Md.Settings == null) { return; }
-
-        HUDState.SetValue(Md.Settings.HUDMainControl);
-
-        if (HUDState.Value != HUDState._Value)
-        {
-            if (HUDState.Value)
-            {
-                self.Add(Instance = new Displayers(new EntityData(), Vc2.Zero));
-            }
-            else
-            {
-                Instance.Buffer?.Dispose();
-                self.Remove(Instance);
-            }
-        }
-    }
-
-    public static void LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self,
-        Player.IntroTypes intro, bool loader)
-    {
-        orig(self, intro, loader);
-
-        HUDState.SetValue(false);
+        Instance.beforeRenderHookRunning = Md.Settings.HUDMainControl;
     }
 
     public Displayers(EntityData d,Vc2 o) : base(d, o)

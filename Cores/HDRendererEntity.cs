@@ -25,16 +25,23 @@ public class HDRenderEntity : BaseEntity
 
         Add(new BeforeRenderHook(BeforeRender));
     }
-    public VirtualRenderTarget Buffer;
+    public VirtualRenderTarget Buffer = null;
     public Vc2 Parallax = Vc2.One;
     public Vc2 StaticScreen = new Vc2(160f, 90f);
     public CColor DrawColor = new CColor(Color.White);
+
+    public bool beforeRenderHookRunning = true;
     
     public virtual void PrepareBeforeRenderHook(EntityData data, Vc2 offset) { }
 
     [Credits("SSM24 for some technical bugfix")]
     public void BeforeRender()
     {
+        if (!beforeRenderHookRunning)
+        {
+            return;
+        }
+
         // Create a new render target for later renders
         if (Buffer?.Target == null)
         {
@@ -112,6 +119,18 @@ public class HDRenderEntity : BaseEntity
         Vc2 normal = (globalPosition - MaP.levelPos) - (MaP.cameraPos - MaP.levelPos) * parallax;
         
         return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * Cons.HDScale;
+    }
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+
+        if (Md.Session.GlobalEntitiesRegistry.Contains(SourceId))
+        {
+            RemoveSelf();
+            return;
+        }
+        Md.Session.GlobalEntitiesRegistry.Add(SourceId);
     }
 
     public override void Removed(Scene scene)
