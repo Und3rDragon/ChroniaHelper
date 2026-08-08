@@ -1,34 +1,28 @@
-﻿local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
-
---[[
+local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
 
 return {
     category = "visual",
-    name = "ChroniaHelper/LightingFadeTrigger",
+    name = "ChroniaHelper/LightingTrigger2",
     placements =
     {
-        name = "LightingFadeTrigger",
+        name = "LightingTrigger2",
         data =
         {
             lightingColorFrom = "",
             lightingColorTo = "",
             lightingAlphaFrom = "",
             lightingAlphaTo = "",
-            lightingAlphaAddFrom = "",
-            lightingAlphaAddTo = "",
-            baseLightingAlphaFrom = "",
-            baseLightingAlphaTo = "",
             positionMode = "NoEffect",
-            levelDeath = "-1",
-            totalDeath = "-1",
-            enterMode = "Any",
-            enterDelay = 0,
-            enterIfFlag = "",
-            enterSound = "",
-            leaveMode = "Any",
-            leaveDelay = 0,
-            leaveIfFlag = "",
-            leaveSound = "",
+            --levelDeath = "-1",
+            --totalDeath = "-1",
+            --enterMode = "Any",
+            --enterDelay = 0,
+            --enterIfFlag = "",
+            --enterSound = "",
+            --leaveMode = "Any",
+            --leaveDelay = 0,
+            --leaveIfFlag = "",
+            --leaveSound = "",
             timed = -1,
             onlyOnce = false,
             leaveReset = false
@@ -93,5 +87,3 @@ return {
         "leaveReset"
     }
 }
-
-]]

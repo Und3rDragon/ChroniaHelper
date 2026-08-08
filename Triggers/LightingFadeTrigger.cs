@@ -9,6 +9,7 @@ namespace ChroniaHelper.Triggers;
 
 [Tracked(true)]
 [CustomEntity("ChroniaHelper/LightingFadeTrigger")]
+[Obsoleted("Recoded for stable performance")]
 public class LightingFadeTrigger : BaseTrigger
 {
 

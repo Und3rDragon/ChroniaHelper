@@ -1,5 +1,7 @@
 ﻿local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
 
+--[[
+
 return {
     category = "visual",
     name = "ChroniaHelper/LightingTrigger",
@@ -76,3 +78,5 @@ return {
         "leaveReset"
     }
 }
+
+]]
