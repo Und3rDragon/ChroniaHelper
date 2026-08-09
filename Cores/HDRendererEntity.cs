@@ -39,6 +39,7 @@ public class HDRenderEntity : BaseEntity
     {
         if (!beforeRenderHookRunning)
         {
+            Buffer = null;
             return;
         }
 
