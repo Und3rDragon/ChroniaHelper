@@ -243,6 +243,9 @@ public class ChroniaHelperSession : EverestModuleSession
     
     // Water groupping
     public Dictionary<int, List<int>> GroupedWaters = new();
+    
+    // Random Music params
+    public Dictionary<EntityID, float> RandomMusicTimers = new();
 
     // Formula Converter Timers
     public HashSet<string> FormulaConverterTimers = new();
