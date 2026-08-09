@@ -10,6 +10,40 @@ using System.Threading.Tasks;
 
 namespace ChroniaHelper.Entities.RandomSeries;
 
+public static class RandomMusicUtils
+{
+    [LoadHook]
+    public static void Load()
+    {
+        On.Celeste.Level.Update += LevelUpdate;
+    }
+
+    [UnloadHook]
+    public static void Unload()
+    {
+        On.Celeste.Level.Update -= LevelUpdate;
+    }
+
+    public static void LevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
+    {
+        orig(self);
+
+        if (Md.Session == null)
+        {
+            return;
+        }
+
+        foreach (var i in Md.Session.RandomMusicTimers.Keys)
+        {
+            Md.Session.RandomMusicTimers[i] -= Engine.DeltaTime;
+            if (Md.Session.RandomMusicTimers[i] < -1f)
+            {
+                Md.Session.RandomMusicTimers[i] = -1f;
+            }
+        }
+    }
+}
+
 [Tracked]
 [CustomEntity("ChroniaHelper/RandomMusicController")]
 public class RandomMusicController : BaseEntity
@@ -38,7 +72,6 @@ public class RandomMusicController : BaseEntity
     public bool allowRepeat;
     public bool global;
 
-    public float timer;
     public bool active = false;
     protected override void AddedExecute(Scene scene)
     {
@@ -51,7 +84,7 @@ public class RandomMusicController : BaseEntity
             }
             Md.Session.GlobalEntitiesRegistry.Add(SourceId);
         }
-        timer = 0f;
+        Md.Session.RandomMusicTimers.Create(SourceId, 0f);
         active = true;
     }
 
@@ -62,12 +95,10 @@ public class RandomMusicController : BaseEntity
             return;
         }
 
-        if (timer <= 0f)
+        if (Md.Session.RandomMusicTimers.GetValueOrDefault(SourceId, 0f) <= 0f)
         {
             SetRandomMusic();
         }
-        
-        timer -= Engine.DeltaTime;
     }
 
     private string lastPlayed = MaP.level?.Session?.Audio.Music.Event ?? "";
@@ -94,16 +125,16 @@ public class RandomMusicController : BaseEntity
                 }
 
                 ApplyMusic(choose[0]);
-                timer = interval;
+                Md.Session.RandomMusicTimers.Enter(SourceId, interval);
                 return;
             }
 
-            timer = interval;
+            Md.Session.RandomMusicTimers.Enter(SourceId, interval);
             //Log.Info($"Equal, extend [{choose[0]}] by {interval}");
             return;
         }
         
-        timer = interval;
+        Md.Session.RandomMusicTimers.Enter(SourceId, interval);
         
         ApplyMusic(choose[0]);
         //Log.Info($"Different, play [{choose[0]}] for {interval}");
