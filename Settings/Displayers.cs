@@ -27,14 +27,14 @@ public class Displayers : HDRenderEntity
     {
         On.Celeste.Level.Begin += LevelBegin;
         On.Celeste.Level.End += LevelEnd;
-        On.Celeste.Level.Update += LevelUpdate;
+        //On.Celeste.Level.Update += LevelUpdate;
     }
     [UnloadHook]
     public static void Unload()
     {
         On.Celeste.Level.Begin -= LevelBegin;
         On.Celeste.Level.End -= LevelEnd;
-        On.Celeste.Level.Update -= LevelUpdate;
+        //On.Celeste.Level.Update -= LevelUpdate;
     }
 
     public static Displayers Instance = null;
@@ -53,12 +53,12 @@ public class Displayers : HDRenderEntity
         orig(self);
     }
 
-    public static void LevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
-    {
-        orig(self);
+    //public static void LevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
+    //{
+    //    orig(self);
 
-        Instance.beforeRenderHookRunning = Md.Settings.HUDMainControl;
-    }
+    //    Instance.beforeRenderHookRunning = Md.Settings.HUDMainControl;
+    //}
 
     public Displayers(EntityData d,Vc2 o) : base(d, o)
     {
@@ -82,6 +82,8 @@ public class Displayers : HDRenderEntity
     public override void Update()
     {
         base.Update();
+
+        beforeRenderHookRunning = Md.Settings?.HUDMainControl ?? false;
 
         if (MInput.Mouse.PressedLeftButton && GeneralMouseEntityArg())
         {
