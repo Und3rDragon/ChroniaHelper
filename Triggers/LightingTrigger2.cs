@@ -16,6 +16,47 @@ namespace ChroniaHelper.Triggers;
 [CustomEntity("ChroniaHelper/LightingTrigger2")]
 public class LightingTrigger2 : BaseTrigger
 {
+    [SelectiveLoadHook]
+    public static void Load()
+    {
+        On.Celeste.LevelLoader.LoadingThread_Safe += OverrideLoadingThread;
+        On.Celeste.Level.LoadLevel += OverrideLevelLoad;
+    }
+    [SelectiveUnloadHook]
+    public static void Unload()
+    {
+        On.Celeste.LevelLoader.LoadingThread_Safe -= OverrideLoadingThread;
+        On.Celeste.Level.LoadLevel -= OverrideLevelLoad;
+    }
+
+    public static void OverrideLoadingThread(On.Celeste.LevelLoader.orig_LoadingThread_Safe orig,
+        LevelLoader self)
+    {
+        orig(self);
+        
+        if (Md.Session != null)
+        {
+            if (Md.Session.OverrideLightingColor != null)
+            {
+                self.Level.Lighting.BaseColor = ((CColor)Md.Session.OverrideLightingColor).Parsed();
+            }
+        }
+    }
+
+    public static void OverrideLevelLoad(On.Celeste.Level.orig_LoadLevel orig,
+        Level self, Player.IntroTypes intro, bool loader)
+    {
+        orig(self, intro, loader);
+        
+        if (Md.Session != null)
+        {
+            if (Md.Session.OverrideLightingColor != null)
+            {
+                self.Lighting.BaseColor = ((CColor)Md.Session.OverrideLightingColor).Parsed();
+            }
+        }
+    }
+    
     public LightingTrigger2(EntityData d, Vc2 o) : base(d, o)
     {
         this.lightingColorFrom = d.Attr("lightingColorFrom");
@@ -24,6 +65,11 @@ public class LightingTrigger2 : BaseTrigger
         this.lightingAlphaTo = d.Attr("lightingAlphaTo");
         this.positionMode = d.Enum<PositionModes>("positionMode", PositionModes.NoEffect);
         timed = d.Float("timed", -1f);
+
+        if (lightingColorTo.HasValidContent())
+        {
+            Ldm.LoadHook<LightingTrigger2>();
+        }
     }
     private string lightingColorFrom;
     private string lightingColorTo;
@@ -85,7 +131,7 @@ public class LightingTrigger2 : BaseTrigger
 
                     Color c2 = Calc.HexToColor(lightingColorTo);
 
-                    MaP.level.Lighting.BaseColor = Color.Lerp(c1, c2, progress);
+                    Md.Session.OverrideLightingColor = new(MaP.level.Lighting.BaseColor = Color.Lerp(c1, c2, progress));
                 }
 
                 if (lightingAlphaTo.HasValidContent())
@@ -119,7 +165,7 @@ public class LightingTrigger2 : BaseTrigger
 
                     Color c2 = Calc.HexToColor(lightingColorTo);
 
-                    MaP.level.Lighting.BaseColor = Color.Lerp(c1, c2, lerp);
+                    Md.Session.OverrideLightingColor = new(MaP.level.Lighting.BaseColor = Color.Lerp(c1, c2, lerp));
                 }
 
                 if (lightingAlphaTo.HasValidContent())
@@ -146,6 +192,7 @@ public class LightingTrigger2 : BaseTrigger
         base.LeaveReset(player);
 
         MaP.level.Lighting.BaseColor = oldLightColor;
+        Md.Session.OverrideLightingColor = null;
         MaP.level.Session.LightingAlphaAdd = oldLightAlphaAdd;
         MaP.level.Lighting.Alpha = lightAlphaBase + oldLightAlphaAdd;
     }
