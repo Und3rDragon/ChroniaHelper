@@ -246,6 +246,9 @@ public class ChroniaHelperSession : EverestModuleSession
     
     // Random Music params
     public Dictionary<EntityID, float> RandomMusicTimers = new();
+    
+    // Lighting Trigger 2 Override Color
+    public CColor? OverrideLightingColor = null;
 
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
