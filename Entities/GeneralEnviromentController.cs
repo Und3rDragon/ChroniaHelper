@@ -24,8 +24,7 @@ public class GeneralEnviromentController : GeneralSetupController
         bloomBaseTo = data.Attr("bloomBaseTo");
         bloomColorTo = data.Attr("bloomColorTo");
         bloomStrengthTo = data.Attr("bloomStrengthTo");
-        lightingBaseTo = data.Attr("lightingBaseTo");
-        lightingAddTo = data.Attr("lightingAddTo");
+        lightingTo = data.Attr("lightingTo");
         lightingColorTo = data.Attr("lightingColorTo");
 
         Tag = Tags.TransitionUpdate;
@@ -33,7 +32,7 @@ public class GeneralEnviromentController : GeneralSetupController
     private float fadeTime = -1f;
     private bool fade => fadeTime > 0f;
     private string bloomBaseTo, bloomStrengthTo, bloomColorTo,
-        lightingBaseTo, lightingAddTo, lightingColorTo;
+        lightingTo, lightingColorTo;
 
     private float fadeTimer = 0f;
 
@@ -104,29 +103,27 @@ public class GeneralEnviromentController : GeneralSetupController
             {
                 level.Bloom.Base = progress.LerpValue(0f, 1f, (float)oldBloomBase, b1);
             }
+            
             if (oldBloomColor != null && bloomColorTo.HasValidContent())
             {
                 SetBloomColor(Color.Lerp((Color)oldBloomColor, Calc.HexToColor(bloomColorTo), progress));
             }
+            
             if (oldBloomStrength != null && 
                 bloomStrengthTo.HasValidContent() && 
                 float.TryParse(bloomStrengthTo, out float b2))
             {
                 level.Bloom.Strength = progress.LerpValue(0f, 1f, (float)oldBloomStrength, b2);
             }
-            if (oldLightingBase != null &&
-                lightingBaseTo.HasValidContent() && 
-                float.TryParse(lightingBaseTo, out float l1))
+            
+            if (oldLightingBase != null && oldLightingAdd != null &&
+                lightingTo.HasValidContent() && 
+                float.TryParse(lightingTo, out float l1))
             {
-                level.BaseLightingAlpha = progress.LerpValue(0f, 1f, (float)oldLightingBase, l1);
+                level.Session.LightingAlphaAdd = progress.LerpValue(0f, 1f, (float)oldLightingAdd, l1 - (float)oldLightingBase);
+                level.Lighting.Alpha = level.BaseLightingAlpha + level.Session.LightingAlphaAdd;
             }
-            if (oldLightingAdd != null &&
-                lightingAddTo.HasValidContent() && 
-                float.TryParse(lightingAddTo, out float l2))
-            {
-                level.Session.LightingAlphaAdd = progress.LerpValue(0f, 1f, (float)oldLightingAdd, l2);
-            }
-            level.Lighting.Alpha = level.BaseLightingAlpha + level.Session.LightingAlphaAdd;
+            
             if (oldLightingColor != null &&
                 lightingColorTo.HasValidContent())
             {
@@ -147,22 +144,23 @@ public class GeneralEnviromentController : GeneralSetupController
         {
             level.Bloom.Base = b1;
         }
+        
         if (bloomColorTo.HasValidContent())
         {
             SetBloomColor(Calc.HexToColor(bloomColorTo));
         }
+        
         if(bloomStrengthTo.HasValidContent() && float.TryParse(bloomStrengthTo, out float b2))
         {
             level.Bloom.Strength = b2;
         }
-        if(lightingBaseTo.HasValidContent() && float.TryParse(lightingBaseTo, out float l1))
+        
+        if(lightingTo.HasValidContent() && float.TryParse(lightingTo, out float l1))
         {
-            level.BaseLightingAlpha = l1;
+            level.Session.LightingAlphaAdd = l1 - level.BaseLightingAlpha;
+            level.Lighting.Alpha = level.BaseLightingAlpha + level.Session.LightingAlphaAdd;
         }
-        if(lightingAddTo.HasValidContent() && float.TryParse(lightingAddTo, out float l2))
-        {
-            level.Session.LightingAlphaAdd = l2;
-        }
+        
         if (lightingColorTo.HasValidContent())
         {
             level.Lighting.BaseColor = Calc.HexToColor(lightingColorTo);
