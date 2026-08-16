@@ -168,7 +168,8 @@ public abstract class GeneralSetupController : BaseEntity
         base.Update();
 
         EvaluateState();
-        HandleStateChange();
+        HandleStateExecution();
+        
         ExecuteByUpdateState(CurrentState, LastState);
         
         LastState = CurrentState;
@@ -240,19 +241,28 @@ public abstract class GeneralSetupController : BaseEntity
         CurrentState = Parameter.ParseLogicExpression();
     }
 
-    private void HandleStateChange()
+    private void HandleStateExecution()
     {
-        if (LastState == CurrentState) return;
-
-        bool shouldExecute = IsEnableMode ? CurrentState :
-                             IsDisableMode ? !CurrentState :
-                             IsStateMode ? CurrentState :
-                             true;
-
-        if (shouldExecute)
-            Execute();
+        if (IsStateMode)
+        {
+            if (CurrentState)
+            {
+                Execute();
+            }
+            else
+            {
+                Revert();
+            }
+        }
         else
-            Revert();
+        {
+            if (LastState == CurrentState) return;
+
+            if (IsEnableMode == CurrentState || IsDisableMode == !CurrentState)
+                Execute();
+            else
+                Revert();
+        }
     }
 
     public void SetState(bool state) => CurrentState = state;
