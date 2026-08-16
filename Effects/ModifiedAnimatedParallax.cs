@@ -351,7 +351,7 @@ public class ModifiedAnimatedParallax : Parallax
             Alpha = alphaExpression.ParseMathExpression();
         }
         
-        if (!IsVisible(scene as Level) && alphaExpression == null)
+        if (!IsVisible(scene as Level))
         {
             return;
         }
