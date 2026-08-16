@@ -68,9 +68,14 @@ public class GeneralEnviromentController : GeneralSetupController
         base.Added(scene);
     }
 
-    public override void Execute()
+    public override void ExecuteByUpdateState(bool current, bool previous)
     {
-        Add(new Coroutine(Changing()));
+        base.ExecuteByUpdateState(current, previous);
+
+        if (current != previous && current)
+        {
+            Add(new Coroutine(Changing()));
+        }
     }
 
     private IEnumerator Changing()

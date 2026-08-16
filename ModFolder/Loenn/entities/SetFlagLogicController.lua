@@ -8,17 +8,21 @@ local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/SetFlagController"
+controller.name = "ChroniaHelper/SetFlagLogicController"
 controller.placements = {
     name = "controller",
     data = {
         chroniaFlagLogicExpression = "See tooltip",
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
-        flags = "flag",
+        flags = "flagA, flagB",
+        value = "(flagC || flagD) && flagE",
+        emptyExpressionValue = true,
+        allowRevert = false,
+        revertValue = "",
+        emptyRevertExpressionValue = false,
         parameters = "",
         mode = 7,
-        valueType = 0,
     },
 }
 
@@ -41,13 +45,8 @@ controller.fieldInformation = {
     parameters = {
         fieldType = "list",
     },
-    valueType = {
-        fieldType = "integer",
-        options = {
-            ["General Set"] = 0,
-            ["General Toggle"] = 1,
-        },
-        editable = false,
+    value = {
+        allowEmpty = true,
     },
 }
 
@@ -57,7 +56,9 @@ controller.sprite = function(room, entity)
 
     table.insert(sprite, iconSprite)
     
-    local text = require("structs.drawable_text").fromText(entity.flags, entity.x + 12, entity.y - 12, 48, 24)
+    local _text = entity.flags .. "\n=\n" .. entity.value
+    
+    local text = require("structs.drawable_text").fromText(_text, entity.x + 12, entity.y - 12, 48, 24)
     
     table.insert(sprite, text)
     

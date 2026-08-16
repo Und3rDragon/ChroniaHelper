@@ -21,6 +21,8 @@ public class SetCounterController : GeneralSetupController
         canRandomize = value2.HasValidContent();
 
         valueType = (ValueType)data.Int("valueType", 0);
+        
+        revertValue = data.Attr("revertValue");
     }
     private string[] counters;
     private string value, value2;
@@ -30,9 +32,12 @@ public class SetCounterController : GeneralSetupController
         Set, Add, Minus, Multiply, Divide
     }
     private ValueType valueType;
+    private string revertValue;
 
     public override void Execute()
     {
+        base.Execute();
+        
         int target = 0, alt = 0;
         foreach (var i in counters)
         {
@@ -70,6 +75,21 @@ public class SetCounterController : GeneralSetupController
             {
                 i.SetCounter(target);
             }
+        }
+    }
+
+    public override void Revert()
+    {
+        base.Revert();
+
+        if (!revertValue.HasValidContent())
+        {
+            return;
+        }
+        
+        foreach (var i in counters)
+        {
+            i.SetCounter((int)revertValue.ParseMathExpression());
         }
     }
 }

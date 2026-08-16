@@ -17,7 +17,7 @@ controller.placements = {
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
         sequence = "flag = true; 0.5; counter = 1, sliderA = sliderB = 2.5",
         parameters = "",
-        mode = 0,
+        mode = 7,
         globalCoroutine = false,
     },
 }

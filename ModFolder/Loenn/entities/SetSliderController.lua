@@ -18,10 +18,11 @@ controller.placements = {
         sliders = "slider",
         value = "0",
         parameters = "",
-        mode = 0,
+        mode = 7,
         value2 = "",
         randomizeValue = false,
         valueType = 0,
+        revertValue = "",
     },
 }
 

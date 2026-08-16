@@ -58,8 +58,6 @@ public class FormulaConverter : GeneralSetupController
     private string[] formulaExpressions;
     private bool resetTimerWhenActivated;
 
-    public override void Execute() { }
-
     public override void ExecuteByUpdateState(bool current, bool last)
     {
         if(current != last && current)
