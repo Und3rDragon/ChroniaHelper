@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Utils.LogicExpression;
 using YamlDotNet.Core.Tokens;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static ChroniaHelper.Cores.GeneralSetupController;
 
 namespace ChroniaHelper.Cores;
 
@@ -39,7 +39,7 @@ public static class GeneralSetupControllerUtils
 
         foreach (var i in controllers)
         {
-            if (i.mode == 0)
+            if (i.mode == Modes.OnLevelLoad)
             {
                 i.SetState(true);
 
@@ -57,7 +57,7 @@ public static class GeneralSetupControllerUtils
 
         foreach (var i in controllers)
         {
-            if (i.mode == 5)
+            if (i.mode == Modes.OnPlayerDie)
             {
                 i.SetState(true);
 
@@ -77,7 +77,7 @@ public static class GeneralSetupControllerUtils
 
         foreach (var i in controllers)
         {
-            if (i.mode == 6)
+            if (i.mode == Modes.OnPlayerRespawn)
             {
                 i.SetState(true);
 
@@ -93,46 +93,72 @@ public abstract class GeneralSetupController : BaseEntity
     public GeneralSetupController(EntityData data, Vc2 offset) : base(data, offset)
     {
         paramater = data.Attr("parameters");
-        mode = data.Int("mode", 0);
+        mode = data.Int("mode", Modes.OnEntityAdded);
 
         state = false;
     }
     public string paramater;
 
-    public abstract void Execute();
-    public virtual void ExecuteOnce() { }
-    public virtual void ExecuteConstantly() { }
+    public virtual void Execute(){}
+    /// <summary>
+    /// If the mode supports false state, this will be invoked
+    /// </summary>
+    public virtual void Revert(){}
     public virtual void ExecuteByUpdateState(bool current, bool last) { }
 
     /// <summary>
-    /// On Level Load = 0, Always Set = 1, On Scene Start = 2, On Scene End = 3, On Interval = 4
-    /// On Player Die = 5, On Player Respawn = 6, On Entity Added = 7, On Entity Removed = 8,
-    /// On Flags = 9, On Chronia Expression = 10, On Frost Session Expression = 11,
-    /// On Chronia Flag Logic Expression = 12,
+    /// 触发时机 - 使用 struct 包装常量值
     /// </summary>
-    public int mode = 0;
+    public struct Modes
+    {
+        public const int OnLevelLoad = 0;
+        public const int AlwaysSet = 1;
+        public const int OnSceneStart = 2;
+        public const int OnSceneEnd = 3;
+        public const int OnInterval = 4;
+        public const int OnPlayerDie = 5;
+        public const int OnPlayerRespawn = 6;
+        public const int OnEntityAdded = 7;
+        public const int OnEntityRemoved = 8;
+        public const int OnFlagsEnable = 9;
+        public const int OnChroniaExpressionEnable = 10;
+        public const int OnFrostSessionExpressionEnable = 11;
+        public const int OnChroniaFlagLogicExpressionEnable = 12;
+        public const int OnFlagsDisable = 13;
+        public const int OnChroniaExpressionDisable = 14;
+        public const int OnFrostSessionExpressionDisable = 15;
+        public const int OnChroniaFlagLogicExpressionDisable = 16;
+        public const int OnFlagsState = 17;
+        public const int OnChroniaExpressionState = 18;
+        public const int OnFrostSessionExpressionState = 19;
+        public const int OnChroniaFlagLogicExpressionState = 20;
+    }
+    public int mode = Modes.OnEntityAdded;
+    public bool constantMode => 
+        mode == Modes.AlwaysSet || mode == Modes.OnInterval || 
+        mode == Modes.OnFlagsState || mode == Modes.OnChroniaExpressionState || 
+        mode == Modes.OnFrostSessionExpressionState || 
+        mode == Modes.OnChroniaFlagLogicExpressionState;
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
 
-        if (mode == 7)
+        if (mode == Modes.OnEntityAdded)
         {
             state = true;
 
-            ExecuteOnce();
             Execute();
         }
     }
 
     public override void Removed(Scene scene)
     {
-        if (mode == 8)
+        if (mode == Modes.OnEntityRemoved)
         {
             state = true;
 
             Execute();
-            ExecuteOnce();
         }
 
         base.Removed(scene);
@@ -143,30 +169,32 @@ public abstract class GeneralSetupController : BaseEntity
     {
         base.Update();
 
-        if (mode == 1)
+        if (mode == Modes.AlwaysSet)
         {
             state = true;
 
-            ExecuteConstantly();
             Execute();
         }
 
-        if (mode == 4)
+        if (mode == Modes.OnInterval)
         {
             if (Scene.OnInterval(paramater.ParseFloat(0f).GetAbs()))
             {
                 state = true;
 
-                ExecuteConstantly();
                 Execute();
             }
             else
             {
                 state = false;
+                
+                Revert();
             }
         }
 
-        if (mode == 9)
+        if (mode == Modes.OnFlagsEnable || 
+            mode == Modes.OnFlagsDisable ||
+            mode == Modes.OnFlagsState)
         {
             paramater.Split(",", StringSplitOptions.TrimEntries).ApplyTo(out string[] flags);
             state = true;
@@ -175,16 +203,61 @@ public abstract class GeneralSetupController : BaseEntity
                 state.TryNegative(flag.GetGeneralInvertedFlag());
             }
 
-            if (_state != state && state)
+            if (mode == Modes.OnFlagsState)
             {
-                ExecuteConstantly();
-                Execute();
+                if (state)
+                {
+                    Execute();
+                }
+                else
+                {
+                    Revert();
+                }
+            }
+
+            if (mode == Modes.OnFlagsEnable)
+            {
+                if (_state != state)
+                {
+                    if (state)
+                    {
+                        Execute();
+                    }
+                    else
+                    {
+                        Revert();
+                    }
+                }
+            }
+
+            if (mode == Modes.OnFlagsDisable)
+            {
+                if (_state != state)
+                {
+                    if (!state)
+                    {
+                        Execute();
+                    }
+                    else
+                    {
+                        Revert();
+                    }
+                }
             }
         }
 
-        if (mode == 10 || mode == 11)
+        if (mode == Modes.OnChroniaExpressionEnable || 
+            mode == Modes.OnFrostSessionExpressionEnable ||
+            mode == Modes.OnChroniaExpressionDisable || 
+            mode == Modes.OnFrostSessionExpressionDisable || 
+            mode == Modes.OnChroniaExpressionState || 
+            mode == Modes.OnFrostSessionExpressionState)
         {
-            if (Md.FrostHelperLoaded && mode == 11)
+            if (Md.FrostHelperLoaded &&
+                (mode == Modes.OnFrostSessionExpressionState ||
+                 mode == Modes.OnFrostSessionExpressionEnable || 
+                 mode == Modes.OnFrostSessionExpressionDisable)
+                )
             {
                 state = paramater.tryCreateSessionExpression().getBoolSessionExpressionValue();
             }
@@ -193,21 +266,98 @@ public abstract class GeneralSetupController : BaseEntity
                 state = paramater.ParseMathExpression() != 0;
             }
 
-            if (_state != state && state)
+            if (mode == Modes.OnChroniaExpressionState
+                || mode == Modes.OnFrostSessionExpressionState)
             {
-                ExecuteConstantly();
-                Execute();
+                if (state)
+                {
+                    Execute();
+                }
+                else
+                {
+                    Revert();
+                }
+            }
+
+            if (mode == Modes.OnChroniaExpressionEnable
+                || mode == Modes.OnFrostSessionExpressionEnable)
+            {
+                if (_state != state)
+                {
+                    if (state)
+                    {
+                        Execute();
+                    }
+                    else
+                    {
+                        Revert();
+                    }
+                }
+            }
+
+            if (mode == Modes.OnChroniaExpressionDisable
+                || mode == Modes.OnFrostSessionExpressionDisable)
+            {
+                if (_state != state)
+                {
+                    if (!state)
+                    {
+                        Execute();
+                    }
+                    else
+                    {
+                        Revert();
+                    }
+                }
             }
         }
 
-        if (mode == 12)
+        if (mode == Modes.OnChroniaFlagLogicExpressionEnable ||
+            mode == Modes.OnChroniaFlagLogicExpressionDisable || 
+            mode == Modes.OnChroniaFlagLogicExpressionState)
         {
             state = paramater.ParseLogicExpression();
             
-            if (_state != state && state)
+            if (mode == Modes.OnChroniaFlagLogicExpressionState)
             {
-                ExecuteConstantly();
-                Execute();
+                if (state)
+                {
+                    Execute();
+                }
+                else
+                {
+                    Revert();
+                }
+            }
+
+            if (mode == Modes.OnChroniaFlagLogicExpressionEnable)
+            {
+                if (_state != state)
+                {
+                    if (state)
+                    {
+                        Execute();
+                    }
+                    else
+                    {
+                        Revert();
+                    }
+                }
+            }
+
+            if (mode == Modes.OnChroniaFlagLogicExpressionDisable)
+            {
+                if (_state != state)
+                {
+                    if (!state)
+                    {
+                        Execute();
+                    }
+                    else
+                    {
+                        Revert();
+                    }
+                }
             }
         }
 
@@ -220,19 +370,17 @@ public abstract class GeneralSetupController : BaseEntity
     {
         base.SceneBegin(scene);
 
-        if (mode == 2)
+        if (mode == Modes.OnSceneStart)
         {
-            ExecuteOnce();
             Execute();
         }
     }
 
     public override void SceneEnd(Scene scene)
     {
-        if (mode == 3)
+        if (mode == Modes.OnSceneEnd)
         {
             Execute();
-            ExecuteOnce();
         }
 
         base.SceneEnd(scene);
