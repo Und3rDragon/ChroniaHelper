@@ -1,12 +1,9 @@
 ﻿using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Entities;
-using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
-using MoreDasheline;
-using YoctoHelper.Cores;
 
 namespace ChroniaHelper.Cores;
 
@@ -120,6 +117,8 @@ public static class MapProcessor
     public static void OnLevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
     {
         orig(self);
+
+        level = self;
         
         Md.Session.LevelStartTime = DateTime.Now;
 
@@ -134,6 +133,8 @@ public static class MapProcessor
     
     public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
     {
+        level = self;
+        
         dummyGlobal.RemoveSelf();
         PlayerIndicatorZoneMonitor.Instance.RemoveSelf();
 
