@@ -374,7 +374,7 @@ public class ModifiedAnimatedParallax : Parallax
         if(overrideFrameCounter.HasValidContent())
         {
             int n = overrideFrameCounter.GetCounter();
-            n %= frameOrder.Length;
+            n = NumberUtils.Mod(n, frameOrder.Length);
             Texture = frames[frameOrder[n]];
             if(scale != null)
             {
