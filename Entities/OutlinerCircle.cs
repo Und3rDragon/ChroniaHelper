@@ -118,10 +118,15 @@ public class OutlinerCircle : BaseEntity
         }
         else
         {
+            const int BreathKeyframes = 6;
+
             float t = 1f + (float)Math.Sin((DateTime.Now - Md.Session.LevelStartTime).TotalSeconds);
-            var borderTex = CircleTextureCache.GetOutline(radius + 2, 4 * pointNumber, out float baseScale);
-            float breathingScale = baseScale * (radius + t) / (radius + 2);
-            CircleTextureCache.DrawAt(borderTex, Position, borderColor.Parsed(colorFade.Value), breathingScale);
+
+            float step = 2f / BreathKeyframes;
+            float keyframeRadius = radius + 2 + (MathF.Round(t / step) * step - 2f);
+
+            var borderTex = CircleTextureCache.GetOutline(keyframeRadius, 4 * pointNumber, out float drawScale);
+            CircleTextureCache.DrawAt(borderTex, Position, borderColor.Parsed(colorFade.Value), drawScale);
         }
     }
 
