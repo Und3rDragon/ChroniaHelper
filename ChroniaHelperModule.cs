@@ -115,6 +115,8 @@ public class ChroniaHelperModule : EverestModule
 
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;
+
+        Everest.Events.Level.OnExit += OnLevelExit;
     }
 
     public override void Unload()
@@ -131,6 +133,8 @@ public class ChroniaHelperModule : EverestModule
         On.Celeste.GameLoader.Begin -= LateInitialize;
 
         IL.Celeste.AreaData.Load -= HookAreaDataLoad;
+
+        Everest.Events.Level.OnExit -= OnLevelExit;
     }
 
     private static bool IsFromHelpers(ModAsset asset)
@@ -219,6 +223,10 @@ public class ChroniaHelperModule : EverestModule
         base.PrepareMapDataProcessors(context);
 
         context.Add<Modules.MaxHelpingHandMapDataProcessor>();
+    }
+    private void OnLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow)
+    {
+        CircleTextureCache.Clear();
     }
 
     // Create Custom ChroniaHelper Menu
