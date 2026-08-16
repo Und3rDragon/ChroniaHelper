@@ -346,12 +346,14 @@ public class ModifiedAnimatedParallax : Parallax
             }
         }
         
-        if (IsVisible(scene as Level))
+        if (alphaExpression != null)
         {
-            if (alphaExpression != null)
-            {
-                Alpha = alphaExpression.ParseMathExpression();
-            }
+            Alpha = alphaExpression.ParseMathExpression();
+        }
+        
+        if (!IsVisible(scene as Level) && alphaExpression == null)
+        {
+            return;
         }
 
         float? scale = null;
