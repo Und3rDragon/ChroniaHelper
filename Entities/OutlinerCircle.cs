@@ -105,25 +105,28 @@ public class OutlinerCircle : BaseEntity
     public override void Render()
     {
         base.Render();
+        
+        var innerTex = innerStyle == 1
+            ? CircleTextureCache.GetOutline(radius, 4 * pointNumber, out float innerScale)
+            : CircleTextureCache.GetFilled(radius, 4 * pointNumber, out innerScale);
+        CircleTextureCache.DrawAt(innerTex, Position, innerColor.Parsed(colorFade.Value), innerScale);
 
-        if (innerStyle == 1)
+        if (borderStyle == 1)
         {
-            Draw.Circle(base.Position, radius, this.innerColor.Parsed(colorFade.Value), 4 * pointNumber);
+            var borderTex = CircleTextureCache.GetOutline(radius + 2, 4 * pointNumber, out float borderScale);
+            CircleTextureCache.DrawAt(borderTex, Position, borderColor.Parsed(colorFade.Value), borderScale);
         }
         else
         {
-            Draw.Circle(base.Position, radius / 2, this.innerColor.Parsed(colorFade.Value), radius, 4 * pointNumber);
-        }
+            const int BreathKeyframes = 6;
 
-        if(borderStyle == 1)
-        {
-            Draw.Circle(base.Position, radius + 2, this.borderColor.Parsed(colorFade.Value), 4 * pointNumber);
-        }
-        else
-        {
-            float t = 1f;
-            t = 1f + (float)Math.Sin((DateTime.Now - Md.Session.LevelStartTime).TotalSeconds);
-            Draw.Circle(base.Position, radius + t, this.borderColor.Parsed(colorFade.Value), 4 * pointNumber);
+            float t = 1f + (float)Math.Sin((DateTime.Now - Md.Session.LevelStartTime).TotalSeconds);
+
+            float step = 2f / BreathKeyframes;
+            float keyframeRadius = radius + 2 + (MathF.Round(t / step) * step - 2f);
+
+            var borderTex = CircleTextureCache.GetOutline(keyframeRadius, 4 * pointNumber, out float drawScale);
+            CircleTextureCache.DrawAt(borderTex, Position, borderColor.Parsed(colorFade.Value), drawScale);
         }
     }
 
