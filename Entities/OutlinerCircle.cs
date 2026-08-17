@@ -10,6 +10,7 @@ namespace ChroniaHelper.Entities;
 
 [Tracked]
 [CustomEntity("ChroniaHelper/OutlinerCircle")]
+[Credits("pbalint817 for performance improvement")]
 public class OutlinerCircle : BaseEntity
 {
     public OutlinerCircle(EntityData data, Vc2 offset) : base(data, offset)

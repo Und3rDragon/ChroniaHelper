@@ -3,9 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
 using System.Collections.Generic;
+using ChroniaHelper.Cores;
 
 namespace ChroniaHelper.Utils
 {
+    [Credits("code by pbalint817")]
     public static class CircleTextureCache
     {
         // Bucket size in pixels.
