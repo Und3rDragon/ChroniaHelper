@@ -22,6 +22,7 @@ controller.placements = {
         valueType = 0,
         bloomBase = "",
         bloomStrength = "",
+        bloomColor = "",
         lighting = "",
     },
 }
@@ -60,6 +61,10 @@ controller.fieldInformation = {
     },
     parameters = {
         fieldType = "list",
+    },
+    bloomColor = {
+        fieldType = "color",
+        useAlpha = true,
     },
 }
 

@@ -46,7 +46,7 @@ public class GeneralEnviromentController : GeneralSetupController
 
         oldBloomBase = level.Bloom.Base;
         oldBloomStrength = level.Bloom.Strength;
-        oldBloomColor = GetBloomColor();
+        oldBloomColor = BloomTrigger.GetBloomColor();
 
         oldLightingAdd = level.Session.LightingAlphaAdd;
         oldLightingBase = level.BaseLightingAlpha;
@@ -106,7 +106,7 @@ public class GeneralEnviromentController : GeneralSetupController
             
             if (oldBloomColor != null && bloomColorTo.HasValidContent())
             {
-                SetBloomColor(Color.Lerp((Color)oldBloomColor, Calc.HexToColor(bloomColorTo), progress));
+                BloomTrigger.SetBloomColor(Color.Lerp((Color)oldBloomColor, Calc.HexToColor(bloomColorTo), progress));
             }
             
             if (oldBloomStrength != null && 
@@ -147,7 +147,7 @@ public class GeneralEnviromentController : GeneralSetupController
         
         if (bloomColorTo.HasValidContent())
         {
-            SetBloomColor(Calc.HexToColor(bloomColorTo));
+            BloomTrigger.SetBloomColor(Calc.HexToColor(bloomColorTo));
         }
         
         if(bloomStrengthTo.HasValidContent() && float.TryParse(bloomStrengthTo, out float b2))
@@ -165,15 +165,5 @@ public class GeneralEnviromentController : GeneralSetupController
         {
             level.Lighting.BaseColor = Calc.HexToColor(lightingColorTo);
         }
-    }
-
-    private Color GetBloomColor()
-    {
-        return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<Color>(HookId.BloomColor);
-    }
-
-    private void SetBloomColor(Color value)
-    {
-        ChroniaHelperModule.Instance.HookManager.SetHookDataValue<Color>(HookId.BloomColor, value, false);
     }
 }

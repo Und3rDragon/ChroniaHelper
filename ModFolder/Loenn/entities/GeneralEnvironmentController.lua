@@ -21,7 +21,7 @@ controller.placements = {
 
         fadeTime = -1,
         bloomBaseTo = "",
-        --bloomColorTo = "",
+        bloomColorTo = "",
         bloomStrengthTo = "",
         lightingTo = "",
         lightingColorTo = "",
@@ -58,10 +58,6 @@ controller.fieldInformation = {
     },
     parameters = {
         fieldType = "list",
-    },
-    bloomColorTo = {
-        fieldType = "color",
-        allowEmpty = true,
     },
     lightingColorTo = {
         fieldType = "color",

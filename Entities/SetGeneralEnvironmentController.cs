@@ -1,6 +1,7 @@
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Imports;
+using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.MathExpression;
 
@@ -14,10 +15,12 @@ public class SetGeneralEnvironmentController : GeneralSetupController
         bloomBase = data.Attr("bloomBase");
         bloomStrength = data.Attr("bloomStrength");
         lighting = data.Attr("lighting");
+        bloomColor = data.Attr("bloomColor");
         
         valueType = data.Int("valueType", 0);
     }
-    private string bloomBase, bloomStrength, lighting;
+
+    private string bloomBase, bloomStrength, lighting, bloomColor;
     private int valueType = 0;
     public struct ValueType
     {
@@ -65,6 +68,18 @@ public class SetGeneralEnvironmentController : GeneralSetupController
                 float l = lighting.ParseMathExpression();
                 MaP.level.Session.LightingAlphaAdd = l - MaP.level.BaseLightingAlpha;
                 MaP.level.Lighting.Alpha = MaP.level.BaseLightingAlpha + MaP.level.Session.LightingAlphaAdd;
+            }
+        }
+        
+        if (bloomColor.HasValidContent())
+        {
+            if (Md.SaveData.chroniaColors.ContainsKey(bloomColor))
+            {
+                BloomTrigger.SetBloomColor(Md.SaveData.chroniaColors[bloomColor].Parsed());
+            }
+            else if (Md.Session.chroniaColors.ContainsKey(bloomColor))
+            {
+                BloomTrigger.SetBloomColor(Md.Session.chroniaColors[bloomColor].Parsed());
             }
         }
     }
