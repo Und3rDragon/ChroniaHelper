@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using YoctoHelper.Cores;
 using System.Runtime.CompilerServices;
 
@@ -91,17 +92,7 @@ public static class NumberUtils
         return (value < min) ? min : ((value > max) ? max : value);
     }
 
-    public static float Mod(float x, float m)
-    {
-        return ((x % m) + m) % m;
-    }
-
-    public static int Mod(int x, int m)
-    {
-        return ((x % m) + m) % m;
-    }
-    
-    public static double Mod(double x, double m)
+    public static T Mod<T>(T x, T m) where T : INumber<T>
     {
         return ((x % m) + m) % m;
     }
@@ -317,7 +308,7 @@ public static class NumberUtils
         return float.Clamp(value, min, max);
     }
 
-    public static Vector2 Clamp(this Vector2 value, Vector2 value1, Vector2 value2)
+    public static Vc2 Clamp(this Vc2 value, Vc2 value1, Vc2 value2)
     {
         return new(value.X.Clamp(value1.X, value2.X), value.Y.Clamp(value1.Y, value2.Y));
     }
@@ -355,7 +346,7 @@ public static class NumberUtils
         to = float.Clamp(value, min, max);
     }
 
-    public static void Clamp(this Vector2 value, Vector2 value1, Vector2 value2, out Vc2 to)
+    public static void Clamp(this Vc2 value, Vc2 value1, Vc2 value2, out Vc2 to)
     {
         to = new(value.X.Clamp(value1.X, value2.X), value.Y.Clamp(value1.Y, value2.Y));
     }

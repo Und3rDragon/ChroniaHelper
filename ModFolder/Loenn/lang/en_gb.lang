@@ -1581,10 +1581,37 @@ entities.ChroniaHelper/ReversedGravityJelly.placements.name.glider=Reversed Grav
 
 # ======================== General Environment Fade Controller
 
-entities.ChroniaHelper/GeneralEnviromentController.placements.name.controller=General Environment Fade Controller
+entities.ChroniaHelper/GeneralEnviromentController.placements.name.controller=General Environment Controller (Timed Fade)
 entities.ChroniaHelper/GeneralEnviromentController.attributes.description.fadeTime=If equals or below zero, the values will be changed immediately. Otherwise it works as fading duration
-entities.ChroniaHelper/GeneralEnviromentController.attributes.description.parameters=When mode is "On Interval", this field will be the interval \nWhen mode is "On Flags", enter a series of flags separated by comma \nFlag begins with "!" is inverted
+entities.ChroniaHelper/GeneralEnviromentController.attributes.description.parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
+entities.ChroniaHelper/GeneralEnviromentController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/GeneralEnviromentController.attributes.description.chroniaFlagLogicExpression=An expression using "&&" as "and", "||" as "or", and "()" for layering,\nany other symbols will be seen as flag names, for eg.:\n(flagA || flagB) && (flagC || (flagD && flagE))
 
 # ======================== Lighting Trigger 2
 
 triggers.ChroniaHelper/LightingTrigger2.placements.name.LightingTrigger2=Lighting Trigger
+
+# ======================== Formula Converter
+
+entities.ChroniaHelper/FormulaConverter.placements.name.controller=Formula Converter
+entities.ChroniaHelper/FormulaConverter.attributes.description.timerSlider=The slider name which value will be used as the time variable in the formula
+entities.ChroniaHelper/FormulaConverter.attributes.description.targetName=The slider/counter name which the formula outputs will send to
+entities.ChroniaHelper/FormulaConverter.attributes.description.isCounter=If true, the final value will be set as counter, otherwise as slider
+entities.ChroniaHelper/FormulaConverter.attributes.description.formulaTimeFields=A sequence of time values which defines when the time variable is less than a certain value\nThe matched formula will be used for calculation\nFor example, "1,3,5" means, the 1st formula will be used for calculation when the time value is below 1,\nthe 2nd formula will be used when the time value is below 3,\nand the 3rd formula will be used when the time value is below 5\nNotice that if the formula expression count is more than 3,\nthe 4th expression will be used when the time value is equal or above 5
+entities.ChroniaHelper/FormulaConverter.attributes.description.formulaExpressions=A set of expressions matching the time fields
+entities.ChroniaHelper/FormulaConverter.attributes.description.parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
+
+# ========================= Set Flag Logic Controller
+
+entities.ChroniaHelper/SetFlagLogicController.placements.name.controller=Set Flag Logic Controller
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.emptyExpressionValue=This value will be used when the "value" field is empty
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.emptyRevertExpressionValue=This value will be used when "revertValue" field is empty
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.chroniaFlagLogicExpression=An expression using "&&" as "and", "||" as "or", and "()" for layering,\nany other symbols will be seen as flag names, for eg.:\n(flagA || flagB) && (flagC || (flagD && flagE))
+
+# ========================== Set General Environment Controller
+entities.ChroniaHelper/SetGeneralEnvironmentController.placements.name.controller=General Environment Controller (Session Value)
+entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
+entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.chroniaFlagLogicExpression=An expression using "&&" as "and", "||" as "or", and "()" for layering,\nany other symbols will be seen as flag names, for eg.:\n(flagA || flagB) && (flagC || (flagD && flagE))

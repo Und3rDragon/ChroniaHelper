@@ -52,7 +52,7 @@ public class BloomTrigger : BaseTrigger
                 bloomBase = base.level.Bloom.Base,
                 bloomBaseAdd = base.session.BloomBaseAdd,
                 bloomStrength = base.level.Bloom.Strength,
-                bloomColor = this.GetBloomColor()
+                bloomColor = GetBloomColor()
             };
         }
         if (!timedFade)
@@ -60,7 +60,7 @@ public class BloomTrigger : BaseTrigger
             base.level.Bloom.Base = this.bloomBase;
             base.session.BloomBaseAdd = this.bloomBase - AreaData.Get(base.level).BloomBase;
             base.level.Bloom.Strength = this.bloomStrength;
-            this.SetBloomColor(this.bloomColor);
+            SetBloomColor(this.bloomColor);
         }
     }
 
@@ -76,7 +76,7 @@ public class BloomTrigger : BaseTrigger
                 base.level.Bloom.Base = bloomBase;
                 base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
                 base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, this.oldBloom.bloomStrength, this.bloomStrength);
-                this.SetBloomColor(Color.Lerp(this.oldBloom.bloomColor, this.bloomColor, progress));
+                SetBloomColor(Color.Lerp(this.oldBloom.bloomColor, this.bloomColor, progress));
 
                 yield return null;
             }
@@ -88,16 +88,16 @@ public class BloomTrigger : BaseTrigger
         base.level.Bloom.Base = this.oldBloom.bloomBase;
         base.session.BloomBaseAdd = this.oldBloom.bloomBaseAdd;
         base.level.Bloom.Strength = this.oldBloom.bloomStrength;
-        this.SetBloomColor(this.oldBloom.bloomColor);
+        SetBloomColor(this.oldBloom.bloomColor);
     }
 
 
-    private Color GetBloomColor()
+    public static Color GetBloomColor()
     {
         return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<Color>(HookId.BloomColor);
     }
 
-    private void SetBloomColor(Color value)
+    public static void SetBloomColor(Color value)
     {
         ChroniaHelperModule.Instance.HookManager.SetHookDataValue<Color>(HookId.BloomColor, value, false);
     }

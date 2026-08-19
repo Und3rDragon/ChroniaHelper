@@ -8,17 +8,23 @@ local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/SetFlagController"
+controller.name = "ChroniaHelper/FormulaConverter"
 controller.placements = {
     name = "controller",
     data = {
         chroniaFlagLogicExpression = "See tooltip",
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
-        flags = "flag",
+
         parameters = "",
         mode = 7,
-        valueType = 0,
+
+        targetName = "formulaCounter",
+        timerSlider = "timer",
+        isCounter = true,
+        formulaTimeFields = "1,3,5",
+        formulaExpressions = "timer|2*timer-1|4*timer-7|8*timer-27",
+        resetTimerWhenActivated = true,
     },
 }
 
@@ -47,31 +53,24 @@ controller.fieldInformation = {
         editable = false,
     },
     mode = require("mods").requireFromPlugin("consts.field_options").generalSetup,
-    flags = {
+    formulaTimeFields = {
         fieldType = "list",
     },
-    parameters = {
+    formulaExpressions = {
         fieldType = "list",
-    },
-    valueType = {
-        fieldType = "integer",
-        options = {
-            ["General Set"] = 0,
-            ["General Toggle"] = 1,
-        },
-        editable = false,
+        elementSeparator = "|",
     },
 }
 
 controller.sprite = function(room, entity)
 	local sprite = {}
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Flag", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Function", entity)
 
     table.insert(sprite, iconSprite)
     
-    local text = require("structs.drawable_text").fromText(entity.flags, entity.x + 12, entity.y - 12, 48, 24)
+    --local text = require("structs.drawable_text").fromText(entity.flags, entity.x + 12, entity.y - 12, 48, 24)
     
-    table.insert(sprite, text)
+    --table.insert(sprite, text)
     
     return sprite
 end

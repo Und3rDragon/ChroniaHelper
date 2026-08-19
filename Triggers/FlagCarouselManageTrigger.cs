@@ -30,6 +30,8 @@ public class FlagCarouselManageTrigger : Trigger
     {
         this.carouselId = data.Attr("carouselId");
         this.carouselMode = data.Enum<CarouselMode>("carouselMode", CarouselMode.None);
+        
+        Tag = Tags.FrozenUpdate | Tags.PauseUpdate;
     }
 
     public override void OnEnter(Player player)

@@ -17,17 +17,28 @@ controller.placements = {
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
 
         parameters = "",
-        mode = 0,
+        mode = 7,
 
-        fadeTime = -1;
-        bloomBaseTo = "";
-        --bloomColorTo = "";
-        bloomStrengthTo = "";
-        lightingBaseTo = "";
-        lightingAddTo = "";
-        lightingColorTo = "";
+        fadeTime = -1,
+        bloomBaseTo = "",
+        bloomColorTo = "",
+        bloomStrengthTo = "",
+        lightingTo = "",
+        lightingColorTo = "",
     },
 }
+
+controller.associatedMods = function(entity)
+    if entity["mode"] == nil then
+      return {"ChroniaHelper"}
+    end
+    
+    if entity.mode == 11 or entity.mode == 15 or entity.mode == 19 then
+      return {"ChroniaHelper", "FrostHelper"}
+    else
+      return {"ChroniaHelper"}
+    end
+end
 
 controller.fieldOrder = {
     "_x", "_y", "x", "y", "_id", "_name",
@@ -47,10 +58,6 @@ controller.fieldInformation = {
     },
     parameters = {
         fieldType = "list",
-    },
-    bloomColorTo = {
-        fieldType = "color",
-        allowEmpty = true,
     },
     lightingColorTo = {
         fieldType = "color",

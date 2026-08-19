@@ -38,6 +38,7 @@ internal enum TokenType
     Identifier,
     And, // &&
     Or,  // ||
+    Not, // !
     LeftParen,
     RightParen,
     End
@@ -93,6 +94,10 @@ internal class Lexer
                     case ')':
                         tokens.Add(new Token(TokenType.RightParen));
                         _position++;
+                        break;
+                    case '!':
+                        _position++;
+                        tokens.Add(new Token(TokenType.Not));
                         break;
                     case '&':
                         _position++;
@@ -197,12 +202,16 @@ internal class Parser
         return left;
     }
 
-    // 因子 (优先级最高: 变量 或 括号表达式)
+    // 因子 (优先级最高: 非/变量/括号表达式)
     private bool ParseFactor()
     {
         Token token = Current;
         switch (token.Type)
         {
+            case TokenType.Not:
+                Consume(); // 消费 '!'
+                return !ParseFactor();
+
             case TokenType.Identifier:
                 Consume();
                 return _getVariableValue(token.Value);

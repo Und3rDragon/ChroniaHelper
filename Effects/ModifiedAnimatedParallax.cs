@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
@@ -55,6 +56,15 @@ public class ModifiedAnimatedParallax : Parallax
         public List<string> TextureIndexFlag { get; set; } = new();
         public string OverrideFrameCounter { get; set; } = null;
         public string OverrideTextureCounter { get; set; } = null;
+        public string OverridePositionX { get; set; } = null;
+        public string OverridePositionY { get; set; } = null;
+        public string OverrideSpeedX { get; set; } = null;
+        public string OverrideSpeedY { get; set; } = null;
+        public string DeltaPositionX { get; set; } = null;
+        public string DeltaPositionY { get; set; } = null;
+        public string OverrideScrollX { get; set; } = null;
+        public string OverrideScrollY { get; set; } = null;
+        public string OverrideScale { get; set; } = null;
     }
     private string alphaExpression = null;
     private string triggerFlag, resetFlag;
@@ -73,10 +83,17 @@ public class ModifiedAnimatedParallax : Parallax
 
     private string overrideFrameCounter = null;
     private string overrideTextureCounter = null;
+    private string overridePositionX = null;
+    private string overridePositionY = null;
+    private string overrideSpeedX = null;
+    private string overrideSpeedY = null;
+    private string deltaPosX = null, deltaPosY = null;
+    private string overrideScrollX = null, overrideScrollY = null;
+    private string overrideScale = null;
 
     //public ModifiedAnimatedParallax(BinaryPacker.Element c, MTexture texture) : this(texture)
     //{
-        
+
     //}
     public ModifiedAnimatedParallax(MTexture texture) : base(texture)
     {
@@ -166,6 +183,51 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 overrideTextureCounter = meta.OverrideTextureCounter;
             }
+
+            if(meta.OverridePositionX != null)
+            {
+                overridePositionX = meta.OverridePositionX;
+            }
+
+            if(meta.OverridePositionY != null)
+            {
+                overridePositionY = meta.OverridePositionY;
+            }
+
+            if(meta.OverrideSpeedX != null)
+            {
+                overrideSpeedX = meta.OverrideSpeedX;
+            }
+
+            if(meta.OverrideSpeedY != null)
+            {
+                overrideSpeedY = meta.OverrideSpeedY;
+            }
+
+            if(meta.DeltaPositionX != null)
+            {
+                deltaPosX = meta.DeltaPositionX;
+            }
+
+            if(meta.DeltaPositionY != null)
+            {
+                deltaPosY = meta.DeltaPositionY;
+            }
+            
+            if(meta.OverrideScrollX != null)
+            {
+                overrideScrollX = meta.OverrideScrollX;
+            }
+
+            if (meta.OverrideScrollY != null)
+            {
+                overrideScrollY = meta.OverrideScrollY;
+            }
+
+            if(meta.OverrideScale != null)
+            {
+                overrideScale = meta.OverrideScale;
+            }
         }
         
         AnalyzeIndexFlags();
@@ -226,9 +288,54 @@ public class ModifiedAnimatedParallax : Parallax
         }
     }
 
+    public Vc2? originalPosition = null;
     public override void Update(Scene scene)
     {
+        if(originalPosition != null)
+        {
+            Position = (Vc2)originalPosition;
+        }
+        
         base.Update(scene);
+
+        // override speed and position first
+        if (overridePositionX.HasValidContent())
+        {
+            Position.X = overridePositionX.GetSlider();
+        }
+        if (overridePositionY.HasValidContent())
+        {
+            Position.Y = overridePositionY.GetSlider();
+        }
+        if (overrideSpeedX.HasValidContent())
+        {
+            Speed.X = overrideSpeedX.GetSlider();
+        }
+        if (overrideSpeedY.HasValidContent())
+        {
+            Speed.Y = overrideSpeedY.GetSlider();
+        }
+
+        if (overrideScrollX.HasValidContent())
+        {
+            Scroll.X = overrideScrollX.GetSlider();
+        }
+        if (overrideScrollY.HasValidContent())
+        {
+            Scroll.Y = overrideScrollY.GetSlider();
+        }
+
+        // bugfix: setting new position
+        originalPosition = Position;
+
+        if (deltaPosX.HasValidContent())
+        {
+            Position.X += deltaPosX.GetSlider();
+        }
+        if (deltaPosY.HasValidContent())
+        {
+            Position.Y += deltaPosY.GetSlider();
+        }
 
         if (!resetFlag.IsNullOrEmpty())
         {
@@ -239,11 +346,27 @@ public class ModifiedAnimatedParallax : Parallax
             }
         }
         
-        if (IsVisible(scene as Level))
+        if (alphaExpression != null)
         {
-            if (alphaExpression != null)
+            Alpha = alphaExpression.ParseMathExpression();
+        }
+        
+        if (!IsVisible(scene as Level))
+        {
+            return;
+        }
+
+        float? scale = null;
+
+        if(overrideScale.HasValidContent())
+        {
+            if(float.TryParse(overrideScale, out float f))
             {
-                Alpha = alphaExpression.ParseMathExpression();
+                scale = f;
+            }
+            else
+            {
+                scale = overrideScale.GetSlider();
             }
         }
 
@@ -251,8 +374,12 @@ public class ModifiedAnimatedParallax : Parallax
         if(overrideFrameCounter.HasValidContent())
         {
             int n = overrideFrameCounter.GetCounter();
-            n %= frameOrder.Length;
+            n = NumberUtils.Mod(n, frameOrder.Length);
             Texture = frames[frameOrder[n]];
+            if(scale != null)
+            {
+                Texture.ScaleFix = (float)scale;
+            }
 
             return;
         }
@@ -261,6 +388,10 @@ public class ModifiedAnimatedParallax : Parallax
             int n = overrideTextureCounter.GetCounter();
             n %= frames.Count;
             Texture = frames[n];
+            if (scale != null)
+            {
+                Texture.ScaleFix = (float)scale;
+            }
 
             return;
         }
@@ -275,7 +406,7 @@ public class ModifiedAnimatedParallax : Parallax
             }
         }
         last_fps = fps;
-
+        
         currentFrameTimer -= Engine.DeltaTime;
 
         if (currentFrameTimer < 0f)
@@ -288,6 +419,10 @@ public class ModifiedAnimatedParallax : Parallax
             currentFrame = currentFrame.ClampMin(0); // For frame index protection
             currentFrame %= frameOrder.Length;
             Texture = frames[frameOrder[currentFrame]];
+            if (scale != null)
+            {
+                Texture.ScaleFix = (float)scale;
+            }
 
             if (frameIndexFlags.ContainsKey(currentFrame))
             {

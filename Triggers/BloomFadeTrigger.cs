@@ -53,7 +53,7 @@ public class BloomFadeTrigger : BaseTrigger
         this.oldBloom.bloomBase = base.level.Bloom.Base;
         this.oldBloom.bloomBaseAdd = base.session.BloomBaseAdd;
         this.oldBloom.bloomStrength = base.level.Bloom.Strength;
-        this.oldBloom.bloomColor = this.GetBloomColor();
+        this.oldBloom.bloomColor = BloomTrigger.GetBloomColor();
     }
 
     protected override IEnumerator OnEnterRoutine(Player player)
@@ -88,7 +88,7 @@ public class BloomFadeTrigger : BaseTrigger
 
                 if (bloomColorTo.HasValidContent())
                 {
-                    this.SetBloomColor(Color.Lerp(cfrom, cto, progress));
+                    BloomTrigger.SetBloomColor(Color.Lerp(cfrom, cto, progress));
                 }
 
                 yield return null;
@@ -125,7 +125,7 @@ public class BloomFadeTrigger : BaseTrigger
 
             if (bloomColorTo.HasValidContent())
             {
-                this.SetBloomColor(Color.Lerp(cfrom, cto, progress));
+                BloomTrigger.SetBloomColor(Color.Lerp(cfrom, cto, progress));
             }
         }
     }
@@ -135,17 +135,7 @@ public class BloomFadeTrigger : BaseTrigger
         base.level.Bloom.Base = this.oldBloom.bloomBase;
         base.session.BloomBaseAdd = this.oldBloom.bloomBaseAdd;
         base.level.Bloom.Strength = this.oldBloom.bloomStrength;
-        this.SetBloomColor(this.oldBloom.bloomColor);
-    }
-
-    private Color GetBloomColor()
-    {
-        return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<Color>(HookId.BloomColor);
-    }
-
-    private void SetBloomColor(Color value)
-    {
-        ChroniaHelperModule.Instance.HookManager.SetHookDataValue<Color>(HookId.BloomColor, value, false);
+        BloomTrigger.SetBloomColor(this.oldBloom.bloomColor);
     }
 
 }

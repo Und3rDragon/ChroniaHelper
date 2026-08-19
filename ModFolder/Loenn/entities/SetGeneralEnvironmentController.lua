@@ -8,17 +8,22 @@ local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local controller = {}
 
-controller.name = "ChroniaHelper/SetFlagController"
+controller.name = "ChroniaHelper/SetGeneralEnvironmentController"
 controller.placements = {
     name = "controller",
     data = {
         chroniaFlagLogicExpression = "See tooltip",
         chroniaMathExpession = "See tooltip",
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
-        flags = "flag",
+
         parameters = "",
         mode = 7,
+
         valueType = 0,
+        bloomBase = "",
+        bloomStrength = "",
+        bloomColor = "",
+        lighting = "",
     },
 }
 
@@ -27,7 +32,7 @@ controller.associatedMods = function(entity)
       return {"ChroniaHelper"}
     end
     
-    if entity.mode == 11 or entity.mode == 15 or entity.mode == 19 then
+    if entity.mode == 11 or entity.mode == 15 or entity.mode == 19 or valueType == 1 then
       return {"ChroniaHelper", "FrostHelper"}
     else
       return {"ChroniaHelper"}
@@ -47,31 +52,31 @@ controller.fieldInformation = {
         editable = false,
     },
     mode = require("mods").requireFromPlugin("consts.field_options").generalSetup,
-    flags = {
-        fieldType = "list",
+    valueType = {
+        options = {
+            ["Chronia Math Expression"] = 0,
+            ["Frost Session Expression"] = 1,
+        },
+        editable = false,
     },
     parameters = {
         fieldType = "list",
     },
-    valueType = {
-        fieldType = "integer",
-        options = {
-            ["General Set"] = 0,
-            ["General Toggle"] = 1,
-        },
-        editable = false,
+    bloomColor = {
+        fieldType = "color",
+        useAlpha = true,
     },
 }
 
 controller.sprite = function(room, entity)
 	local sprite = {}
-    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Flag", entity)
+    local iconSprite = drawableSprite.fromTexture("ChroniaHelper/LoennIcons/Environment", entity)
 
     table.insert(sprite, iconSprite)
     
-    local text = require("structs.drawable_text").fromText(entity.flags, entity.x + 12, entity.y - 12, 48, 24)
+    --local text = require("structs.drawable_text").fromText(entity.flags, entity.x + 12, entity.y - 12, 48, 24)
     
-    table.insert(sprite, text)
+    --table.insert(sprite, text)
     
     return sprite
 end

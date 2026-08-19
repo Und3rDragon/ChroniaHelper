@@ -34,6 +34,7 @@ public class GroupedBaseSolid : Solid
     public char tileType;
     public GroupedBaseSolid master;
     public TileGrid grid;
+    public bool bgTexture = false;
 
     public override void Awake(Scene scene)
     {
@@ -43,7 +44,7 @@ public class GroupedBaseSolid : Solid
 
         PostGroupping();
 
-        GenerateGrid();
+        GenerateGrid(bgTexture);
 
         PostGridGenerating();
     }

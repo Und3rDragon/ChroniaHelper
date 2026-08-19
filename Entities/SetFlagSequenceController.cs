@@ -20,11 +20,16 @@ public class SetFlagSequenceController : GeneralSetupController
     private string[] flags;
     private bool global;
 
-    public override void Execute()
+    public override void ExecuteByUpdateState(bool current, bool previous)
     {
-        PrepareSequence();
+        base.ExecuteByUpdateState(current, previous);
+
+        if (previous != current && current)
+        {
+            PrepareSequence();
+        }
     }
-    
+
     public void PrepareSequence()
     {
         if (global)

@@ -36,6 +36,8 @@ public class FlagTrigger : BaseTrigger
         // flag processing
         string input = data.Attr("flag", "Flag");
         flagList = input.Split(',', StringSplitOptions.TrimEntries);
+
+        Tag = Tags.FrozenUpdate | Tags.PauseUpdate;
     }
 
     public Dictionary<string, bool> records = new();
