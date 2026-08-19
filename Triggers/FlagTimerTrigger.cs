@@ -41,6 +41,8 @@ public class FlagTimerTrigger : BaseTrigger
 
         range = (Range)data.Fetch("range", 0);
         mode = (Mode)data.Fetch("mode", 0);
+        
+        Tag = Tags.FrozenUpdate | Tags.PauseUpdate;
     }
     private Dictionary<string, float> timedFlagset = new();
     private Dictionary<string, float> timedFlags = new();

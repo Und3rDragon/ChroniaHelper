@@ -32,6 +32,8 @@ public class FlagChooseTrigger2 : BaseTrigger
 
             flagPairs[t[0]] = t[1];
         }
+        
+        Tag = Tags.FrozenUpdate | Tags.PauseUpdate;
     }
     private Dictionary<string, string> flagPairs = new();
     private bool onStay = false, coverScreen = false;

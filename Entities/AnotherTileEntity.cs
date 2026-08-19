@@ -21,8 +21,7 @@ public class AnotherTileEntity : GroupedBaseSolid
         Add(new LightOcclude());
         SurfaceSoundIndex = data.Int("surfaceSoundIndex", 8);
     }
-    private bool bgTexture;
-
+    
     public override bool ShouldAddIntoGroup(GroupedBaseSolid other)
     {
         if(other is AnotherTileEntity a)
