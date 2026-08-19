@@ -9,6 +9,7 @@ public class FlagManageTrigger : BaseTrigger
 
     public FlagManageTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
+        Tag = Tags.FrozenUpdate | Tags.PauseUpdate;
     }
 
     protected HashSet<string> GetFlags()

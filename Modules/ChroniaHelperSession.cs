@@ -250,6 +250,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // Lighting Trigger 2 Override Color
     public CColor? OverrideLightingColor = null;
 
+    // Formula Converter Timers
+    public HashSet<string> FormulaConverterTimers = new();
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]

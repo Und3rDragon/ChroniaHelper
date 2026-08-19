@@ -2,14 +2,8 @@
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ChroniaHelper.Utils.LogicExpression;
-using YamlDotNet.Core.Tokens;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static ChroniaHelper.Cores.GeneralSetupController;
 
 namespace ChroniaHelper.Cores;
 
@@ -22,6 +16,7 @@ public static class GeneralSetupControllerUtils
         On.Celeste.Player.Die += OnPlayerDie;
         On.Celeste.Player.IntroRespawnEnd += OnPlayerRespawned;
     }
+
     [UnloadHook]
     public static void Unload()
     {
@@ -30,177 +25,270 @@ public static class GeneralSetupControllerUtils
         On.Celeste.Player.IntroRespawnEnd -= OnPlayerRespawned;
     }
 
+    private static void ExecuteControllers(Level level, int mode)
+    {
+        level.Tracker.GetEntities<GeneralSetupController>()
+            .OfType<GeneralSetupController>()
+            .Where(c => c.Mode == mode)
+            .EachDo(c =>
+            {
+                c.SetState(true);
+                c.Execute();
+            });
+    }
+
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool loader)
     {
         orig(self, intro, loader);
-
-        self.Tracker.GetEntities<GeneralSetupController>().As(
-            out List<GeneralSetupController> controllers, (e) => e as GeneralSetupController);
-
-        foreach (var i in controllers)
-        {
-            if (i.mode == 0)
-            {
-                i.Execute();
-            }
-        }
+        ExecuteControllers(self, Modes.OnLevelLoad);
     }
 
     public static PlayerDeadBody OnPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats)
     {
-        var o = orig(self, direction, evenIfInvincible, registerDeathInStats);
-
-        MaP.level.Tracker.GetEntities<GeneralSetupController>().As(
-            out List<GeneralSetupController> controllers, (e) => e as GeneralSetupController);
-
-        foreach (var i in controllers)
-        {
-            if (i.mode == 5)
-            {
-                i.Execute();
-            }
-        }
-
-        return o;
+        var result = orig(self, direction, evenIfInvincible, registerDeathInStats);
+        ExecuteControllers(self.SceneAs<Level>(), Modes.OnPlayerDie);
+        return result;
     }
 
     public static void OnPlayerRespawned(On.Celeste.Player.orig_IntroRespawnEnd orig, Player self)
     {
         orig(self);
-
-        MaP.level.Tracker.GetEntities<GeneralSetupController>().As(
-            out List<GeneralSetupController> controllers, (e) => e as GeneralSetupController);
-
-        foreach (var i in controllers)
-        {
-            if (i.mode == 6)
-            {
-                i.Execute();
-            }
-        }
+        ExecuteControllers(self.SceneAs<Level>(), Modes.OnPlayerRespawn);
     }
 }
 
 [Tracked(true)]
 public abstract class GeneralSetupController : BaseEntity
 {
+    // ==================== Properties ====================
+
+    public string Parameter;
+    public int Mode = Modes.OnEntityAdded;
+
+    private bool CurrentState;
+    private bool LastState;
+
+    private float IntervalTimer;
+
+    // ==================== Modes ====================
+
+    public bool IsConstantMode => Mode == Modes.AlwaysSet || 
+                                  Mode == Modes.OnInterval ||
+                                  IsStateMode;
+
+    public bool IsFlagMode => Mode == Modes.OnFlagsEnable || 
+                              Mode == Modes.OnFlagsDisable || 
+                              Mode == Modes.OnFlagsState;
+
+    public bool IsChroniaMode => Mode == Modes.OnChroniaExpressionEnable || 
+                                 Mode == Modes.OnChroniaExpressionDisable || 
+                                 Mode == Modes.OnChroniaExpressionState;
+
+    public bool IsFrostMode => Mode == Modes.OnFrostSessionExpressionEnable || 
+                               Mode == Modes.OnFrostSessionExpressionDisable || 
+                               Mode == Modes.OnFrostSessionExpressionState;
+
+    public bool IsFlagLogicMode => Mode == Modes.OnChroniaFlagLogicExpressionEnable || 
+                                   Mode == Modes.OnChroniaFlagLogicExpressionDisable || 
+                                   Mode == Modes.OnChroniaFlagLogicExpressionState;
+
+    public bool IsEnableMode => Mode == Modes.OnFlagsEnable || 
+                                Mode == Modes.OnChroniaExpressionEnable ||
+                                Mode == Modes.OnFrostSessionExpressionEnable || 
+                                Mode == Modes.OnChroniaFlagLogicExpressionEnable;
+
+    public bool IsDisableMode => Mode == Modes.OnFlagsDisable || 
+                                 Mode == Modes.OnChroniaExpressionDisable ||
+                                 Mode == Modes.OnFrostSessionExpressionDisable || 
+                                 Mode == Modes.OnChroniaFlagLogicExpressionDisable;
+
+    public bool IsStateMode => Mode == Modes.OnFlagsState || 
+                               Mode == Modes.OnChroniaExpressionState ||
+                               Mode == Modes.OnFrostSessionExpressionState || 
+                               Mode == Modes.OnChroniaFlagLogicExpressionState;
+
     public GeneralSetupController(EntityData data, Vc2 offset) : base(data, offset)
     {
-        paramater = data.Attr("parameters");
-        mode = data.Int("mode", 0);
+        Parameter = data.Attr("parameters");
+        Mode = data.Int("mode", Modes.OnEntityAdded);
+        CurrentState = false;
+        LastState = false;
     }
-    public string paramater;
 
-    public abstract void Execute();
-
-    /// <summary>
-    /// On Level Load = 0, Always Set = 1, On Scene Start = 2, On Scene End = 3, On Interval = 4
-    /// On Player Die = 5, On Player Respawn = 6, On Entity Added = 7, On Entity Removed = 8,
-    /// On Flags = 9, On Chronia Expression = 10, On Frost Session Expression = 11,
-    /// On Chronia Flag Logic Expression = 12,
-    /// </summary>
-    public int mode = 0;
+    public virtual void Execute() { }
+    public virtual void Revert() { }
+    public virtual void ExecuteByUpdateState(bool current, bool previous) { }
 
     public override void Added(Scene scene)
     {
         base.Added(scene);
 
-        if (mode == 7)
+        if (Mode == Modes.OnEntityAdded)
         {
+            CurrentState = true;
             Execute();
         }
     }
 
     public override void Removed(Scene scene)
     {
-        if (mode == 8)
+        if (Mode == Modes.OnEntityRemoved)
         {
+            CurrentState = true;
             Execute();
         }
 
         base.Removed(scene);
     }
 
-    private bool _state = false, state = false;
-    public override void Update()
-    {
-        base.Update();
-
-        if (mode == 1)
-        {
-            Execute();
-        }
-
-        if (mode == 4)
-        {
-            if (Scene.OnInterval(paramater.ParseFloat(0f).GetAbs()))
-            {
-                Execute();
-            }
-        }
-
-        if (mode == 9)
-        {
-            paramater.Split(",", StringSplitOptions.TrimEntries).ApplyTo(out string[] flags);
-            state = true;
-            foreach (var flag in flags)
-            {
-                state.TryNegative(flag.GetGeneralInvertedFlag());
-            }
-
-            if (_state != state && state)
-            {
-                Execute();
-            }
-        }
-
-        if (mode == 10 || mode == 11)
-        {
-            if (Md.FrostHelperLoaded && mode == 11)
-            {
-                state = paramater.tryCreateSessionExpression().getBoolSessionExpressionValue();
-            }
-            else
-            {
-                state = paramater.ParseMathExpression() != 0;
-            }
-
-            if (_state != state && state)
-            {
-                Execute();
-            }
-        }
-
-        if (mode == 12)
-        {
-            state = paramater.ParseLogicExpression();
-            
-            if (_state != state && state)
-            {
-                Execute();
-            }
-        }
-
-        _state = state;
-    }
-
     public override void SceneBegin(Scene scene)
     {
         base.SceneBegin(scene);
 
-        if (mode == 2)
+        if (Mode == Modes.OnSceneStart)
         {
+            CurrentState = true;
             Execute();
         }
     }
 
     public override void SceneEnd(Scene scene)
     {
-        if (mode == 3)
+        if (Mode == Modes.OnSceneEnd)
         {
+            CurrentState = true;
             Execute();
         }
 
         base.SceneEnd(scene);
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        EvaluateState();
+        HandleStateExecution();
+        
+        ExecuteByUpdateState(CurrentState, LastState);
+        
+        LastState = CurrentState;
+    }
+
+    private void EvaluateState()
+    {
+        switch (Mode)
+        {
+            case Modes.AlwaysSet:
+                CurrentState = true;
+                Execute();
+                break;
+
+            case Modes.OnInterval:
+                EvaluateIntervalMode();
+                break;
+
+            case var m when IsFlagMode:
+                EvaluateFlagMode();
+                break;
+
+            case var m when IsChroniaMode || IsFrostMode:
+                EvaluateExpressionMode();
+                break;
+
+            case var m when IsFlagLogicMode:
+                EvaluateFlagLogicMode();
+                break;
+        }
+    }
+
+    private void EvaluateIntervalMode()
+    {
+        float interval = Parameter.ParseFloat(0f).GetAbs();
+        
+        if (Scene.OnInterval(interval))
+        {
+            CurrentState = true;
+            Execute();
+        }
+        else
+        {
+            CurrentState = false;
+            Revert();
+        }
+    }
+
+    private void EvaluateFlagMode()
+    {
+        var flags = Parameter.Split(",", StringSplitOptions.TrimEntries);
+        CurrentState = flags.All(flag => flag.GetGeneralInvertedFlag());
+    }
+
+    private void EvaluateExpressionMode()
+    {
+        if (IsFrostMode && Md.FrostHelperLoaded)
+        {
+            CurrentState = Parameter.tryCreateSessionExpression().getBoolSessionExpressionValue();
+        }
+        else
+        {
+            CurrentState = Parameter.ParseMathExpression() != 0;
+        }
+    }
+
+    private void EvaluateFlagLogicMode()
+    {
+        CurrentState = Parameter.ParseLogicExpression();
+    }
+
+    private void HandleStateExecution()
+    {
+        if (IsStateMode)
+        {
+            if (CurrentState)
+            {
+                Execute();
+            }
+            else
+            {
+                Revert();
+            }
+        }
+        else
+        {
+            if (LastState == CurrentState) return;
+
+            if (IsEnableMode == CurrentState || IsDisableMode == !CurrentState)
+                Execute();
+            else
+                Revert();
+        }
+    }
+
+    public void SetState(bool state) => CurrentState = state;
+
+    public struct Modes
+    {
+        public const int OnLevelLoad = 0;
+        public const int AlwaysSet = 1;
+        public const int OnSceneStart = 2;
+        public const int OnSceneEnd = 3;
+        public const int OnInterval = 4;
+        public const int OnPlayerDie = 5;
+        public const int OnPlayerRespawn = 6;
+        public const int OnEntityAdded = 7;
+        public const int OnEntityRemoved = 8;
+        public const int OnFlagsEnable = 9;
+        public const int OnChroniaExpressionEnable = 10;
+        public const int OnFrostSessionExpressionEnable = 11;
+        public const int OnChroniaFlagLogicExpressionEnable = 12;
+        public const int OnFlagsDisable = 13;
+        public const int OnChroniaExpressionDisable = 14;
+        public const int OnFrostSessionExpressionDisable = 15;
+        public const int OnChroniaFlagLogicExpressionDisable = 16;
+        public const int OnFlagsState = 17;
+        public const int OnChroniaExpressionState = 18;
+        public const int OnFrostSessionExpressionState = 19;
+        public const int OnChroniaFlagLogicExpressionState = 20;
     }
 }

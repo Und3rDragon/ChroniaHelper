@@ -18,12 +18,25 @@ controller.placements = {
         sliders = "slider",
         value = "0",
         parameters = "",
-        mode = 0,
+        mode = 7,
         value2 = "",
         randomizeValue = false,
         valueType = 0,
+        revertValue = "",
     },
 }
+
+controller.associatedMods = function(entity)
+    if entity["mode"] == nil then
+      return {"ChroniaHelper"}
+    end
+    
+    if entity.mode == 11 or entity.mode == 15 or entity.mode == 19 then
+      return {"ChroniaHelper", "FrostHelper"}
+    else
+      return {"ChroniaHelper"}
+    end
+end
 
 controller.fieldOrder = {
     "_x", "_y", "x", "y", "_id", "_name",

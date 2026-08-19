@@ -26,7 +26,6 @@ public class FlagSerialTrigger : FlagManageTrigger
         interval = data.Float("interval", 0.1f);
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
         staircase = data.Fetch("staircase", false);
-
     }
     private int ID;
     private string serialFlag, targetSymbol;

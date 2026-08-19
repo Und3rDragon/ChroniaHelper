@@ -17,10 +17,22 @@ controller.placements = {
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
         flagSequence = "flag1,flag2;0.5;flag3,!flag4,*flag5,?flag6",
         parameters = "",
-        mode = 0,
+        mode = 7,
         globalCoroutine = false,
     },
 }
+
+controller.associatedMods = function(entity)
+    if entity["mode"] == nil then
+      return {"ChroniaHelper"}
+    end
+    
+    if entity.mode == 11 or entity.mode == 15 or entity.mode == 19 then
+      return {"ChroniaHelper", "FrostHelper"}
+    else
+      return {"ChroniaHelper"}
+    end
+end
 
 controller.fieldOrder = {
     "_x", "_y", "x", "y", "_id", "_name",

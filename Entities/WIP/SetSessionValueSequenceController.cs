@@ -148,9 +148,14 @@ public class SetSessionValueSequenceController : GeneralSetupController
         }
     }
 
-    public override void Execute()
+    public override void ExecuteByUpdateState(bool current, bool previous)
     {
-        PrepareSequence();
+        base.ExecuteByUpdateState(current, previous);
+
+        if (current != previous && current)
+        {
+            PrepareSequence();
+        }
     }
 
     public void PrepareSequence()

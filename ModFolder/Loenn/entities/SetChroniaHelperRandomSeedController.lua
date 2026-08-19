@@ -17,9 +17,21 @@ controller.placements = {
         frostSessionExpression = "https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions",
         seed = 0,
         parameters = "",
-        mode = 0,
+        mode = 7,
     },
 }
+
+controller.associatedMods = function(entity)
+    if entity["mode"] == nil then
+      return {"ChroniaHelper"}
+    end
+    
+    if entity.mode == 11 or entity.mode == 15 or entity.mode == 19 then
+      return {"ChroniaHelper", "FrostHelper"}
+    else
+      return {"ChroniaHelper"}
+    end
+end
 
 controller.fieldOrder = {
     "_x", "_y", "x", "y", "_id", "_name",

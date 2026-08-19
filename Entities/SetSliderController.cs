@@ -21,6 +21,8 @@ public class SetSliderController : GeneralSetupController
         canRandomize = value2.HasValidContent();
 
         valueType = (ValueType)data.Int("valueType", 0);
+        
+        revertValue = data.Attr("revertValue");
     }
     private string[] sliders;
     private string value, value2;
@@ -30,6 +32,7 @@ public class SetSliderController : GeneralSetupController
         Set, Add, Minus, Multiply, Divide
     }
     private ValueType valueType;
+    private string revertValue;
 
     public override void Execute()
     {
@@ -70,6 +73,21 @@ public class SetSliderController : GeneralSetupController
             {
                 i.SetSlider(target);
             }
+        }
+    }
+
+    public override void Revert()
+    {
+        base.Revert();
+        
+        if (!revertValue.HasValidContent())
+        {
+            return;
+        }
+        
+        foreach (var i in sliders)
+        {
+            i.SetSlider(revertValue.ParseMathExpression());
         }
     }
 }
