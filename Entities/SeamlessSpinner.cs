@@ -21,8 +21,11 @@ public class SeamlessSpinner : Entity
 
         public override void Update()
         {
-            Level level = Scene as Level;
-            if (level.CoreMode == Session.CoreModes.None)
+            if (!Scene.OnInterval(0.25f, Parent.offset))
+                return;
+
+            Level level = Parent.level;
+            if (level == null || level.CoreMode == Session.CoreModes.None)
                 return;
 
             if (preCoreMode != level.CoreMode)
@@ -84,24 +87,18 @@ public class SeamlessSpinner : Entity
 
     public class Inner : Entity
     {
-        private Entity main;
-
         public Inner(Entity parent)
         {
-            main = parent;
-
             Depth = parent.Depth + 5;
         }
 
         public override void Render()
         {
             base.Render();
-            Position = main.Position;
-            Visible = main.Visible;
         }
     }
 
-    public Dictionary<string, CrystalColor> checkColor = new Dictionary<string, CrystalColor>
+    public static Dictionary<string, CrystalColor> checkColor = new Dictionary<string, CrystalColor>
     {
         { "red", CrystalColor.Red },
         { "blue", CrystalColor.Blue },
@@ -160,6 +157,10 @@ public class SeamlessSpinner : Entity
     private float offset;
 
     private bool expanded;
+
+    private Level level;
+
+    private Vector2 lastHuePos;
 
     private int randomSeed;
 
@@ -362,8 +363,14 @@ public class SeamlessSpinner : Entity
         timer = setTimer;
         killPlayer = !trigger;
 
+        level = scene as Level;
+
         base.Awake(scene);
-        Add(new CoreModeListener(this));
+
+        if (useCoreModeStyle)
+        {
+            Add(new CoreModeListener(this));
+        }
 
 
         if (InView())
@@ -400,7 +407,6 @@ public class SeamlessSpinner : Entity
 
     public override void Update()
     {
-        Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
         if (trigger)
         {
             if (timerActive)
@@ -423,7 +429,7 @@ public class SeamlessSpinner : Entity
 
                 if (useCoreModeStyle)
                 {
-                    sprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
+                    sprite.Play(level.coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
                 }
 
                 int totalFrames = sprite.CurrentAnimationTotalFrames;
@@ -451,6 +457,7 @@ public class SeamlessSpinner : Entity
 
                 if (rainbow)
                 {
+                    lastHuePos = Position;
                     UpdateRainbowHue();
                 }
             }
@@ -458,8 +465,9 @@ public class SeamlessSpinner : Entity
         else
         {
             base.Update();
-            if (rainbow && Scene.OnInterval(0.08f, offset))
+            if (rainbow && Position != lastHuePos)
             {
+                lastHuePos = Position;
                 UpdateRainbowHue();
             }
 
@@ -468,7 +476,7 @@ public class SeamlessSpinner : Entity
                 Visible = false;
             }
 
-            if (Scene.OnInterval(0.05f, offset))
+            if (Scene.OnInterval(0.1f, offset))
             {
                 Player entity = Scene.Tracker.GetEntity<Player>();
                 if (entity != null)
@@ -487,31 +495,20 @@ public class SeamlessSpinner : Entity
 
     public void UpdateRainbowHue()
     {
-        foreach (Component component in Components)
+        if (sprite != null)
         {
-            if (component is Sprite sprite)
-            {
-                sprite.Color = spinner.GetHue(Position + sprite.Position);
-            }
+            sprite.Color = spinner.GetHue(Position + sprite.Position);
         }
 
-        if (filler == null)
+        foreach (Sprite bg in bgSprites)
         {
-            return;
-        }
-
-        foreach (Component component2 in filler.Components)
-        {
-            if (component2 is Sprite sprite2)
-            {
-                sprite2.Color = spinner.GetHue(Position + sprite2.Position);
-            }
+            bg.Color = spinner.GetHue(Position + bg.Position);
         }
     }
 
     private bool InView()
     {
-        Camera camera = (Scene as Level).Camera;
+        Camera camera = level.Camera;
         if (X > camera.X - 16f && Y > camera.Y - 16f && X < camera.X + 320f + 16f)
         {
             return Y < camera.Y + 180f + 16f;
@@ -534,7 +531,7 @@ public class SeamlessSpinner : Entity
         sprite.AddLoop("idle_hot", hotCoreModeSpritePath, fgAnim);
         if(sprite.CurrentAnimationID.StartsWith("idle"))
         {
-            sprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
+            sprite.Play(level.coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
 
             int totalFrames = sprite.CurrentAnimationTotalFrames;
             int randomChoice = Rd.Random.Range(0, totalFrames);
@@ -551,7 +548,7 @@ public class SeamlessSpinner : Entity
 
             if (bgSprite.CurrentAnimationID.StartsWith("idle"))
             {
-                bgSprite.Play(SceneAs<Level>().coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
+                bgSprite.Play(level.coreMode == Session.CoreModes.Cold ? "idle_cold" : "idle_hot");
 
                 int totalBGFrames = bgSprite.CurrentAnimationTotalFrames;
                 int randomBGChoice = Rd.Random.Range(0, totalBGFrames);
@@ -630,7 +627,7 @@ public class SeamlessSpinner : Entity
 
         foreach (SeamlessSpinner entity in Scene.Tracker.GetEntities<SeamlessSpinner>())
         {
-            if (entity.ID > ID && entity.AttachToSolid == AttachToSolid && (entity.Position - Position).LengthSquared() < 576f)
+            if (entity.ID > ID && entity.AttachToSolid == AttachToSolid && Math.Abs(entity.X - X) < 24f && (entity.Position - Position).LengthSquared() < 576f)
             {
                 AddSprite((Position + entity.Position) / 2f - Position);
             }
