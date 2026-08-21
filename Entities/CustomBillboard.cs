@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Components.StateListeners;
 
 namespace ChroniaHelper.Entities;
 
@@ -25,7 +26,7 @@ public class CustomBillboard : Entity
         public override void Render()
         {
             uint seed = Parent.Seed;
-            Parent.DrawNoise(Parent.Collider.Bounds, ref seed, Color.White * 0.1f, Parent.noiseTx);
+            Parent.DrawNoise(Parent.Collider.Bounds, ref seed, Color.White * 0.1f, Parent.altFlag.state ? Parent.noiseTx_alt : Parent.noiseTx);
             for (int i = (int)Parent.Y; (float)i < Parent.Bottom; i += 2)
             {
                 float num = 0.05f + (1f + (float)Math.Sin((float)i / 16f + base.Scene.TimeActive * 2f)) / 2f * 0.2f;
@@ -34,15 +35,17 @@ public class CustomBillboard : Entity
         }
     }
 
-    public Color BackgroundColor;
-
     public uint Seed;
 
     private MTexture[,] tiles;
 
-    private string borderTx;
+    private string borderTx, borderTx_alt;
 
-    private string noiseTx;
+    private string noiseTx, noiseTx_alt;
+    
+    public Color BackgroundColor, BackgroundColor_alt;
+
+    private FlagListener altFlag;
 
     public CustomBillboard(EntityData e, Vector2 offset)
     {
@@ -53,6 +56,26 @@ public class CustomBillboard : Entity
         borderTx = e.Attr("borderTexture", "scenery/tvSlices");
         noiseTx = e.Attr("noiseTexture", "util/noise");
         BackgroundColor = e.HexColor("screenColor", Color.DarkSlateBlue);
+        // alternation
+        borderTx_alt = e.Attr("alternateBorderTexture", "scenery/tvSlices");
+        noiseTx_alt = e.Attr("alternateNoiseTexture", "util/noise");
+        BackgroundColor_alt = e.HexColor("alternateScreenColor", Color.DarkSlateBlue);
+        altFlag = new(e.Attr("alternateFlag"), false);
+        altFlag.onEnable = SwitchOn;
+        altFlag.onDisable = SwitchOff;
+        Add(altFlag);
+    }
+
+    private void SwitchOn()
+    {
+        Components.RemoveAll<Image>();
+        GenerateTexture(borderTx_alt);
+    }
+
+    private void SwitchOff()
+    {
+        Components.RemoveAll<Image>();
+        GenerateTexture(borderTx);
     }
 
     public override void Added(Scene scene)
@@ -64,7 +87,13 @@ public class CustomBillboard : Entity
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        MTexture mTexture = GFX.Game[borderTx];
+        
+        GenerateTexture(borderTx);
+    }
+
+    private void GenerateTexture(string texture)
+    {
+        MTexture mTexture = GFX.Game[texture];
         tiles = new MTexture[mTexture.Width / 8, mTexture.Height / 8];
         for (int i = 0; i < mTexture.Width / 8; i++)
         {
@@ -188,8 +217,8 @@ public class CustomBillboard : Entity
     {
         base.Render();
         uint seed = Seed;
-        Draw.Rect(base.Collider, BackgroundColor);
-        DrawNoise(base.Collider.Bounds, ref seed, Color.White * 0.1f, noiseTx);
+        Draw.Rect(base.Collider, altFlag.state ? BackgroundColor_alt : BackgroundColor);
+        DrawNoise(base.Collider.Bounds, ref seed, Color.White * 0.1f, altFlag.state ? noiseTx_alt : noiseTx);
     }
 
 

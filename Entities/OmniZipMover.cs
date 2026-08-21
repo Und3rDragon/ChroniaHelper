@@ -291,8 +291,24 @@ public class OmniZipMover : OmniZipSolid
         recWidth = width;
         recHeight = height;
         
-    }
+        // leniency tweaks
+        float size = 3f;
+        Collider _bottom = new Hitbox(data.Width, size, 0f, data.Height);
+        Collider _side = new ColliderList(new Hitbox(size, data.Height, -size, 0f),
+            new Hitbox(size, data.Height, data.Width, 0f));
+        side = new((p) => { }, _side);
+        bottom = new((p) => { }, _bottom);
 
+        if (sensitive == TouchSensitive.bottom || sensitive == TouchSensitive.always)
+        {
+            Add(bottom);
+        }
+        if (sensitive == TouchSensitive.sideways || sensitive == TouchSensitive.always)
+        {
+            Add(side);
+        }
+    }
+    private PlayerCollider bottom, side;
 
     public override void Awake(Scene scene)
     {
@@ -300,6 +316,15 @@ public class OmniZipMover : OmniZipSolid
         AutoTile(edges, innerCorners);
 
         Add(streetlight);
+    }
+
+    public override bool GetAdditionalTouch()
+    {
+        if (PUt.TryGetPlayer(out var p))
+        {
+            return bottom.Check(p) || side.Check(p);
+        }
+        return base.GetAdditionalTouch();
     }
 
     public override void Added(Scene scene)
