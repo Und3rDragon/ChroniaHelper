@@ -423,10 +423,10 @@ public class OmniZipSolid : ConnectedSolid
         if (!onlyDash && HasPlayerRider()){req = true;}
         else if(!onlyDash && sensitive != TouchSensitive.none)
         {
-            bool flag1 = sensitive == TouchSensitive.bottom && GetPlayerTouch() == 2,
-                flag2 = sensitive == TouchSensitive.sideways && GetPlayerTouch() == 3,
-                flag3 = sensitive == TouchSensitive.sideways && GetPlayerTouch() == 4,
-                flag4 = sensitive == TouchSensitive.always && GetPlayerTouch() > 0;
+            bool flag1 = sensitive == TouchSensitive.bottom && (GetPlayerTouch() == 2 || GetAdditionalTouch()),
+                flag2 = sensitive == TouchSensitive.sideways && (GetPlayerTouch() == 3 || GetAdditionalTouch()),
+                flag3 = sensitive == TouchSensitive.sideways && (GetPlayerTouch() == 4 || GetAdditionalTouch()),
+                flag4 = sensitive == TouchSensitive.always && (GetPlayerTouch() > 0 || GetAdditionalTouch());
             req = flag1 || flag2 || flag3 || flag4;
         }
         else if (dashable && dcr == DashCollisionResults.Rebound) { req = true; }
@@ -818,6 +818,11 @@ public class OmniZipSolid : ConnectedSolid
             }
         }
         return 0;
+    }
+
+    public virtual bool GetAdditionalTouch()
+    {
+        return false;
     }
 
 }

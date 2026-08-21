@@ -17,6 +17,10 @@ playbackBillboard.placements = {
         borderTexture = "scenery/tvSlices",
         noiseTexture = "util/noise",
         screenColor = "2b2354",
+        alternateBorderTexture = "scenery/tvSlices",
+        alternateNoiseTexture = "util/noise",
+        alternateScreenColor = "2b2354",
+        alternateFlag = "",
     }
 }
 
@@ -27,6 +31,12 @@ playbackBillboard.fieldInformation = {
     },
     borderTexture = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     noiseTexture = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
+    alternateScreenColor = {
+        fieldType = "color",
+        allowEmpty = false,
+    },
+    alternateBorderTexture = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
+    alternateNoiseTexture = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
 }
 
 
