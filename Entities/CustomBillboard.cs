@@ -64,6 +64,8 @@ public class CustomBillboard : Entity
         altFlag.onEnable = SwitchOn;
         altFlag.onDisable = SwitchOff;
         Add(altFlag);
+
+        Tag = Tags.TransitionUpdate;
     }
 
     private void SwitchOn()

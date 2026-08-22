@@ -47,7 +47,7 @@ public class Displayers : HDRenderEntity
 
     public static void LevelEnd(On.Celeste.Level.orig_End orig, Level self)
     {
-        Instance.Buffer?.Dispose();
+        Instance?.Buffer?.Dispose();
         self.Remove(Instance);
 
         orig(self);
@@ -146,10 +146,7 @@ public class Displayers : HDRenderEntity
                 displayUI.distance = displayer.letterDistance;
                 displayUI.scale = displayer.scale * 0.1f;
 
-                displayUI.Render(target, (c) =>
-                {
-                    return $"{c}".ParseInt(c == ':' ? 10 : 0);
-                }, GetRenderPosition(displayer.displayPosition,
+                displayUI.Render(target, StopclockFontSelector, GetRenderPosition(displayer.displayPosition,
                     new Vc2(displayer.X, displayer.Y)));
             }
         }
@@ -167,10 +164,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -179,18 +173,16 @@ public class Displayers : HDRenderEntity
             var displayer = Md.Settings.realTimeClock;
             var displayUI = realTimeClock_UI;
             
+            DateTime now = DateTime.Now;
             string target = displayer.hasSeconds ?
-                $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}:{DateTime.Now.Second:00}" :
-                $"{DateTime.Now.Hour:00}:{DateTime.Now.Minute:00}";
+                $"{now.Hour:00}:{now.Minute:00}:{now.Second:00}" :
+                $"{now.Hour:00}:{now.Minute:00}";
 
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return $"{c}".ParseInt(c == ':' ? 10 : 0);
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, StopclockFontSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -205,10 +197,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return $"{c}".ParseInt();
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, DigitSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -223,10 +212,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return $"{c}".ParseInt();
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, DigitSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -256,10 +242,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -286,10 +269,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -327,10 +307,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -345,10 +322,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return $"{c}".ParseInt();
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, DigitSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -363,10 +337,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return $"{c}".ParseInt();
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, DigitSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -381,10 +352,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return $"{c}".ParseInt();
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, DigitSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -392,51 +360,60 @@ public class Displayers : HDRenderEntity
         {
             var displayer = Md.Settings.mapNameDisplayer;
             var displayUI = mapName_UI;
-            
+
             Language lang = Dialog.Languages["english"];
-            
-            string target = string.Empty;
+
             string sid = MaP.level?.Session?.Area.SID ?? "null";
-            if (sid.StartsWith("Celeste/"))
+            // sid / lang / 开关未变时复用上次解析结果，跳过 Dialog 查找与字符串处理
+            if (cachedMapNameSid != sid || cachedMapNameLang != lang
+                || cachedMapNamePrefix != displayer.prefix || cachedMapNameSuffix != displayer.suffixAuthor)
             {
-                target = sid.Remove(0, sid.IndexOf('-') + 1);
-            }
-            else
-            {
-                if(sid != "null")
+                cachedMapNameSid = sid;
+                cachedMapNameLang = lang;
+                cachedMapNamePrefix = displayer.prefix;
+                cachedMapNameSuffix = displayer.suffixAuthor;
+
+                string target = string.Empty;
+                if (sid.StartsWith("Celeste/"))
                 {
-                    string ssid = sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
-                    
-                    bool has = Dialog.Has(ssid, lang);
-                    
-                    target = has ? Dialog.Clean(ssid, lang) : sid.Trim();
+                    target = sid.Remove(0, sid.IndexOf('-') + 1);
                 }
                 else
                 {
-                    target = sid;
+                    if (sid != "null")
+                    {
+                        string ssid = sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
+
+                        bool has = Dialog.Has(ssid, lang);
+
+                        target = has ? Dialog.Clean(ssid, lang) : sid.Trim();
+                    }
+                    else
+                    {
+                        target = sid;
+                    }
                 }
-            }
-                
-            if (displayer.prefix)
-            {
-                target = "Map Name: " + target;
-            }
-            if (displayer.suffixAuthor)
-            {
-                string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
-                bool dialogHas = Dialog.Has(ssid + "_author", lang);
-                string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).TryGet(0, "null");
-                target = target + $" -> {(dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor)}";
+
+                if (displayer.prefix)
+                {
+                    target = "Map Name: " + target;
+                }
+                if (displayer.suffixAuthor)
+                {
+                    string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
+                    bool dialogHas = Dialog.Has(ssid + "_author", lang);
+                    string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).TryGet(0, "null");
+                    target = target + $" -> {(dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor)}";
+                }
+
+                cachedMapNameResult = target;
             }
 
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(cachedMapNameResult, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
         
@@ -455,10 +432,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -466,29 +440,37 @@ public class Displayers : HDRenderEntity
         {
             var displayer = Md.Settings.mapAuthorNameDisplayer;
             var displayUI = authorName_UI;
-            
+
             Language lang = Dialog.Languages["english"];
 
-            string target = string.Empty;
             string sid = MaP.level?.Session?.Area.SID ?? "null";
-            string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
-            bool dialogHas = Dialog.Has(ssid + "_author", lang);
-            string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).TryGet(0, "null");
-            target = dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor;
-            
-            if (displayer.prefix)
+            // sid / lang / 开关未变时复用上次解析结果，跳过 Dialog 查找与字符串处理
+            if (cachedAuthorNameSid != sid || cachedAuthorNameLang != lang
+                || cachedAuthorNamePrefix != displayer.prefix)
             {
-                target = "Author Name: " + target;
+                cachedAuthorNameSid = sid;
+                cachedAuthorNameLang = lang;
+                cachedAuthorNamePrefix = displayer.prefix;
+
+                string target = string.Empty;
+                string ssid = sid == "null" ? "null" : sid.Trim().Replace(' ', '_').Replace('-', '_').Replace('/', '_');
+                bool dialogHas = Dialog.Has(ssid + "_author", lang);
+                string fileAuthor = sid.Split('/', StringSplitOptions.TrimEntries).TryGet(0, "null");
+                target = dialogHas ? Dialog.Clean(ssid + "_author", lang) : fileAuthor;
+
+                if (displayer.prefix)
+                {
+                    target = "Author Name: " + target;
+                }
+
+                cachedAuthorNameResult = target;
             }
 
             displayUI.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(cachedAuthorNameResult, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -509,10 +491,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -527,10 +506,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -557,10 +533,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -572,7 +545,12 @@ public class Displayers : HDRenderEntity
             displayUI.template.origin = ((int)displayer.aligning + 4).ToJustify();
             displayUI.template.renderMode = 1;
             displayUI.template.distance = displayer.letterDistance;
-            displayUI.scales = new(){ displayer.scale * 0.1f };
+            float inputScale = displayer.scale * 0.1f;
+            if (displayUI.scales.Count != 1 || displayUI.scales[0] != inputScale)
+            {
+                displayUI.scales.Clear();
+                displayUI.scales.Add(inputScale);
+            }
             displayUI.memberDistance = displayer.lineDistance;
             displayUI.groupOrigin = displayer.overallAligning.ToJustify();
 
@@ -595,10 +573,7 @@ public class Displayers : HDRenderEntity
                 displayer.renderTarget.RemoveAt(0);
             }
 
-            displayUI.Render(displayer.renderTarget, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
+            displayUI.Render(displayer.renderTarget, GeneralSelector, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
         }
 
         if (Md.Settings.mousePositionDisplayer.enabled)
@@ -626,10 +601,7 @@ public class Displayers : HDRenderEntity
             displayUI.distance = displayer.letterDistance;
             displayUI.scale = displayer.scale * 0.1f;
 
-            displayUI.Render(target, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(displayer.displayPosition,
+            displayUI.Render(target, GeneralSelector, GetRenderPosition(displayer.displayPosition,
                 new Vc2(displayer.X, displayer.Y)));
         }
 
@@ -647,18 +619,57 @@ public class Displayers : HDRenderEntity
             displayUI.template.renderMode = 0;
             displayUI.template.distance = displayer.letterDistance;
             displayUI.template.segmentOrigin = Vc2.Zero;
-            displayUI.scales = new() { displayer.scale * 0.1f };
+            float entityScale = displayer.scale * 0.1f;
+            if (displayUI.scales.Count != 1 || displayUI.scales[0] != entityScale)
+            {
+                displayUI.scales.Clear();
+                displayUI.scales.Add(entityScale);
+            }
             displayUI.memberDistance = displayer.lineDistance;
             displayUI.groupOrigin = displayer.overallAligning.ToJustify();
 
-            displayUI.Render(displayer.renderTarget, (c) =>
-            {
-                return generalReference.Contains(c) ? generalReference.IndexOf(c) : generalReference.IndexOf(" ");
-            }, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
+            displayUI.Render(displayer.renderTarget, GeneralSelector, GetRenderPosition(Sts.DisplayPosition.StaticScreen, new Vc2(displayer.X, displayer.Y)));
         }
     }
 
     public string generalReference = Cons.DisplayFontsReference;
+
+    // ---- 静态字符映射与 selector：固定引用，保证 SerialImageRaw / SerialImageGroupRaw 的 Measure 缓存可命中 ----
+    private static readonly int[] GeneralCharIndex = BuildGeneralCharIndex();
+    private static readonly Func<char, int> GeneralSelector = static c =>
+    {
+        int idx = GeneralCharIndex[c];
+        return idx >= 0 ? idx : GeneralCharIndex[' '];
+    };
+    private static readonly Func<char, int> StopclockFontSelector = static c =>
+        c == ':' ? 10 : (c >= '0' && c <= '9' ? c - '0' : 0);
+    private static readonly Func<char, int> DigitSelector = static c =>
+        c >= '0' && c <= '9' ? c - '0' : 0;
+
+    private static int[] BuildGeneralCharIndex()
+    {
+        var arr = new int[char.MaxValue + 1];
+        Array.Fill(arr, -1);
+        string reference = Cons.DisplayFontsReference;
+        for (int i = 0; i < reference.Length; i++)
+        {
+            if (arr[reference[i]] == -1) { arr[reference[i]] = i; }
+        }
+        // 保证空格映射存在（原逻辑 generalReference.IndexOf(" ") 依赖空格）
+        arr[' '] = reference.IndexOf(' ');
+        return arr;
+    }
+
+    // ---- 地图名/作者名缓存：sid 未变时跳过 Dialog 查找与解析 ----
+    private Language cachedMapNameLang;
+    private string cachedMapNameSid;
+    private bool cachedMapNamePrefix;
+    private bool cachedMapNameSuffix;
+    private string cachedMapNameResult;
+    private Language cachedAuthorNameLang;
+    private string cachedAuthorNameSid;
+    private bool cachedAuthorNamePrefix;
+    private string cachedAuthorNameResult;
 
     public SerialImageRaw stateMachine_UI = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"))
     {

@@ -76,70 +76,7 @@ public class SerialImageGroup
     /// <param name="selector">The deepest reflection of the function returning integers as the texture index</param>
     public void Measure<T>(IList<IList<T>> source, Func<T, int> selector)
     {
-        members = new();
-        
-        for(int i = 0; i < source.Count; i++)
-        {
-            SerialImage image = cachedMember[SafeGetPath(i)];
-            image.origin = template.origin;
-            image.segmentOrigin = template.segmentOrigin;
-            image.overallOffset = groupOffset;
-            image.renderMode = template.renderMode;
-            image.distance = template.distance;
-            image.color = template.color;
-            if(scales.TryGetOrGetLast(i, out float? scale))
-            {
-                image.scale = scale?? 1f;
-            }
-            else
-            {
-                image.scale = 1f;
-            }
-            if(depths.TryGetOrGetLast(i, out float? depth))
-            {
-                image.depth = depth?? 0f;
-            }
-            else
-            {
-                image.depth = 0f;
-            }
-            image.Measure(source[i], (item) => selector(item));
-            members.Add(image);
-        }
-
-        // Mapping members
-        Vc2 cal = groupTopleft = groupBottomRight = Vc2.Zero;
-        memberPosition = new();
-        groupSize = new();
-        
-        for(int i = 0; i < members.Count; i++)
-        {
-            if(i == 0)
-            {
-                memberPosition.Add(cal);
-
-                groupTopleft = -1f * members[i].overallSize * template.origin;
-                groupBottomRight = members[i].overallSize * (Vc2.One - template.origin);
-
-                continue;
-            }
-
-            cal.Y += members[i].overallSize.Y * template.origin.Y + members[i - 1].overallSize.Y * (1f - template.origin.Y) + memberDistance;
-            memberPosition.Add(cal);
-            
-            groupTopleft.X = groupTopleft.X.ClampMax(members[i].overallSize.X * template.origin.X * -1f);
-            groupTopleft.Y = groupTopleft.Y.ClampMax(cal.Y + members[i].overallSize.Y * template.origin.Y * -1f);
-            groupBottomRight.X = groupBottomRight.X.ClampMin(members[i].overallSize.X * (1f - template.origin.X));
-            groupBottomRight.Y = groupBottomRight.Y.ClampMin(cal.Y + members[i].overallSize.Y * (1f - template.origin.Y));
-        }
-
-        groupSize = groupBottomRight - groupTopleft;
-        memberStart = -groupTopleft;
-    }
-    
-    public void Measure(IList<string> source, Func<char, int> selector)
-    {
-        members = new();
+        members.Clear();
 
         for (int i = 0; i < source.Count; i++)
         {
@@ -166,15 +103,78 @@ public class SerialImageGroup
             {
                 image.depth = 0f;
             }
-            image.Measure(source[i], (item) => selector(item));
+            image.Measure(source[i], selector);
             members.Add(image);
         }
 
         // Mapping members
         Vc2 cal = groupTopleft = groupBottomRight = Vc2.Zero;
-        memberPosition = new();
-        groupSize = new();
-        
+        memberPosition.Clear();
+        groupSize = Vc2.Zero;
+
+        for (int i = 0; i < members.Count; i++)
+        {
+            if (i == 0)
+            {
+                memberPosition.Add(cal);
+
+                groupTopleft = -1f * members[i].overallSize * template.origin;
+                groupBottomRight = members[i].overallSize * (Vc2.One - template.origin);
+
+                continue;
+            }
+
+            cal.Y += members[i].overallSize.Y * template.origin.Y + members[i - 1].overallSize.Y * (1f - template.origin.Y) + memberDistance;
+            memberPosition.Add(cal);
+
+            groupTopleft.X = groupTopleft.X.ClampMax(members[i].overallSize.X * template.origin.X * -1f);
+            groupTopleft.Y = groupTopleft.Y.ClampMax(cal.Y + members[i].overallSize.Y * template.origin.Y * -1f);
+            groupBottomRight.X = groupBottomRight.X.ClampMin(members[i].overallSize.X * (1f - template.origin.X));
+            groupBottomRight.Y = groupBottomRight.Y.ClampMin(cal.Y + members[i].overallSize.Y * (1f - template.origin.Y));
+        }
+
+        groupSize = groupBottomRight - groupTopleft;
+        memberStart = -groupTopleft;
+    }
+    
+    public void Measure(IList<string> source, Func<char, int> selector)
+    {
+        members.Clear();
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            SerialImage image = cachedMember[SafeGetPath(i)];
+            image.origin = template.origin;
+            image.segmentOrigin = template.segmentOrigin;
+            image.overallOffset = groupOffset;
+            image.renderMode = template.renderMode;
+            image.distance = template.distance;
+            image.color = template.color;
+            if (scales.TryGetOrGetLast(i, out float? scale))
+            {
+                image.scale = scale ?? 1f;
+            }
+            else
+            {
+                image.scale = 1f;
+            }
+            if (depths.TryGetOrGetLast(i, out float? depth))
+            {
+                image.depth = depth ?? 0f;
+            }
+            else
+            {
+                image.depth = 0f;
+            }
+            image.Measure(source[i], selector);
+            members.Add(image);
+        }
+
+        // Mapping members
+        Vc2 cal = groupTopleft = groupBottomRight = Vc2.Zero;
+        memberPosition.Clear();
+        groupSize = Vc2.Zero;
+
         for (int i = 0; i < members.Count; i++)
         {
             if (i == 0)
