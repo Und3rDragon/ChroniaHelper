@@ -56,13 +56,17 @@ public class AnimatedImage
     /// </param>
     public void Render(Vc2 renderPosition)
     {
-        if (!textures.ContainsKey(currentAnimation)) { return; }
-        if (textures[currentAnimation].Count == 0 || textures[currentAnimation].IsNull()) { return; }
-        
-        MTexture asset = textures[currentAnimation][currentFrame.Clamp(0, textures[currentAnimation].Count - 1)];
+        if (!textures.TryGetValue(currentAnimation, out List<MTexture> frames)) { return; }
+        if (frames == null || frames.Count == 0) { return; }
 
-        asset.Draw(renderPosition + offset - origin * new Vc2(asset.Width, asset.Height), 
-            Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
+        MTexture asset = frames[currentFrame.Clamp(0, frames.Count - 1)];
+
+        Color parsedColor = color.Parsed();
+        float rad = rotation.ToRad();
+        SpriteEffects fx = GetSpriteEffect();
+
+        asset.Draw(renderPosition + offset - origin * new Vc2(asset.Width, asset.Height),
+            Vc2.Zero, parsedColor, scale, rad, fx);
         //Draw.SpriteBatch.Draw(asset.Texture.Texture, renderPosition + offset, null, color.Parsed(), rotation.ToRad(),
         //    origin * new Vc2(asset.Width, asset.Height),
         //     scale, GetSpriteEffect(), depth);
@@ -73,31 +77,29 @@ public class AnimatedImage
     {
         if (!playing) { return; }
 
-        if (!textures.ContainsKey(currentAnimation)) { return; }
+        if (!textures.TryGetValue(currentAnimation, out List<MTexture> frames)) { return; }
 
-        float dt = interval.ContainsKey(currentAnimation) ? interval[currentAnimation].ClampMin(Engine.DeltaTime) : 0.1f;
+        float dt = interval.TryGetValue(currentAnimation, out float iv) ? iv.ClampMin(Engine.DeltaTime) : 0.1f;
 
-        if (MaP.scene?.OnInterval(dt)?? false)
+        if (MaP.scene?.OnInterval(dt) ?? false)
         {
-            if (!frameSet.ContainsKey(currentAnimation))
+            if (!frameSet.TryGetValue(currentAnimation, out List<int> frameSetList))
             {
                 currentFrame += reversed ? -1 : 1;
-                
-                if (currentFrame < 0) { currentFrame = loop.GetValueOrDefault(currentAnimation, true)? 
-                        textures[currentAnimation].Count - 1 : 0; }
-                if (currentFrame > textures[currentAnimation].Count - 1) { currentFrame = loop.GetValueOrDefault(currentAnimation, true) ? 
-                        0 : textures[currentAnimation].Count - 1; }
+
+                bool loopAnim = loop.GetValueOrDefault(currentAnimation, true);
+                if (currentFrame < 0) { currentFrame = loopAnim ? frames.Count - 1 : 0; }
+                if (currentFrame > frames.Count - 1) { currentFrame = loopAnim ? 0 : frames.Count - 1; }
             }
             else
             {
                 frameSetIndex += reversed ? -1 : 1;
 
-                if (frameSetIndex < 0) { frameSetIndex = loop.GetValueOrDefault(currentAnimation, true) ? 
-                        frameSet[currentAnimation].Count - 1 : 0; }
-                if (frameSetIndex > frameSet[currentAnimation].Count - 1) { frameSetIndex = loop.GetValueOrDefault(currentAnimation, true) ? 
-                        0 : frameSet[currentAnimation].Count - 1; }
+                bool loopAnim = loop.GetValueOrDefault(currentAnimation, true);
+                if (frameSetIndex < 0) { frameSetIndex = loopAnim ? frameSetList.Count - 1 : 0; }
+                if (frameSetIndex > frameSetList.Count - 1) { frameSetIndex = loopAnim ? 0 : frameSetList.Count - 1; }
 
-                currentFrame = frameSet[currentAnimation][frameSetIndex];
+                currentFrame = frameSetList[frameSetIndex];
             }
         }
     }
@@ -138,9 +140,9 @@ public class AnimatedImage
 
     public int CurrentAnimationLength()
     {
-        if (!textures.ContainsKey(currentAnimation)) { return 0; }
-        if (textures[currentAnimation].IsNull()) { return 0; }
+        if (!textures.TryGetValue(currentAnimation, out List<MTexture> frames)) { return 0; }
+        if (frames == null) { return 0; }
 
-        return textures[currentAnimation].Count;
+        return frames.Count;
     }
 }

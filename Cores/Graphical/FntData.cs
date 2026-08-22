@@ -24,19 +24,23 @@ public class FntData
     {
         public SessionData(string path, bool overwrite = false)
         {
-            if (!Md.Session.cachedFntData.ContainsKey(path) || overwrite)
+            // 命中缓存且不强制覆盖时，直接复用已解析的字体数据（避免重复解析 FNT XML）
+            if (!overwrite && Md.Session.cachedFntData.TryGetValue(path, out FntData cached))
             {
-                path.CreateFntFontTextures(out textures, out offsets);
+                textures = cached.textures;
+                offsets = cached.offsets;
+                return;
             }
 
-            if (!Md.Session.cachedFntData.ContainsKey(path))
-            {
-                Md.Session.cachedFntData.Add(path, this);
-            }
+            path.CreateFntFontTextures(out textures, out offsets);
 
             if (overwrite)
             {
-                Md.Session.cachedFntData.Enter(path, this);
+                Md.Session.cachedFntData[path] = this;
+            }
+            else if (!Md.Session.cachedFntData.ContainsKey(path))
+            {
+                Md.Session.cachedFntData.Add(path, this);
             }
         }
     }

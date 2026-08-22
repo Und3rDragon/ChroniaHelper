@@ -51,31 +51,79 @@ public class SerialImage
     public List<Vc2> segmentPosition;
     public Vc2 overallSize = Vc2.Zero;
     public Vc2 segmentStart = Vc2.Zero;
-    public void Measure<T>(IList<T> source, Func<T, int> selector)
-    {
-        p1 = Vc2.Zero; p2 = Vc2.Zero;
-        segmentPosition = new();
-        overallSize = Vc2.Zero;
-        
-        Vc2 cal = Vc2.Zero;
-        
-        for(int i = 0; i < source.Count; i++)
-        {
 
-            MTexture asset = textures[selector(source[i])];
-            
+    // ---- Measure 结果缓存：字符串路径（string 不可变，== 即内容比较，绝对可靠） ----
+    private string cachedStringSource;
+    private object cachedSelector;
+    private float cachedScale;
+    private int cachedRenderMode;
+    private float cachedDistance;
+    private Vc2 cachedSegmentOrigin;
+    private int cachedCount = -1;
+    private MTexture[] measuredTextures;
+    private int[] measuredSelectors;
+
+    private bool MeasureCacheValid(string source, object selector)
+    {
+        return cachedStringSource == source
+            && ReferenceEquals(cachedSelector, selector)
+            && cachedCount == source.Length
+            && cachedScale == scale
+            && cachedRenderMode == renderMode
+            && cachedDistance == distance
+            && cachedSegmentOrigin == segmentOrigin;
+    }
+
+    private void StoreMeasureCache(string source, object selector)
+    {
+        cachedStringSource = source;
+        cachedSelector = selector;
+        cachedCount = source.Length;
+        cachedScale = scale;
+        cachedRenderMode = renderMode;
+        cachedDistance = distance;
+        cachedSegmentOrigin = segmentOrigin;
+    }
+
+    public void Measure(string source, Func<char, int> selector)
+    {
+        if (MeasureCacheValid(source, selector))
+        {
+            return;
+        }
+
+        StoreMeasureCache(source, selector);
+
+        p1 = Vc2.Zero; p2 = Vc2.Zero;
+        segmentPosition = new List<Vc2>(source.Length);
+        if (measuredTextures == null || measuredTextures.Length < source.Length)
+        {
+            measuredTextures = new MTexture[source.Length];
+            measuredSelectors = new int[source.Length];
+        }
+        overallSize = Vc2.Zero;
+
+        Vc2 cal = Vc2.Zero;
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            int idx = selector(source[i]);
+            measuredSelectors[i] = idx;
+            MTexture asset = textures[idx];
+            measuredTextures[i] = asset;
+
             if (i == 0)
             {
                 p1 = new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
                 p2 = new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
                 segmentPosition.Add(cal);
-                
+
                 continue;
             }
-            
-            MTexture lastAsset = textures[selector(source[i - 1])];
 
-            if(renderMode == (int)RenderMode.EqualDistance)
+            MTexture lastAsset = measuredTextures[i - 1];
+
+            if (renderMode == (int)RenderMode.EqualDistance)
             {
                 cal.X = cal.X + distance;
             }
@@ -83,7 +131,7 @@ public class SerialImage
             {
                 cal.X = cal.X + lastAsset.Width * (1 - segmentOrigin.X) * scale + asset.Width * segmentOrigin.X * scale + distance;
             }
-            
+
             Vc2 _p1 = cal + new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
             Vc2 _p2 = cal + new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
 
@@ -94,14 +142,64 @@ public class SerialImage
             p2.X = _p2.X > p2.X ? _p2.X : p2.X;
             p2.Y = _p2.Y > p2.Y ? _p2.Y : p2.Y;
         }
-        
+
         overallSize = p2 - p1;
-        segmentStart = - p1;
+        segmentStart = -p1;
     }
 
-    public void Measure(string source, Func<char, int> selector)
+    public void Measure<T>(IList<T> source, Func<T, int> selector)
     {
-        Measure(source.ToArray(), selector);
+        p1 = Vc2.Zero; p2 = Vc2.Zero;
+        segmentPosition = new List<Vc2>(source.Count);
+        if (measuredTextures == null || measuredTextures.Length < source.Count)
+        {
+            measuredTextures = new MTexture[source.Count];
+            measuredSelectors = new int[source.Count];
+        }
+        overallSize = Vc2.Zero;
+
+        Vc2 cal = Vc2.Zero;
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            int idx = selector(source[i]);
+            measuredSelectors[i] = idx;
+            MTexture asset = textures[idx];
+            measuredTextures[i] = asset;
+
+            if (i == 0)
+            {
+                p1 = new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
+                p2 = new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
+                segmentPosition.Add(cal);
+
+                continue;
+            }
+
+            MTexture lastAsset = measuredTextures[i - 1];
+
+            if (renderMode == (int)RenderMode.EqualDistance)
+            {
+                cal.X = cal.X + distance;
+            }
+            else
+            {
+                cal.X = cal.X + lastAsset.Width * (1 - segmentOrigin.X) * scale + asset.Width * segmentOrigin.X * scale + distance;
+            }
+
+            Vc2 _p1 = cal + new Vc2(-asset.Width, -asset.Height) * segmentOrigin * scale;
+            Vc2 _p2 = cal + new Vc2(asset.Width, asset.Height) * (Vc2.One - segmentOrigin) * scale;
+
+            segmentPosition.Add(cal);
+
+            p1.X = _p1.X < p1.X ? _p1.X : p1.X;
+            p1.Y = _p1.Y < p1.Y ? _p1.Y : p1.Y;
+            p2.X = _p2.X > p2.X ? _p2.X : p2.X;
+            p2.Y = _p2.Y > p2.Y ? _p2.Y : p2.Y;
+        }
+
+        overallSize = p2 - p1;
+        segmentStart = -p1;
     }
 
     public void Render<T>(IList<T> source, Func<T, int> selector)
@@ -119,16 +217,20 @@ public class SerialImage
         Vc2 shift = -overallSize * origin;
 
         //Draw.HollowRect(renderPosition + shift, overallSize.X, overallSize.Y, Color.Orange);
-        
-        for(int i = 0; i < source.Count; i++)
+
+        Color parsedColor = color.Parsed();
+        float rad = rotation.ToRad();
+        SpriteEffects fx = GetSpriteEffect();
+
+        for (int i = 0; i < source.Count; i++)
         {
-            MTexture texture = textures[selector(source[i])];
+            MTexture texture = measuredTextures[i];
             Vc2 dPos = shift + segmentStart + segmentPosition[i];
 
             bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
 
             texture.Draw(renderPosition + dPos + overallOffset - segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
-                Vc2.Zero, color.Parsed(), scale, rotation.ToRad(), GetSpriteEffect());
+                Vc2.Zero, parsedColor, scale, rad, fx);
             //Draw.SpriteBatch.Draw(texture.Texture.Texture, renderPosition + dPos + overallOffset + (hasSegOffset ? segOffset : Vc2.Zero),
             //    null, color.Parsed(), rotation.ToRad(), segmentOrigin * new Vc2(texture.Width, texture.Height),
             //    scale, GetSpriteEffect(), depth);
@@ -137,6 +239,25 @@ public class SerialImage
     
     public void Render(string source, Func<char, int> selector, Vc2 worldPosition)
     {
-        Render(source.ToArray(), selector, worldPosition);
+        Measure(source, selector);
+
+        Vc2 shift = -overallSize * origin;
+
+        //Draw.HollowRect(renderPosition + shift, overallSize.X, overallSize.Y, Color.Orange);
+
+        Color parsedColor = color.Parsed();
+        float rad = rotation.ToRad();
+        SpriteEffects fx = GetSpriteEffect();
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            MTexture texture = measuredTextures[i];
+            Vc2 dPos = shift + segmentStart + segmentPosition[i];
+
+            bool hasSegOffset = segmentOffset.TryGetValue(i, out Vc2 segOffset);
+
+            texture.Draw(worldPosition + dPos + overallOffset - segmentOrigin * new Vc2(texture.Width, texture.Height) + (hasSegOffset ? segOffset : Vc2.Zero),
+                Vc2.Zero, parsedColor, scale, rad, fx);
+        }
     }
 }

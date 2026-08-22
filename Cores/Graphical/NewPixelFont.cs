@@ -14,8 +14,7 @@ public static class NewPixelFontUtils
         int width = 0;
         foreach (char c in text)
         {
-            int value;
-            if (font.FontCharacterWidths.TryGetValue(c, out value))
+            if (font.FontCharacterWidths.TryGetValue(c, out int value))
             {
                 width += value + 1;
             }
@@ -26,18 +25,17 @@ public static class NewPixelFontUtils
     public static string Cleanup(this NewPixelFont font, string text, int maxWidth)
     {
         string[] array = text.Split('\n', StringSplitOptions.None);
-        List<string> processedLines = new List<string>();
+        List<string> processedLines = new List<string>(array.Length);
+        int ellipsisWidth = font.GetStringWidth("...");
         foreach (string line in array)
         {
-            int ellipsisWidth = font.GetStringWidth("...");
             if (font.GetStringWidth(line) <= maxWidth)
             {
                 processedLines.Add(line);
             }
             else
             {
-                string processedLine = line;
-                processedLine += "...";
+                string processedLine = line + "...";
                 for (int currentWidth = font.GetStringWidth(processedLine); currentWidth > maxWidth - ellipsisWidth; currentWidth = font.GetStringWidth(processedLine))
                 {
                     processedLine = processedLine.Substring(0, processedLine.Length - 4) + "...";
@@ -112,14 +110,13 @@ public class NewPixelFont
         int length = 0;
         foreach (char ch in str)
         {
-            Dictionary<char, int> fontCharacterWidths = this.FontCharacterWidths;
-            if (fontCharacterWidths != null && fontCharacterWidths.ContainsKey(ch))
+            if (FontCharacterWidths != null && FontCharacterWidths.TryGetValue(ch, out int w))
             {
-                length += this.FontCharacterWidths[ch] + 1;
+                length += w + 1;
             }
             else
             {
-                length += this.FontCharacterWidth;
+                length += FontCharacterWidth;
             }
         }
         return length;
@@ -128,54 +125,59 @@ public class NewPixelFont
     // Token: 0x0600044E RID: 1102 RVA: 0x00032658 File Offset: 0x00030858
     public int MeasureWidth(char ch)
     {
-        Dictionary<char, int> fontCharacterWidths = this.FontCharacterWidths;
-        if (fontCharacterWidths != null && fontCharacterWidths.ContainsKey(ch))
+        if (FontCharacterWidths != null && FontCharacterWidths.TryGetValue(ch, out int w))
         {
-            return this.FontCharacterWidths[ch] + 1;
+            return w + 1;
         }
-        return this.FontCharacterWidth;
+        return FontCharacterWidth;
     }
 
     // Token: 0x0600044F RID: 1103 RVA: 0x00032684 File Offset: 0x00030884
     public void Draw(string text, Point position, Color color, Rectangle? crop = null, Vector2? justify = null, bool wrap = false, float scale = 1f)
     {
+        // 预先拆分一次所有行，避免循环内反复 Split（原实现每个换行符都重新 Split 整串，O(n²)）
+        string[] lines = text.Split('\n', StringSplitOptions.None);
+        int lineCount = lines.Length;
+
         Vector2 i = justify ?? Vector2.Zero;
         int line = 0;
-        int textX = position.X - (int)((float)this.MeasureWidth(text.Split('\n', StringSplitOptions.None)[line]) * i.X);
-        int textY = position.Y - (int)((float)(text.Split('\n', StringSplitOptions.None).Length * this.FontCharacterHeight) * i.Y);
+        int textX = position.X - (int)(MeasureWidth(lines[line]) * i.X);
+        int textY = position.Y - (int)(lineCount * FontCharacterHeight * i.Y);
         foreach (char ch in text)
         {
             if (ch == '\n')
             {
                 line++;
-                textX = position.X - (int)((float)this.MeasureWidth(text.Split('\n', StringSplitOptions.None)[line]) * i.X);
-                textY += this.FontCharacterHeight;
+                if (line >= lineCount) { break; }
+                textX = position.X - (int)(MeasureWidth(lines[line]) * i.X);
+                textY += FontCharacterHeight;
             }
-            else if (crop == null || (textY <= crop.Value.Bottom + this.FontCharacterHeight && textY >= crop.Value.Top - this.FontCharacterHeight))
+            else if (crop == null || (textY <= crop.Value.Bottom + FontCharacterHeight && textY >= crop.Value.Top - FontCharacterHeight))
             {
-                if (wrap && crop != null && textX > crop.Value.Right - this.FontCharacterWidth - 2)
+                if (wrap && crop != null && textX > crop.Value.Right - FontCharacterWidth - 2)
                 {
                     line++;
+                    if (line >= lineCount) { break; }
                     textX = position.X;
-                    textY += this.FontCharacterHeight;
+                    textY += FontCharacterHeight;
                 }
                 Rectangle r;
-                if (this.characterPositionRects.TryGetValue(ch, out r))
+                if (characterPositionRects.TryGetValue(ch, out r))
                 {
                     if (crop != null)
                     {
-                        int topClipVal = Calc.Clamp(crop.Value.Top - textY, 0, (int)((float)r.Height * scale));
-                        int bottomClipVal = Calc.Clamp(textY - crop.Value.Bottom + this.FontCharacterHeight, 0, (int)((float)r.Height * scale));
-                        int rightClipVal = Calc.Clamp(textX - crop.Value.Right + (int)(scale * (float)this.MeasureWidth(ch)), 0, (int)((float)r.Width * scale));
-                        int leftClipVal = Calc.Clamp(crop.Value.Left - textX, 0, (int)((float)r.Width * scale));
-                        Monocle.Draw.SpriteBatch.Draw(this.FontTexture, new Vector2((float)(textX + leftClipVal), (float)(textY + topClipVal)), new Rectangle?(new Rectangle(r.X + leftClipVal, r.Y + topClipVal, r.Width - rightClipVal - leftClipVal, r.Height - bottomClipVal - topClipVal)), color, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+                        int topClipVal = Calc.Clamp(crop.Value.Top - textY, 0, (int)(r.Height * scale));
+                        int bottomClipVal = Calc.Clamp(textY - crop.Value.Bottom + FontCharacterHeight, 0, (int)(r.Height * scale));
+                        int rightClipVal = Calc.Clamp(textX - crop.Value.Right + (int)(scale * MeasureWidth(ch)), 0, (int)(r.Width * scale));
+                        int leftClipVal = Calc.Clamp(crop.Value.Left - textX, 0, (int)(r.Width * scale));
+                        Monocle.Draw.SpriteBatch.Draw(FontTexture, new Vector2(textX + leftClipVal, textY + topClipVal), new Rectangle?(new Rectangle(r.X + leftClipVal, r.Y + topClipVal, r.Width - rightClipVal - leftClipVal, r.Height - bottomClipVal - topClipVal)), color, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
                     }
                     else
                     {
-                        Monocle.Draw.SpriteBatch.Draw(this.FontTexture, new Vector2((float)textX, (float)textY), new Rectangle?(r), color, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+                        Monocle.Draw.SpriteBatch.Draw(FontTexture, new Vector2(textX, textY), new Rectangle?(r), color, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
                     }
                 }
-                textX += (int)((float)this.MeasureWidth(ch) * scale);
+                textX += (int)(MeasureWidth(ch) * scale);
             }
         }
     }

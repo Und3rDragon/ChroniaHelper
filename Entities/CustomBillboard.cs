@@ -64,6 +64,8 @@ public class CustomBillboard : Entity
         altFlag.onEnable = SwitchOn;
         altFlag.onDisable = SwitchOff;
         Add(altFlag);
+
+        Tag = Tags.TransitionUpdate;
     }
 
     private void SwitchOn()
@@ -87,8 +89,8 @@ public class CustomBillboard : Entity
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        
-        GenerateTexture(borderTx);
+
+        GenerateTexture(altFlag.state ? borderTx_alt : borderTx);
     }
 
     private void GenerateTexture(string texture)
