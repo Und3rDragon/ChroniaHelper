@@ -100,7 +100,7 @@ dashGateBlock.fieldInformation = {
         editable = false
     },
     ease = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             options = require("mods").requireFromPlugin("helpers.chroniaHelper_old").easers,
             editable = false,
@@ -108,11 +108,11 @@ dashGateBlock.fieldInformation = {
         allowEmpty = false,
     },
     moveTime = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         allowEmpty = false,
     },
     nodeDelays = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     returnDelays = {
         fieldType = "list"

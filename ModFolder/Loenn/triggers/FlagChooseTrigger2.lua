@@ -15,10 +15,10 @@ return {
     fieldInformation =
     {
         flagDictionary = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementSeparator = ";",
             elementOptions = {
-                fieldType = "list",
+                fieldType = "list_scroll",
                 elementSeparator = ">>",
             },
         },

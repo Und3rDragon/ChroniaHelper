@@ -40,7 +40,7 @@ lantern.fieldInformation = {
 		fieldType = "integer",
 	},
 	frames = {
-		fieldType = "list",
+		fieldType = "list_scroll",
 		elementOptions = {
 			fieldType = "integer",
 			allowEmpty = false,

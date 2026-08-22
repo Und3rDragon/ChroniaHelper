@@ -46,7 +46,7 @@ controller.fieldInformation =
         editable = false,
     },
     groupIDs = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     groupDepth = require("mods").requireFromPlugin("helpers.field_options").depths,
@@ -54,7 +54,7 @@ controller.fieldInformation =
         minimumValue = 0,
     },
     colors = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             fieldType = "color",
             useAlpha = true,

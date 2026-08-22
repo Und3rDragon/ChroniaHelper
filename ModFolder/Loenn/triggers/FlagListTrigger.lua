@@ -38,7 +38,7 @@ return {
             minimumValue = 0
         },
         flagList = {
-            fieldType = "list",
+            fieldType = "list_scroll",
         },
     },
     fieldOrder =

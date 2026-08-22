@@ -22,7 +22,7 @@ controller.placements = {
 
 controller.fieldInformation = {
     values = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     }
 }
 

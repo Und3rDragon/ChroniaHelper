@@ -24,31 +24,31 @@ pufferBomb.placements = {
 
 pufferBomb.fieldInformation = {
     basicColliders = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
         elementOptions = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             allowEmpty = false,
         },
         minimumElements = 1,
     },
     playerColliders = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
         elementOptions = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             allowEmpty = false,
         },
         minimumElements = 1,
     },
     detectCollider = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 2,
         maximumElements = 4,
         minimumElements = 1,
     },
     wallbreakCollider = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
         maximumElements = 3,
         minimumElements = 1,

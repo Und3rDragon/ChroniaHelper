@@ -35,11 +35,11 @@ controller.fieldInformation = {
         fieldType = "integer",
     },
     musics = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
         minimumElements = 2,
         elementOptions = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             minimumElements = 2,
             maximumElements = 2,
         },

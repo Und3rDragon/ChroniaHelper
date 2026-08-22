@@ -16,11 +16,11 @@ return{
 	},
 	fieldInformation = {
 		flag = {
-			fieldType = "list",
+			fieldType = "list_scroll",
 			allowEmpty = false,
 		},
 		intervals = {
-			fieldType = "list",
+			fieldType = "list_scroll",
 			allowEmpty = false,
 		},
 		positionMode = {

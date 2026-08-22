@@ -32,7 +32,7 @@ return {
         },
         interval =
         {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementOptions = {
                 fieldType = "float",
                 minimumValue = 0,
@@ -49,7 +49,7 @@ return {
             minimumValue = 0
         },
         flagList = {
-            fieldType = "list",
+            fieldType = "list_scroll",
         }
     },
     fieldOrder =

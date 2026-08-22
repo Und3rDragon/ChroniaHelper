@@ -45,14 +45,14 @@ renderer.placements = {
 
 renderer.fieldInformation = {
     scale = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
         elementOptions = {
             fieldType = "integer",
         },
     },
     textures = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     screenX = {

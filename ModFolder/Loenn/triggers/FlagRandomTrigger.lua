@@ -31,7 +31,7 @@ return {
             minimumValue = 0
         },
         randomFlagDictionary = {
-            fieldType = "list",
+            fieldType = "list_scroll",
         },
     },
     fieldOrder =

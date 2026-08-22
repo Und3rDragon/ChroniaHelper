@@ -21,7 +21,7 @@ controller.ignoredFields = {
 controller.fieldInformation = 
 {
     flags = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
 }

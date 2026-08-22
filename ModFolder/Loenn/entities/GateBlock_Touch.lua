@@ -87,7 +87,7 @@ touchGateBlock.fieldInformation = {
         editable = true
     },
     ease = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             options = require("mods").requireFromPlugin("helpers.chroniaHelper_old").easers,
             editable = false,
@@ -95,11 +95,11 @@ touchGateBlock.fieldInformation = {
         allowEmpty = false,
     },
     moveTime = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         allowEmpty = false,
     },
     nodeDelays = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     returnDelays = {
         fieldType = "list"

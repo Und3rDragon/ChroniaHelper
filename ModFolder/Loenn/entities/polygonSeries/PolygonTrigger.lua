@@ -17,7 +17,7 @@ trigger.placements = {
 }
 trigger.fieldInformation = {
 	triggerIDs = {
-		fieldType = "list",
+		fieldType = "list_scroll",
 		elementOptions = {
 			fieldType = "integer",
 		},

@@ -21,7 +21,7 @@ return {
             editable = false,
         },
         labels = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             minimumElements = 1,
         },
     },

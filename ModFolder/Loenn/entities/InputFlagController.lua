@@ -36,14 +36,14 @@ inputFlagController.placements = {
 
 inputFlagController.fieldInformation = {
     flags = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
         elementOptions = {
-            fieldType = "list",
+            fieldType = "list_scroll",
         },
     },
     ifFlagCondition = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     mode = {
         options = {

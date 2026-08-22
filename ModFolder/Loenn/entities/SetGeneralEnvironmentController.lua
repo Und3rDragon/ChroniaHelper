@@ -60,7 +60,7 @@ controller.fieldInformation = {
         editable = false,
     },
     parameters = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     bloomColor = {
         fieldType = "color",

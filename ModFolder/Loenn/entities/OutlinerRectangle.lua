@@ -54,7 +54,7 @@ local ConnectableOutline = {
             useAlpha = true,
         },
         detectFlags = {
-            fieldType = "list",
+            fieldType = "list_scroll",
         },
     }
 }

@@ -22,7 +22,7 @@ windTunnel.fieldInformation = {
         editable = false,
     },
     particleColors = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             fieldType = "color",
         },

@@ -54,10 +54,10 @@ controller.fieldInformation = {
     },
     mode = require("mods").requireFromPlugin("consts.field_options").generalSetup,
     formulaTimeFields = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     formulaExpressions = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = "|",
     },
 }

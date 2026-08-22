@@ -72,27 +72,27 @@ renderer.placements = {
 
 renderer.fieldInformation = {
     offsetPerIndex = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ';',
         elementOptions = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             minimumElements = 3,
         },
     },
     offsetPerCharcode = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ';',
         elementOptions = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             minimumElements = 3,
         },
     },
     scale = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     textures = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
         elementOptions = {
             options = additionalAssets,
