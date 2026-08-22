@@ -87,8 +87,8 @@ public class CustomBillboard : Entity
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
-        
-        GenerateTexture(borderTx);
+
+        GenerateTexture(altFlag.state ? borderTx_alt : borderTx);
     }
 
     private void GenerateTexture(string texture)
