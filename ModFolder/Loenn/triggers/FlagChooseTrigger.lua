@@ -34,7 +34,7 @@ return {
             minimumValue = 0
         },
         flagDictionary = {
-            fieldType = "list",
+            fieldType = "list_scroll",
         },
     },
     fieldOrder =

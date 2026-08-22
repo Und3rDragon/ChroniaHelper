@@ -67,16 +67,16 @@ entity.fieldInformation = {
         editable = false,
     },
     iconColors = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             fieldType = "color",
         },
     },
     icons = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     iconOffsets = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
     }
 }

@@ -78,28 +78,28 @@ switchGate.fieldInformation = {
         editable = false
     },
     moveTime = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     returnMoveTime = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     pauseTime = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     returnPauseTime = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     easers = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
         elementOptions = require("mods").requireFromPlugin("helpers.field_options").easeMode,
     },
     returnEasers = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
         elementOptions = require("mods").requireFromPlugin("helpers.field_options").easeMode,
     },

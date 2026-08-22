@@ -34,7 +34,7 @@ controller.fieldInformation =
         editable = false,
     },
     flags = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 1,
     },
     flagMode = {

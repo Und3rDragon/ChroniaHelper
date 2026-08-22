@@ -40,7 +40,7 @@ local reskinJelly = {
             minimumValue = 0,
         },
         tutorialText = {
-            fieldType = "list",
+            fieldType = "list_scroll",
         },
     }
 }

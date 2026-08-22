@@ -75,7 +75,7 @@ seamlessSpinner.fieldInformation = {
     },
     depth = fo.depths,
     customHitbox = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
     },
     colorOverlay = {

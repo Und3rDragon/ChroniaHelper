@@ -54,11 +54,11 @@ puffer.placements = {
 
 puffer.fieldInformation = {
     colliders = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
     },
     playerColliders = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
     },
     overrideOutline = {

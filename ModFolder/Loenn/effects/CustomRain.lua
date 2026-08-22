@@ -11,24 +11,24 @@ return {
     canBackground = true,
     fieldInformation = {
         Colors = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementOptions = {
                 fieldType = "color",
             },
         },
         fadingX = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementOptions = {
-                fieldType = "list",
+                fieldType = "list_scroll",
                 minimumElements = 4,
                 maximumElements = 4,
             },
             elementSeparator = ";",
         },
         fadingY = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementOptions = {
-                fieldType = "list",
+                fieldType = "list_scroll",
                 minimumElements = 4,
                 maximumElements = 4,
             },

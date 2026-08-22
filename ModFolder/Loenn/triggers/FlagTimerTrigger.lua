@@ -15,10 +15,10 @@ return{
 	},
 	fieldInformation = {
 		setups = {
-			fieldType = "list",
+			fieldType = "list_scroll",
 			elementSeparator = ";",
 			elementOptions = {
-				fieldType = "list",
+				fieldType = "list_scroll",
 				maximumElements = 2,
 				minimumElements = 2,
 			},

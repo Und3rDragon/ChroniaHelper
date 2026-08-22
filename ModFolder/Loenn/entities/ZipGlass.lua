@@ -37,7 +37,7 @@ OmniZipMover.fieldInformation = {
         allowEmpty = true,
     },
     easing = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             options = ChroniaHelper.easers,
             editable = false,
@@ -45,7 +45,7 @@ OmniZipMover.fieldInformation = {
         allowEmpty = false,
     },
     returnEasing = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             options = ChroniaHelper.easers,
             editable = false,
@@ -77,19 +77,19 @@ OmniZipMover.fieldInformation = {
     },
     customSkin = require("mods").requireFromPlugin("helpers.vivUtilsMig").getDirectoryPathFromFile(true),
     delays = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     nodeSpeeds = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     returnSpeeds = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     returnDelays = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     starColors = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementOptions = {
             fieldType = "color",
         },

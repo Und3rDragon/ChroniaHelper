@@ -39,7 +39,7 @@ return {
             allowEmpty = false,
         },
         requirements = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementSeparator = ";",
             elementOptions = {
                 options = { "year", "month", "day", "hour", "minute", "second", "millisecond" },
@@ -47,15 +47,15 @@ return {
             },
         },
         setFalseFlags = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementSeparator = ",",
         },
         setTrueFlags = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementSeparator = ",",
         },
         enterIfFlag = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementSeparator = ",",
         },
     },

@@ -48,15 +48,15 @@ controller.fieldInformation = {
     },
     mode = require("mods").requireFromPlugin("consts.field_options").generalSetup,
     sequence = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
         elementOptions = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             minimumElements = 1,
         },
     },
     parameters = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
 }
 

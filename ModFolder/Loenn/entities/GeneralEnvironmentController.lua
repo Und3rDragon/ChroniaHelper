@@ -54,10 +54,10 @@ controller.fieldInformation = {
     },
     mode = require("mods").requireFromPlugin("consts.field_options").generalSetup,
     flags = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     parameters = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
     lightingColorTo = {
         fieldType = "color",

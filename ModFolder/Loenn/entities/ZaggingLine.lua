@@ -35,14 +35,14 @@ zl.fieldInformation = {
 		useAlpha = true,
 	},
 	nodeColors = {
-		fieldType = "list",
+		fieldType = "list_scroll",
 		elementOptions = {
 			fieldType = "color",
 			useAlpha = true,
 		},
 	},
 	lineColors = {
-		fieldType = "list",
+		fieldType = "list_scroll",
 		elementOptions = {
 			fieldType = "color",
 			useAlpha = true,

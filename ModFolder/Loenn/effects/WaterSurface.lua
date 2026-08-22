@@ -25,13 +25,13 @@ return {
     canBackground = true,
     fieldInformation = {
         particleColors = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementOptions = {
                 fieldType = "color",
             },
         },
         backParticleColors = {
-            fieldType = "list",
+            fieldType = "list_scroll",
             elementOptions = {
                 fieldType = "color",
             },

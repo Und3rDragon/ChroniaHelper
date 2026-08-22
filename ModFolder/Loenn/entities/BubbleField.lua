@@ -38,7 +38,7 @@ bubblePushField.fieldInformation = {
         editable = false,
     },
     particleDirs ={
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
 }
 

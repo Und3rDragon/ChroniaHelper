@@ -19,7 +19,7 @@ return{
 	},
 	fieldInformation = {
 		flag = {
-			fieldType = "list",
+			fieldType = "list_scroll",
 			allowEmpty = false,
 		},
 	},

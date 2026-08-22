@@ -47,7 +47,7 @@ entity.fieldInformation = {
         fieldType = "integer"
     },
     accessZone = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 4,
         maximumElements = 4,
         elementOptions = {
@@ -61,7 +61,7 @@ entity.fieldInformation = {
         allowEmpty = false,
     },
     talkIconPosition = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         minimumElements = 2,
         maximumElements = 2
     },
@@ -71,11 +71,11 @@ entity.fieldInformation = {
         fieldType = "integer",
     },
     password = {
-        fieldType = "list",
+        fieldType = "list_scroll",
         elementSeparator = ";",
     },
     flagToEnable = {
-        fieldType = "list",
+        fieldType = "list_scroll",
     },
 }
 
