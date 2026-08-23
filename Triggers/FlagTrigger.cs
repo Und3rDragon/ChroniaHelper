@@ -51,7 +51,7 @@ public class FlagTrigger : BaseTrigger
 
             if (filtering && (defState == name.GetFlag())) { continue; }
 
-            name.SetFlag(defState, saves, temp);
+            name.SetFlag(defState, saves, temp, temp);
             records.Enter(name, defState);
         }
     }
@@ -68,7 +68,7 @@ public class FlagTrigger : BaseTrigger
 
                 if (filtering && defState == name.GetFlag()) { continue; }
 
-                name.SetFlag(defState, saves, temp);
+                name.SetFlag(defState, saves, temp, temp);
                 records.Enter(name, defState);
             }
         }
@@ -78,7 +78,7 @@ public class FlagTrigger : BaseTrigger
     {
         foreach (var item in records.Keys)
         {
-            item.SetFlag(!records[item], saves, temp);
+            item.SetFlag(!records[item], saves, temp, temp);
         }
         records.Clear();
     }

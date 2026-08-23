@@ -11,29 +11,34 @@ namespace ChroniaHelper.Settings;
 
 public class Commands
 {
-    [Command("chronia_full_cheat", "Enable Variant Mode and Cheat Mode for a save")]
+    [Command("chronia_full_cheat", 
+        "Enable Variant Mode and Cheat Mode for a save")]
     public static void EnableFullCheat()
     {
         MaP.currentSaveData?.Item2.CheatMode = true;
         MaP.currentSaveData?.Item2.VariantMode = true;
     }
 
-    [Command("chronia_math_expression", "Try parsing a string using ChroniaHelper MathExpression")]
+    [Command("chronia_math_expression", 
+        "Try parsing a string using ChroniaHelper MathExpression")]
     public static void TryMathExpression(string expression)
     {
         CommandLog.LogDivider($"Math Expression Result to: {expression}");
         expression.ParseMathExpression().LogCommand();
     }
 
-    [Command("chronia_logic_expression", "Try parsing a string using ChroniaHelper LogicExpression")]
+    [Command("chronia_logic_expression", 
+        "Try parsing a string using ChroniaHelper LogicExpression")]
     public static void TryLogicExpression(string expression)
     {
         CommandLog.LogDivider($"Logic Expression Result to: {expression}");
         expression.ParseLogicExpression().LogCommand();
     }
 
-    [Command("chronia_get_keyboard_password_hash", "Try getting the encrypted password for PasswordKeyboard")]
-    public static void GenerateHashedPassword(string keyboardTag, string password, bool caseSensitive = true)
+    [Command("chronia_get_keyboard_password_hash", 
+        "Try getting the encrypted password for PasswordKeyboard")]
+    public static void GenerateHashedPassword(string keyboardTag, 
+        string password, bool caseSensitive = true)
     {
         CommandLog.LogDivider($"Password {password} encrypted for Keyboard {keyboardTag} {(caseSensitive?"with" : "without")} sensitive case");
         string hash = StringUtils.GetHashString(keyboardTag + password, caseSensitive);
@@ -42,15 +47,10 @@ public class Commands
         "Password copied onto your clipboard".LogCommand(Color.Yellow);
     }
 
-    [Command("chronia_help_get_keyboard_password_hash", "")]
-    public static void Help1()
-    {
-        CommandLog.LogCommand("string: keyboardTag, string: password, bool: caseSensitive = true",
-            Color.Yellow);
-    }
-
-    [Command("chronia_get_password_hash", "Try getting the encrypted keyboard-tag-combined password for PasswordKeyboard")]
-    public static void GenerateHashedPassword(string parsedPassword, bool caseSensitive = true)
+    [Command("chronia_get_password_hash", 
+        "Try getting the encrypted keyboard-tag-combined password for PasswordKeyboard")]
+    public static void GenerateHashedPassword(string parsedPassword, 
+        bool caseSensitive = true)
     {
         CommandLog.LogDivider($"Password {parsedPassword} encrypted {(caseSensitive ? "with" : "without")} sensitive case");
         string hash = StringUtils.GetHashString(parsedPassword, caseSensitive);
@@ -59,32 +59,6 @@ public class Commands
         "Password copied onto your clipboard".LogCommand(Color.Yellow);
     }
     
-    [Command("chronia_set_flag", "Set Flag")]
-    public static void CommandFlag(string name, bool state = true, bool global = false, bool temporary = false)
-    {
-        if (Engine.Scene is not Level) { return; }
-        if (!Md.InstanceReady) { return; }
-
-        name.SetFlag(state, global, temporary);
-    }
-
-    [Command("chronia_set_flag_per_room", "Set up a flag that works only in one room")]
-    public static void CommandRoomFlag(string name, bool state = true)
-    {
-        if (Engine.Scene is not Level) { return; }
-        if (!Md.InstanceReady) { return; }
-
-        name.SetFlag(state);
-        if (state)
-        {
-            Md.Session.flagsPerRoom.Add(name);
-        }
-        else
-        {
-            Md.Session.flagsPerRoom.Remove(name);
-        }
-    }
-
     [Command("chronia_all_flags", "List all flags")]
     public static void CommandAllFlags()
     {
@@ -196,11 +170,13 @@ public class Commands
         CommandLog.LogDivider();
     }
 
-    [Command("chronia_charcode", "Get the charcode index for a certain character")]
-    public static void CommandGetCharcode(string str)
+    [Command("chronia_charcode", 
+        "Get the charcode index for a certain character\n" +
+        "query: the series of chars you wanna query")]
+    public static void CommandGetCharcode(string query)
     {
         string result = "";
-        char[] c = str.ToArray();
+        char[] c = query.ToArray();
         for(int i = 0; i < c.Length; i++)
         {
             if( i == 0)
@@ -215,12 +191,6 @@ public class Commands
         CommandLog.LogCommand(result, Color.Yellow);
     }
 
-    [Command("chronia_help_charcode", "")]
-    public static void Help2()
-    {
-        CommandLog.LogCommand("string: the series of chars you wanna query", Color.Yellow);
-    }
-    
     [Command("chronia_all_keys", "Log all session keys")]
     public static void CommandAllSessionKeys()
     {
@@ -248,7 +218,7 @@ public class Commands
         }
     }
 
-    [Command("chronia_hud_enable", "Set HUD")]
+    [Command("chronia_hud", "Set HUD state")]
     public static void CommandSetHUD(bool state = true)
     {
         Md.Settings.HUDMainControl = state;
@@ -261,63 +231,55 @@ public class Commands
         clock.Start();
     }
 
-    [Command("chronia_stopclock", "Set up a countup stopclock")]
-    public static void CommandSetUpStopclock(bool start = true, bool followPause = true, float delay = 0f)
+    [Command("chronia_stopclock", 
+        "Set up a countup stopclock")]
+    public static void CommandSetUpStopclock(bool startImmediately = true, 
+        bool followLevelPause = true, float startDelay = 0f)
     {
         if (MaP.scene is not Level) { return; }
 
-        Stopclock clock = new Stopclock(false, followPause: followPause);
+        Stopclock clock = new Stopclock(false, followPause: followLevelPause);
         clock.Register(Cons.CommandStopclockID, false);
 
-        if (start)
+        if (startImmediately)
         {
-            if(delay <= 0f)
+            if(startDelay <= 0f)
             {
                 clock.Start();
             }
             else
             {
-                MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, delay)));
+                MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, startDelay)));
             }
         }
     }
 
-    [Command("chronia_help_stopclock", "")]
-    public static void Help3()
-    {
-        CommandLog.LogCommand("bool: start immediately, bool: follow level pause, float: start delay", 
-            Color.Yellow);
-    }
-
-    [Command("chronia_stopclock_countdown", "Set up a countdown stopclock")]
-    public static void CommandSetUpCountdown(string time = "5:0:0", bool start = true, bool followPause = true, float delay = 0f)
+    [Command("chronia_stopclock_countdown", 
+        "Set up a countdown stopclock\n" +
+        "time: time format like \"5:0:0\"")]
+    public static void CommandSetUpCountdown(string time = "5:0:0", 
+        bool startImmediately = true, bool followLevelPause = true, float startDelay = 0f)
     {
         if (MaP.scene is not Level) { return; }
 
-        Stopclock clock = new Stopclock(true, time: time, followPause: followPause);
+        Stopclock clock = new Stopclock(true, time: time, followPause: followLevelPause);
         clock.Register(Cons.CommandStopclockID, false);
 
-        if (start)
+        if (startImmediately)
         {
-            if (delay <= 0f)
+            if (startDelay <= 0f)
             {
                 clock.Start();
             }
             else
             {
-                MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, delay)));
+                MaP.dummyGlobal.Add(new Coroutine(DelayStopclockStart(clock, startDelay)));
             }
         }
     }
 
-    [Command("chronia_help_stopclock_countdown", "")]
-    public static void Help4()
-    {
-        CommandLog.LogCommand("string: time format like \"5:0:0\", bool: start immediately, bool: follow level pause, float: start delay",
-            Color.Yellow);
-    }
-
-    [Command("chronia_stopclock_set_time", "")]
+    [Command("chronia_stopclock_set_time", 
+        "time: time formats like \"5:0:0\"")]
     public static void CommandSetStopclock(string time = "5:0:0")
     {
         if(Md.Session.IsNull()) { return; }
@@ -326,13 +288,6 @@ public class Commands
         {
             clock.SetTime(time);
         }
-    }
-
-    [Command("chronia_help_stopclock_set_time", "")]
-    public static void Help5()
-    {
-        CommandLog.LogCommand("string: time formats like \"5:0:0\"",
-            Color.Yellow);
     }
 
     [Command("chronia_stopclock_reset", "")]
@@ -424,6 +379,13 @@ public class Commands
 
         Rd.RandomSeed = s.GetHashCode();
         Rd.RefreshRandom();
+    }
+    
+    [Command("chronia_setflag",
+        "string: name, bool: state, bool: global, bool: perDeath, bool: perRoom")]
+    public static void _setFlag(string s, bool state = false, bool global = false, bool perDeath = false, bool perRoom = false)
+    {
+        s.SetFlag(state, global, perDeath, perRoom);
     }
 }
 
