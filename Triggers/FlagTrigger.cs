@@ -19,6 +19,7 @@ public class FlagTrigger : BaseTrigger
     public bool saves;
     public bool filtering;
     public bool onStay;
+    public bool perRoom;
 
     private int ID;
 
@@ -32,6 +33,7 @@ public class FlagTrigger : BaseTrigger
         leaveReset = data.Bool("resetOnLeave", false);
         filtering = data.Bool("ignoreUnchanged", false);
         onStay = data.Bool("onStay", false);
+        perRoom = data.Bool("perRoom", false);
         
         // flag processing
         string input = data.Attr("flag", "Flag");
@@ -51,7 +53,7 @@ public class FlagTrigger : BaseTrigger
 
             if (filtering && (defState == name.GetFlag())) { continue; }
 
-            name.SetFlag(defState, saves, temp, temp);
+            name.SetFlag(defState, saves, temp, perRoom);
             records.Enter(name, defState);
         }
     }
@@ -68,7 +70,7 @@ public class FlagTrigger : BaseTrigger
 
                 if (filtering && defState == name.GetFlag()) { continue; }
 
-                name.SetFlag(defState, saves, temp, temp);
+                name.SetFlag(defState, saves, temp, perRoom);
                 records.Enter(name, defState);
             }
         }

@@ -18,7 +18,7 @@ public static class ChroniaFlagUtils
     }
 
     public static void SetFlag(this string name, bool active = false, 
-        bool global = false, bool perRoom = false, bool perDeath = false)
+        bool global = false, bool perDeath = false, bool perRoom = false)
     {
         if ((name.GetSensitivity() & Sens.AllowNoSetFlag) != 0) { return; }
         
@@ -112,16 +112,16 @@ public static class ChroniaFlagUtils
         string name = flag.RemoveAll(invert).RemoveAll(global).RemoveAll(perDeath)
             .RemoveAll(perRoom);
 
-        name.SetFlag(flip ? _invert : !_invert, _global, _perRoom, _perDeath);
+        name.SetFlag(flip ? _invert : !_invert, _global, _perDeath, _perRoom);
     }
 
-    public static void ToggleGeneralFlags(this string flags, string separator = ",", string global = "*", string temporary = "#")
+    public static void ToggleGeneralFlags(this string flags, string separator = ",", string global = "*", string perDeath = "#", string perRoom = "$")
     {
         flags.Split(separator, StringSplitOptions.TrimEntries).ApplyTo(out string[] list);
 
         foreach (var item in list)
         {
-            item.ToggleGeneralFlag(global, temporary);
+            item.ToggleGeneralFlag(global, perDeath, perRoom);
         }
     }
 
@@ -129,7 +129,7 @@ public static class ChroniaFlagUtils
     {
         foreach (var item in flags)
         {
-            item.ToggleGeneralFlag(global, perDeath);
+            item.ToggleGeneralFlag(global, perDeath, perRoom);
         }
     }
 

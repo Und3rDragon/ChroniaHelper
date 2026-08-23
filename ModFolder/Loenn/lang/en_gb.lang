@@ -896,12 +896,13 @@ entities.ChroniaHelper/PlatformLineController.attributes.description.renderMode=
 # ================= Flag Trigger
 
 triggers.ChroniaHelper/FlagTrigger.placements.name.FlagTrigger=Flag Trigger
-triggers.ChroniaHelper/FlagTrigger.attributes.description.temporary=The flags in setup will be reverted to the entering state when player dies \n(supporting cross-room)
+triggers.ChroniaHelper/FlagTrigger.attributes.description.temporary=The flags in setup will be reverted to the entering state when player dies
 triggers.ChroniaHelper/FlagTrigger.attributes.description.global=The flag changes will be listed into save data and enable once per map load \nEg. Player dies, F5, F6 etc.
 triggers.ChroniaHelper/FlagTrigger.attributes.description.resetOnLeave=The flags will be reverted to the entering state when player leaves the trigger
 triggers.ChroniaHelper/FlagTrigger.attributes.description.ignoreUnchanged=For example, if the flag is enabled in game, and your setup is to enable this flag \nThen this flag will be ignored when trigger process flag states cause it seems shouldn't change
 triggers.ChroniaHelper/FlagTrigger.attributes.description.onStay=The flag setup will be applied constantly when player is inside the trigger
 triggers.ChroniaHelper/FlagTrigger.attributes.description.flag=A list of flags separated by comma, supporting "!" as inverted sign
+triggers.ChroniaHelper/FlagTrigger.attributes.description.perRoom=Whether this flag only lasts for a room
 
 # ================= Flag Serial Trigger
 
