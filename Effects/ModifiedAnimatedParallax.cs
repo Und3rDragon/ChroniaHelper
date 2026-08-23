@@ -8,8 +8,7 @@ using MonoMod.Cil;
 
 namespace ChroniaHelper.Effects;
 
-// The source code is modified from Maddie of Maddie's Helping Hand
-public class ModifiedAnimatedParallax : Parallax
+public static class ModifiedParallaxUtils
 {
     [LoadHook]
     public static void Load()
@@ -34,38 +33,48 @@ public class ModifiedAnimatedParallax : Parallax
                 // But the paths are now differentiated
                 if (orig.Texture?.AtlasPath?.StartsWith("bgs/ChroniaHelper/modifiedParallax/") ?? false)
                 {
-                    // nah, this is an ANIMATED parallax, mind you!
                     return new ModifiedAnimatedParallax(orig.Texture);
                 }
+                
+                if (orig.Texture?.AtlasPath?.StartsWith("bgs/ChroniaHelper/sessionParallax/") ?? false)
+                {
+                    return new ModifiedStaticParallax(orig.Texture);
+                }
+                
                 return orig;
             });
         }
     }
+}
 
-    private class ParallaxMeta
-    {
-        public float? FPS { get; set; } = null;
-        public string Frames { get; set; } = null;
-        public string TriggerFlag { get; set; } = null;
-        public bool? PlayOnce { get; set; } = null;
-        public string ResetFlag { get; set; } = null;
-        public int? ResetFrame { get; set; } = null;
-        public string SpeedSlider { get; set; } = null;
-        public string AlphaExpression { get; set; } = null;
-        public List<string> FrameIndexFlag { get; set; } = new();
-        public List<string> TextureIndexFlag { get; set; } = new();
-        public string OverrideFrameCounter { get; set; } = null;
-        public string OverrideTextureCounter { get; set; } = null;
-        public string OverridePositionX { get; set; } = null;
-        public string OverridePositionY { get; set; } = null;
-        public string OverrideSpeedX { get; set; } = null;
-        public string OverrideSpeedY { get; set; } = null;
-        public string DeltaPositionX { get; set; } = null;
-        public string DeltaPositionY { get; set; } = null;
-        public string OverrideScrollX { get; set; } = null;
-        public string OverrideScrollY { get; set; } = null;
-        public string OverrideScale { get; set; } = null;
-    }
+public class ParallaxMeta
+{
+    public float? FPS { get; set; } = null;
+    public string Frames { get; set; } = null;
+    public string TriggerFlag { get; set; } = null;
+    public bool? PlayOnce { get; set; } = null;
+    public string ResetFlag { get; set; } = null;
+    public int? ResetFrame { get; set; } = null;
+    public string SpeedSlider { get; set; } = null;
+    public string AlphaExpression { get; set; } = null;
+    public List<string> FrameIndexFlag { get; set; } = new();
+    public List<string> TextureIndexFlag { get; set; } = new();
+    public string OverrideFrameCounter { get; set; } = null;
+    public string OverrideTextureCounter { get; set; } = null;
+    public string OverridePositionX { get; set; } = null;
+    public string OverridePositionY { get; set; } = null;
+    public string OverrideSpeedX { get; set; } = null;
+    public string OverrideSpeedY { get; set; } = null;
+    public string DeltaPositionX { get; set; } = null;
+    public string DeltaPositionY { get; set; } = null;
+    public string OverrideScrollX { get; set; } = null;
+    public string OverrideScrollY { get; set; } = null;
+    public string OverrideScale { get; set; } = null;
+}
+
+[Credits("Maddie for Maddie's Helping Hand codes")]
+public class ModifiedAnimatedParallax : Parallax
+{
     private string alphaExpression = null;
     private string triggerFlag, resetFlag;
     private string speedSlider = null;
@@ -91,10 +100,6 @@ public class ModifiedAnimatedParallax : Parallax
     private string overrideScrollX = null, overrideScrollY = null;
     private string overrideScale = null;
 
-    //public ModifiedAnimatedParallax(BinaryPacker.Element c, MTexture texture) : this(texture)
-    //{
-
-    //}
     public ModifiedAnimatedParallax(MTexture texture) : base(texture)
     {
         // remove the frame number, much like decals do.
@@ -451,6 +456,159 @@ public class ModifiedAnimatedParallax : Parallax
             if (!playOnce || currentFrame != frameOrder.Length - 1)
             {
                 currentFrame++;
+            }
+        }
+    }
+}
+
+[Credits("Maddie for Maddie's Helping Hand codes")]
+public class ModifiedStaticParallax : Parallax
+{
+    private string alphaExpression = null;
+    private string overridePositionX = null;
+    private string overridePositionY = null;
+    private string overrideSpeedX = null;
+    private string overrideSpeedY = null;
+    private string deltaPosX = null, deltaPosY = null;
+    private string overrideScrollX = null, overrideScrollY = null;
+    private string overrideScale = null;
+
+    public ModifiedStaticParallax(MTexture texture) : base(texture)
+    {
+        // remove the frame number, much like decals do.
+        string texturePath = Regex.Replace(texture.AtlasPath, "\\d+$", string.Empty);
+
+        if (Everest.Content.Map.TryGetValue("Graphics/Atlases/Gameplay/" + texturePath + ".meta", out ModAsset metaYaml) && metaYaml.Type == typeof(AssetTypeYaml))
+        {
+            // the styleground has a metadata file! we should read it.
+            ParallaxMeta meta;
+            using (TextReader r = new StreamReader(metaYaml.Stream))
+            {
+                meta = YamlHelper.Deserializer.Deserialize<ParallaxMeta>(r);
+            }
+
+            if(meta.AlphaExpression != null)
+            {
+                alphaExpression = meta.AlphaExpression;
+            }
+
+            if(meta.OverridePositionX != null)
+            {
+                overridePositionX = meta.OverridePositionX;
+            }
+
+            if(meta.OverridePositionY != null)
+            {
+                overridePositionY = meta.OverridePositionY;
+            }
+
+            if(meta.OverrideSpeedX != null)
+            {
+                overrideSpeedX = meta.OverrideSpeedX;
+            }
+
+            if(meta.OverrideSpeedY != null)
+            {
+                overrideSpeedY = meta.OverrideSpeedY;
+            }
+
+            if(meta.DeltaPositionX != null)
+            {
+                deltaPosX = meta.DeltaPositionX;
+            }
+
+            if(meta.DeltaPositionY != null)
+            {
+                deltaPosY = meta.DeltaPositionY;
+            }
+            
+            if(meta.OverrideScrollX != null)
+            {
+                overrideScrollX = meta.OverrideScrollX;
+            }
+
+            if (meta.OverrideScrollY != null)
+            {
+                overrideScrollY = meta.OverrideScrollY;
+            }
+
+            if(meta.OverrideScale != null)
+            {
+                overrideScale = meta.OverrideScale;
+            }
+        }
+    }
+
+    public Vc2? originalPosition = null;
+    public override void Update(Scene scene)
+    {
+        if(originalPosition != null)
+        {
+            Position = (Vc2)originalPosition;
+        }
+        
+        base.Update(scene);
+
+        // override speed and position first
+        if (overridePositionX.HasValidContent())
+        {
+            Position.X = overridePositionX.GetSlider();
+        }
+        if (overridePositionY.HasValidContent())
+        {
+            Position.Y = overridePositionY.GetSlider();
+        }
+        if (overrideSpeedX.HasValidContent())
+        {
+            Speed.X = overrideSpeedX.GetSlider();
+        }
+        if (overrideSpeedY.HasValidContent())
+        {
+            Speed.Y = overrideSpeedY.GetSlider();
+        }
+
+        if (overrideScrollX.HasValidContent())
+        {
+            Scroll.X = overrideScrollX.GetSlider();
+        }
+        if (overrideScrollY.HasValidContent())
+        {
+            Scroll.Y = overrideScrollY.GetSlider();
+        }
+
+        // bugfix: setting new position
+        originalPosition = Position;
+
+        if (deltaPosX.HasValidContent())
+        {
+            Position.X += deltaPosX.GetSlider();
+        }
+        if (deltaPosY.HasValidContent())
+        {
+            Position.Y += deltaPosY.GetSlider();
+        }
+
+        if (alphaExpression != null)
+        {
+            Alpha = alphaExpression.ParseMathExpression();
+        }
+        
+        if (!IsVisible(scene as Level))
+        {
+            return;
+        }
+
+        float? scale = null;
+
+        if(overrideScale.HasValidContent())
+        {
+            if(float.TryParse(overrideScale, out float f))
+            {
+                scale = f;
+            }
+            else
+            {
+                scale = overrideScale.GetSlider();
             }
         }
     }
