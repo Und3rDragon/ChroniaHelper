@@ -92,10 +92,12 @@ public class Displayers : HDRenderEntity
                 Log.Info("==== Your mouse is around these entities ====");
             }
             Md.Settings.entityInfoDisplayer.renderTarget.Clear();
-            GeneralMouseEntity.Instance?.StartDetecting();
+
+            Vc2 mouse = InputUtils.MouseLevelPosition;
+            
             foreach (var entity in MaP.level.Entities)
             {
-                if (entity.CollideCheck(GeneralMouseEntity.Instance))
+                if (entity.CollidePoint(mouse))
                 {
                     Md.Settings.entityInfoDisplayer.renderTarget.Add($"{entity.GetType()}");
 
@@ -105,7 +107,6 @@ public class Displayers : HDRenderEntity
                     }
                 }
             }
-            GeneralMouseEntity.Instance?.EndDetecting();
         }
     }
 
