@@ -52,9 +52,9 @@ public class DustBunnyEdges : Entity
         Engine.Graphics.GraphicsDevice.Textures[1] = this.dustNoiseFrom.Texture_Safe;
         Engine.Graphics.GraphicsDevice.Textures[2] = this.dustNoiseTo.Texture_Safe;
         DustBunnyEdges.FxDust.Parameters["noiseEase"].SetValue(this.noiseEase);
-        DustBunnyEdges.FxDust.Parameters["noiseFromPos"].SetValue(this.noiseFromPos + new Vector2(vector.X / 320F, vector.Y / 180F));
-        DustBunnyEdges.FxDust.Parameters["noiseToPos"].SetValue(this.noiseToPos + new Vector2(vector.X / 320F, vector.Y / 180F));
-        DustBunnyEdges.FxDust.Parameters["pixel"].SetValue(new Vector2(0.003125F, 1F / 180F));
+        DustBunnyEdges.FxDust.Parameters["noiseFromPos"].SetValue(this.noiseFromPos + new Vector2(vector.X / Miscs.Screen.Width, vector.Y / Miscs.Screen.Height));
+        DustBunnyEdges.FxDust.Parameters["noiseToPos"].SetValue(this.noiseToPos + new Vector2(vector.X / Miscs.Screen.Width, vector.Y / Miscs.Screen.Height));
+        DustBunnyEdges.FxDust.Parameters["pixel"].SetValue(new Vector2(0.003125F, 1F / Miscs.Screen.Height));
         foreach (Color color in Md.Session.DustBunnyEdgeColor.Keys)
         {
             Engine.Graphics.GraphicsDevice.SetRenderTarget(GameplayBuffers.TempA);
@@ -95,7 +95,7 @@ public class DustBunnyEdges : Entity
 
     private Vector2 FlooredCamera()
     {
-        Vector2 position = (base.Scene as Level).Camera.Position;
+        Vector2 position = MaP.cameraPos;
         position.X = (int)Math.Floor(position.X);
         position.Y = (int)Math.Floor(position.Y);
         return position;

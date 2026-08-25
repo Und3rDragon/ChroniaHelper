@@ -463,7 +463,7 @@ public class PatientBooster : Booster
             ParticleSystem particlesBG = MapProcessor.level.ParticlesBG;
             for (int i = 0; i < 360; i += 30)
             {
-                particlesBG.Emit(booster.customAppearParticleType, 1, booster.Center, Vector2.One * 2f, (float)i * (MathF.PI / 180f));
+                particlesBG.Emit(booster.customAppearParticleType, 1, booster.Center, Vector2.One * 2f, (float)i * (MathF.PI / Miscs.Screen.Height));
             }
         }
         else

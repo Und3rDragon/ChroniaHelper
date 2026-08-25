@@ -38,8 +38,6 @@ public class WaterSurface : Backdrop
     public Particle[] particles, backParticles;
     public int count, backCount;
 
-    public float extX, extY;
-
     public WaterSurface(BinaryPacker.Element child)
         : this(new Vector2(child.AttrFloat("scrollXFar"), child.AttrFloat("scrollYFar")),
               new Vector2(child.AttrFloat("scrollXNear"), child.AttrFloat("scrollYNear")),
@@ -178,10 +176,6 @@ public class WaterSurface : Backdrop
                 extX, extY
                 );
         }
-
-        // extended render options
-        this.extX = extX;
-        this.extY = extY;
     }
 
     private float baseRenderY1, baseRenderY2, renderY1, renderY2;
@@ -206,16 +200,16 @@ public class WaterSurface : Backdrop
     public override void Render(Scene scene)
     {
         Draw.Rect(0f, Calc.Min(renderY1, renderY2),
-                320f + extX, (renderY1 - renderY2).GetAbs(),
+                Miscs.Screen.Width, (renderY1 - renderY2).GetAbs(),
                 renderY1 < renderY2 ? surfaceColor * surfaceAlpha : surfaceColorBack * surfaceBackAlpha);
         
         if (farLine)
         {
-            Draw.Line(0f, renderY1, 320f + extX, renderY1, farLineColor * farLineAlpha);
+            Draw.Line(0f, renderY1, Miscs.Screen.Width, renderY1, farLineColor * farLineAlpha);
         }
         if (closeLine)
         {
-            Draw.Line(0f, renderY2, 320f + extX, renderY2, nearLineColor * nearLineAlpha);
+            Draw.Line(0f, renderY2, Miscs.Screen.Width, renderY2, nearLineColor * nearLineAlpha);
         }
         Camera camera = (scene as Level).Camera;
         
@@ -225,8 +219,8 @@ public class WaterSurface : Backdrop
             float posX = particles[i].Position.X - camera.X * FadeUtils.LerpValue(particles[i].Position.Y, baseRenderY1, baseRenderY2, scroll1.X, scroll2.X);
             float posY = particles[i].Position.Y - camera.Y * FadeUtils.LerpValue(particles[i].Position.Y, baseRenderY1, baseRenderY2, scroll1.Y, scroll2.Y);
             float alpha = FadeUtils.LerpValue(particles[i].Position.Y, baseRenderY1, baseRenderY2, alpha1, alpha2);
-            //Vector2 position = new Vector2(NumberUtils.Mod(posX, 320f + extX), NumberUtils.Mod(posY, 180f + extY));
-            Vector2 position = new Vector2(NumberUtils.Mod(posX, 320f + extX), posY);
+            //Vector2 position = new Vector2(NumberUtils.Mod(posX, Miscs.Screen.Width + extX), NumberUtils.Mod(posY, Miscs.Screen.Height + extY));
+            Vector2 position = new Vector2(NumberUtils.Mod(posX, Miscs.Screen.Width), posY);
             Draw.Pixel.DrawCentered(position,
                 particles[i].color * alpha,
                 particles[i].Scale,
@@ -240,7 +234,7 @@ public class WaterSurface : Backdrop
             float posX = backParticles[i].Position.X - camera.X * FadeUtils.LerpValue(backParticles[i].Position.Y, baseRenderY1, baseRenderY2, scroll1.X, scroll2.X);
             float posY = backParticles[i].Position.Y - camera.Y * FadeUtils.LerpValue(backParticles[i].Position.Y, baseRenderY1, baseRenderY2, scroll1.Y, scroll2.Y);
             float alpha = FadeUtils.LerpValue(backParticles[i].Position.Y, baseRenderY1, baseRenderY2, backAlphaFar, backAlphaNear);
-            Vector2 position = new Vector2(NumberUtils.Mod(posX, 320f + extX), posY);
+            Vector2 position = new Vector2(NumberUtils.Mod(posX, Miscs.Screen.Width), posY);
             Draw.Pixel.DrawCentered(position,
                 backParticles[i].color * alpha,
                 backParticles[i].Scale,

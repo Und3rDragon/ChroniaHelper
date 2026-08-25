@@ -84,7 +84,7 @@ public class CustomResortLantern : Entity
             endfade = Math.Abs(data.Int("lightEndFade", 64));
         wiggler = Wiggler.Create(dur, freq, (float v) =>
         {
-            lantern.Rotation = v * (float)mult * (MathF.PI / 180f) * maxWiggle;
+            lantern.Rotation = v * (float)mult * (MathF.PI / Miscs.Screen.Height) * maxWiggle;
         });
         wiggler.StartZero = true;
         Add(wiggler);

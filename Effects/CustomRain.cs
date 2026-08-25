@@ -9,7 +9,6 @@ using Monocle;
 using static Celeste.ClutterBlock;
 using ChroniaHelper.Utils;
 using Celeste.Mod.Backdrops;
-using System.Globalization;
 
 /*
     Migrated from VivHelper Repository
@@ -47,8 +46,6 @@ namespace ChroniaHelper.Effects {
         private float visibleFade = 1f;
 
         private float linearFade = 1f;
-
-        public float extX, extY;
 
         public float windStrength = 0f;
 #pragma warning disable CS0612
@@ -95,9 +92,6 @@ namespace ChroniaHelper.Effects {
                 particles[i].Init(_angle + Rd.Random.Range(-_angleDiff, _angleDiff), speedMult, Rd.Random.Choose<Color>(_colors), extX, extY);
             }
             this.alpha = alpha;
-
-            this.extX = extX;
-            this.extY = extY;
 
             if (!fadeX.IsNullOrEmpty())
             {
@@ -148,15 +142,15 @@ namespace ChroniaHelper.Effects {
             if (alpha > 0f && visibleFade > 0f && linearFade > 0f) {
                 Camera camera = (scene as Level).Camera;
                 for (int i = 0; i < particles.Length; i++) {
-                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, 180f + extY));
+                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, Miscs.Screen.Width), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, Miscs.Screen.Height));
 
                     // Process Rotation
                     float wind = Calc.Angle((scene as Level).Wind);
-                    while(wind - particles[i].Rotation > 180f * Calc.DegToRad)
+                    while(wind - particles[i].Rotation > Miscs.Screen.Height * Calc.DegToRad)
                     {
                         wind -= 360f * Calc.DegToRad;
                     }
-                    while (particles[i].Rotation - wind > 180f * Calc.DegToRad)
+                    while (particles[i].Rotation - wind > Miscs.Screen.Height * Calc.DegToRad)
                     {
                         wind += 360f * Calc.DegToRad;
                     }

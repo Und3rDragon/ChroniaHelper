@@ -184,13 +184,13 @@ namespace ChroniaHelper.Entities {
                 if (level.ShakeVector.X < 0f && level.Camera.X <= (float) level.Bounds.Left && base.X <= (float) level.Bounds.Left) {
                     tiles.RenderAt(Position + new Vector2(-3f, 0f));
                 }
-                if (level.ShakeVector.X > 0f && level.Camera.X + 320f >= (float) level.Bounds.Right && base.X + base.Width >= (float) level.Bounds.Right) {
+                if (level.ShakeVector.X > 0f && level.Camera.X + Miscs.Screen.Width >= (float) level.Bounds.Right && base.X + base.Width >= (float) level.Bounds.Right) {
                     tiles.RenderAt(Position + new Vector2(3f, 0f));
                 }
                 if (level.ShakeVector.Y < 0f && level.Camera.Y <= (float) level.Bounds.Top && base.Y <= (float) level.Bounds.Top) {
                     tiles.RenderAt(Position + new Vector2(0f, -3f));
                 }
-                if (level.ShakeVector.Y > 0f && level.Camera.Y + 180f >= (float) level.Bounds.Bottom && base.Y + base.Height >= (float) level.Bounds.Bottom) {
+                if (level.ShakeVector.Y > 0f && level.Camera.Y + Miscs.Screen.Height >= (float) level.Bounds.Bottom && base.Y + base.Height >= (float) level.Bounds.Bottom) {
                     tiles.RenderAt(Position + new Vector2(0f, 3f));
                 }
             }

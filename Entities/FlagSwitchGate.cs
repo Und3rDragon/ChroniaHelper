@@ -5,7 +5,7 @@ using Monocle;
 using MonoMod.Utils;
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities {
     /// <summary>
@@ -161,14 +161,8 @@ namespace ChroniaHelper.Entities {
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool InView() {
-            Camera camera = (Scene as Level).Camera;
-            return Position.X + Width > camera.X - 16f && Position.Y + Height > camera.Y - 16f && Position.X < camera.X + 320f && Position.Y < camera.Y + 180f;
-        }
-
         public override void Render() {
-            if (!InView()) return;
+            if (!Position.InView()) return;
 
             int widthInTiles = (int) Collider.Width / 8 - 1;
             int heightInTiles = (int) Collider.Height / 8 - 1;

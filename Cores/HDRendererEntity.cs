@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Celeste.Mod.UI;
+using ChroniaHelper.Entities;
+using ChroniaHelper.Settings;
+using ChroniaHelper.Utils;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Celeste.Mod.UI;
-using ChroniaHelper.Entities;
-using ChroniaHelper.Settings;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
+using static ChroniaHelper.Utils.Miscs;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Cores;
@@ -108,18 +110,29 @@ public class HDRenderEntity : BaseEntity
         }
     }
     
-    public Vc2 ParseLevelPositionToHDPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)
+    public Vc2 ParseLevelPositionToHDPosition(Vc2 inLevelPosition, Vc2 parallax, Vc2 staticScreen)
     {
-        Vc2 normal = position - (MaP.cameraPos - MaP.levelPos) * parallax;
+        Vc2 globalPosition = inLevelPosition + MaP.levelPos;
+        Vc2 cameraPosition = MaP.cameraPos;
+        Vc2 cameraCenter = cameraPosition + Miscs.Screen.Size * 0.5f;
+        Vc2 screenPosition = parallax == Vc2.One ?
+            (globalPosition - cameraPosition) * Cons.HDScale * (Cons.VanillaCanvas / Miscs.Screen.Size) :
+            Cons.HDCanvas * ((parallax == Vc2.Zero ? staticScreen / Cons.VanillaCanvas : 0.5f * Vc2.One) + (globalPosition - cameraCenter) * parallax / Miscs.Screen.Size);
+        // screenPosition is calculated based on 1080p canvas
 
-        return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * Cons.HDScale;
+        return screenPosition;
     }
 
     public Vc2 ParseGlobalPositionToHDPosition(Vc2 globalPosition, Vc2 parallax, Vc2 staticScreen)
     {
-        Vc2 normal = (globalPosition - MaP.levelPos) - (MaP.cameraPos - MaP.levelPos) * parallax;
-        
-        return new Vc2(parallax.X == 0 ? StaticScreen.X : normal.X, parallax.Y == 0 ? StaticScreen.Y : normal.Y) * Cons.HDScale;
+        Vc2 cameraPosition = MaP.cameraPos;
+        Vc2 cameraCenter = cameraPosition + Miscs.Screen.Size * 0.5f;
+        Vc2 screenPosition = parallax == Vc2.One ?
+            (globalPosition - cameraPosition) * Cons.HDScale * (Cons.VanillaCanvas / Miscs.Screen.Size) :
+            Cons.HDCanvas * ((parallax == Vc2.Zero ? staticScreen / Cons.VanillaCanvas : 0.5f * Vc2.One) + (globalPosition - cameraCenter) * parallax / Miscs.Screen.Size);
+        // screenPosition is calculated based on 1080p canvas
+
+        return screenPosition;
     }
 
     public override void Removed(Scene scene)

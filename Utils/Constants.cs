@@ -52,4 +52,8 @@ public static class Constants
     public const string CommandStopclockID = "ChroniaHelper_Debug_CommandStopclock";
 
     public const float HDScale = 6f;
+
+    public static Vc2 VanillaCanvas = new Vc2(320f, 180f);
+
+    public static Vc2 HDCanvas = new Vc2(1920f, 1080f);
 }
