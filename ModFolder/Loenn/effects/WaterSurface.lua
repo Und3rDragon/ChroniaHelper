@@ -5,7 +5,6 @@ return {
         scrollXFar=1.0, scrollYFar=1.0, scrollXNear=1.2, scrollYNear=1.2, particleColors="ffffff", particleCount = 50, backParticleColors="ffffff", backParticleCount = 50,
         alphaFar = 0.5, alphaNear = 1.0, backAlphaFar = 0.5, backAlphaNear = 1.0,
         waterSpeedFar=10, waterSpeedNear=20, particleScaleFar=2.0, particleScaleNear=6.0,
-        extendedBorderX = 0, extendedBorderY = 0,
         farLineColor = "ffffff", farLineAlpha = 1,
         nearLineColor = "ffffff", nearLineAlpha = 1,
         hasFarLine = false, hasCloseLine = true,

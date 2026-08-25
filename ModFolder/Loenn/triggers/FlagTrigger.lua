@@ -15,6 +15,7 @@ return{
 			resetOnLeave = false,
 			ignoreUnchanged = false,
 			onStay = false,
+			perRoom = false,
 		}
 	},
 	fieldInformation = {

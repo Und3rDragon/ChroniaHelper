@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Triggers.PolygonSeries;
 using ChroniaHelper.Utils;
 
@@ -373,7 +374,7 @@ public class SeamlessSpinner : Entity
         }
 
 
-        if (InView())
+        if (Position.InView())
         {
             CreateSprites();
         }
@@ -447,7 +448,7 @@ public class SeamlessSpinner : Entity
         {
             Collidable = false;
 
-            if (InView())
+            if (Position.InView())
             {
                 Visible = true;
                 if (!expanded)
@@ -471,7 +472,7 @@ public class SeamlessSpinner : Entity
                 UpdateRainbowHue();
             }
 
-            if (Scene.OnInterval(0.25f, offset) && !InView())
+            if (Scene.OnInterval(0.25f, offset) && !Position.InView())
             {
                 Visible = false;
             }
@@ -504,17 +505,6 @@ public class SeamlessSpinner : Entity
         {
             bg.Color = spinner.GetHue(Position + bg.Position);
         }
-    }
-
-    private bool InView()
-    {
-        Camera camera = level.Camera;
-        if (X > camera.X - 16f && Y > camera.Y - 16f && X < camera.X + 320f + 16f)
-        {
-            return Y < camera.Y + 180f + 16f;
-        }
-
-        return false;
     }
 
     public Sprite sprite;
@@ -693,7 +683,7 @@ public class SeamlessSpinner : Entity
 
         if (!dynamic)
         {
-            int totalFrames = bgsprite.GetFrames("").Length;
+            int totalFrames = bgsprite.CurrentAnimationTotalFrames;
             int randomChoice = Rd.Random.Range(0, totalFrames);
             bgsprite.Rate = 0f;
             bgsprite.SetAnimationFrame(randomChoice);

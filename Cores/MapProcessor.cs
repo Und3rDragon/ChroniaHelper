@@ -1,5 +1,6 @@
 ﻿using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Entities;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using Microsoft.Xna.Framework.Input;
@@ -345,28 +346,33 @@ public static class MapProcessor
     public static GamePadState gamePadState => GamePad.GetState(PlayerIndex.One);
 
     public static Vc2 cameraPos => level?.Camera?.Position ?? Vc2.Zero;
-    public static Vc2 cameraCenter => cameraPos + new Vc2(160f, 90f);
+    public static Vc2 cameraCenter => cameraPos + Miscs.Screen.Size * 0.5f;
     public static Vc2 levelPos => new Vc2(level?.Bounds.Left ?? 0, level?.Bounds.Top ?? 0);
+    /// <summary>
+    /// Turns world position into a parallaxed position based on camera center
+    /// Extended Camera concerned
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="parallax"></param>
+    /// <returns></returns>
     public static Vc2 InParallax(this Vc2 position, Vc2 parallax)
     {
         return cameraCenter + (position - cameraCenter) * parallax;
     }
-    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax)
-    {
-        return position.InParallax(parallax) + levelPos;
-    }
+    /// <summary>
+    /// Turns world position into a parallaxed position based on camera center
+    /// But will set the position to a custom coordinates if parallax is zero
+    /// Extended Camera concerned
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="parallax"></param>
+    /// <param name="staticScreen"></param>
+    /// <returns></returns>
     public static Vc2 InParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
     {
         Vc2 inparallax = position.InParallax(parallax);
         float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inparallax.X;
         float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inparallax.Y;
-        return new Vc2(X, Y);
-    }
-    public static Vc2 InGlobalParallax(this Vc2 position, Vc2 parallax, Vc2 staticScreen)
-    {
-        Vc2 inglobalparallax = position.InGlobalParallax(parallax);
-        float X = parallax.X == 0 ? cameraPos.X + staticScreen.X : inglobalparallax.X;
-        float Y = parallax.Y == 0 ? cameraPos.Y + staticScreen.Y : inglobalparallax.Y;
         return new Vc2(X, Y);
     }
     public static Vc2 CameraPos(this Level level) => level?.Camera.Position ?? Vc2.Zero;

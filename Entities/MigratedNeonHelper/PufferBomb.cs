@@ -420,7 +420,7 @@ namespace ChroniaHelper.Entities.MigratedNeonHelper
 			//	{
 			//		float num2 = (float)Math.Sin(base.Scene.TimeActive * 0.5f) * 0.02f;
 			//		float num3 = Calc.Map((float)i / 28f + num2, 0f, 1f, -(float)Math.PI / 30f, 3.24631262f);
-			//		num3 += bounceWiggler.Value * 20f * ((float)Math.PI / 180f);
+			//		num3 += bounceWiggler.Value * 20f * ((float)Math.PI / Miscs.Screen.Height);
 			//		Vector2 vector2 = Calc.AngleToVector(num3, 1f);
 			//		Vector2 vector3 = Position + vector2 * 32f;
 			//		float t = Calc.ClampedMap(Calc.AbsAngleDiff(num3, radiansB), (float)Math.PI / 2f, 0.17453292f);

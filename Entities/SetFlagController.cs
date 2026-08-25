@@ -31,7 +31,7 @@ public class SetFlagController : GeneralSetupController
         }
         else
         {
-            flags.SetGeneralFlags("!", "*", "?");
+            flags.SetGeneralFlags("!", "*", "?", "#");
         }
     }
 }

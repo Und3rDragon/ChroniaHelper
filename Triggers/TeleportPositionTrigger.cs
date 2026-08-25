@@ -107,8 +107,8 @@ public class TeleportPositionTrigger : BaseTrigger
             }
             PlayerFacing.Assignment(ref player.Facing, this.playerFacing);
             Vector2 cameraPosition = new Vector2();
-            cameraPosition.X = Calc.Clamp(player.X - EngineUtils.ScreenHalfSize.X, base.level.Bounds.Left, (float) (base.level.Bounds.Right - EngineUtils.ScreenSize.X));
-            cameraPosition.Y = Calc.Clamp(player.Y - EngineUtils.ScreenHalfSize.Y, base.level.Bounds.Top, (float) (base.level.Bounds.Bottom - EngineUtils.ScreenSize.Y));
+            cameraPosition.X = Calc.Clamp(player.X - 0.5f * Cons.VanillaCanvas.X, base.level.Bounds.Left, (float) (base.level.Bounds.Right - Cons.VanillaCanvas.X));
+            cameraPosition.Y = Calc.Clamp(player.Y - 0.5f * Cons.VanillaCanvas.Y, base.level.Bounds.Top, (float) (base.level.Bounds.Bottom - Cons.VanillaCanvas.Y));
             base.level.Camera.Position = cameraPosition;
             base.session.RespawnPoint = base.level.GetSpawnPoint(player.Position);
             foreach (Follower follower in leader.Followers.Where((Follower follower) => (follower.Entity != null)))

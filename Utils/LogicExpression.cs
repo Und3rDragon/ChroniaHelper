@@ -12,6 +12,11 @@ namespace ChroniaHelper.Utils.LogicExpression;
 public static class LogicExpression
 {
     /// <summary>
+    /// 缓存已解析的表达式词法序列，避免重复扫描字符串。
+    /// </summary>
+    private static readonly Dictionary<string, List<Token>> _compileCache = new();
+
+    /// <summary>
     /// 解析并计算给定的逻辑表达式。
     /// </summary>
     /// <param name="expression">要计算的逻辑表达式字符串。</param>
@@ -24,8 +29,11 @@ public static class LogicExpression
             return fallback;
         }
 
-        var lexer = new Lexer(expression);
-        var tokens = lexer.Tokenize();
+        if (!_compileCache.TryGetValue(expression, out var tokens))
+        {
+            tokens = new Lexer(expression).Tokenize();
+            _compileCache[expression] = tokens;
+        }
         var parser = new Parser(tokens, getVariableValue);
         return parser.Parse();
     }

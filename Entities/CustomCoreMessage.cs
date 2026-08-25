@@ -287,20 +287,24 @@ public class ColoredCustomCoreMessage : Entity
             text = valid ? Md.Session.Passkeyboard_Passwords[tag] : string.Empty;
         }
 
-        Vector2 position = ((Level)base.Scene).Camera.Position;
-        Vector2 value = position + new Vector2(screenX, screenY);
-        Vector2 position2 = lockPosition ? (Position - position) * 6f : (Position - position + (Position - value) * (parallax - 1f)) * 6f; // parallax
+        Vc2 cameraPosition = ((Level)base.Scene).Camera.Position;
+        Vc2 cameraCenter = cameraPosition + Miscs.Screen.Size * 0.5f;
+        Vc2 screenPosition = lockPosition ? 
+            (Position - cameraPosition) * Cons.HDScale * (Cons.VanillaCanvas / Miscs.Screen.Size) :
+            Cons.HDCanvas * ((parallax == 0 ? new Vc2(screenX, screenY) / Cons.VanillaCanvas : 0.5f * Vc2.One) + (Position - cameraCenter) * parallax / Miscs.Screen.Size);
+        // screenPosition is calculated based on 1080p canvas
+
         if (SaveData.Instance != null && SaveData.Instance.Assists.MirrorMode)
         {
-            position2.X = 1920f - position2.X;
+            screenPosition.X = 1920f - screenPosition.X;
         }
         if (outline)
         {
-            ActiveFont.DrawOutline(text, position2, AlignUtils.AlignToJustify[align], scale, color.color * alpha, 2f, outlineColor.color * alpha);
+            ActiveFont.DrawOutline(text, screenPosition, AlignUtils.AlignToJustify[align], scale, color.color * alpha, 2f, outlineColor.color * alpha);
         }
         else
         {
-            ActiveFont.Draw(text, position2, AlignUtils.AlignToJustify[align], scale, color.color * alpha);
+            ActiveFont.Draw(text, screenPosition, AlignUtils.AlignToJustify[align], scale, color.color * alpha);
         }
     }
 

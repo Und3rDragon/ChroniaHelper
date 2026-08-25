@@ -54,9 +54,6 @@ namespace ChroniaHelper.Effects {
 
         public Vector2 scroll;
 
-        public float extX, extY;
-#pragma warning disable CS0612
-
         public WindRainFG(BinaryPacker.Element child)
             : this(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), 
                   child.Attr("Colors", "ffffff"), child.AttrFloat("windStrength"), child.AttrInt("Amount", 240), 
@@ -98,9 +95,6 @@ namespace ChroniaHelper.Effects {
             level = null;
 
             this.Alpha = alpha;
-
-            this.extX = extX;
-            this.extY = extY;
 
             if (!fadeX.IsNullOrEmpty())
             {
@@ -161,7 +155,7 @@ namespace ChroniaHelper.Effects {
                     var u = Calc.Angle(Calc.AngleToVector(particles[i].Rotation, (t + 1) * 400) + (scene as Level).Wind * windStrength);
                     
                     Color color = Colors[i % Colors.Length];
-                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, 320f + extX), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, 180f + extY));
+                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, Miscs.Screen.Width), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, Miscs.Screen.Height));
                     Draw.Pixel.DrawCentered(position,
                                             color * colFade,
                                             particles[i].Scale,

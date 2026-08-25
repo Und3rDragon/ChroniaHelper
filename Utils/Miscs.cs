@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Globalization;
-using System.Reflection;
-using Celeste.Mod.Helpers;
+﻿using Celeste.Mod.Helpers;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Imports;
 using ChroniaHelper.References;
+using System.Collections;
+using System.Globalization;
+using System.Reflection;
 
 namespace ChroniaHelper.Utils;
 
@@ -216,29 +217,56 @@ public static class Miscs
         return new List<MTexture>();
     }
 
-    public static bool InView(this Vc2 pos, float extension = 16f, Vc2? cameraPos = null)
+    public static class Screen
     {
-        extension = extension.GetAbs();
-        
-        Vc2 camera = cameraPos == null ? MaP.cameraPos : (Vc2)cameraPos;
-        if (pos.X > camera.X - extension && pos.Y > camera.Y - extension && pos.X < camera.X + 320f + extension)
+        private static Vc2 _getScreenSize()
         {
-            return pos.Y < camera.Y + 180f + extension;
+            Vc2 cameraSize = Cons.VanillaCanvas;
+
+            if (APICameraDynamics.extendedCameraHooksEnabled)
+            {
+                cameraSize = APICameraDynamics.getCameraDimensions(MaP.level);
+            }
+
+            if (Md.MaddieLoaded)
+            {
+                cameraSize.X = RefMaxHelpingHand.CameraWidth;
+                cameraSize.Y = RefMaxHelpingHand.CameraHeight;
+            }
+
+            return cameraSize;
         }
 
-        return false;
+        public static Vc2 Size => _getScreenSize();
+        public static float Width => _getScreenSize().X;
+        public static float Height => _getScreenSize().Y;
     }
 
-    public static bool InView(this Vc2 pos, Vc2 size, float extension = 16f)
+    public static bool InView(this Vc2 pos, Vc2? size = null, 
+        float extension = 16f, Vc2? overrideCameraPos = null)
     {
         Camera camera = MaP.level.Camera;
-        Vc2 cameraSize = new Vc2(320f, 180f);
+        Vc2 cameraPosition = overrideCameraPos == null ? 
+            new Vc2(camera.X, camera.Y) : (Vc2)overrideCameraPos;
+        Vc2 cameraSize = Screen.Size;
+        Vc2 pos2 = size == null ? pos : pos + ((Vc2)size).Abs();
+        extension = extension.GetAbs();
+
+        if (APICameraDynamics.extendedCameraHooksEnabled)
+        {
+            cameraSize = APICameraDynamics.getCameraDimensions(MaP.level);
+        }
+
         if (Md.MaddieLoaded)
         {
             cameraSize.X = RefMaxHelpingHand.CameraWidth;
             cameraSize.Y = RefMaxHelpingHand.CameraHeight;
         }
-        return pos.X + size.X > camera.X - 16f && pos.Y + size.Y > camera.Y - 16f && pos.X < camera.X + cameraSize.X && pos.Y < camera.Y + cameraSize.Y;
+
+        return pos2.X > cameraPosition.X - extension &&
+            pos2.Y > cameraPosition.Y - extension &&
+            pos.X < cameraPosition.X + cameraSize.X + extension &&
+            pos.Y < cameraPosition.Y + cameraSize.Y + extension;
     }
 
     [Credits("VivHelper")]

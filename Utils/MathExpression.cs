@@ -9,18 +9,20 @@ namespace ChroniaHelper.Utils.MathExpression;
 public static class MathExpression 
 {
     /// <summary>
-    /// 计算数学表达式的值，支持变量、函数（格式：func[arg]）、运算符等。
-    /// (保持原样，输出为 float)
+    /// 缓存已解析的表达式词法序列，避免重复扫描字符串。
+    /// </summary>
+    private static readonly Dictionary<string, List<Token>> _compileCache = new();
+
+    /// <summary>
+    /// 计算数学表达式的值（返回 float），支持变量、函数、运算符等。
     /// </summary>
     public static float ParseMathExpression(this string exp) 
     {
-        // 调用 Raw 版本获取高精度结果，最后转为 float
         return (float)ParseMathExpressionRaw(exp);
     }
 
     public static float ParseMathExpression(this string exp, Func<string, float> getVariable = null, Func<string, float> getFlag = null) 
     {
-        // 包装委托以适配 double 接口，最后转回 float
         Func<string, double> getVarDouble = null;
         Func<string, double> getFlagDouble = null;
         
@@ -33,30 +35,39 @@ public static class MathExpression
     }
 
     /// <summary>
-    /// 新增的 Raw 版本，输出为 double，提供最高精度。
+    /// 计算数学表达式的值（返回 double，更高精度）。
     /// </summary>
     public static double ParseMathExpressionRaw(this string exp) 
     {
-        if (!exp.HasValidContent()) 
+        if (!exp.HasValidContent())
         {
-            exp = "0";
+            return 0;
         }
-        var lexer = new Lexer(exp);
-        var tokens = lexer.Tokenize();
-        var parser = new Parser(tokens);
-        return parser.Parse();
+        
+        return new Parser(Compile(exp)).Parse(null, null);
     }
 
     public static double ParseMathExpressionRaw(this string exp, Func<string, double> getVariable = null, Func<string, double> getFlag = null) 
     {
-        if (!exp.HasValidContent()) 
+        if (!exp.HasValidContent())
         {
-            exp = "0";
+            return 0;
         }
-        var lexer = new Lexer(exp);
-        var tokens = lexer.Tokenize();
-        var parser = new Parser(tokens, getVariable, getFlag);
-        return parser.Parse();
+        return new Parser(Compile(exp)).Parse(getVariable, getFlag);
+    }
+
+    /// <summary>
+    /// 解析表达式并返回缓存后的词法序列。
+    /// </summary>
+    private static List<Token> Compile(string exp)
+    {
+        if (_compileCache.TryGetValue(exp, out var tokens))
+        {
+            return tokens;
+        }
+        tokens = new Lexer(exp).Tokenize();
+        _compileCache[exp] = tokens;
+        return tokens;
     }
 
     public static double GetVariable(this string variable) 
@@ -74,7 +85,7 @@ public static class MathExpression
             return (new DateTime(MaP.level?.Session.Time ?? 0) - new DateTime(0)).TotalMilliseconds / 1000; // double
         }
         
-        return MaP.level?.Session.GetSlider(variable) ?? 0.0; // 假设 GetSlider 有 double 重载或转为 double
+        return MaP.level?.Session.GetSlider(variable) ?? 0.0;
     }
 }
 
@@ -90,8 +101,8 @@ internal class Token
 {
     public TokenType Type;
     public string Value;
-    public double NumberValue; // 修改点 1: float -> double
-    public Token(TokenType type, string value = null, double num = 0) // 修改点: float -> double
+    public double NumberValue;
+    public Token(TokenType type, string value = null, double num = 0)
     {
         Type = type;
         Value = value;
@@ -208,7 +219,7 @@ internal class Lexer
             }
             else break;
         }
-        if (!double.TryParse(sb.ToString(), out double num)) // 修改点 2: float -> double
+        if (!double.TryParse(sb.ToString(), out double num))
             throw new FormatException("Invalid number format.");
         return new Token(TokenType.Number, null, num);
     }
@@ -264,9 +275,9 @@ internal class Parser
 {
     private readonly List<Token> _tokens;
     private int _current = 0;
-    // 修改点 3: 委托签名改为 double
-    private readonly Func<string, double> _getVariableFunc = MathExpression.GetVariable;
-    private readonly Func<string, double> _getFlagFunc = (s) => s.GetFlag() ? 1.0 : 0.0; // 假设 ToDouble 存在或转换
+
+    private Func<string, double> _getVariableFunc = MathExpression.GetVariable;
+    private Func<string, double> _getFlagFunc = (s) => s.GetFlag() ? 1.0 : 0.0;
 
     public Parser(List<Token> tokens) 
     {
@@ -289,12 +300,34 @@ internal class Parser
     private Token Peek() => _tokens[_current];
     private Token Consume() => _tokens[_current++];
 
-    // 修改点 4: 返回值改为 double
+
     public double Parse() 
     {
         double result = ParseExpression();
         if (Peek().Type != TokenType.End) throw new InvalidOperationException($"Unexpected token after expression: {Peek().Type}");
         return result;
+    }
+
+    /// <summary>
+    /// 求值解析结果，支持传入变量/flag 取值委托。
+    /// </summary>
+    public double Parse(Func<string, double> getVariable, Func<string, double> getFlag) 
+    {
+        var origVar = _getVariableFunc;
+        var origFlag = _getFlagFunc;
+        if (getVariable != null) _getVariableFunc = getVariable;
+        if (getFlag != null) _getFlagFunc = getFlag;
+        try 
+        {
+            double result = ParseExpression();
+            if (Peek().Type != TokenType.End) throw new InvalidOperationException($"Unexpected token after expression: {Peek().Type}");
+            return result;
+        }
+        finally 
+        {
+            _getVariableFunc = origVar;
+            _getFlagFunc = origFlag;
+        }
     }
 
     private double ParseExpression() => ParseComparison();
@@ -306,14 +339,14 @@ internal class Parser
         if (token is TokenType.LessThan or TokenType.GreaterThan or TokenType.LessEqual or TokenType.GreaterEqual or TokenType.EqualEqual) 
         {
             var op = Consume();
-            double right = ParseAddition(); // 修改点: double
+            double right = ParseAddition();
             bool result = op.Type switch 
             {
                 TokenType.LessThan => left < right,
                 TokenType.GreaterThan => left > right,
                 TokenType.LessEqual => left <= right,
                 TokenType.GreaterEqual => left >= right,
-                TokenType.EqualEqual => Math.Abs(left - right) < 1e-9, // 修改点: double 精度调整
+                TokenType.EqualEqual => Math.Abs(left - right) < 1e-9,
                 _ => false
             };
             return result ? 1d : 0d;
@@ -327,7 +360,7 @@ internal class Parser
         while (Peek().Type is TokenType.Plus or TokenType.Minus) 
         {
             var op = Consume();
-            double right = ParseMultiplication(); // 修改点: double
+            double right = ParseMultiplication();
             left = op.Type == TokenType.Plus ? left + right : left - right;
         }
         return left;
@@ -339,7 +372,7 @@ internal class Parser
         while (Peek().Type is TokenType.Multiply or TokenType.Divide or TokenType.Modulo) 
         {
             var op = Consume();
-            double right = ParsePower(); // 修改点: double
+            double right = ParsePower();
             switch (op.Type) 
             {
                 case TokenType.Multiply: left *= right; break;
@@ -347,7 +380,7 @@ internal class Parser
                     if (right == 0) throw new DivideByZeroException("Division by zero.");
                     left /= right; 
                     break;
-                case TokenType.Modulo: left %= right; break; // 注意: C# 中 double 也支持 %
+                case TokenType.Modulo: left %= right; break;
             }
         }
         return left;
@@ -375,7 +408,7 @@ internal class Parser
             case TokenType.Function: return ParseFunctionCall();
             case TokenType.LeftParen: 
                 Consume(); 
-                double expr = ParseExpression(); // 修改点: double
+                double expr = ParseExpression();
                 if (Consume().Type != TokenType.RightParen) throw new InvalidOperationException("Expected ')'.");
                 return expr;
             case TokenType.Minus: Consume(); return -ParseFactor();
@@ -391,10 +424,10 @@ internal class Parser
         string funcName = funcToken.Value;
         if (Consume().Type != TokenType.LeftBracket) throw new InvalidOperationException("Expected '[' after function name.");
         
-        var args = new List<double>(); // 修改点 5: List<float> -> List<double>
+        var args = new List<double>();
         if (Peek().Type != TokenType.RightBracket) 
         {
-            args.Add(ParseExpression()); // 注意: ParseExpression 现在返回 double
+            args.Add(ParseExpression());
             while (Peek().Type == TokenType.Comma) 
             {
                 Consume();
@@ -403,10 +436,10 @@ internal class Parser
         }
         if (Consume().Type != TokenType.RightBracket) throw new InvalidOperationException("Expected ']' after function arguments.");
         
-        return EvaluateFunction(funcName, args); // 修改点: 参数和返回值均为 double
+        return EvaluateFunction(funcName, args);
     }
 
-    private double EvaluateFunction(string name, List<double> args) // 修改点: double
+    private double EvaluateFunction(string name, List<double> args)
     {
         try 
         {
@@ -431,11 +464,10 @@ internal class Parser
                 case "floor": ValidateArgCount(args, 1, "floor"); return Math.Floor(args[0]);
                 case "round": ValidateArgCount(args, 1, "round"); return Math.Round(args[0]);
                 
-                // 随机数：注意 Rd.RandomFloat 可能需要调整，这里假设它返回 double 或者进行转换
                 case "rand": 
                     ValidateArgCount(args, 2, "rand"); 
                     double a = args[0], b = args[1]; 
-                    // 假设 Rd.RandomFloat 有一个 double 重载，或者强制转换参数
+
                     return Rd.RandomDouble(Math.Min(a, b), Math.Max(a, b)); 
                 
                 // 可变参数函数
@@ -503,7 +535,7 @@ internal class Parser
         }
     }
 
-    private void ValidateArgCount(List<double> args, int expected, string funcName) // 修改点: double
+    private void ValidateArgCount(List<double> args, int expected, string funcName)
     {
         if (args.Count != expected) throw new ArgumentException($"{funcName}[] requires exactly {expected} argument(s).");
     }
