@@ -42,12 +42,6 @@ function picker.versatilePath(empty)
         --     ignoreNumbers = true,                      -- 是否移除尾部数字
         --     ignoreSuffix = false,                      -- 是否移除扩展名
         -- },
-        -- {
-        --     pattern = "^Graphics/Atlases/Overworld/",
-        --     trim = "Graphics/Atlases/Overworld/",
-        --     ignoreNumbers = false,
-        --     ignoreSuffix = true,
-        -- },
         {
             pattern = "^Graphics/Atlases/Gameplay/decals/",
             trim = "Graphics/Atlases/Gameplay/decals/",
@@ -73,20 +67,8 @@ function picker.versatilePath(empty)
             ignoreSuffix = true,
         },
         {
-            pattern = "^Graphics/Atlases/Gameplay/objects/",
-            trim = "Graphics/Atlases/Gameplay/objects/",
-            ignoreNumbers = false,
-            ignoreSuffix = true,
-        },
-        {
             pattern = "^Graphics/Atlases/Gameplay/danger/",
             trim = "Graphics/Atlases/Gameplay/danger/",
-            ignoreNumbers = false,
-            ignoreSuffix = true,
-        },
-        {
-            pattern = "^Graphics/Atlases/Gameplay/bgs/",
-            trim = "Graphics/Atlases/Gameplay/bgs/",
             ignoreNumbers = false,
             ignoreSuffix = true,
         },
