@@ -25,11 +25,11 @@ public class BloomFadeTrigger : BaseTrigger
 
     private PositionModes positionMode;
 
-    private BloomTrigger.OldBloom oldBloom;
-
     private float timer, t;
 
     private bool timedFade;
+
+    private MaP.LevelEnvironmentData oldData;
 
     public BloomFadeTrigger(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -50,10 +50,8 @@ public class BloomFadeTrigger : BaseTrigger
         {
             t = timer;
         }
-        this.oldBloom.bloomBase = base.level.Bloom.Base;
-        this.oldBloom.bloomBaseAdd = base.session.BloomBaseAdd;
-        this.oldBloom.bloomStrength = base.level.Bloom.Strength;
-        this.oldBloom.bloomColor = BloomTrigger.GetBloomColor();
+
+        oldData = MaP.FetchLevelEnvironment();
     }
 
     protected override IEnumerator OnEnterRoutine(Player player)
@@ -70,9 +68,8 @@ public class BloomFadeTrigger : BaseTrigger
 
                 if (_to)
                 {
-                    float bloomBase = Calc.ClampedMap(progress, 0f, 1f, _from ? from : oldBloom.bloomBase, to);
-                    base.level.Bloom.Base = bloomBase;
-                    base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
+                    float bloomBase = Calc.ClampedMap(progress, 0f, 1f, _from ? from : oldData.BloomBase, to);
+                    MaP.SetBloomBase(bloomBase);
                 }
 
                 bool _sfrom = float.TryParse(bloomStrengthFrom, out float sfrom);
@@ -80,7 +77,7 @@ public class BloomFadeTrigger : BaseTrigger
 
                 if (_sto)
                 {
-                    base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, _sfrom ? sfrom : oldBloom.bloomStrength, sto);
+                    MaP.SetBloomStrength(Calc.ClampedMap(progress, 0f, 1f, _sfrom ? sfrom : oldData.BloomStrength, sto));
                 }
 
                 Color cfrom = Calc.HexToColor(bloomColorFrom);
@@ -88,7 +85,7 @@ public class BloomFadeTrigger : BaseTrigger
 
                 if (bloomColorTo.HasValidContent())
                 {
-                    BloomTrigger.SetBloomColor(Color.Lerp(cfrom, cto, progress));
+                    MaP.SetBloomColor(Color.Lerp(cfrom, cto, progress));
                 }
 
                 yield return null;
@@ -107,9 +104,8 @@ public class BloomFadeTrigger : BaseTrigger
 
             if (_to)
             {
-                float bloomBase = Calc.ClampedMap(progress, 0f, 1f, _from ? from : oldBloom.bloomBase, to);
-                base.level.Bloom.Base = bloomBase;
-                base.session.BloomBaseAdd = bloomBase - AreaData.Get(base.level).BloomBase;
+                float bloomBase = Calc.ClampedMap(progress, 0f, 1f, _from ? from : oldData.BloomBase, to);
+                MaP.SetBloomBase(bloomBase);
             }
 
             bool _sfrom = float.TryParse(bloomStrengthFrom, out float sfrom);
@@ -117,7 +113,7 @@ public class BloomFadeTrigger : BaseTrigger
 
             if (_sto)
             {
-                base.level.Bloom.Strength = Calc.ClampedMap(progress, 0f, 1f, _sfrom ? sfrom : oldBloom.bloomStrength, sto);
+                MaP.SetBloomStrength(Calc.ClampedMap(progress, 0f, 1f, _sfrom ? sfrom : oldData.BloomStrength, sto));
             }
 
             Color cfrom = Calc.HexToColor(bloomColorFrom);
@@ -125,17 +121,16 @@ public class BloomFadeTrigger : BaseTrigger
 
             if (bloomColorTo.HasValidContent())
             {
-                BloomTrigger.SetBloomColor(Color.Lerp(cfrom, cto, progress));
+                MaP.SetBloomColor(Color.Lerp(cfrom, cto, progress));
             }
         }
     }
 
     protected override void LeaveReset(Player player)
     {
-        base.level.Bloom.Base = this.oldBloom.bloomBase;
-        base.session.BloomBaseAdd = this.oldBloom.bloomBaseAdd;
-        base.level.Bloom.Strength = this.oldBloom.bloomStrength;
-        BloomTrigger.SetBloomColor(this.oldBloom.bloomColor);
+        MaP.SetBloomBase(oldData.BloomBase);
+        MaP.SetBloomStrength(oldData.BloomStrength, clear: true);
+        MaP.SetBloomColor(oldData.BloomColor);
     }
 
 }

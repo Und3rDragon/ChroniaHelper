@@ -1,10 +1,13 @@
-﻿using ChroniaHelper.Cores.Graphical;
+﻿using Celeste.Mod.MaxHelpingHand.Module;
+using Celeste.Mod.MaxHelpingHand.Triggers;
+using ChroniaHelper.Cores.Graphical;
 using ChroniaHelper.Entities;
 using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
+using YoctoHelper.Hooks;
 
 namespace ChroniaHelper.Cores;
 
@@ -24,6 +27,8 @@ public static class MapProcessor
         On.Celeste.Level.Reload += LevelReload;
         On.Monocle.Scene.Update += GlobalUpdate;
         On.Celeste.Player.IntroRespawnEnd += AfterRespawn;
+        On.Celeste.LevelLoader.StartLevel += OnLevelStart;
+        On.Celeste.LevelLoader.LoadingThread_Safe += OverrideLoadingThread;
     }
 
     [UnloadHook]
@@ -40,6 +45,8 @@ public static class MapProcessor
         On.Celeste.Level.Reload -= LevelReload;
         On.Monocle.Scene.Update -= GlobalUpdate;
         On.Celeste.Player.IntroRespawnEnd -= AfterRespawn;
+        On.Celeste.LevelLoader.StartLevel -= OnLevelStart;
+        On.Celeste.LevelLoader.LoadingThread_Safe -= OverrideLoadingThread;
     }
 
     // Variables
@@ -107,6 +114,30 @@ public static class MapProcessor
     public static bool bgMode = false;
 
     // Hooks
+
+    public static void OverrideLoadingThread(On.Celeste.LevelLoader.orig_LoadingThread_Safe orig,
+        LevelLoader self)
+    {
+        orig(self);
+
+        if (Md.Session != null)
+        {
+            if (Md.Session.OverrideLightingColor != null)
+            {
+                self.Level.Lighting.BaseColor = ((CColor)Md.Session.OverrideLightingColor).Parsed();
+            }
+        }
+    }
+
+    private static void OnLevelStart(On.Celeste.LevelLoader.orig_StartLevel orig, LevelLoader self)
+    {
+        if (Md.Session.OverrideBloomStrength.HasValue)
+        {
+            self.Level.Bloom.Strength = Md.Session.OverrideBloomStrength.Value;
+        }
+
+        orig(self);
+    }
 
     public static void AfterRespawn(On.Celeste.Player.orig_IntroRespawnEnd orig, Player self)
     {
@@ -238,6 +269,12 @@ public static class MapProcessor
         // level grid and bg switch
         level.Session.SetFlag("bg_mode", bgMode);
         level.SolidTiles.Collidable = !bgMode;
+
+        // Apply level lighting
+        if (Md.Session.OverrideLightingColor != null)
+        {
+            level.Lighting.BaseColor = ((CColor)Md.Session.OverrideLightingColor).Parsed();
+        }
     }
     
     
@@ -463,5 +500,76 @@ public static class MapProcessor
                 entity.Add(component);
             }
         }
+    }
+
+    public static Color GetBloomColor()
+    {
+        return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<Color>(HookId.BloomColor);
+    }
+
+    public static void SetBloomColor(Color value)
+    {
+        ChroniaHelperModule.Instance.HookManager.SetHookDataValue<Color>(HookId.BloomColor, value, false);
+    }
+
+    public static void SetBloomBase(float value, Level level = null)
+    {
+        level = level ?? MaP.level;
+
+        level.Bloom.Base = value;
+        level.Session.BloomBaseAdd = value - AreaData.Get(level).BloomBase;
+    }
+
+    public static void SetBloomStrength(float value, Level level = null, bool clear = false)
+    {
+        level = level ?? MaP.level;
+
+        level.Bloom.Strength = value;
+        Md.Session.OverrideBloomStrength = clear ? null : value;
+    }
+
+    public static void SetLightingAlpha(float value, Level level = null)
+    {
+        level = level ?? MaP.level;
+
+        level.Session.LightingAlphaAdd = value - level.BaseLightingAlpha;
+        level.Lighting.Alpha = value;
+    }
+
+    public static void SetLightingColor(CColor value, Level level = null, bool clear = false)
+    {
+        level = level ?? MaP.level;
+
+        Md.Session.OverrideLightingColor = clear ? null : new(MaP.level.Lighting.BaseColor = value.Parsed());
+    }
+
+    public static void SetLightingColor(Color value, Level level = null, bool clear = false)
+    {
+        level = level ?? MaP.level;
+
+        Md.Session.OverrideLightingColor = clear ? null : new(MaP.level.Lighting.BaseColor = value);
+    }
+
+    public struct LevelEnvironmentData
+    {
+        public Color BloomColor;
+        public float BloomBase;
+        public float BloomStrength;
+        public float LightingAlpha;
+        public Color LightingColor;
+    }
+    public static LevelEnvironmentData FetchLevelEnvironment(Level level = null)
+    {
+        level = level ?? MaP.level;
+
+        LevelEnvironmentData data = new();
+
+        data.BloomColor = GetBloomColor();
+        data.BloomBase = AreaData.Get(level).BloomBase + level.Session.BloomBaseAdd;
+        data.BloomStrength = level.Bloom.Strength;
+        data.LightingAlpha = level.BaseLightingAlpha + level.Session.LightingAlphaAdd;
+        data.LightingColor = level.Lighting.BaseColor;
+
+        return data;
     }
 }

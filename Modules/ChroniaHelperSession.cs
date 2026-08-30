@@ -253,6 +253,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // Formula Converter Timers
     public HashSet<string> FormulaConverterTimers = new();
 
+    // Bloom Strength Setup
+    public float? OverrideBloomStrength = null;
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]

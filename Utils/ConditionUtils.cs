@@ -18,12 +18,12 @@ public static class ConditionUtils
         {
             if (Md.FrostHelperLoaded)
             {
-                return condition.tryCreateSessionExpression().getBoolSessionExpressionValue();
+                if (condition.tryCreateSessionExpression(out object expression))
+                {
+                    return expression.getBoolSessionExpressionValue();
+                }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
         else if(mode == ConditionMode.ChroniaMathExpression)
         {
@@ -43,7 +43,11 @@ public static class ConditionUtils
         }
         else if (mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
         {
-            return condition.tryCreateSessionExpression().getFloatSessionExpressionValue();
+            if(condition.tryCreateSessionExpression(out object expression))
+            {
+                return expression.getFloatSessionExpressionValue();
+            }
+            return 0f;
         }
         else
         {
@@ -63,8 +67,11 @@ public static class ConditionUtils
         else if ((ConditionMode)mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
         {
             object context = APIFrostHelper.CreateSessionExpressionContext(simpleCommands, functionCommands);
-            object exp = condition.tryCreateSessionExpression(context);
-            return exp.getFloatSessionExpressionValue();
+            if(condition.tryCreateSessionExpression(context, out object exp))
+            {
+                return exp.getFloatSessionExpressionValue();
+            }
+            return 0f;
         }
         else
         {

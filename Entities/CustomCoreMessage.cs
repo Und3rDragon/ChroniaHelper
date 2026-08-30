@@ -67,7 +67,7 @@ public class ColoredCustomCoreMessage : Entity
         if (useSE && Md.FrostHelperLoaded)
         {
             se_line = data.Attr("line");
-            se = se_line.tryCreateSessionExpression();
+            se_line.tryCreateSessionExpression(out object se);
         }
 
         this.wholeDialog = data.Bool("wholeDialog", false);

@@ -228,7 +228,13 @@ public abstract class GeneralSetupController : BaseEntity
     {
         if (IsFrostMode && Md.FrostHelperLoaded)
         {
-            CurrentState = Parameter.tryCreateSessionExpression().getBoolSessionExpressionValue();
+            if(Parameter.tryCreateSessionExpression(out object exp))
+            {
+                CurrentState = exp.getBoolSessionExpressionValue();
+                return;
+            }
+
+            CurrentState = false;
         }
         else
         {
