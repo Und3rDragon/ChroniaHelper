@@ -33,7 +33,12 @@ public class ConditionListener : StateListener
         {
             if (Md.FrostHelperLoaded)
             {
-                return condition.tryCreateSessionExpression().getBoolSessionExpressionValue();
+                if(condition.tryCreateSessionExpression(out object exp))
+                {
+                    return exp.getBoolSessionExpressionValue();
+                }
+
+                return false;
             }
             else
             {

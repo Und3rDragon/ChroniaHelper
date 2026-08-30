@@ -34,40 +34,38 @@ public class SetGeneralEnvironmentController : GeneralSetupController
 
         if (Md.FrostHelperLoaded && valueType == ValueType.FrostExpression)
         {
-            if (bloomBase.HasValidContent())
+            if (bloomBase.HasValidContent() && bloomBase.tryCreateSessionExpression(out object exp))
             {
-                MaP.level.Bloom.Base = bloomBase.tryCreateSessionExpression().getFloatSessionExpressionValue();
+                MaP.SetBloomBase(exp.getFloatSessionExpressionValue());
             }
 
-            if (bloomStrength.HasValidContent())
+            if (bloomStrength.HasValidContent() && bloomStrength.tryCreateSessionExpression(out object exp1))
             {
-                MaP.level.Bloom.Strength = bloomStrength.tryCreateSessionExpression().getFloatSessionExpressionValue();
+                MaP.SetBloomStrength(exp1.getFloatSessionExpressionValue());
             }
 
-            if (lighting.HasValidContent())
+            if (lighting.HasValidContent() && lighting.tryCreateSessionExpression(out object exp2))
             {
-                float l = lighting.tryCreateSessionExpression().getFloatSessionExpressionValue();
-                MaP.level.Session.LightingAlphaAdd = l - MaP.level.BaseLightingAlpha;
-                MaP.level.Lighting.Alpha = MaP.level.BaseLightingAlpha + MaP.level.Session.LightingAlphaAdd;
+                float l = exp2.getFloatSessionExpressionValue();
+                MaP.SetLightingAlpha(l);
             }
         }
         else
         {
             if (bloomBase.HasValidContent())
             {
-                MaP.level.Bloom.Base = bloomBase.ParseMathExpression();
+                MaP.SetBloomBase(bloomBase.ParseMathExpression());
             }
 
             if (bloomStrength.HasValidContent())
             {
-                MaP.level.Bloom.Strength = bloomStrength.ParseMathExpression();
+                MaP.SetBloomStrength(bloomStrength.ParseMathExpression());
             }
 
             if (lighting.HasValidContent())
             {
                 float l = lighting.ParseMathExpression();
-                MaP.level.Session.LightingAlphaAdd = l - MaP.level.BaseLightingAlpha;
-                MaP.level.Lighting.Alpha = MaP.level.BaseLightingAlpha + MaP.level.Session.LightingAlphaAdd;
+                MaP.SetLightingAlpha(l);
             }
         }
         
@@ -75,11 +73,11 @@ public class SetGeneralEnvironmentController : GeneralSetupController
         {
             if (Md.SaveData.chroniaColors.ContainsKey(bloomColor))
             {
-                BloomTrigger.SetBloomColor(Md.SaveData.chroniaColors[bloomColor].Parsed());
+                MaP.SetBloomColor(Md.SaveData.chroniaColors[bloomColor].Parsed());
             }
             else if (Md.Session.chroniaColors.ContainsKey(bloomColor))
             {
-                BloomTrigger.SetBloomColor(Md.Session.chroniaColors[bloomColor].Parsed());
+                MaP.SetBloomColor(Md.Session.chroniaColors[bloomColor].Parsed());
             }
         }
     }

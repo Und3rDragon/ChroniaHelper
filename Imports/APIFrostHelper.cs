@@ -1,86 +1,80 @@
-﻿using System;
+﻿using ChroniaHelper.Utils;
+using MonoMod.ModInterop;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using ChroniaHelper.Utils;
-using MonoMod.ModInterop;
 
 namespace ChroniaHelper.Imports;
 
 [ModImportName("FrostHelper")] // registered in Module
 public static class APIFrostHelper
 {
-    public delegate bool TryCreateSessionExpressionDelegate(string str, object context, out object? expression);
+    public delegate bool TryCreateSessionExpressionDelegate(string str, object context, out object expression);
     public static TryCreateSessionExpressionDelegate TryCreateSessionExpression;
     /// <summary>
     /// Creates an object which can evaluate a Session Expression.
     /// The returned object can be passed to <see cref="GetSessionExpressionValue"/>
     /// Refer to https://github.com/JaThePlayer/FrostHelper/wiki/Session-Expressions
     /// </summary>
-    public static object tryCreateSessionExpression(this string str, object context = null)
-    {
-        TryCreateSessionExpression(str, context, out object expression);
-        return expression;
-    }
+    public static bool tryCreateSessionExpression(this string str, object context, out object expression)
+        => TryCreateSessionExpression(str, context, out expression);
+    public static bool tryCreateSessionExpression(this string str, out object expression)
+        => TryCreateSessionExpression(str, null, out expression);
 
-    public delegate object GetSessionExpressionValueDelegate(object expression, Session session);
-    public static GetSessionExpressionValueDelegate GetSessionExpressionValue;
+    public static Func<object, Session, object> GetSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression.
     /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
+    public static object getSessionExpressionValue(this object expression, Session session)
+         => GetSessionExpressionValue(expression, session);
     public static object getSessionExpressionValue(this object expression)
-    {
-        return GetSessionExpressionValue(expression, MaP.level.Session);
-    }
+         => GetSessionExpressionValue(expression, MaP.level.Session);
 
-    public delegate Type GetSessionExpressionReturnedTypeDelegate(object expression);
-    public static GetSessionExpressionReturnedTypeDelegate GetSessionExpressionReturnedType;
+
+    public static Func<object, Type> GetSessionExpressionReturnedType;
     /// <summary>
     /// Returns the type that the given session expression will return, or typeof(object) if that's unknown.
     /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static Type getSessionExpressionReturnedType(this object expression)
-    {
-        return GetSessionExpressionReturnedType(expression);
-    }
+        => GetSessionExpressionReturnedType(expression);
 
-    public delegate int GetIntSessionExpressionValueDelegate(object expression, Session session);
-    public static GetIntSessionExpressionValueDelegate GetIntSessionExpressionValue;
+    public static Func<object, Session, int> GetIntSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression as an integer, coercing it if needed.
     /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
+    public static int getIntSessionExpressionValue(this object expression, Session session)
+        => GetIntSessionExpressionValue(expression, session);
     public static int getIntSessionExpressionValue(this object expression)
-    {
-        return GetIntSessionExpressionValue(expression, MaP.level.Session);
-    }
+        => GetIntSessionExpressionValue(expression, MaP.level.Session);
 
-    public delegate float GetFloatSessionExpressionValueDelegate(object expression, Session session);
-    public static GetFloatSessionExpressionValueDelegate GetFloatSessionExpressionValue;
+    public static Func<object, Session, float> GetFloatSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression as a float, coercing it if needed.
     /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static float getFloatSessionExpressionValue(this object expression)
-    {
-        return GetFloatSessionExpressionValue(expression, MaP.level.Session);
-    }
-    
-    public delegate bool GetBoolSessionExpressionValueDelegate(object expression, Session session);
-    public static GetBoolSessionExpressionValueDelegate GetBoolSessionExpressionValue;
+        => GetFloatSessionExpressionValue(expression, MaP.level.Session);
+    public static float getFloatSessionExpressionValue(this object expression, Session session)
+        => GetFloatSessionExpressionValue(expression, session);
+
+    public static Func<object, Session, bool> GetBoolSessionExpressionValue;
     /// <summary>
     /// Returns the current value of a Session Expression as a boolean, coercing it if needed.
     /// The object passed as the 1st argument needs to be created via <see cref="TryCreateSessionExpression"/>
     /// </summary>
     public static bool getBoolSessionExpressionValue(this object expression)
-    {
-        return GetBoolSessionExpressionValue(expression, MaP.level.Session);
-    }
-    
+        => GetBoolSessionExpressionValue(expression, MaP.level.Session);
+    public static bool getBoolSessionExpressionValue(this object expression, Session session)
+        => GetBoolSessionExpressionValue(expression, session);
+
     public static Func<Dictionary<string, Func<Session, object? /* userdata */, object>>?,
         Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>?,
         object> CreateSessionExpressionContext;
@@ -98,9 +92,7 @@ public static class APIFrostHelper
     public static object createSessionExpressionContext(
         Dictionary<string, Func<Session, object? /* userdata */, object>>? simpleCommands,
         Dictionary<string, Func<Session, object? /* userdata */, IReadOnlyList<object>, object>>? functionCommands)
-    {
-        return CreateSessionExpressionContext(simpleCommands, functionCommands);
-    }
+        => CreateSessionExpressionContext(simpleCommands, functionCommands);
 
     public static Func<Color> GetBloomColor;
     public static Action<Color> SetBloomColor;
