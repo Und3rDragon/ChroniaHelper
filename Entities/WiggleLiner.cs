@@ -33,6 +33,7 @@ public class WiggleLiner : BaseEntity
         path = data.Attr("Path", "ChroniaHelper/WiggleLine/dot");
         lineThickness = data.Float("LineThickness", 2f).GetAbs();
         resolution = data.Int("ColorFadeResolution", 10).ClampMin(2);
+        Log.Info(data.Int("ColorFadeResolution", 10), resolution);
         allowNodeAlpha = data.Bool("AllowNodeAlpha", false);
 
         texture = GFX.Game[path];

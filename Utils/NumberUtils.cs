@@ -294,22 +294,22 @@ public static class NumberUtils
 
     public static T ClampMin<T>(this T value, T n) where T : INumber<T>
     {
-        return value <= n ? value : n;
+        return value <= n ? n : value;
     }
 
     public static void ClampMin<T>(this T value, T n, out T result) where T : INumber<T>
     {
-        result = value <= n ? value : n;
+        result = value <= n ? n : value;
     }
 
     public static T ClampMax<T>(this T value, T n) where T : INumber<T>
     {
-        return value >= n ? value : n;
+        return value >= n ? n : value;
     }
 
     public static void ClampMax<T>(this T value, T n, out T result) where T : INumber<T>
     {
-        result = value >= n ? value : n;
+        result = value >= n ? n : value;
     }
 
     public enum Comparator
