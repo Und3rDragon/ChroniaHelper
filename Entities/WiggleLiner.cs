@@ -6,6 +6,7 @@ using ChroniaHelper.Utils;
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/WiggleLiner")]
+[Credits("DeepBlueBerry for the original code")]
 public class WiggleLiner : BaseEntity
 {
     public List<StandardWave2> wiggles = new();
