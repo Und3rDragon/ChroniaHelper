@@ -202,7 +202,7 @@ public class SpriteEntity2 : Actor
                 // valid syntax: "repeat, 0, (overrideFlag)"
                 if (segs < 2) { continue; }
 
-                int newIndex = commandLine[1].ParseInt(0);
+                int newIndex = commandLine[1].Parse(0);
                 newIndex.MakeAbs();
 
                 bool hasOverride = false;
@@ -232,8 +232,8 @@ public class SpriteEntity2 : Actor
                 // valid syntax: "repeat_times, commandIndex, times"
                 if(segs < 3) { continue; }
 
-                int repeats = commandLine[2].ParseInt(-1),
-                    target = commandLine[1].ParseInt(0).GetAbs();
+                int repeats = commandLine[2].Parse(-1),
+                    target = commandLine[1].Parse(0).GetAbs();
                 
                 if (repeatTimes.ContainsKey(index))
                 {
@@ -270,8 +270,8 @@ public class SpriteEntity2 : Actor
                 // valid syntax: "set_random, variableName, number1, number2"
                 if (segs < 4) { continue; }
                 string name = commandLine[1];
-                Vector2 range = new(Calc.Min(commandLine[2].ParseFloat(0f), commandLine[3].ParseFloat(1f)),
-                    Calc.Max(commandLine[2].ParseFloat(0f), commandLine[3].ParseFloat(1f)));
+                Vector2 range = new(Calc.Min(commandLine[2].Parse(0f), commandLine[3].Parse(1f)),
+                    Calc.Max(commandLine[2].Parse(0f), commandLine[3].Parse(1f)));
 
                 randomNumber.Enter(name, range);
                 Md.Session.se_Variables.Enter(name, Calc.Random.Range(range.X, range.Y));
@@ -389,17 +389,17 @@ public class SpriteEntity2 : Actor
                 // valid syntax: "hitbox, width, height, (x, y, add?)"
                 if (segs < 3) { continue; }
                 float width = 16f, height = 16f, x = -8f, y = -8f;
-                ConditionalParseFloat(commandLine[1], out width);
-                ConditionalParseFloat(commandLine[2], out height);
+                ConditionalParse(commandLine[1], out width);
+                ConditionalParse(commandLine[2], out height);
                 width.MakeAbs(); height.MakeAbs();
 
                 if (segs >= 4)
                 {
-                    ConditionalParseFloat(commandLine[3], out x);
+                    ConditionalParse(commandLine[3], out x);
                 }
                 if (segs >= 5)
                 {
-                    ConditionalParseFloat(commandLine[4], out y);
+                    ConditionalParse(commandLine[4], out y);
                 }
 
                 bool isAdd = false;
@@ -427,17 +427,17 @@ public class SpriteEntity2 : Actor
                 // valid syntax: "hitbox, width, height, (x, y)"
                 if (segs < 3) { continue; }
                 float width = 16f, height = 16f, x = -8f, y = -8f;
-                ConditionalParseFloat(commandLine[1], out width);
-                ConditionalParseFloat(commandLine[2], out height);
+                ConditionalParse(commandLine[1], out width);
+                ConditionalParse(commandLine[2], out height);
                 width.MakeAbs(); height.MakeAbs();
 
                 if (segs >= 4)
                 {
-                    ConditionalParseFloat(commandLine[3], out x);
+                    ConditionalParse(commandLine[3], out x);
                 }
                 if (segs >= 5)
                 {
-                    ConditionalParseFloat(commandLine[4], out y);
+                    ConditionalParse(commandLine[4], out y);
                 }
 
                 holdable.PickupCollider = new Hitbox(width, height, x, y);
@@ -483,7 +483,7 @@ public class SpriteEntity2 : Actor
                 if (segs < 2) { continue; }
 
                 int setFrame = 0;
-                ConditionalParseInt(commandLine[1], out setFrame);
+                ConditionalParse(commandLine[1], out setFrame);
                 int totalFrames = sprite.GetFrames(sprite.CurrentAnimationID).Length;
                 setFrame = setFrame >= totalFrames ? totalFrames - 1 : setFrame;
 
@@ -497,10 +497,10 @@ public class SpriteEntity2 : Actor
                 bool safe = true;
 
                 if (segs < 5) { continue; }
-                ConditionalParseFloat(commandLine[1], out solidPos.X);
-                ConditionalParseFloat(commandLine[2], out solidPos.Y);
-                ConditionalParseFloat(commandLine[3], out size.X);
-                ConditionalParseFloat(commandLine[4], out size.Y);
+                ConditionalParse(commandLine[1], out solidPos.X);
+                ConditionalParse(commandLine[2], out solidPos.Y);
+                ConditionalParse(commandLine[3], out size.X);
+                ConditionalParse(commandLine[4], out size.Y);
                 if (size.X == 0 || size.Y == 0) { solid.Collidable = false; continue; }
 
                 if (segs >= 6)
@@ -522,8 +522,8 @@ public class SpriteEntity2 : Actor
                 // valid syntax: "speed, x0, y0, (ax1, ay1, ax2, ay2, ax3, ay3...)"
                 if (segs < 3) { continue; }
                 Vector2 set = Vc2.Zero;
-                ConditionalParseFloat(commandLine[1], out set.X);
-                ConditionalParseFloat(commandLine[2], out set.Y);
+                ConditionalParse(commandLine[1], out set.X);
+                ConditionalParse(commandLine[2], out set.Y);
 
                 positioner.Speed = set;
 
@@ -532,8 +532,8 @@ public class SpriteEntity2 : Actor
                     for (int i = 3, n = 0; i < segs; i = i + 2, n++)
                     {
                         Vector2 value = Vector2.Zero;
-                        ConditionalParseFloat(commandLine[i], out value.X);
-                        ConditionalParseFloat(commandLine[i + 1], out value.Y);
+                        ConditionalParse(commandLine[i], out value.X);
+                        ConditionalParse(commandLine[i + 1], out value.Y);
                         positioner.Accelerations.Add(value);
                     }
                 }
@@ -574,13 +574,13 @@ public class SpriteEntity2 : Actor
                 if (commandLine[2] == "int")
                 {
                     int value = 0;
-                    ConditionalParseInt(commandLine[3], out value);
+                    ConditionalParse(commandLine[3], out value);
                     SafeAddVariables(name, value);
                 }
                 else if (commandLine[2] == "float")
                 {
                     float value = 0f;
-                    ConditionalParseFloat(commandLine[3], out value);
+                    ConditionalParse(commandLine[3], out value);
                     SafeAddVariables(name, value);
                 }
                 else if (commandLine[2] == "string")
@@ -614,8 +614,8 @@ public class SpriteEntity2 : Actor
                 if (commandLine[1] == "float")
                 {
                     float min = 0f, max = 1f;
-                    ConditionalParseFloat(commandLine[2], out min);
-                    ConditionalParseFloat(commandLine[3], out max);
+                    ConditionalParse(commandLine[2], out min);
+                    ConditionalParse(commandLine[3], out max);
                     max = Calc.Max(min, max);
                     float value = Calc.Random.Range(min, max);
                     SafeAddVariables(name, value);
@@ -623,8 +623,8 @@ public class SpriteEntity2 : Actor
                 else if (commandLine[1] == "int")
                 {
                     int min = 0, max = 1;
-                    ConditionalParseInt(commandLine[2], out min);
-                    ConditionalParseInt(commandLine[3], out max);
+                    ConditionalParse(commandLine[2], out min);
+                    ConditionalParse(commandLine[3], out max);
                     max = int.Max(min, max);
                     int value = Calc.Random.Range(min, max);
                     SafeAddVariables(name, value);
@@ -747,7 +747,7 @@ public class SpriteEntity2 : Actor
             if (segs <= 1) { yield break; }
             if (segs >= 2)
             {
-                ConditionalParseFloat(commandLine[1], out timer);
+                ConditionalParse(commandLine[1], out timer);
                 timer.MakeAbs();
             }
 
@@ -765,8 +765,8 @@ public class SpriteEntity2 : Actor
             float tx = 0f, ty = 0f;
             bool isLeft = false;
             if (segs < 4) { yield break; }
-            ConditionalParseFloat(commandLine[1], out tx);
-            ConditionalParseFloat(commandLine[2], out ty);
+            ConditionalParse(commandLine[1], out tx);
+            ConditionalParse(commandLine[2], out ty);
             bool.TryParse(commandLine[3], out isLeft);
             isLeft = ty > 0f ? false : isLeft;
 
@@ -853,12 +853,12 @@ public class SpriteEntity2 : Actor
             if (segs < 3) { yield break; }
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[1], out dx);
-                ConditionalParseFloat(commandLine[2], out dy);
+                ConditionalParse(commandLine[1], out dx);
+                ConditionalParse(commandLine[2], out dy);
             }
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer.GetAbs() < Engine.DeltaTime;
             }
@@ -884,12 +884,12 @@ public class SpriteEntity2 : Actor
             if (segs < 3) { yield break; }
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[1], out dx);
-                ConditionalParseFloat(commandLine[2], out dy);
+                ConditionalParse(commandLine[1], out dx);
+                ConditionalParse(commandLine[2], out dy);
             }
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer.GetAbs() < Engine.DeltaTime;
             }
@@ -944,12 +944,12 @@ public class SpriteEntity2 : Actor
             if (segs < 3) { yield break; }
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[1], out x);
-                ConditionalParseFloat(commandLine[2], out y);
+                ConditionalParse(commandLine[1], out x);
+                ConditionalParse(commandLine[2], out y);
             }
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer.GetAbs() < Engine.DeltaTime;
             }
@@ -974,12 +974,12 @@ public class SpriteEntity2 : Actor
             if (segs < 3) { yield break; }
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[1], out x);
-                ConditionalParseFloat(commandLine[2], out y);
+                ConditionalParse(commandLine[1], out x);
+                ConditionalParse(commandLine[2], out y);
             }
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer.GetAbs() < Engine.DeltaTime;
             }
@@ -1034,12 +1034,12 @@ public class SpriteEntity2 : Actor
             if (segs < 5) { yield break; }
             if (segs >= 5)
             {
-                ConditionalParseFloat(commandLine[1], out dx);
-                ConditionalParseFloat(commandLine[2], out dy);
+                ConditionalParse(commandLine[1], out dx);
+                ConditionalParse(commandLine[2], out dy);
                 if (dx == 0f && dy == 0f) { yield break; }
 
-                ConditionalParseFloat(commandLine[3], out angle);
-                ConditionalParseFloat(commandLine[4], out timer);
+                ConditionalParse(commandLine[3], out angle);
+                ConditionalParse(commandLine[4], out timer);
                 timer.MakeAbs();
                 instant = timer.GetAbs() < Engine.DeltaTime;
             }
@@ -1112,11 +1112,11 @@ public class SpriteEntity2 : Actor
             // valid syntax: "alpha,0.3", "alpha,0.3,1", "alpha,0.3,1,linear"
             if (segs <= 1) { yield break; }
 
-            if (segs >= 2) { ConditionalParseFloat(commandLine[1], out spriteColor.alpha); }
+            if (segs >= 2) { ConditionalParse(commandLine[1], out spriteColor.alpha); }
             spriteColor.alpha = spriteColor.alpha.Clamp(0f, 1f);
 
             float timer = 0.1f;
-            if (segs >= 3) { ConditionalParseFloat(commandLine[2], out timer); }
+            if (segs >= 3) { ConditionalParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
@@ -1151,7 +1151,7 @@ public class SpriteEntity2 : Actor
             if (segs >= 2) { spriteColor.color = Calc.HexToColor(commandLine[1]); }
 
             float timer = 0.1f;
-            if (segs >= 3) { ConditionalParseFloat(commandLine[2], out timer); }
+            if (segs >= 3) { ConditionalParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
@@ -1186,12 +1186,12 @@ public class SpriteEntity2 : Actor
             float scaleX = 1f, scaleY = 1f;
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[1], out scaleX);
-                ConditionalParseFloat(commandLine[2], out scaleY);
+                ConditionalParse(commandLine[1], out scaleX);
+                ConditionalParse(commandLine[2], out scaleY);
             }
 
             float timer = 0.1f;
-            if (segs >= 4) { ConditionalParseFloat(commandLine[3], out timer); }
+            if (segs >= 4) { ConditionalParse(commandLine[3], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
@@ -1223,10 +1223,10 @@ public class SpriteEntity2 : Actor
             float angle = 0f;
             if (segs < 2) { yield break; }
 
-            if (segs >= 2) { ConditionalParseFloat(commandLine[1], out angle); }
+            if (segs >= 2) { ConditionalParse(commandLine[1], out angle); }
 
             float timer = Engine.DeltaTime;
-            if (segs >= 3) { ConditionalParseFloat(commandLine[2], out timer); }
+            if (segs >= 3) { ConditionalParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
@@ -1261,10 +1261,10 @@ public class SpriteEntity2 : Actor
             int depth = 9500;
             if (segs <= 1) { yield break; }
 
-            if (segs >= 2) { ConditionalParseInt(commandLine[1], out depth); }
+            if (segs >= 2) { ConditionalParse(commandLine[1], out depth); }
 
             float timer = 0.1f;
-            if (segs >= 3) { ConditionalParseFloat(commandLine[2], out timer); }
+            if (segs >= 3) { ConditionalParse(commandLine[2], out timer); }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
 
@@ -1297,13 +1297,13 @@ public class SpriteEntity2 : Actor
             Vector2 origin = Vector2.One * 0.5f;
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[1], out origin.X);
-                ConditionalParseFloat(commandLine[2], out origin.Y);
+                ConditionalParse(commandLine[1], out origin.X);
+                ConditionalParse(commandLine[2], out origin.Y);
             }
             float timer = Engine.DeltaTime;
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
             }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
@@ -1336,12 +1336,12 @@ public class SpriteEntity2 : Actor
             if (segs < 2) { yield break; }
 
             float rate = 1f;
-            ConditionalParseFloat(commandLine[1], out rate);
+            ConditionalParse(commandLine[1], out rate);
 
             float timer = Engine.DeltaTime;
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[2], out timer);
+                ConditionalParse(commandLine[2], out timer);
             }
             timer.MakeAbs();
             instant = timer.GetAbs() < Engine.DeltaTime;
@@ -1378,13 +1378,13 @@ public class SpriteEntity2 : Actor
             Color color = Color.White;
             float alpha = 0f, timer = 0f; int startFade = 32, endFade = 64; Ease.Easer ease = Ease.Linear;
             color = Calc.HexToColor(commandLine[1]);
-            ConditionalParseFloat(commandLine[2], out alpha); alpha.Clamp(0f, 1f);
-            ConditionalParseInt(commandLine[3], out startFade); startFade.MakeAbs();
-            ConditionalParseInt(commandLine[4], out endFade); endFade.MakeAbs();
+            ConditionalParse(commandLine[2], out alpha); alpha.Clamp(0f, 1f);
+            ConditionalParse(commandLine[3], out startFade); startFade.MakeAbs();
+            ConditionalParse(commandLine[4], out endFade); endFade.MakeAbs();
 
             if (segs >= 6)
             {
-                ConditionalParseFloat(commandLine[5], out timer); timer.MakeAbs();
+                ConditionalParse(commandLine[5], out timer); timer.MakeAbs();
                 instant = timer == 0f;
             }
             if (segs >= 7)
@@ -1423,12 +1423,12 @@ public class SpriteEntity2 : Actor
             }
 
             float alpha = 0f, r = 0f, timer = 0f; Ease.Easer ease = Ease.Linear;
-            ConditionalParseFloat(commandLine[1], out alpha); alpha.Clamp(0f, 1f);
-            ConditionalParseFloat(commandLine[2], out r); r.MakeAbs();
+            ConditionalParse(commandLine[1], out alpha); alpha.Clamp(0f, 1f);
+            ConditionalParse(commandLine[2], out r); r.MakeAbs();
 
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer); timer.MakeAbs();
+                ConditionalParse(commandLine[3], out timer); timer.MakeAbs();
                 instant = timer == 0f;
             }
             if (segs >= 5)
@@ -1463,12 +1463,12 @@ public class SpriteEntity2 : Actor
             }
 
             float set = positioner.Parallax.X;
-            ConditionalParseFloat(commandLine[1], out set);
+            ConditionalParse(commandLine[1], out set);
 
             float timer = 0f;
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[2], out timer);
+                ConditionalParse(commandLine[2], out timer);
                 timer.MakeAbs();
                 instant = timer == 0f;
             }
@@ -1505,14 +1505,14 @@ public class SpriteEntity2 : Actor
             }
 
             Vector2 camPos = positioner.StaticScreenPosition;
-            ConditionalParseFloat(commandLine[1], out camPos.X);
-            ConditionalParseFloat(commandLine[2], out camPos.Y);
+            ConditionalParse(commandLine[1], out camPos.X);
+            ConditionalParse(commandLine[2], out camPos.Y);
 
             float timer = 0f;
             Ease.Easer ease = Ease.Linear;
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer == 0f;
             }
@@ -1549,12 +1549,12 @@ public class SpriteEntity2 : Actor
             {
                 yield break;
             }
-            ConditionalParseFloat(commandLine[1], out offsetX);
-            ConditionalParseFloat(commandLine[2], out offsetY);
+            ConditionalParse(commandLine[1], out offsetX);
+            ConditionalParse(commandLine[2], out offsetY);
 
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer == 0f;
             }
@@ -1591,12 +1591,12 @@ public class SpriteEntity2 : Actor
             {
                 yield break;
             }
-            ConditionalParseFloat(commandLine[1], out offsetX);
-            ConditionalParseFloat(commandLine[2], out offsetY);
+            ConditionalParse(commandLine[1], out offsetX);
+            ConditionalParse(commandLine[2], out offsetY);
 
             if (segs >= 4)
             {
-                ConditionalParseFloat(commandLine[3], out timer);
+                ConditionalParse(commandLine[3], out timer);
                 timer.MakeAbs();
                 instant = timer == 0f;
             }
@@ -1646,11 +1646,11 @@ public class SpriteEntity2 : Actor
             {
                 yield break;
             }
-            ConditionalParseFloat(commandLine[1], out zoom);
+            ConditionalParse(commandLine[1], out zoom);
 
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[2], out timer);
+                ConditionalParse(commandLine[2], out timer);
                 timer.MakeAbs();
                 instant = timer == 0f;
             }
@@ -1682,13 +1682,13 @@ public class SpriteEntity2 : Actor
             // syntax: moveto_node,0,(3,sinein)
             if (segs < 2) { yield break; }
             int n = 0;
-            ConditionalParseInt(commandLine[1], 0, out n);
+            ConditionalParse(commandLine[1], 0, out n);
             n = int.Clamp(n, 0, nodeCount - 1);
 
             float timer = 0f;
             if (segs >= 3)
             {
-                ConditionalParseFloat(commandLine[2], 0f, out timer);
+                ConditionalParse(commandLine[2], 0f, out timer);
                 timer.MakeAbs();
                 instant = timer == 0f;
             }
@@ -1716,7 +1716,7 @@ public class SpriteEntity2 : Actor
         Md.Session.se_Variables.Enter(name, value);
     }
 
-    private void ConditionalParseInt(string input, int defaultValue, out int export)
+    private void ConditionalParse(string input, int defaultValue, out int export)
     {
         export = defaultValue;
         if (input.StartsWith("@irltime_"))
@@ -1737,12 +1737,12 @@ public class SpriteEntity2 : Actor
         }
     }
 
-    private void ConditionalParseInt(string input, out int export)
+    private void ConditionalParse(string input, out int export)
     {
-        ConditionalParseInt(input, 0, out export);
+        ConditionalParse(input, 0, out export);
     }
 
-    private void ConditionalParseFloat(string input, float defaultValue, out float export)
+    private void ConditionalParse(string input, float defaultValue, out float export)
     {
         export = defaultValue;
         if (input.StartsWith("@irltime_"))
@@ -1765,9 +1765,9 @@ public class SpriteEntity2 : Actor
         }
     }
 
-    private void ConditionalParseFloat(string input, out float export)
+    private void ConditionalParse(string input, out float export)
     {
-        ConditionalParseFloat(input, 0f, out export);
+        ConditionalParse(input, 0f, out export);
     }
 
     #endregion

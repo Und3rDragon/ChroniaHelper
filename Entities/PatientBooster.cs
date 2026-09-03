@@ -50,19 +50,19 @@ public class PatientBooster : Booster
             float p1 = 0f, p2 = 0f, p3 = 0f, p4 = 0f;
             if (hb.Length >= 2)
             {
-                p1 = hb[1].ParseFloat(0f);
+                p1 = hb[1].Parse(0f);
             }
             if (hb.Length >= 3)
             {
-                p2 = hb[2].ParseFloat(0f);
+                p2 = hb[2].Parse(0f);
             }
             if (hb.Length >= 4)
             {
-                p3 = hb[3].ParseFloat(0f);
+                p3 = hb[3].Parse(0f);
             }
             if (hb.Length >= 5)
             {
-                p4 = hb[4].ParseFloat(0f);
+                p4 = hb[4].Parse(0f);
             }
             if (hb[0] == "r")
             {

@@ -52,7 +52,7 @@ public class RoomTagSessionController : Entity
                 {
                     if (source == Md.Session.roomTags_Rooms[i])
                     {
-                        Md.Session.roomTags[i].SetSlider(setSlider.ParseFloat(0f));
+                        Md.Session.roomTags[i].SetSlider(setSlider.Parse(0f));
                     }
                 }
             }
@@ -63,7 +63,7 @@ public class RoomTagSessionController : Entity
                 {
                     if (source == Md.Session.roomTags_Rooms[i])
                     {
-                        Md.Session.roomTags[i].SetCounter(setSlider.ParseInt(0));
+                        Md.Session.roomTags[i].SetCounter(setSlider.Parse(0));
                     }
                 }
             }

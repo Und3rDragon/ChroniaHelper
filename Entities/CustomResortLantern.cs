@@ -64,7 +64,7 @@ public class CustomResortLantern : Entity
         int[] frames = new int[framesData.Length];
         for(int i = 0; i < framesData.Length; i++)
         {
-            frames[i] = framesData[i].ParseInt(0);
+            frames[i] = framesData[i].Parse(0);
         }
         lantern.AddLoop("light", "lantern", speed, frames);
         lantern.Play("light");

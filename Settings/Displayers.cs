@@ -226,16 +226,16 @@ public class Displayers : HDRenderEntity
             switch (displayer.speedDisplay)
             {
                 case Sts.SpeedDisplayer.SpeedDisplay.speedX:
-                    target = $"{PUt.player?.Speed.X.ParseInt() ?? 0}";
+                    target = $"{PUt.player?.Speed.X.Parse(0) ?? 0}";
                     break;
                 case Sts.SpeedDisplayer.SpeedDisplay.speedY:
-                    target = $"{PUt.player?.Speed.Y.ParseInt() ?? 0}";
+                    target = $"{PUt.player?.Speed.Y.Parse(0) ?? 0}";
                     break;
                 case Sts.SpeedDisplayer.SpeedDisplay.speedToCoordinates:
-                    target = $"({PUt.player?.Speed.X.ParseInt() ?? 0},{PUt.player?.Speed.Y.ParseInt() ?? 0})";
+                    target = $"({PUt.player?.Speed.X.Parse(0) ?? 0},{PUt.player?.Speed.Y.Parse(0) ?? 0})";
                     break;
                 default:
-                    target = $"{PUt.player?.Speed.Length().ParseInt() ?? 0}";
+                    target = $"{PUt.player?.Speed.Length().Parse(0) ?? 0}";
                     break;
             }
 
@@ -289,18 +289,18 @@ public class Displayers : HDRenderEntity
             {
                 case Sts.PlayerPositionDisplayer.DisplayCoordinates.X:
                     target = displayer.useGlobalCoordinates ?
-                        $"{(playerPos.X - lvlPos.X).ParseInt()}" :
-                        $"{playerPos.X.ParseInt()}";
+                        $"{(playerPos.X - lvlPos.X).Parse(0)}" :
+                        $"{playerPos.X.Parse(0)}";
                     break;
                 case Sts.PlayerPositionDisplayer.DisplayCoordinates.Y:
                     target = displayer.useGlobalCoordinates ?
-                        $"{(playerPos.Y - lvlPos.Y).ParseInt()}" :
-                        $"{playerPos.Y.ParseInt()}";
+                        $"{(playerPos.Y - lvlPos.Y).Parse(0)}" :
+                        $"{playerPos.Y.Parse(0)}";
                     break;
                 default:
                     target = displayer.useGlobalCoordinates ?
-                        $"({(playerPos.X - lvlPos.X).ParseInt()},{(playerPos.Y - lvlPos.Y).ParseInt()})" :
-                        $"({playerPos.X.ParseInt()},{playerPos.Y.ParseInt()})";
+                        $"({(playerPos.X - lvlPos.X).Parse(0)},{(playerPos.Y - lvlPos.Y).Parse(0)})" :
+                        $"({playerPos.X.Parse(0)},{playerPos.Y.Parse(0)})";
                     break;
             }
 

@@ -204,7 +204,7 @@ public abstract class GeneralSetupController : BaseEntity
 
     private void EvaluateIntervalMode()
     {
-        float interval = Parameter.ParseFloat(0f).GetAbs();
+        float interval = Parameter.Parse(0f).GetAbs();
         
         if (Scene.OnInterval(interval))
         {

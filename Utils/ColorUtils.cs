@@ -40,12 +40,12 @@ public static class ColorUtils
             return Color.Transparent;
         }
         input = input.Replace("#", "");
-        int convert = NumberUtils.ParseInt(input, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-        if (input.Length == 6)
+        bool b = NumberUtils.TryParse(input, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int convert);
+        if (b && input.Length == 6)
         {
             return new Color(convert >> 16, convert >> 8, convert);
         }
-        if (input.Length == 8)
+        if (b && input.Length == 8)
         {
             return new Color(convert >> 24, convert >> 16, convert >> 8, convert);
         }

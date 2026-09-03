@@ -105,7 +105,7 @@ namespace ChroniaHelper.Effects {
                     string[] s = x[i].Split(',', StringSplitOptions.TrimEntries);
                     if (s.Length < 4) { continue; }
 
-                    FadeX.Add(s[0].ParseFloat(0f), s[1].ParseFloat(0f), s[2].ParseFloat(1f).Clamp(0f, 1f), s[3].ParseFloat(1f).Clamp(0f, 1f));
+                    FadeX.Add(s[0].Parse(0f), s[1].Parse(0f), s[2].Parse(1f).Clamp(0f, 1f), s[3].Parse(1f).Clamp(0f, 1f));
                 }
             }
 
@@ -118,7 +118,7 @@ namespace ChroniaHelper.Effects {
                     string[] s = y[i].Split(',', StringSplitOptions.TrimEntries);
                     if (s.Length < 4) { continue; }
 
-                    FadeY.Add(s[0].ParseFloat(0f), s[1].ParseFloat(0f), s[2].ParseFloat(1f).Clamp(0f, 1f), s[3].ParseFloat(1f).Clamp(0f, 1f));
+                    FadeY.Add(s[0].Parse(0f), s[1].Parse(0f), s[2].Parse(1f).Clamp(0f, 1f), s[3].Parse(1f).Clamp(0f, 1f));
                 }
             }
         }

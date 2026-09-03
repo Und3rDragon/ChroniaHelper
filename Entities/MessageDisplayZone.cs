@@ -35,7 +35,7 @@ public class MessageDisplayZone : HDRenderEntity
         string[] _scales = d.Attr("scale", "1").Split(',', StringSplitOptions.TrimEntries);
         foreach (var scale in _scales)
         {
-            renderer.scales.Add(scale.ParseFloat(1f));
+            renderer.scales.Add(scale.Parse(1f));
         }
 
         content = d.Attr("dialogID");

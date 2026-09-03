@@ -132,7 +132,7 @@ public partial class Stopclock
         for(int i = 0, n = 0; i < t.Length; i++)
         {
             n = t.Length - 1 - i;
-            t[n].ParseInt(out int m);
+            t[n].TryParse(out int m);
             m = m.ClampMin(0);
             
             switch (i)

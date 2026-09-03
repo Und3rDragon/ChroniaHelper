@@ -184,7 +184,7 @@ public static class StringUtils
         int[] intArray = new int[split.Length];
         for (int i = 0; i < split.Length; i++)
         {
-            intArray[i] = split[i].ParseInt();
+            intArray[i] = split[i].Parse(0);
         }
         return intArray;
     }

@@ -37,7 +37,7 @@ public class FntDisplayerHD : HDRenderEntity
         string[] _scales = d.Attr("scale", "1").Split(',', StringSplitOptions.TrimEntries);
         foreach(var scale in _scales)
         {
-            renderer.scales.Add(scale.ParseFloat(1f));
+            renderer.scales.Add(scale.Parse(1f));
         }
 
         // offset index setup: pathIndex, charIndex, offsetX, offsetY
@@ -47,15 +47,15 @@ public class FntDisplayerHD : HDRenderEntity
             string[] segs = offset.Split(',', StringSplitOptions.TrimEntries);
             if (segs.Length < 3) { continue; }
 
-            if (segs[0].ParseInt(0) >= renderer.path.Count || segs[0].ParseInt(0) < 0) { continue; }
+            if (segs[0].Parse(0) >= renderer.path.Count || segs[0].Parse(0) < 0) { continue; }
 
             Vc2 of = Vc2.Zero;
-            of.X = segs[2].ParseFloat(0);
-            if (segs.Length >= 4) { of.Y = segs[3].ParseFloat(0); }
+            of.X = segs[2].Parse(0);
+            if (segs.Length >= 4) { of.Y = segs[3].Parse(0); }
 
-            renderer.memberIndexOffsets.Create(segs[0].ParseInt(0), new());
-            renderer.memberIndexOffsets[segs[0].ParseInt(0)].Create(segs[1].ParseInt(0), Vc2.Zero);
-            renderer.memberIndexOffsets[segs[0].ParseInt(0)][segs[1].ParseInt(0)] = of;
+            renderer.memberIndexOffsets.Create(segs[0].Parse(0), new());
+            renderer.memberIndexOffsets[segs[0].Parse(0)].Create(segs[1].Parse(0), Vc2.Zero);
+            renderer.memberIndexOffsets[segs[0].Parse(0)][segs[1].Parse(0)] = of;
         }
 
         // offset charcode setup: pathIndex, charcode, offsetX, offsetY
@@ -65,15 +65,15 @@ public class FntDisplayerHD : HDRenderEntity
             string[] segs = offset.Split(',', StringSplitOptions.TrimEntries);
             if (segs.Length < 3) { continue; }
 
-            if (segs[0].ParseInt(0) >= renderer.path.Count || segs[0].ParseInt(0) < 0) { continue; }
+            if (segs[0].Parse(0) >= renderer.path.Count || segs[0].Parse(0) < 0) { continue; }
 
             Vc2 of = Vc2.Zero;
-            of.X = segs[2].ParseFloat(0);
-            if (segs.Length >= 4) { of.Y = segs[3].ParseFloat(0); }
+            of.X = segs[2].Parse(0);
+            if (segs.Length >= 4) { of.Y = segs[3].Parse(0); }
 
-            renderer.memberCharcodeOffsets.Create(segs[0].ParseInt(0), new());
-            renderer.memberCharcodeOffsets[segs[0].ParseInt(0)].Create(segs[1].ParseInt(0), Vc2.Zero);
-            renderer.memberCharcodeOffsets[segs[0].ParseInt(0)][segs[1].ParseInt(0)] = of;
+            renderer.memberCharcodeOffsets.Create(segs[0].Parse(0), new());
+            renderer.memberCharcodeOffsets[segs[0].Parse(0)].Create(segs[1].Parse(0), Vc2.Zero);
+            renderer.memberCharcodeOffsets[segs[0].Parse(0)][segs[1].Parse(0)] = of;
         }
 
         renderer.ApplyAllOffsetSetups();

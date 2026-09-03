@@ -37,12 +37,12 @@ public class StopclockRenderer : SerialImageRendererRaw
         {
             s.Split(',', StringSplitOptions.TrimEntries).ApplyTo(out string[] seg);
             if (seg.Length < 1) { continue; }
-            int index = seg[0].ParseInt(0);
+            int index = seg[0].Parse(0);
             Vc2 offset = Vc2.Zero;
             if (seg.Length < 2) { image.segmentOffset.Enter(index, offset); continue; }
-            offset = new Vc2(seg[1].ParseInt(0), 0);
+            offset = new Vc2(seg[1].Parse(0), 0);
             if (seg.Length < 3) { image.segmentOffset.Enter(index, offset); continue; }
-            offset = new Vc2(seg[1].ParseInt(0), seg[2].ParseInt(0));
+            offset = new Vc2(seg[1].Parse(0), seg[2].Parse(0));
             image.segmentOffset.Enter(index, offset);
         }
         image.scale = d.Float("scale", 6f).GetAbs();
@@ -92,7 +92,7 @@ public class StopclockRenderer : SerialImageRendererRaw
 
     public override int Reflection(char c)
     {
-        return $"{c}".ParseInt(c == ':' ? 10 : 0);
+        return $"{c}".Parse(c == ':' ? 10 : 0);
     }
 
     public override Vc2 SetRenderPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)

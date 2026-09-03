@@ -573,7 +573,7 @@ public class OmniZipSolid : ConnectedSolid
                     // altering speed
                     if (i <= this.speeds.Length)
                     {
-                        this.speedmult = this.speeds[i - 1].ParseFloat(1f);
+                        this.speedmult = this.speeds[i - 1].Parse(1f);
                     }
                     if (this.speedmult <= 0f) { this.speedmult = -speedmult; }
 
@@ -688,7 +688,7 @@ public class OmniZipSolid : ConnectedSolid
                 // Changed Subjects
                 if (i <= this.delays.Length)
                 {
-                    this.nodeDelay = this.delays[i - 1].ParseFloat(0.2f);
+                    this.nodeDelay = this.delays[i - 1].Parse(0.2f);
                 }
                 else { this.nodeDelay = 0.2f; }
                 nodeDelay.MakeAbs();
@@ -715,7 +715,7 @@ public class OmniZipSolid : ConnectedSolid
                     recProgress = at;
 
                     //Analyzing inputs here
-                    float returnSpeed = max - i + 1 > returnSpeeds.Length ? returnSpeeds[returnSpeeds.Length - 1].ParseFloat(1f) : returnSpeeds[max - i].ParseFloat(1f);
+                    float returnSpeed = max - i + 1 > returnSpeeds.Length ? returnSpeeds[returnSpeeds.Length - 1].Parse(1f) : returnSpeeds[max - i].Parse(1f);
                     returnSpeed = returnSpeed <= 0 ? -returnSpeed : returnSpeed;
                     string returnEase;
                     if(max - i + 1 > returnEasing.Length)
@@ -754,7 +754,7 @@ public class OmniZipSolid : ConnectedSolid
 
                     PlayFinishSound();
                     // Modify return delays
-                    float returnDelay = max - i + 1 > returnDelays.Length ? returnDelays[returnDelays.Length - 1].ParseFloat(0.2f) : returnDelays[max - i].ParseFloat(0.2f);
+                    float returnDelay = max - i + 1 > returnDelays.Length ? returnDelays[returnDelays.Length - 1].Parse(0.2f) : returnDelays[max - i].Parse(0.2f);
                     returnDelay = returnDelay <= 0 ? -returnDelay : returnDelay;
                     yield return returnDelay; // Return Delays
 
