@@ -1612,10 +1612,16 @@ entities.ChroniaHelper/SetFlagLogicController.attributes.description.chroniaMath
 entities.ChroniaHelper/SetFlagLogicController.attributes.description.chroniaFlagLogicExpression=An expression using "&&" as "and", "||" as "or", and "()" for layering,\nany other symbols will be seen as flag names, for eg.:\n(flagA || flagB) && (flagC || (flagD && flagE))
 
 # ========================== Set General Environment Controller
+
 entities.ChroniaHelper/SetGeneralEnvironmentController.placements.name.controller=General Environment Controller (Session Value)
 entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.parameters=When the "mode" is set to "On Flags", enter the required flags here. \nWhen the mode is "On Chronia Expression" or "On Frost Expression", enter the expression here.
 entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
 entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.chroniaFlagLogicExpression=An expression using "&&" as "and", "||" as "or", and "()" for layering,\nany other symbols will be seen as flag names, for eg.:\n(flagA || flagB) && (flagC || (flagD && flagE))
 
 # ========================== General Environment Trigger
+
 triggers.ChroniaHelper/GeneralEnviromentTrigger.placements.name.EnvironmentTrigger=General Environment Trigger
+
+# ========================== Wiggle Liner
+
+entities.ChroniaHelper/WiggleLiner.placements.name.line=Wiggle Liner

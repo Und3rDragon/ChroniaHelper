@@ -16,7 +16,7 @@ public class WiggleLiner : BaseEntity
     public Vector2 frequency = 2.0f * Vector2.One;
     public Vector2 amplitude = 4.0f * Vector2.One;
     public Vector2 phase = Vector2.Zero;
-    public string path = "CorreWithCare/WiggleLine/dot";
+    public string path = "ChroniaHelper/WiggleLine/dot";
     public float lineThickness = 2f;
     public int resolution = 10;
     public bool allowNodeAlpha = false;
@@ -30,7 +30,7 @@ public class WiggleLiner : BaseEntity
         frequency = data.Vector2("WiggleFrequencyX", "WiggleFrequencyY", 2.0f * Vector2.One);
         amplitude = data.Vector2("WiggleAmplifyX", "WiggleAmplifyY", 4.0f * Vector2.One);
         phase = data.Vector2("WigglePhaseX", "WigglePhaseY", Vector2.Zero);
-        path = data.Attr("Path", "CorreWithCare/WiggleLine/dot");
+        path = data.Attr("Path", "ChroniaHelper/WiggleLine/dot");
         lineThickness = data.Float("LineThickness", 2f).GetAbs();
         resolution = data.Int("ColorFadeResolution", 10).ClampMin(2);
         allowNodeAlpha = data.Bool("AllowNodeAlpha", false);

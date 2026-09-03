@@ -37,7 +37,7 @@ PointAndLine.placements = {
         WiggleAmplifyY = 4.0,
         WigglePhaseY = 0.0,
         LineThickness = 2,
-        Path = "CorreWithCare/WiggleLine/dot",
+        Path = "ChroniaHelper/WiggleLine/dot",
         ColorFadeResolution = 10,
         AllowNodeAlpha = false,
     },
@@ -77,7 +77,7 @@ local function createCurve(startPos, stopPos, color, thickness)
 end
 
 function PointAndLine.sprite(room, entity)
-    local texture = entity.Path or "CorreWithCare/WiggleLine/dot"
+    local texture = entity.Path or "ChroniaHelper/WiggleLine/dot"
     local color = fetchColor(entity)
     local thickness = getSafeThickness(entity)
 
@@ -110,7 +110,7 @@ function PointAndLine.sprite(room, entity)
 end
 
 function PointAndLine.nodeSprite(room, entity, node, nodeIndex, viewport)
-    local texture = entity.Path or "CorreWithCare/WiggleLine/dot"
+    local texture = entity.Path or "ChroniaHelper/WiggleLine/dot"
     local color = fetchColor(entity)
     local thickness = getSafeThickness(entity)
 
@@ -135,7 +135,7 @@ function PointAndLine.nodeSprite(room, entity, node, nodeIndex, viewport)
 end
 
 function PointAndLine.selection(room, entity)
-    local texture = entity.Path or "CorreWithCare/WiggleLine/dot"
+    local texture = entity.Path or "ChroniaHelper/WiggleLine/dot"
     local sprite = drawableSprite.fromTexture(texture, entity)
     local spriteWidth = sprite.meta.width
     local spriteHeight = sprite.meta.height
