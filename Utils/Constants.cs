@@ -19,9 +19,9 @@ global using Sts = ChroniaHelper.Modules.ChroniaHelperSettings; // usual
 global using Vc2 = Microsoft.Xna.Framework.Vector2;
 global using Vc3 = Microsoft.Xna.Framework.Vector3;
 global using Ldm = ChroniaHelper.Cores.LoadingManager;
+global using ExA = ChroniaHelper.Cores.ExtendedAttributes;
 using Celeste.Mod.CommunalHelper.Imports;
 using System.Reflection;
-using static ChroniaHelper.Cores.NoteAttribute; // marker attributes
 using static ChroniaHelper.Imports.APICommunalHelper;
 using static ChroniaHelper.Imports.APIFrostHelper; 
 using static ChroniaHelper.Imports.APISpeedrunTool;

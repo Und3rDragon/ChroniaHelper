@@ -2,6 +2,7 @@
 using Monocle;
 
 using ChroniaHelper.Cores;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.WIPs.Entities;
 

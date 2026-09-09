@@ -8,6 +8,8 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.WIPs.Entities;
 

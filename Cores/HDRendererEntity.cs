@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static ChroniaHelper.Utils.Miscs;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Cores;
 

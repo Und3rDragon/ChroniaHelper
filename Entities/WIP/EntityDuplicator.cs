@@ -10,6 +10,7 @@ using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using VivHelper;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.WIPs.Entities;
 

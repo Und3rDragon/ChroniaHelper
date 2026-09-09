@@ -1,9 +1,11 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Entities;
 

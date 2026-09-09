@@ -15,6 +15,7 @@ using YamlDotNet.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Lis = ChroniaHelper.Entities.OperationCodesListener.OperationCodeData.Listener;
 using OPC = ChroniaHelper.Entities.OperationCodesListener.OperationCodeData.OperationCode;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

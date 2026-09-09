@@ -8,6 +8,7 @@ using Celeste;
 using Celeste.Mod;
 using ChroniaHelper.Cores;
 using Monocle;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Modules
 {
@@ -51,7 +52,7 @@ namespace ChroniaHelper.Modules
             foreach (var prop in properties)
             {
                 string targetFilePath;
-                var attr = prop.GetCustomAttribute<ChroniaGlobalSavePathAttribute>();
+                var attr = prop.GetCustomAttribute<ChroniaGlobalSavePath>();
 
                 if (attr == null || string.IsNullOrWhiteSpace(attr.RelativePath))
                 {

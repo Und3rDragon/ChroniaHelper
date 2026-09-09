@@ -9,6 +9,7 @@ using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Components.WIP;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils.ChroniaSystem;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.WIPs.Entities;
 

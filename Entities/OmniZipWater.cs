@@ -8,6 +8,7 @@ using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using static On.Celeste.Player;
 using Line = ChroniaHelper.Utils.GeometryUtils.Line;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

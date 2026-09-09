@@ -2,11 +2,7 @@
 using ChroniaHelper.Utils.LogicExpression;
 using ChroniaHelper.Utils.MathExpression;
 using MonoMod.ModInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.API;
 
@@ -22,6 +18,7 @@ public static class API
     /// <param name="setVariables"></param>
     /// <param name="getFlagValue"></param>
     /// <returns></returns>
+    [Note("Included in 1.0")]
     public static double ParseChroniaMathExpression(string expression, Func<string, double> setVariables = null, Func<string, double> getFlagValue = null)
         => expression.ParseMathExpressionRaw(setVariables, getFlagValue);
     public static float ParseChroniaMathExpression(string expression, Func<string, float> setVariables = null, Func<string, float> getFlagValue = null)
@@ -34,6 +31,7 @@ public static class API
     /// <param name="setVariableValue"></param>
     /// <param name="fallback"></param>
     /// <returns></returns>
+    [Note("Included in 1.0")]
     public static bool ParseChroniaFlagLogicExpression(string expression, Func<string, bool> setVariableValue = null, bool fallback = false)
         => expression.ParseLogicExpression(setVariableValue, fallback);
 
@@ -45,6 +43,7 @@ public static class API
     /// <param name="global"></param>
     /// <param name="perDeath"></param>
     /// <param name="perRoom"></param>
+    [Note("Included in 1.0")]
     public static void SetChroniaFlag(string flag, bool state = true, bool global = false, bool perDeath = false, bool perRoom = false)
         => flag.SetFlag(state, global, perDeath, perRoom);
 
@@ -55,7 +54,7 @@ public static class API
     /// <param name="isGlobal">Check if the flag is enlisted in global flags</param>
     /// <param name="isPerDeath">Check if the flag is enlisted in per-death flags</param>
     /// <param name="isPerRoom">Check if the flag is enlisted in per-room flags</param>
-    /// <returns></returns>
+    [Note("Included in 1.0")]
     public static bool GetChroniaFlag(string flag, bool isGlobal = false, bool isPerDeath = false, bool isPerRoom = false)
         => (flag.GetFlag() && !isGlobal && !isPerDeath && !isPerRoom)
         || ((Md.SaveData?.flags.Contains(flag) ?? false) && isGlobal)

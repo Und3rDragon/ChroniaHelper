@@ -1,9 +1,10 @@
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

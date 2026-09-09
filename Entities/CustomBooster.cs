@@ -15,6 +15,7 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using YamlDotNet.Core;
 using ChroniaHelper.Components;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

@@ -7,6 +7,7 @@ using MonoMod.RuntimeDetour;
 using System.Collections;
 using System.Xml.Serialization;
 using VivHelper;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 
@@ -16,7 +17,7 @@ public class Refill : Entity
 {
     private static ILHook origUpdateHook;
 
-    [ChroniaHelper.Cores.SelectiveLoadHook]
+    [SelectiveLoadHook]
     public static void Load()
     {
         IL.Celeste.Player.RefillStamina += RefillStamina;
@@ -26,7 +27,7 @@ public class Refill : Entity
 
         origUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), RefillStamina);
     }
-    [ChroniaHelper.Cores.SelectiveUnloadHook]
+    [SelectiveUnloadHook]
     public static void Unload()
     {
         IL.Celeste.Player.RefillStamina -= RefillStamina;

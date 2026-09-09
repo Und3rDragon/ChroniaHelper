@@ -8,6 +8,8 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Entities;
 

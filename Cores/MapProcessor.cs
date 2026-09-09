@@ -8,6 +8,7 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
 using YoctoHelper.Hooks;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Cores;
 

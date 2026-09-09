@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using VivHelper.Triggers;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Components.WIP;
 

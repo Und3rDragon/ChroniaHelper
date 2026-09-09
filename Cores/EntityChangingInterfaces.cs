@@ -13,6 +13,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Utils;
 using MonoMod.RuntimeDetour;
 using MonoMod.Cil;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Cores
 {

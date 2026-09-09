@@ -8,6 +8,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Line = ChroniaHelper.Utils.GeometryUtils.Line;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.WIPs.Entities.TrackIndicator;
 

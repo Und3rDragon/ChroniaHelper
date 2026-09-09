@@ -2,6 +2,8 @@
 using Celeste.Mod.Entities;
 using Celeste.Mod.XaphanHelper.UI_Elements;
 using ChroniaHelper.Cores;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Triggers;
 

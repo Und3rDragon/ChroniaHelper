@@ -7,6 +7,7 @@ using MonoMod.Utils;
 using YoctoHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Cores;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Hooks;
 

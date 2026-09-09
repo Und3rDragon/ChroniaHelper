@@ -8,6 +8,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using Microsoft.Xna.Framework;
 using Monocle;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities
 {

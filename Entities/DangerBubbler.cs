@@ -9,6 +9,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using YoctoHelper.Hooks;
 using static Celeste.LavaRect;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

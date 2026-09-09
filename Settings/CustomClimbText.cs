@@ -6,17 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Utils;
 using MonoMod.Utils;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Settings;
 
 public static class CustomClimbText
 {
-    [Cores.LoadHook]
+    [LoadHook]
     public static void Load()
     {
         On.Celeste.OuiChapterPanel.Reset += OnReset;
     }
-    [Cores.UnloadHook]
+    [UnloadHook]
     public static void Unload()
     {
         On.Celeste.OuiChapterPanel.Reset -= OnReset;
