@@ -59,11 +59,11 @@ public static class StopclockUtils
         {
             if (reverse)
             {
-                t[t.Length - 1 - i].TrimStart('0').ParseInt(out n[i], 0);
+                n[i] = t[t.Length - 1 - i].TrimStart('0').Parse(0);
             }
             else
             {
-                t[i].TrimStart('0').ParseInt(out n[i], 0);
+                n[i] = t[i].TrimStart('0').Parse(0);
             }
         }
 

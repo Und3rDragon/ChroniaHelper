@@ -29,7 +29,10 @@ public class ColoredCustomCoreMessage : Entity
     public float alpha, defaultFadedValue;
     private bool outline, alwaysRender, lockPosition;
     private float RenderDistance, alphaMult;
-    private Vector2 scale;
+    private Vector2 scale = Vc2.One * 1.25f;
+    private List<SelectiveSlider> _scale = new();
+    // language scale related
+    private Dictionary<Language, List<SelectiveSlider>> languageScales = new();
     private Ease.Easer EaseType;
     private ChroniaColor color, outlineColor;
     private Vector2[] nodes;
@@ -81,7 +84,31 @@ public class ColoredCustomCoreMessage : Entity
         outlineColor = new(data.Attr("OutlineColor", "000000"));
         outline = data.Has("outline") ? data.Bool("outline") : outlineColor.Parsed() != Color.Transparent;
         pausetype = data.Enum<PauseRenderTypes>("PauseType", PauseRenderTypes.Hidden);
-        scale = Vector2.One * data.Float("Scale", 1.25f);
+        var scales = data.Attr("Scale", "1.25").Split(',', StringSplitOptions.TrimEntries);
+        if(scales.TryGet(0, out string scale1))
+        {
+            _scale.Add(new(scale1));
+        }
+        if (scales.TryGet(1, out string scale2))
+        {
+            _scale.Add(new(scale2));
+        }
+        // language scale specify
+        var _lans = data.StringArray("LanguageScaleSpecify", ';');
+        foreach(var lan in _lans)
+        {
+            var specifier = lan.Split(',', StringSplitOptions.TrimEntries);
+            int L = specifier.Length;
+            if(L < 2) { continue; }
+            if ((LanguageWrapper)specifier[0] == 0) { continue; }
+            languageScales.Create((LanguageWrapper)specifier[0], new());
+            languageScales[(LanguageWrapper)specifier[0]].Add(new(specifier[1]));
+            if(L >= 3)
+            {
+                languageScales[(LanguageWrapper)specifier[0]].Add(new(specifier[2]));
+            }
+        }
+
         RenderDistance = data.Float("RenderDistance", 128f);
         EaseType = EaseUtils.EaseMatch[data.Enum<EaseMode>("EaseType", EaseMode.CubeInOut)];
         color = new(data.Attr("TextColor1", "ffffff"));
@@ -298,6 +325,33 @@ public class ColoredCustomCoreMessage : Entity
         {
             screenPosition.X = 1920f - screenPosition.X;
         }
+
+        // define a scale dynamically
+        if (languageScales.ContainsKey(Languages.Current))
+        {
+            var p = languageScales[Languages.Current];
+            if(p.TryGet(0, out SelectiveSlider s1))
+            {
+                scale = Vc2.One * (s1?.Value ?? 1.25f);
+            }
+            if(p.TryGet(1, out SelectiveSlider s2))
+            {
+                scale.Y = s2?.Value ?? 1.25f;
+            }
+        }
+        else
+        {
+            scale = 1.25f * Vc2.One;
+            if(_scale.TryGet(0, out SelectiveSlider slider1))
+            {
+                scale = Vc2.One * (slider1?.Value ?? 1.25f); 
+            }
+            if (_scale.TryGet(1, out SelectiveSlider slider2))
+            {
+                scale.Y = slider2?.Value ?? 1.25f;
+            }
+        }
+        
         if (outline)
         {
             ActiveFont.DrawOutline(text, screenPosition, AlignUtils.AlignToJustify[align], scale, color.color * alpha, 2f, outlineColor.color * alpha);

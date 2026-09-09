@@ -473,7 +473,7 @@ public static class MapDataUtils
         List<int> r = new();
         for (int i = 0; i < s.Length; i++)
         {
-            r.Add(s[i].ParseInt(fallback));
+            r.Add(s[i].Parse(fallback));
         }
 
         return r;
@@ -492,7 +492,7 @@ public static class MapDataUtils
         List<float> r = new();
         for (int i = 0; i < s.Length; i++)
         {
-            r.Add(s[i].ParseFloat(fallback));
+            r.Add(s[i].Parse(fallback));
         }
 
         return r;
@@ -511,7 +511,7 @@ public static class MapDataUtils
         List<double> r = new();
         for (int i = 0; i < s.Length; i++)
         {
-            r.Add(s[i].ParseDouble(fallback));
+            r.Add(s[i].Parse(fallback));
         }
 
         return r;
@@ -537,11 +537,11 @@ public static class MapDataUtils
             if (cords.Length == 0) { r.Add(Vc2.Zero); continue; }
 
             Vc2 member = Vc2.Zero;
-            member.X = cords[0].ParseFloat(fallback.X);
+            member.X = cords[0].Parse(fallback.X);
 
             if (cords.Length > 1)
             {
-                member.Y = cords[1].ParseFloat(fallback.Y);
+                member.Y = cords[1].Parse(fallback.Y);
             }
 
             r.Add(member);

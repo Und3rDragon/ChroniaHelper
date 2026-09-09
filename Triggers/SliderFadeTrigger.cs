@@ -35,7 +35,7 @@ public class SliderFadeTrigger : BaseTrigger
         }
         else
         {
-            fadeFrom = _fadeFrom.ParseFloat(0f);
+            fadeFrom = _fadeFrom.Parse(0f);
         }
 
         timer = timed;

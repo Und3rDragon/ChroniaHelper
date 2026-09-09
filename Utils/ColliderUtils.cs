@@ -334,17 +334,17 @@ public static class ColliderUtils
         }
         else if (isPoly)
         {
-            Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
-                p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
-                p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+            Vector2 p1 = new Vector2(ps[1].Parse(0f), ps[2].Parse(0f)),
+                p2 = new Vector2(ps[3].Parse(0f), ps[4].Parse(0f)),
+                p3 = new Vector2(ps[5].Parse(0f), ps[6].Parse(0f));
             HashSet<Vector2> points = new() { p1, p2, p3 };
             if (ps.Length > 7)
             {
                 Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
                 for (int j = 0; j * 2 + 7 < ps.Length; j++)
                 {
-                    additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(),
-                        ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    additional[j] = new Vector2(ps[j * 2 + 8].Parse(0f),
+                        ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].Parse(0f));
                 }
 
                 foreach (var v in additional)
@@ -403,17 +403,17 @@ public static class ColliderUtils
         }
         else if (isPoly)
         {
-            Vector2 p1 = new Vector2(ps[1].ParseFloat(), ps[2].ParseFloat()),
-                p2 = new Vector2(ps[3].ParseFloat(), ps[4].ParseFloat()),
-                p3 = new Vector2(ps[5].ParseFloat(), ps[6].ParseFloat());
+            Vector2 p1 = new Vector2(ps[1].Parse(0f), ps[2].Parse(0f)),
+                p2 = new Vector2(ps[3].Parse(0f), ps[4].Parse(0f)),
+                p3 = new Vector2(ps[5].Parse(0f), ps[6].Parse(0f));
             HashSet<Vector2> points = new() { p1, p2, p3 };
             if (ps.Length > 7)
             {
                 Vector2[] additional = new Vector2[ps.Length - 7 > 0 ? ps.Length - 7 : 1];
                 for (int j = 0; j * 2 + 7 < ps.Length; j++)
                 {
-                    additional[j] = new Vector2(ps[j * 2 + 8].ParseFloat(),
-                        ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].ParseFloat());
+                    additional[j] = new Vector2(ps[j * 2 + 8].Parse(0f),
+                        ps[j * 2 + 9 < ps.Length ? j * 2 + 9 : ps.Length - 1].Parse(0f));
                 }
 
                 foreach (var v in additional)

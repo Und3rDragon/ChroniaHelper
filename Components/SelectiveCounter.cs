@@ -15,24 +15,28 @@ public class SelectiveCounter : SelectiveSessionValue
     {
         this.Fallback = fallback;
         this.Limiter = restraints ?? new();
+
+        _valid = !(string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression));
+        if (_valid)
+        {
+            if (int.TryParse(Expression, out int n))
+            {
+                _cached = n;
+            }
+        }
     }
     public int Fallback;
     public Clamper.Int Limiter = new();
 
+    private bool _valid;
+    private int? _cached = null;
+
     public int Value => Limiter.Operate(GetValue());
     private int GetValue()
     {
-        int n = Fallback;
+        if (!_valid) { return Fallback; }
 
-        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
-        {
-            return n;
-        }
-        
-        if(int.TryParse(Expression, out n))
-        {
-            return n;
-        }
+        if(_cached != null) { return (int)_cached; }
 
         return Expression.GetCounter(Fallback);
     }

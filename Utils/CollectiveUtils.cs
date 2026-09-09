@@ -787,22 +787,21 @@ public static class CollectiveUtils
     }
 
 
-    public static bool TryGet<T>(this IList<T> source, int index, out T? result)
-        where T : struct
+    public static bool TryGet<T>(this IList<T> source, int index, out T result)
     {
         if (source.IsNull())
         {
-            result = null;
+            result = default(T);
             return false;
         }
         if (source.Count == 0)
         {
-            result = null;
+            result = default(T);
             return false;
         }
         if (index >= source.Count)
         {
-            result = null;
+            result = default(T);
             return false;
         }
 

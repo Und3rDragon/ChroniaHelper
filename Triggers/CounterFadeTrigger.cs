@@ -36,7 +36,7 @@ public class CounterFadeTrigger : BaseTrigger
         }
         else
         {
-            fadeFrom = _fadeFrom.ParseInt(0);
+            fadeFrom = _fadeFrom.Parse(0);
         }
 
         timer = timed;

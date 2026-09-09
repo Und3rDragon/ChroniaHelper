@@ -23,7 +23,8 @@ ccm.placements = {
         dialog = "app_ending",
         OutlineColor="000000",
         align = 5,
-        Scale=1.25,
+        Scale="1.25",
+        LanguageScaleSpecify = "none",
         RenderDistance=128.0,
         AlwaysRender=false,
         LockPosition=false,
@@ -70,7 +71,6 @@ ccm.fieldInformation = {
     },
     OutlineColor = {fieldType = "color", allowXNAColors=true, allowEmpty = true},
     TextColor1 = {fieldType = "color", allowXNAColors=true, useAlpha = false},
-    Scale = {fieldType = "number", minimumValue = 0.125},
     EaseType = {
         options = {
             "Linear",
@@ -107,6 +107,29 @@ ccm.fieldInformation = {
     PauseType = {fieldType = "string", options = {"Hidden","Shown","Fade"}, editable = false},
     AlphaMultiplier = {
         maximumValue = 1, minimumValue = 0,
+    },
+    LanguageScaleSpecify = {
+        fieldType = "list",
+        elementOptions = {
+            fieldType = "list",
+            elementOptions = {
+                options = {
+                    "brazilian",
+                    "french",
+                    "german",
+                    "italian",
+                    "japanese",
+                    "korean",
+                    "russian",
+                    "simplifiedchinese",
+                    "spanish",
+                },
+                editable = true,
+            },
+            minimumElements = 2,
+            maximumElements = 3,
+        },
+        elementSeparator = ';',
     },
 }
 

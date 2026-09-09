@@ -30,7 +30,7 @@ namespace ChroniaHelper.Triggers.PolygonSeries
             string[] _ids = data.Attr("triggerIDs").Split(',', StringSplitOptions.TrimEntries);
             foreach(var id in _ids)
             {
-                if (id.IsInt()) { ids.Enter(id.ParseInt()); }
+                if (id.IsInt()) { ids.Enter(id.Parse(0)); }
             }
             unuseID = data.Attr("triggerIDs").IsNullOrEmpty();
 

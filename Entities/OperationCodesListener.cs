@@ -39,7 +39,7 @@ public class OperationCodesListener : BaseEntity
             string[] buttons = seq.Split(",", StringSplitOptions.TrimEntries);
             foreach (var button in buttons)
             {
-                int parse = button.ParseInt(-1).Clamp(-1, 13);
+                int parse = button.Parse(-1).Clamp(-1, 13);
                 if (parse == -1) { code |= OPC.None; continue; }
 
                 code |= data.Encode(parse);
@@ -155,7 +155,7 @@ public class OperationCodesListener : BaseEntity
 
         public OperationCode Encode(int button)
         {
-            int parse = button.ParseInt(-1).Clamp(-1, 13);
+            int parse = button.Parse(-1).Clamp(-1, 13);
             if (parse == -1) { return OPC.None; }
 
             return Encoder[Ref[parse]];

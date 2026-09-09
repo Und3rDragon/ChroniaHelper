@@ -17,24 +17,28 @@ public class SelectiveSlider : SelectiveSessionValue
     {
         this.Fallback = fallback;
         this.Limiter = restraints ?? new();
+
+        _valid = !(string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression));
+        if (_valid)
+        {
+            if (float.TryParse(Expression, out float n))
+            {
+                _cached = n;
+            }
+        }
     }
     public float Fallback;
     public Clamper.Float Limiter = new();
 
+    private bool _valid;
+    private float? _cached = null;
+
     public float Value => Limiter.Operate(GetValue());
     private float GetValue()
     {
-        float n = Fallback;
+        if (!_valid) { return Fallback; }
 
-        if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
-        {
-            return n;
-        }
-
-        if (float.TryParse(Expression, out n))
-        {
-            return n;
-        }
+        if(_cached != null) { return (float)_cached; }
 
         return Expression.GetSlider(Fallback);
     }

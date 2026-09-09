@@ -12,7 +12,9 @@ public class CustomTheoCrystal : TheoCrystal
     public CustomTheoCrystal(EntityData data, Vc2 offset) : base(data, offset)
     {
         Depth = data.Int("depth", 100);
-        
+
+        Collider = new Hitbox(8f, 10f, -4f, -10f);
+
         tutorialTitleText = data.Attr("birdTutorialTitle", "tutorial_hold");
         tutorialMain = data.Attr("birdTutorialText", "Grab");
         tutorialOffset = data.Vector2("tutorialIconOffsetX", "tutorialIconOffsetY", new(0f, -24f));

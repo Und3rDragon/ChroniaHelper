@@ -61,7 +61,7 @@ public class ZaggingLine : Entity
         intervals = new float[_intervals.Length];
         for(int i = 0; i < _intervals.Length; i++)
         {
-            float t = _intervals[i].ParseFloat(1f);
+            float t = _intervals[i].Parse(1f);
             if (t < Engine.DeltaTime) { t = Engine.DeltaTime; }
             intervals[i] = t;
         }
@@ -70,7 +70,7 @@ public class ZaggingLine : Entity
         durations = new float[_durations.Length];
         for(int i = 0; i < _durations.Length; i++)
         {
-            float t = _durations[i].ParseFloat(3f);
+            float t = _durations[i].Parse(3f);
             if(t < Engine.DeltaTime) { t = Engine.DeltaTime; }
             durations[i] = t;
         }

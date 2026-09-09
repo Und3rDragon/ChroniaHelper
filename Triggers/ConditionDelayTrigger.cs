@@ -196,7 +196,7 @@ public class ConditionDelayTrigger : BaseTrigger
         List<int> targets = new();
         this.targetIDs.Split(',', StringSplitOptions.TrimEntries).EachDo((s) =>
         {
-            if (s.ParseInt(out int n))
+            if (s.TryParse(out int n))
             {
                 targets.Add(n);
             }
