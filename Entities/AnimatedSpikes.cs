@@ -881,4 +881,16 @@ public class AnimatedSpikes : Entity
         return (minIndex <= spikeIndex + 1) && (maxIndex >= spikeIndex - 1);
     }
 
+    // 供 Refill 检测使用：只按玩家位置判断是否碰到这根刺，不受 waitPlayerLeave 影响
+    public bool PlayerCheckForRefill(int spikeIndex)
+    {
+        Player player = base.CollideFirst<Player>();
+        if (player is null)
+        {
+            return false;
+        }
+        this.GetPlayerCollideIndex(player, out var minIndex, out var maxIndex);
+        return (minIndex <= spikeIndex + 1) && (maxIndex >= spikeIndex - 1);
+    }
+
 }

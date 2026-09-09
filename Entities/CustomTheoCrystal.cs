@@ -13,8 +13,6 @@ public class CustomTheoCrystal : TheoCrystal
     {
         Depth = data.Int("depth", 100);
 
-        Collider = new Hitbox(8f, 10f, -4f, -10f);
-
         tutorialTitleText = data.Attr("birdTutorialTitle", "tutorial_hold");
         tutorialMain = data.Attr("birdTutorialText", "Grab");
         tutorialOffset = data.Vector2("tutorialIconOffsetX", "tutorialIconOffsetY", new(0f, -24f));
@@ -50,6 +48,7 @@ public class CustomTheoCrystal : TheoCrystal
         this.Hold.OnHitSpring = new Func<Spring, bool>(this.HitSpring);
         this.Hold.OnHitSpinner = new Action<Entity>(this.HitSpinner);
         this.Hold.SpeedGetter = (Func<Vector2>) (() => this.Speed);
+        this.Hold.SpeedSetter = v => this.Speed = v;
         this.onCollideH = new Collision(this.OnCollideH);
         this.onCollideV = new Collision(this.OnCollideV);
         

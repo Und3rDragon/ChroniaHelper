@@ -7,7 +7,7 @@ namespace ChroniaHelper.Modules;
 public class ChroniaHelperSettings : EverestModuleSettings
 {
     public bool ChineseCharactersAutoLining { get; set; } = false;
-    public bool HUDMainControl { get; set; } = true;
+    public bool HUDMainControl { get; set; } = false;
     public enum DisplayPosition { PlayerBased, StaticScreen }
     public enum Aligning { Left, Middle, Right }
     public bool showMouse { get; set; } = false;
