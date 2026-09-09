@@ -14,6 +14,48 @@ namespace ChroniaHelper.Entities;
 [CustomEntity("ChroniaHelper/Refill")]
 public class Refill : Entity
 {
+    private static ILHook origUpdateHook;
+
+    [ChroniaHelper.Cores.SelectiveLoadHook]
+    public static void Load()
+    {
+        IL.Celeste.Player.RefillStamina += RefillStamina;
+        IL.Celeste.Player.ClimbUpdate += RefillStamina;
+        IL.Celeste.Player.SwimBegin += RefillStamina;
+        IL.Celeste.Player.DreamDashBegin += RefillStamina;
+
+        origUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), RefillStamina);
+    }
+    [ChroniaHelper.Cores.SelectiveUnloadHook]
+    public static void Unload()
+    {
+        IL.Celeste.Player.RefillStamina -= RefillStamina;
+        IL.Celeste.Player.ClimbUpdate -= RefillStamina;
+        IL.Celeste.Player.SwimBegin -= RefillStamina;
+        IL.Celeste.Player.DreamDashBegin -= RefillStamina;
+
+        origUpdateHook?.Dispose();
+        origUpdateHook = null;
+    }
+
+    private static void RefillStamina(ILContext context)
+    {
+        ILCursor cursor = new(context);
+
+        while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchStfld<Player>("Stamina")))
+        {
+            cursor.EmitDelegate<Func<float, float>>(orig =>
+            {
+                if (orig == 110f && Md.Session?.RefillMaxStamina is float m)
+                {
+                    return m;
+                }
+                return orig;
+            });
+            // 前进到本次 stfld 之后，否则下一轮会重复匹配同一个写点，造成死循环
+            cursor.Index++;
+        }
+    }
 
     private string spritePath;
 
@@ -224,6 +266,10 @@ public class Refill : Entity
             this.resetStamina = -110f;
         }
         this.setAsMax = data.Bool("changePlayerMax", false);
+        if (setAsMax)
+        {
+            Ldm.LoadHook<Refill>();
+        }
         this.touchSound = !string.IsNullOrWhiteSpace(data.Attr("touchSound", null)) ? data.Attr("touchSound") : (!this.twoDashes ? Refill.RefillTouchSoundEvent : Refill.RefillTwoTouchSoundEvent);
         this.respawnSound = !string.IsNullOrWhiteSpace(data.Attr("respawnSound", null)) ? data.Attr("respawnSound") : (!this.twoDashes ? Refill.RefillRespawnSoundEvent : Refill.RefillTwoRespawnSoundEvent);
         this.outlineColor = data.GetChroniaColor("outlineColor", "000000");
@@ -712,50 +758,4 @@ public class Refill : Entity
         },
     };
 
-}
-
-public static class RefillUtils
-{
-    private static ILHook origUpdateHook;
-
-    [ChroniaHelper.Cores.LoadHook]
-    public static void Load()
-    {
-        IL.Celeste.Player.RefillStamina += RefillStamina;
-        IL.Celeste.Player.ClimbUpdate += RefillStamina;
-        IL.Celeste.Player.SwimBegin += RefillStamina;
-        IL.Celeste.Player.DreamDashBegin += RefillStamina;
-
-        origUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), RefillStamina);
-    }
-    [ChroniaHelper.Cores.UnloadHook]
-    public static void Unload()
-    {
-        IL.Celeste.Player.RefillStamina -= RefillStamina;
-        IL.Celeste.Player.ClimbUpdate -= RefillStamina;
-        IL.Celeste.Player.SwimBegin -= RefillStamina;
-        IL.Celeste.Player.DreamDashBegin -= RefillStamina;
-
-        origUpdateHook?.Dispose();
-        origUpdateHook = null;
-    }
-
-    private static void RefillStamina(ILContext context)
-    {
-        ILCursor cursor = new(context);
-
-        while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchStfld<Player>("Stamina")))
-        {
-            cursor.EmitDelegate<Func<float, float>>(orig =>
-            {
-                if (orig == 110f && Md.Session?.RefillMaxStamina is float m)
-                {
-                    return m;
-                }
-                return orig;
-            });
-            // 前进到本次 stfld 之后，否则下一轮会重复匹配同一个写点，造成死循环
-            cursor.Index++;
-        }
-    }
 }
