@@ -226,18 +226,12 @@ public class AdvancedSpikes : Entity
                     if (spike1.trigger)
                     {
                         List<bool> args = new();
-                        foreach (var i in spike1.spikes)
+                        spike1.GetPlayerCollideIndex(player, out var minIndex, out var maxIndex);
+                        for (int i = 0; i < spike1.spikes.Length; i++)
                         {
-                            if (spike1.PlayerCheck(i.spikeIndex))
+                            if ((minIndex <= i + 1) && (maxIndex >= i - 1))
                             {
-                                if (i.lerp >= spike1.afterTriggerMinLerpArgument) // lerp defines whether the spikes is fully triggered
-                                {
-                                    args.Add(true);
-                                }
-                                else
-                                {
-                                    args.Add(false);
-                                }
+                                args.Add(spike1.spikes[i].lerp >= spike1.afterTriggerMinLerpArgument);
                             }
                         }
                         return args.Contains(true) ? !spike1.CanRefillDashAfterTriggered : !spike1.CanRefillDashOnTouch;
@@ -254,16 +248,9 @@ public class AdvancedSpikes : Entity
                         List<bool> args = new();
                         foreach (var i in spike2.spikes)
                         {
-                            if (spike2.PlayerCheck(i.spikeIndex))
+                            if (spike2.PlayerCheckForRefill(i.spikeIndex))
                             {
-                                if (i.lerp >= spike2.afterTriggerMinLerpArgument)
-                                {
-                                    args.Add(true);
-                                }
-                                else
-                                {
-                                    args.Add(false);
-                                }
+                                args.Add(i.lerp >= spike2.afterTriggerMinLerpArgument);
                             }
                         }
                         return args.Contains(true) ? !spike2.CanRefillDashAfterTriggered : !spike2.CanRefillDashOnTouch;
