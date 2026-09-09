@@ -45,7 +45,8 @@ local fieldTable = {
                 "AnyOne",
                 "Dashes",
                 "Stamina",
-                "All"
+                "All",
+                "AlwaysCollect",
             },
             editable = false
         }
@@ -78,7 +79,6 @@ local fieldTable = {
         {
             fieldType = "integer",
             allowEmpty = false,
-            minimumValue = - 1
         }
     },
     resetDashes =
@@ -88,7 +88,6 @@ local fieldTable = {
         {
             fieldType = "integer",
             allowEmpty = false,
-            minimumValue = - 1
         }
     },
     fewerStamina =
@@ -98,7 +97,6 @@ local fieldTable = {
         {
             fieldType = "number",
             allowEmpty = false,
-            minimumValue = 0
         }
     },
     resetStamina =
@@ -108,8 +106,10 @@ local fieldTable = {
         {
             fieldType = "number",
             allowEmpty = false,
-            minimumValue = 0
         }
+    },
+    changePlayerMax = {
+        data = false,
     },
     touchSound =
     {

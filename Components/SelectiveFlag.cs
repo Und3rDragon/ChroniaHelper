@@ -14,8 +14,26 @@ public class SelectiveFlag : SelectiveSessionValue
     public SelectiveFlag(string name, bool fallback = false) : base(name)
     {
         Fallback = fallback;
+
+        _valid = !(string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression));
+        if (_valid)
+        {
+            string s = Expression.ToLower().Trim();
+            if (TrueSyntax.Contains(s))
+            {
+                _cached = true;
+            }
+
+            if (FalseSyntax.Contains(s))
+            {
+                _cached = true;
+            }
+        }
     }
     private bool Fallback;
+
+    private bool _valid;
+    private bool? _cached = null;
 
     private List<string> TrueSyntax = new()
     {
@@ -30,50 +48,12 @@ public class SelectiveFlag : SelectiveSessionValue
     public bool Value => GetValue();
     private bool GetValue()
     {
-        bool b = Fallback;
+        if (!_valid) { return Fallback; }
 
-        if(string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
-        {
-            return b;
-        }
-
-        string s = Expression.ToLower().Trim();
-        if (TrueSyntax.Contains(s))
-        {
-            return true;
-        }
-
-        if (FalseSyntax.Contains(s))
-        {
-            return false;
-        }
+        if(_cached != null) { return (bool)_cached; }
 
         return Expression.GetFlag();
     }
-
-    //protected override void BeforeEntityAdded(Scene scene)
-    //{
-    //    if (string.IsNullOrEmpty(Expression) || string.IsNullOrWhiteSpace(Expression))
-    //    {
-    //        return;
-    //    }
-
-    //    string s = Expression.ToLower().Trim();
-    //    if (TrueSyntax.Contains(s))
-    //    {
-    //        return;
-    //    }
-
-    //    if (FalseSyntax.Contains(s))
-    //    {
-    //        return;
-    //    }
-
-    //    if (!MaP.level?.Session?.Flags.Contains(Expression) ?? true)
-    //    {
-    //        Expression.SetFlag(Fallback);
-    //    }
-    //}
 }
 
 public static class SelectiveFlagExtension

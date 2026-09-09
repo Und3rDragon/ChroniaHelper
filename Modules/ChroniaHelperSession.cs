@@ -256,6 +256,9 @@ public class ChroniaHelperSession : EverestModuleSession
     // Bloom Strength Setup
     public float? OverrideBloomStrength = null;
 
+    // Refill Hook values
+    public float? RefillMaxStamina = null;
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]

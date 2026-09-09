@@ -455,50 +455,56 @@ public static class NumberUtils
 
     public static bool TryParse<T>(this string source, out T output) where T : INumber<T>
     {
-        return T.TryParse(source, NumberStyles.Any, null, out output);
+        return T.TryParse(source, SetNumberStyle<T>(), CultureInfo.InvariantCulture, out output);
     }
 
     public static T Parse<T>(this string source, T fallback) where T : INumber<T>
     {
-        bool b = T.TryParse(source, NumberStyles.Any, null, out var output);
-        return b ? output : fallback;
+        return T.TryParse(source, SetNumberStyle<T>(), CultureInfo.InvariantCulture, out T output) ? output : fallback;
     }
 
-    public static U Parse<T, U>(this T source, U fallback) 
+    public static U Parse<T, U>(this T source, U fallback)
         where T : INumber<T>
         where U : INumber<U>
     {
-        bool b = U.TryParse(source.ToString(), NumberStyles.Any, null, out var output);
-        return b ? output : fallback;
-    }
-
-    public static float Approach(this float value, float target, float maxMove)
-    {
-        return Calc.Approach(value, target, maxMove.GetAbs());
-    }
-    
-    public static int Approach(this int val, int target, int delta)
-    {
-        var maxMove = delta.GetAbs();
-        
-        if(val < target)
+        if (source.ToString().TryParse(out U result))
         {
-            return Math.Min(val + maxMove, target);
-        }
-        
-        return Math.Max(val - maxMove, target);
-    }
-
-    public static double Approach(this double val, double target, double delta)
-    {
-        var maxMove = delta.GetAbs();
-
-        if (val < target)
-        {
-            return Math.Min(val + maxMove, target);
+            return result;
         }
 
-        return Math.Max(val - maxMove, target);
+        return fallback;
+    }
+
+    public static NumberStyles SetNumberStyle<T>() where T : INumber<T>
+    {
+        var type = typeof(T);
+
+        if (type == typeof(int) || type == typeof(long) || type == typeof(short) ||
+            type == typeof(byte) || type == typeof(sbyte) || type == typeof(uint) ||
+            type == typeof(ulong) || type == typeof(ushort) || type == typeof(nint) ||
+            type == typeof(nuint))
+        {
+            return NumberStyles.Integer;
+        }
+
+        if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
+        {
+            return NumberStyles.Float | NumberStyles.AllowThousands;
+        }
+
+        return NumberStyles.Any;
+    }
+
+    public static T Approach<T>(this T val, T target, T delta) where T : INumber<T>
+    {
+        var maxMove = delta.GetAbs();
+
+        if (!(val > target))
+        {
+            return T.Min(val + maxMove, target);
+        }
+
+        return T.Max(val - maxMove, target);
     }
 
     public static Vc2 Approach(this Vc2 val, Vc2 target, Vc2 delta)

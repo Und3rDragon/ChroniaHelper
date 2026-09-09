@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using IL.MonoMod;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using System.Collections;
+using System.Xml.Serialization;
+using VivHelper;
 
 namespace ChroniaHelper.Entities;
 
@@ -26,7 +29,7 @@ public class Refill : Entity
 
     private int fewerDashes;
 
-    private int rewerDashes;
+    private int resetDashes;
 
     private float fewerStamina;
 
@@ -134,6 +137,8 @@ public class Refill : Entity
 
     private string flagOnCollected;
 
+    private bool setAsMax = false;
+
     static Refill()
     {
         Refill.RefillSpritePath = "objects/refill/";
@@ -155,7 +160,8 @@ public class Refill : Entity
         AnyOne,
         Dashes,
         Stamina,
-        All
+        All,
+        AlwaysCollect
     }
 
     private enum ResetMode
@@ -202,13 +208,22 @@ public class Refill : Entity
         {
             this.fewerDashes = !this.twoDashes ? -1 : 2;
         }
-        this.rewerDashes = data.Int("resetDashes", -1);
-        if (this.rewerDashes < 0)
+        this.resetDashes = data.Int("resetDashes", -1);
+        if (this.resetDashes < 0)
         {
-            this.rewerDashes = !this.twoDashes ? -1 : 2;
+            this.resetDashes = !this.twoDashes ? -1 : 2;
         }
         this.fewerStamina = data.Float("fewerStamina", 20F);
+        if(fewerStamina < 0)
+        {
+            this.fewerStamina = -20f;
+        }
         this.resetStamina = data.Float("resetStamina", 110F);
+        if(resetStamina < 0)
+        {
+            this.resetStamina = -110f;
+        }
+        this.setAsMax = data.Bool("changePlayerMax", false);
         this.touchSound = !string.IsNullOrWhiteSpace(data.Attr("touchSound", null)) ? data.Attr("touchSound") : (!this.twoDashes ? Refill.RefillTouchSoundEvent : Refill.RefillTwoTouchSoundEvent);
         this.respawnSound = !string.IsNullOrWhiteSpace(data.Attr("respawnSound", null)) ? data.Attr("respawnSound") : (!this.twoDashes ? Refill.RefillRespawnSoundEvent : Refill.RefillTwoRespawnSoundEvent);
         this.outlineColor = data.GetChroniaColor("outlineColor", "000000");
@@ -334,19 +349,11 @@ public class Refill : Entity
         {
             return;
         }
-        if (this.fewerDashes == -1)
-        {
-            this.fewerDashes = player.MaxDashes;
-        }
-        if (this.rewerDashes == -1)
-        {
-            this.rewerDashes = player.MaxDashes;
-        }
-        if (!this.fewerDictionary[this.fewerMode](player.Dashes, player.Stamina, this.fewerDashes, this.fewerStamina))
+        if (!this.fewerDictionary[this.fewerMode](player.Dashes, player.Stamina, this.fewerDashes < 0 ? player.MaxDashes : fewerDashes, this.fewerStamina < 0 ? 20f : fewerStamina))
         {
             return;
         }
-        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.rewerDashes, this.resetStamina);
+        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.resetDashes < 0 ? player.MaxDashes : resetDashes, this.resetStamina < 0 ? 110f : resetStamina);
         if (!string.IsNullOrEmpty(this.respawnSound))
         {
             Audio.Play(this.touchSound, this.centerPosition);
@@ -374,15 +381,7 @@ public class Refill : Entity
         {
             return;
         }
-        if (this.fewerDashes == -1)
-        {
-            this.fewerDashes = player.MaxDashes;
-        }
-        if (this.rewerDashes == -1)
-        {
-            this.rewerDashes = player.MaxDashes;
-        }
-        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.rewerDashes, this.resetStamina);
+        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.resetDashes < 0 ? player.MaxDashes : resetDashes, this.resetStamina < 0 ? 110f : resetStamina);
         if (!string.IsNullOrEmpty(this.respawnSound))
         {
             Audio.Play(this.touchSound, this.centerPosition);
@@ -409,14 +408,6 @@ public class Refill : Entity
         if (this.fewerMode == FewerMode.None || this.resetMode == ResetMode.None)
         {
             return;
-        }
-        if (this.fewerDashes == -1)
-        {
-            this.fewerDashes = player.MaxDashes;
-        }
-        if (this.rewerDashes == -1)
-        {
-            this.rewerDashes = player.MaxDashes;
         }
         //this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.rewerDashes, this.resetStamina);
         if (!string.IsNullOrEmpty(this.respawnSound))
@@ -589,19 +580,24 @@ public class Refill : Entity
         {
             return;
         }
-        if (this.fewerDashes == -1)
-        {
-            this.fewerDashes = player.MaxDashes;
-        }
-        if (this.rewerDashes == -1)
-        {
-            this.rewerDashes = player.MaxDashes;
-        }
-        if (!this.fewerDictionary[this.fewerMode](player.Dashes, player.Stamina, this.fewerDashes, this.fewerStamina))
+        if (!this.fewerDictionary[this.fewerMode](player.Dashes, player.Stamina, this.fewerDashes < 0 ? player.MaxDashes : fewerDashes, this.fewerStamina < 0 ? 20f : fewerStamina))
         {
             return;
         }
-        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.rewerDashes, this.resetStamina);
+        if (fewerMode == FewerMode.AlwaysCollect && respawnTimer > 0f)
+        {
+            return;
+        }
+        this.resetDictionary[this.resetMode](ref player.Dashes, ref player.Stamina, this.resetDashes < 0 ? player.MaxDashes : resetDashes, this.resetStamina < 0 ? 110f : resetStamina);
+        if(setAsMax)
+        {
+            // Set max dashes and stamina
+            if(resetDashes >= 0)
+            {
+                MaP.level.Session.Inventory.Dashes = resetDashes;
+            }
+            Md.Session.RefillMaxStamina = resetStamina < 0 ? null : resetStamina;
+        }
         if (!string.IsNullOrEmpty(this.respawnSound))
         {
             Audio.Play(this.touchSound, this.centerPosition);
@@ -667,6 +663,9 @@ public class Refill : Entity
         },
         {
             FewerMode.All, (int playerDashes, float playerStamina, int fewerDashes, float fewerStamina) => ((playerDashes < fewerDashes) && (playerStamina < fewerStamina))
+        },
+        {
+            FewerMode.AlwaysCollect, (int playerDashes, float playerStamina, int fewerDashes, float fewerStamina) => true // exception
         }
     };
 
@@ -710,7 +709,53 @@ public class Refill : Entity
                 playerDashes = Refill.Random.Next(0, resetDashes + 1);
                 playerStamina = Refill.Random.NextFloat() * (resetStamina + 0.01F);
             }
-        }
+        },
     };
 
+}
+
+public static class RefillUtils
+{
+    private static ILHook origUpdateHook;
+
+    [ChroniaHelper.Cores.LoadHook]
+    public static void Load()
+    {
+        IL.Celeste.Player.RefillStamina += RefillStamina;
+        IL.Celeste.Player.ClimbUpdate += RefillStamina;
+        IL.Celeste.Player.SwimBegin += RefillStamina;
+        IL.Celeste.Player.DreamDashBegin += RefillStamina;
+
+        origUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), RefillStamina);
+    }
+    [ChroniaHelper.Cores.UnloadHook]
+    public static void Unload()
+    {
+        IL.Celeste.Player.RefillStamina -= RefillStamina;
+        IL.Celeste.Player.ClimbUpdate -= RefillStamina;
+        IL.Celeste.Player.SwimBegin -= RefillStamina;
+        IL.Celeste.Player.DreamDashBegin -= RefillStamina;
+
+        origUpdateHook?.Dispose();
+        origUpdateHook = null;
+    }
+
+    private static void RefillStamina(ILContext context)
+    {
+        ILCursor cursor = new(context);
+
+        while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchStfld<Player>("Stamina")))
+        {
+            cursor.EmitDelegate<Func<float, float>>(orig =>
+            {
+                if (orig == 110f && Md.Session?.RefillMaxStamina is float m)
+                {
+                    return m;
+                }
+                return orig;
+            });
+            // 前进到本次 stfld 之后，否则下一轮会重复匹配同一个写点，造成死循环
+            cursor.Index++;
+        }
+    }
 }
