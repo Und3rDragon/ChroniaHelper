@@ -166,14 +166,14 @@ public class ChroniaHelperModule : EverestModule
         }
     }
 
-    private void OnGameExiting(On.Celeste.Celeste.orig_OnExiting orig, Celeste.Celeste self, object sender, EventArgs args)
+    private static void OnGameExiting(On.Celeste.Celeste.orig_OnExiting orig, Celeste.Celeste self, object sender, EventArgs args)
     {
         GlobalData.SaveAll();
         
         orig(self, sender, args);
     }
     
-    private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         try
         {
