@@ -67,6 +67,94 @@ public class SerialImageGroupRaw
     public Vc2 groupTopleft, groupBottomRight;
     public List<Vc2> memberPosition = new();
     public Vc2 memberStart = Vc2.Zero;
+
+    // ---- 每个成员槽位持有独立的 SerialImageRaw（贴图列表取自对应路径），
+    //      成员的测量结果互不覆盖，成员自身的对齐基于它自己测量出的矩形 ----
+    private readonly List<SerialImageRaw> slotImages = new();
+
+    private SerialImageRaw SlotImage(int i)
+    {
+        while (slotImages.Count <= i) { slotImages.Add(null); }
+
+        SerialImageRaw image = slotImages[i];
+        if (image.IsNull())
+        {
+            image = new SerialImageRaw(cachedMembers[SafeGetPath(i)].textures);
+            slotImages[i] = image;
+        }
+
+        return image;
+    }
+
+    private SerialImageRaw PrepareMember(int i)
+    {
+        SerialImageRaw image = SlotImage(i);
+
+        image.origin = template.origin;
+        image.segmentOrigin = template.segmentOrigin;
+        image.overallOffset = groupOffset;
+        image.renderMode = template.renderMode;
+        image.distance = template.distance;
+        image.color = template.color;
+        if (scales.TryGetOrGetLast(i, out float? scale))
+        {
+            image.scale = scale ?? 1f;
+        }
+        else
+        {
+            image.scale = 1f;
+        }
+        if (depths.TryGetOrGetLast(i, out float? depth))
+        {
+            image.depth = depth ?? 0f;
+        }
+        else
+        {
+            image.depth = 0f;
+        }
+
+        return image;
+    }
+
+    /// <summary>
+    /// The group takes the union of every member's own rectangle as one big rectangle,
+    /// and lines the members up inside it.
+    /// </summary>
+    private void RebuildLayout()
+    {
+        Vc2 cal = groupTopleft = groupBottomRight = Vc2.Zero;
+        memberPosition.Clear();
+        groupSize = Vc2.Zero;
+
+        for (int i = 0; i < members.Count; i++)
+        {
+            SerialImageRaw current = members[i];
+
+            if (i == 0)
+            {
+                memberPosition.Add(cal);
+
+                groupTopleft = -1f * current.overallSize * template.origin;
+                groupBottomRight = current.overallSize * (Vc2.One - template.origin);
+
+                continue;
+            }
+
+            SerialImageRaw previous = members[i - 1];
+
+            cal.Y += current.overallSize.Y * template.origin.Y + previous.overallSize.Y * (1f - template.origin.Y) + memberDistance;
+            memberPosition.Add(cal);
+
+            groupTopleft.X = groupTopleft.X.ClampMax(current.overallSize.X * template.origin.X * -1f);
+            groupTopleft.Y = groupTopleft.Y.ClampMax(cal.Y + current.overallSize.Y * template.origin.Y * -1f);
+            groupBottomRight.X = groupBottomRight.X.ClampMin(current.overallSize.X * (1f - template.origin.X));
+            groupBottomRight.Y = groupBottomRight.Y.ClampMin(cal.Y + current.overallSize.Y * (1f - template.origin.Y));
+        }
+
+        groupSize = groupBottomRight - groupTopleft;
+        memberStart = -groupTopleft;
+    }
+
     /// <summary>
     /// Measuring the size of the to-be-rendered texts
     /// </summary>
@@ -80,61 +168,12 @@ public class SerialImageGroupRaw
 
         for (int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = cachedMembers[SafeGetPath(i)];
-            image.origin = template.origin;
-            image.segmentOrigin = template.segmentOrigin;
-            image.overallOffset = groupOffset;
-            image.renderMode = template.renderMode;
-            image.distance = template.distance;
-            image.color = template.color;
-            if (scales.TryGetOrGetLast(i, out float? scale))
-            {
-                image.scale = scale ?? 1f;
-            }
-            else
-            {
-                image.scale = 1f;
-            }
-            if (depths.TryGetOrGetLast(i, out float? depth))
-            {
-                image.depth = depth ?? 0f;
-            }
-            else
-            {
-                image.depth = 0f;
-            }
+            SerialImageRaw image = PrepareMember(i);
             image.Measure(source[i], selector);
             members.Add(image);
         }
 
-        // Mapping members
-        Vc2 cal = groupTopleft = groupBottomRight = Vc2.Zero;
-        memberPosition.Clear();
-        groupSize = Vc2.Zero;
-
-        for (int i = 0; i < members.Count; i++)
-        {
-            if (i == 0)
-            {
-                memberPosition.Add(cal);
-
-                groupTopleft = -1f * members[i].overallSize * template.origin;
-                groupBottomRight = members[i].overallSize * (Vc2.One - template.origin);
-
-                continue;
-            }
-
-            cal.Y += members[i].overallSize.Y * template.origin.Y + members[i - 1].overallSize.Y * (1f - template.origin.Y) + memberDistance;
-            memberPosition.Add(cal);
-
-            groupTopleft.X = groupTopleft.X.ClampMax(members[i].overallSize.X * template.origin.X * -1f);
-            groupTopleft.Y = groupTopleft.Y.ClampMax(cal.Y + members[i].overallSize.Y * template.origin.Y * -1f);
-            groupBottomRight.X = groupBottomRight.X.ClampMin(members[i].overallSize.X * (1f - template.origin.X));
-            groupBottomRight.Y = groupBottomRight.Y.ClampMin(cal.Y + members[i].overallSize.Y * (1f - template.origin.Y));
-        }
-
-        groupSize = groupBottomRight - groupTopleft;
-        memberStart = -groupTopleft;
+        RebuildLayout();
     }
     
     public void Measure(IList<string> source, Func<char, int> selector)
@@ -143,61 +182,12 @@ public class SerialImageGroupRaw
 
         for (int i = 0; i < source.Count; i++)
         {
-            SerialImageRaw image = cachedMembers[SafeGetPath(i)];
-            image.origin = template.origin;
-            image.segmentOrigin = template.segmentOrigin;
-            image.overallOffset = groupOffset;
-            image.renderMode = template.renderMode;
-            image.distance = template.distance;
-            image.color = template.color;
-            if (scales.TryGetOrGetLast(i, out float? scale))
-            {
-                image.scale = scale ?? 1f;
-            }
-            else
-            {
-                image.scale = 1f;
-            }
-            if (depths.TryGetOrGetLast(i, out float? depth))
-            {
-                image.depth = depth ?? 0f;
-            }
-            else
-            {
-                image.depth = 0f;
-            }
+            SerialImageRaw image = PrepareMember(i);
             image.Measure(source[i], selector);
             members.Add(image);
         }
 
-        // Mapping members
-        Vc2 cal = groupTopleft = groupBottomRight = Vc2.Zero;
-        memberPosition.Clear();
-        groupSize = Vc2.Zero;
-
-        for (int i = 0; i < members.Count; i++)
-        {
-            if (i == 0)
-            {
-                memberPosition.Add(cal);
-
-                groupTopleft = -1f * members[i].overallSize * template.origin;
-                groupBottomRight = members[i].overallSize * (Vc2.One - template.origin);
-
-                continue;
-            }
-
-            cal.Y += members[i].overallSize.Y * template.origin.Y + members[i - 1].overallSize.Y * (1f - template.origin.Y) + memberDistance;
-            memberPosition.Add(cal);
-
-            groupTopleft.X = groupTopleft.X.ClampMax(members[i].overallSize.X * template.origin.X * -1f);
-            groupTopleft.Y = groupTopleft.Y.ClampMax(cal.Y + members[i].overallSize.Y * template.origin.Y * -1f);
-            groupBottomRight.X = groupBottomRight.X.ClampMin(members[i].overallSize.X * (1f - template.origin.X));
-            groupBottomRight.Y = groupBottomRight.Y.ClampMin(cal.Y + members[i].overallSize.Y * (1f - template.origin.Y));
-        }
-
-        groupSize = groupBottomRight - groupTopleft;
-        memberStart = -groupTopleft;
+        RebuildLayout();
     }
 
     public void Render(IList<string> source, Func<char, int> selector, Vc2 renderPosition)
@@ -208,7 +198,7 @@ public class SerialImageGroupRaw
         {
             Vc2 dPos = groupSize * groupOrigin * -1f + memberStart + memberPosition[i] + groupOffset;
             
-            members[i].Render(source[i], selector, renderPosition + new Vc2((int)dPos.X, (int)dPos.Y));
+            members[i].DrawMeasured(renderPosition + new Vc2((int)dPos.X, (int)dPos.Y));
         }
     }
     
@@ -220,7 +210,7 @@ public class SerialImageGroupRaw
         {
             Vc2 dPos = groupSize * groupOrigin * -1f + memberStart + memberPosition[i] + groupOffset;
             
-            members[i].Render(source[i], selector, renderPosition + new Vc2((int)dPos.X, (int)dPos.Y));
+            members[i].DrawMeasured(renderPosition + new Vc2((int)dPos.X, (int)dPos.Y));
         }
     }
 }
