@@ -7,6 +7,7 @@ using static ChroniaHelper.Cores.ExtendedAttributes;
 namespace ChroniaHelper.API;
 
 [ModExportName("ChroniaHelper")]
+[Note("Note to self: Do not rename this at will")]
 public static class API
 {
     public static Version APIVersion => new(1, 0);
@@ -48,7 +49,8 @@ public static class API
         => flag.SetFlag(state, global, perDeath, perRoom);
 
     /// <summary>
-    /// Check if a certain flag is enlisted or checking its state
+    /// Check the state of the flag
+    /// But if the following fields are enabled, it will be checking if the flag is enlisted as a special flag
     /// </summary>
     /// <param name="flag">Flag name</param>
     /// <param name="isGlobal">Check if the flag is enlisted in global flags</param>
