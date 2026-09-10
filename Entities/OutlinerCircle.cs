@@ -5,6 +5,8 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using System.Runtime.InteropServices;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Entities;
 

@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Celeste.Mod.ChroniaHelperIndicatorZone.PlayerIndicatorZone;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Settings;
 
@@ -633,8 +634,6 @@ public class Displayers : HDRenderEntity
         }
     }
 
-    public string generalReference = Cons.DisplayFontsReference;
-
     // ---- 静态字符映射与 selector：固定引用，保证 SerialImageRaw / SerialImageGroupRaw 的 Measure 缓存可命中 ----
     private static readonly int[] GeneralCharIndex = BuildGeneralCharIndex();
     private static readonly Func<char, int> GeneralSelector = static c =>
@@ -656,7 +655,7 @@ public class Displayers : HDRenderEntity
         {
             if (arr[reference[i]] == -1) { arr[reference[i]] = i; }
         }
-        // 保证空格映射存在（原逻辑 generalReference.IndexOf(" ") 依赖空格）
+        // 保证空格映射存在
         arr[' '] = reference.IndexOf(' ');
         return arr;
     }

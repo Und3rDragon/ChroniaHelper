@@ -4,6 +4,8 @@ using Monocle;
 using System;
 using System.Collections.Generic;
 using ChroniaHelper.Cores;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Utils
 {

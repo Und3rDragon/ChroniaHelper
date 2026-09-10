@@ -4,6 +4,7 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
 using ChroniaHelper.Utils.LogicExpression;
 using static ChroniaHelper.Cores.GeneralSetupController;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Cores;
 

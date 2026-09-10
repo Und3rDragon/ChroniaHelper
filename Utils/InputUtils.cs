@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ChroniaHelper.Cores;
 using ChroniaHelper.References;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Utils;
 

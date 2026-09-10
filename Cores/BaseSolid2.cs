@@ -1,13 +1,4 @@
-﻿using Celeste;
-using Celeste.Mod;
-using Celeste.Mod.Entities;
-using ChroniaHelper.Entities;
-using Monocle;
-using System.Text.RegularExpressions;
-using System.Xml.Serialization;
-
-
-namespace ChroniaHelper.Cores;
+﻿namespace ChroniaHelper.Cores;
 
 /// <summary>
 /// Obsoleted, kept for compatibility

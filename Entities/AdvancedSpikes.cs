@@ -7,6 +7,7 @@ using ChroniaHelper.Utils;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using static ChroniaHelper.Entities.SeamlessSpinner;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

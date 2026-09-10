@@ -7,6 +7,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.WIPs.Entities;
 

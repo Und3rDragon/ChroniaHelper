@@ -1,7 +1,8 @@
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components.SwimmingFish;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities.WIP;
 

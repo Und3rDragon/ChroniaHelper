@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
@@ -6,6 +6,7 @@ using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

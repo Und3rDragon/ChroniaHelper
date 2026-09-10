@@ -49,7 +49,7 @@ public class SerialImageRendererRaw : HDRenderEntity
     
     public virtual int Reflection(char c)
     {
-        return $"{c}".Parse(c == ':' ? 10 : 0);
+        return c == ':' ? 10 : (c >= '0' && c <= '9' ? c - '0' : 0);
     }
     
     public virtual Vc2 SetRenderPosition(Vc2 position, Vc2 parallax, Vc2 staticScreen)

@@ -1,8 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Components.Graphical;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Cores.Graphical;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities.WIP;
 

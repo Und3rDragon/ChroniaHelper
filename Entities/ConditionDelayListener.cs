@@ -11,6 +11,7 @@ using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
 using VivHelper.Entities;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

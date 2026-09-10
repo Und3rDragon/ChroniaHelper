@@ -1,7 +1,8 @@
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Media;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

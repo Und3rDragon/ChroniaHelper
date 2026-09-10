@@ -1,11 +1,4 @@
-﻿using Celeste;
-using Celeste.Mod.Entities;
-using Celeste.Mod;
-using Monocle;
-using System.Xml.Serialization;
-
-
-namespace ChroniaHelper.Cores;
+﻿namespace ChroniaHelper.Cores;
 
 /// <summary>
 /// Obsoleted, kept for compatibility

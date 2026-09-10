@@ -4,6 +4,7 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using static ChroniaHelper.Triggers.LightingTrigger;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Triggers;
 

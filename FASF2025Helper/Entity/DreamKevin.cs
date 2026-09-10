@@ -4,6 +4,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using static Celeste.CrushBlock;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace FASF2025Helper.Entities;
 

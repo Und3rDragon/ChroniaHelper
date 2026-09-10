@@ -1,10 +1,9 @@
-using System.Collections;
-using Celeste.Mod.Entities;
-using ChroniaHelper.Components;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
-using ChroniaHelper.Utils.MathExpression;
+using System.Collections;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Entities.FormulaBlocks;
 

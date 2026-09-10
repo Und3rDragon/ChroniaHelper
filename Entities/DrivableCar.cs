@@ -1,6 +1,8 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Entities;
 

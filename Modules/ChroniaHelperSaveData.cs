@@ -5,6 +5,7 @@ using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.StopwatchSystem;
 using YamlDotNet.Serialization;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Modules;
 

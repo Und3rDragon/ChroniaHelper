@@ -7,6 +7,7 @@ using Celeste.Mod.LakeSideCode;
 using Celeste.Mod.LakeSideCode.FishDefs;
 using ChroniaHelper.Utils;
 using MonoMod.Utils;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.References;
 

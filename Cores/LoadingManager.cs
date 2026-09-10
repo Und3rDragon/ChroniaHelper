@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using ChroniaHelper.Utils;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Cores;
 
@@ -142,7 +143,7 @@ public class LoadingManager
     
         foreach (var type in types)
         {
-            var attribute = type.GetCustomAttribute<RegistryHandlerAttribute>();
+            var attribute = type.GetCustomAttribute<RegistryHandler>();
             if (attribute == null) continue;
         
             if (type.IsAbstract || type.IsInterface) continue;

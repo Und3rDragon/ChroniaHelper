@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using Celeste.Mod.Registry.DecalRegistryHandlers;
@@ -8,6 +8,7 @@ using ChroniaHelper.Utils;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.DecalRegistry;
 

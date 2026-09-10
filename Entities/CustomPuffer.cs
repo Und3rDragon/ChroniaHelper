@@ -9,6 +9,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 //using FTS = Celeste.Mod.MaxHelpingHand.Entities.FlagTouchSwitch;
 //using FTSW = Celeste.Mod.MaxHelpingHand.Entities.FlagTouchSwitchWall;
 

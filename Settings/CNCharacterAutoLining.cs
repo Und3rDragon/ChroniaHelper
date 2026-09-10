@@ -11,6 +11,7 @@ using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using Celeste.Mod.Helpers;
 using static Celeste.FancyText;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Settings;
 

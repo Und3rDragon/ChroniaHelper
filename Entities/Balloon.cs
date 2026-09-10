@@ -6,6 +6,7 @@ using Monocle;
 using System;
 using System.Collections;
 using System.Linq;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

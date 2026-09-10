@@ -16,6 +16,7 @@ using YamlDotNet.Serialization.TypeInspectors;
 using YoctoHelper.Components;
 using YoctoHelper.Hooks;
 using static ChroniaHelper.Entities.CustomBooster;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Modules;
 

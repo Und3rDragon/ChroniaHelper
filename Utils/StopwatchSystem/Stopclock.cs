@@ -1,5 +1,6 @@
 ﻿using ChroniaHelper.Cores;
 using YamlDotNet.Serialization;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Utils.StopwatchSystem;
 

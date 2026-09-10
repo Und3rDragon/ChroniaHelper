@@ -17,6 +17,7 @@ using Monocle;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using YamlDotNet.Core.Tokens;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 

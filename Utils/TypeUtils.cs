@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Helpers;
 using ChroniaHelper.Cores;
+using static ChroniaHelper.Cores.ExtendedAttributes;
+using Credits = ChroniaHelper.Cores.ExtendedAttributes.Credits;
 
 namespace ChroniaHelper.Utils;
 

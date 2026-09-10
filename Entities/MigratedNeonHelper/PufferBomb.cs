@@ -12,6 +12,7 @@ using IL.MonoMod;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Utils;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 // The source code of this entity is migrated from NeonHelper, which is integrated in City of Broken Dreams
 // The original author is ricky06, code modified by UnderDragon
