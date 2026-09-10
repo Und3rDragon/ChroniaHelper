@@ -141,19 +141,9 @@ namespace ChroniaHelper.Effects {
         public override void Render(Scene scene) {
             if (alpha > 0f && visibleFade > 0f && linearFade > 0f) {
                 Camera camera = (scene as Level).Camera;
+                Vector2 screenSize = Miscs.Screen.Size;
                 for (int i = 0; i < particles.Length; i++) {
-                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, Miscs.Screen.Width), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, Miscs.Screen.Height));
-
-                    // Process Rotation
-                    float wind = Calc.Angle((scene as Level).Wind);
-                    while(wind - particles[i].Rotation > Miscs.Screen.Height * Calc.DegToRad)
-                    {
-                        wind -= 360f * Calc.DegToRad;
-                    }
-                    while (particles[i].Rotation - wind > Miscs.Screen.Height * Calc.DegToRad)
-                    {
-                        wind += 360f * Calc.DegToRad;
-                    }
+                    Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, screenSize.X), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, screenSize.Y));
 
                     Draw.Pixel.DrawCentered(position, 
                         particles[i].color * alpha * linearFade * visibleFade, 
