@@ -302,13 +302,16 @@ public class OmniZipMover : OmniZipSolid
         if (sensitive == TouchSensitive.bottom || sensitive == TouchSensitive.always)
         {
             Add(bottom);
+            bottomSensitive = true;
         }
         if (sensitive == TouchSensitive.sideways || sensitive == TouchSensitive.always)
         {
             Add(side);
+            sideSensitive = true;
         }
     }
     private PlayerCollider bottom, side;
+    private bool bottomSensitive = false, sideSensitive = false;
 
     public override void Awake(Scene scene)
     {
@@ -320,9 +323,9 @@ public class OmniZipMover : OmniZipSolid
 
     public override bool GetAdditionalTouch()
     {
-        if (PUt.TryGetPlayer(out var p))
+        if (PUt.TryGetPlayer(out var p) && (bottomSensitive || sideSensitive))
         {
-            return bottom.Check(p) || side.Check(p);
+            return (bottomSensitive ? bottom.Check(p) : false) || (sideSensitive ? side.Check(p) : false);
         }
         return base.GetAdditionalTouch();
     }
