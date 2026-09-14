@@ -14,7 +14,7 @@ touchSwitch.placements = {
             y = 0,
             switch = "touchSwitch",
             flag = "flag",
-            icon = "objects/ChroniaHelper/flagTouchSwitchNew",
+            icon = "objects/ChroniaHelper/flagTouchSwitchNew/",
             iconIdleAnimation = 0.1,
             iconSpinAnimation = 0.02,
             iconFinishingAnimation = 0.1,
@@ -44,7 +44,7 @@ touchSwitch.placements = {
             height = 16,
             switch = "touchSwitchWall",
             flag = "flag",
-            icon = "objects/ChroniaHelper/flagTouchSwitchNew",
+            icon = "objects/ChroniaHelper/flagTouchSwitchNew/",
             borderTexture = "objects/ChroniaHelper/flagTouchSwitchNew/container",
             persistent = false,
             inactiveColor = "5FCDE4",
@@ -63,14 +63,14 @@ touchSwitch.placements = {
 }
 
 touchSwitch.fieldOrder = {"x", "y",
-"flag", "icon",
-"borderTexture","inactiveColor", 
-"activeColor", "finishColor", 
-"hitSound", "completeSoundFromSwitch", "completeSoundFromScene",
-"switch","idleAnimDelay",
-"spinAnimDelay",
-"activatedAnimRate", "finishedAnimRate",
-"passwordID", "password",
+    "flag", "icon",
+    "borderTexture","inactiveColor", 
+    "activeColor", "finishColor", 
+    "hitSound", "completeSoundFromSwitch", "completeSoundFromScene",
+    "switch","idleAnimDelay",
+    "spinAnimDelay",
+    "activatedAnimRate", "finishedAnimRate",
+    "passwordID", "password",
 }
 
 touchSwitch.fieldInformation = {
@@ -83,9 +83,7 @@ touchSwitch.fieldInformation = {
     finishColor = {
         fieldType = "color", allowEmpty = false,
     },
-    icon = {
-        options = { "vanilla", "tall", "triangle", "circle", "diamond", "double", "heart", "square", "wide", "winged", "cross", "drop", "hourglass", "split", "star", "triple" }
-    },
+    icon = require("mods").requireFromPlugin("chroniaHelper.utils.directory").fetchDirectory(),
     switch = {
         options = {"touchSwitch", "touchSwitchWall"}, editable = false
     },

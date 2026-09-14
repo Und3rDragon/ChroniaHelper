@@ -112,7 +112,7 @@ public class FlagButton2 : Entity {
         pos = data.Position;
 
         borderPath = data.Attr("borderTexture");
-        iconPath = data.Attr("icon");
+        iconPath = data.Attr("icon").TrimEnd('/') + '/';
 
         inactiveColor = Calc.HexToColor(data.Attr("inactiveColor", "5FCDE4"));
         activeColor = Calc.HexToColor(data.Attr("activeColor", "FFFFFF"));
@@ -155,10 +155,10 @@ public class FlagButton2 : Entity {
 
         // Setup the icon
         icon = new Sprite(GFX.Game, iconPath);
-        icon.AddLoop("idle", "/idle", data.Float("iconIdleAnimation", 0.1f));
-        icon.AddLoop("spin", "/spin", data.Float("iconSpinAnimation", 0.02f));
-        icon.Add("finishing", "/finishing", data.Float("iconFinishingAnimation", 0.1f), "finished");
-        icon.AddLoop("finished", "/finished", data.Float("iconFinishedAnimation", 0.1f));
+        icon.AddLoop("idle", "idle", data.Float("iconIdleAnimation", 0.1f));
+        icon.AddLoop("spin", "spin", data.Float("iconSpinAnimation", 0.02f));
+        icon.Add("finishing", "finishing", data.Float("iconFinishingAnimation", 0.1f), "finished");
+        icon.AddLoop("finished", "finished", data.Float("iconFinishedAnimation", 0.1f));
 
         Add(icon);
 
