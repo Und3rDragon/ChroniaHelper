@@ -1634,3 +1634,7 @@ entities.ChroniaHelper/WiggleLiner.placements.name.line=Wiggle Liner
 entities.ChroniaHelper/LanguageSessionSpecifier.placements.name.controller=Language Session Specifier
 entities.ChroniaHelper/LanguageSessionSpecifier.attributes.description.targetName=When "session type" is "Flag", this is the name of the flag that will be set when the language matches\nif the language option is not left empty\nWhen "session type" is "Counter", this is the name of the counter that will be set,\nif the matching language options is filled by an integer\nWhen "session type" is "Slider", this is the name of the slider that will be set,\nif the matching language options is filled by a float number
 entities.ChroniaHelper/LanguageSessionSpecifier.attributes.description.LanguageScaleSpecify=A list of specifiers like "schinese, 1.25"\nA specifier is consist of 2 or 3 parameters\nThe leading parameter is the name of the language except English, all lower cases, like "french" represents French\nand "simplifiedchinese" or "schinese" represents Simplified Chinese\nThe second parameter is the scale number, if there's a third parameter, then the second number only works on Scale X\nThe third parameter is also a scale number, and it will override the Scale Y
+
+# ========================== Shattersong Zone
+
+entities.ChroniaHelper/ShattersongZone.placements.name.normal=Shattersong Zone
