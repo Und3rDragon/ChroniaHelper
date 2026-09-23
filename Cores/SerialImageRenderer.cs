@@ -19,8 +19,8 @@ public class SerialImageRenderer : BaseEntity
     {
         Depth = d.Int("depth", -10000000);
     }
-    public string source = "ChroniaHelper/DisplayFonts/font";
-    public SerialImage image = new SerialImage(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
+    public string source = Cons.DefaultDisplayerFontPath;
+    public SerialImage image = new SerialImage(GFX.Game.GetAtlasSubtextures(Cons.DefaultDisplayerFontPath));
 
     /// <summary>
     /// index,x,y => segment offset

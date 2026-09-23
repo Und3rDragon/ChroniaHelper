@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Utils.StopwatchSystem;
 using MonoMod.Utils;
 using YoctoHelper.Cores;
 using static Celeste.FancyText;
@@ -665,6 +666,17 @@ public static class StringUtils
                                     currentSegment += p.ToString();
                                 }
                             }
+                        }
+                    }
+                    // 处理{stopclock name}
+                    else if(cmd == "stopclock" && parts.Length >= 2)
+                    {
+                        string clock = parts[1];
+
+                        if(clock.GetStopclock(out Stopclock c))
+                        {
+                            c.GetClampedTimeData(out int[] digs, Stopclock.Digits.Millisecond, Stopclock.Digits.Hour);
+                            currentSegment += $"{digs[3]}:{digs[2]}:{digs[1]}:{digs[0]}";
                         }
                     }
                     // 其他大括号指令都替换为空

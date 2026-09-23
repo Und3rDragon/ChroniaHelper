@@ -57,8 +57,8 @@ public class SerialImageGroup
     
     public string SafeGetPath(int i)
     {
-        if (path.IsNull()) { return "ChroniaHelper/DisplayFonts/font"; }
-        if (path.Count == 0) { return "ChroniaHelper/DisplayFonts/font"; }
+        if (path.IsNull()) { return Cons.DefaultDisplayerFontPath; }
+        if (path.Count == 0) { return Cons.DefaultDisplayerFontPath; }
 
         return path[i.Clamp(0, path.Count - 1)];
     }

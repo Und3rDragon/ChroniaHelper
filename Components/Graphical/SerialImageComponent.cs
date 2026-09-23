@@ -13,11 +13,11 @@ namespace ChroniaHelper.Components.Graphical;
 [Note("For better usage, I think it's better to include SerialImageGroup component instead of SerialImage component")]
 public class SerialImageComponent : BaseComponent
 {
-    public SerialImageComponent(string path = "ChroniaHelper/DisplayFonts/font", string targetText = "")
+    public SerialImageComponent(string path = Cons.DefaultDisplayerFontPath, string targetText = "")
     {
         if(!path.HasValidContent())
         {
-            path = "ChroniaHelper/DisplayFonts/font";
+            path = Cons.DefaultDisplayerFontPath;
         }
 
         Main = new(path);

@@ -19,7 +19,7 @@ public class MessageDisplayZone : HDRenderEntity
 {
     public MessageDisplayZone(EntityData d, Vc2 o) : base(d, o)
     {
-        SerialImageRaw template = new SerialImageRaw(GFX.Game.GetAtlasSubtextures("ChroniaHelper/DisplayFonts/font"));
+        SerialImageRaw template = new SerialImageRaw(GFX.Game.GetAtlasSubtextures(Cons.DefaultDisplayerFontPath));
 
         template.renderMode = d.Int("renderMode", 0);
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));
@@ -29,7 +29,7 @@ public class MessageDisplayZone : HDRenderEntity
         primaryAlpha = template.color.alpha;
         template.color.alpha = 0f;
 
-        renderer = new SerialImageGroupRaw(template, d.Attr("textures","ChroniaHelper/DisplayFonts/font").Split(',',StringSplitOptions.TrimEntries));
+        renderer = new SerialImageGroupRaw(template, d.Attr("textures",Cons.DefaultDisplayerFontPath).Split(',',StringSplitOptions.TrimEntries));
         renderer.groupOrigin = new Vc2(d.Float("overallOriginX", 0.5f), d.Float("overallOriginY", 0.5f));
         renderer.memberDistance = d.Float("lineDistance", 2f);
         string[] _scales = d.Attr("scale", "1").Split(',', StringSplitOptions.TrimEntries);
