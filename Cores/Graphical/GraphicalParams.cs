@@ -18,5 +18,11 @@ public static class GraphicalParams
         public int renderMode = 0;
         public float distance = 4f;
         public CColor color = CColor.White;
+
+        public static SerialImageTemplate Default;
+        static SerialImageTemplate()
+        {
+            Default = new();
+        }
     }
 }

@@ -38,7 +38,7 @@ public class SerialImage
         return result;
     }
 
-    public SerialImage(string path)
+    public SerialImage(string path = Cons.DefaultDisplayerFontPath)
     {
         GFX.Game.GetAtlasSubtextures(path).ApplyTo(out textures);
     }

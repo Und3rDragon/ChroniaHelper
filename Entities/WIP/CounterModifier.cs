@@ -20,7 +20,7 @@ public class CounterModifier : BaseEntity
         text.Visible = false;
     }
     private bool interacting;
-    private SerialImageComponent text;
+    private SerialImageRenderPack text;
     
     public IEnumerator CustomLookRoutine(Player player)
     {

@@ -40,7 +40,7 @@ public class EntityTextAdder : BaseTrigger
         {
             if (CollideCheck(entity))
             {
-                ActiveFontComponent comp = new(Dialog.Clean(targetText))
+                ActiveFontRenderPack comp = new(Dialog.Clean(targetText))
                 {
                     Entity = entity,
                     RelativePosition = relativePosition,

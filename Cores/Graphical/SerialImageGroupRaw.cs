@@ -15,7 +15,7 @@ public class SerialImageGroupRaw
     /// <summary>
     /// An empty template defining member parameters
     /// </summary>
-    public SerialImageRaw template = new SerialImageRaw(Cons.DefaultDisplayerFontPath);
+    public SerialImageRaw template = new();
 
     public Dictionary<string, SerialImageRaw> cachedMembers = new();
     /// <summary>

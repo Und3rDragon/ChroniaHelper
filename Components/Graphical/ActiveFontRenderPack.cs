@@ -11,9 +11,9 @@ using static ChroniaHelper.Utils.AlignUtils;
 
 namespace ChroniaHelper.Components.Graphical;
 
-public class ActiveFontComponent : BaseComponent
+public class ActiveFontRenderPack : BaseComponent
 {
-    public ActiveFontComponent(string targetText = "")
+    public ActiveFontRenderPack(string targetText = "")
     {
         TargetText = targetText;
     }
@@ -28,17 +28,19 @@ public class ActiveFontComponent : BaseComponent
     public float EdgeDepth = 0f;
     public ChroniaColor EdgeColor = ChroniaColor.White;
 
+    public bool Rendering = false;
+    
     public override void Render()
     {
         base.Render();
 
         if (Outlined)
         {
-            ActiveFont.DrawOutline(TargetText, Entity.Position + RelativePosition, Alignment, Scale, Color.Parsed(), 2f, StrokeColor.Parsed());
+            ActiveFont.DrawOutline(TargetText, (Entity?.Position ?? Vc2.Zero) + RelativePosition, Alignment, Scale, Color.Parsed(), 2f, StrokeColor.Parsed());
         }
         else
         {
-            ActiveFont.Draw(TargetText, Entity.Position + RelativePosition, Alignment, Scale, Color.Parsed(), EdgeDepth, EdgeColor.Parsed(), Stroke, StrokeColor.Parsed());
+            ActiveFont.Draw(TargetText, (Entity?.Position ?? Vc2.Zero) + RelativePosition, Alignment, Scale, Color.Parsed(), EdgeDepth, EdgeColor.Parsed(), Stroke, StrokeColor.Parsed());
         }
     }
 }

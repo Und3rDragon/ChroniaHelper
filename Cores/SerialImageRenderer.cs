@@ -19,8 +19,7 @@ public class SerialImageRenderer : BaseEntity
     {
         Depth = d.Int("depth", -10000000);
     }
-    public string source = Cons.DefaultDisplayerFontPath;
-    public SerialImage image = new SerialImage(GFX.Game.GetAtlasSubtextures(Cons.DefaultDisplayerFontPath));
+    public SerialImage image = new();
 
     /// <summary>
     /// index,x,y => segment offset
