@@ -19,12 +19,13 @@ public class ActiveFontRenderPack : BaseComponent
     }
     public string TargetText = string.Empty;
     public Vc2 RelativePosition = Vc2.Zero;
+    public Vc2? OverridePosition = null;
     public bool Outlined = false;
     public Vc2 Alignment = Alignments.Center;
     public Vc2 Scale = new(1f, 1f);
     public ChroniaColor Color = ChroniaColor.White;
     public float Stroke = 0f;
-    public ChroniaColor StrokeColor = ChroniaColor.White;
+    public ChroniaColor StrokeColor = ChroniaColor.Black;
     public float EdgeDepth = 0f;
     public ChroniaColor EdgeColor = ChroniaColor.White;
 
@@ -34,13 +35,15 @@ public class ActiveFontRenderPack : BaseComponent
     {
         base.Render();
 
+        if (!Rendering) { return; }
+
         if (Outlined)
         {
-            ActiveFont.DrawOutline(TargetText, (Entity?.Position ?? Vc2.Zero) + RelativePosition, Alignment, Scale, Color.Parsed(), 2f, StrokeColor.Parsed());
+            ActiveFont.DrawOutline(TargetText, OverridePosition ?? ((Entity?.Position ?? Vc2.Zero) + RelativePosition), Alignment, Scale, Color.Parsed(), 2f, StrokeColor.Parsed());
         }
         else
         {
-            ActiveFont.Draw(TargetText, (Entity?.Position ?? Vc2.Zero) + RelativePosition, Alignment, Scale, Color.Parsed(), EdgeDepth, EdgeColor.Parsed(), Stroke, StrokeColor.Parsed());
+            ActiveFont.Draw(TargetText, OverridePosition ?? ((Entity?.Position ?? Vc2.Zero) + RelativePosition), Alignment, Scale, Color.Parsed(), EdgeDepth, EdgeColor.Parsed(), Stroke, StrokeColor.Parsed());
         }
     }
 }

@@ -16,6 +16,7 @@ public class SerialImageRawRenderPack : BaseComponent
     /// If the component is not added to an entity, this refers to the world coordinates
     /// </summary>
     public Vc2 RelativePosition = Vc2.Zero;
+    public Vc2? OverridePosition = null;
     public Func<char, int> TextureSelector = (c) =>
     {
         return Cons.DisplayFontsReference.Contains(c) ? Cons.DisplayFontsReference.IndexOf(c) : Cons.DisplayFontsReference.IndexOf(" ");
@@ -29,6 +30,7 @@ public class SerialImageRawRenderPack : BaseComponent
 
         if (!Rendering) { return; }
 
-        Main.Render(TargetText, TextureSelector, (Entity?.Position ?? Vc2.Zero) + RelativePosition);
+        Main.Render(TargetText, TextureSelector, 
+            OverridePosition ?? ((Entity?.Position ?? Vc2.Zero) + RelativePosition));
     }
 }
