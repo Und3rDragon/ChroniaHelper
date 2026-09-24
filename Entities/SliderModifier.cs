@@ -9,8 +9,8 @@ using static ChroniaHelper.Cores.ExtendedAttributes;
 namespace ChroniaHelper.Entities;
 
 [Tracked]
-[CustomEntity("ChroniaHelper/CounterModifier")]
-public class CounterModifier : BaseEntity
+[CustomEntity("ChroniaHelper/SliderModifier")]
+public class SliderModifier : BaseEntity
 {
     /// <summary>
     /// The title is drawn in the HUD layer so the text stays crisp,
@@ -26,12 +26,13 @@ public class CounterModifier : BaseEntity
         }
     }
 
-    public CounterModifier(EntityData d, Vc2 o) : base(d, o)
+    public SliderModifier(EntityData d, Vc2 o) : base(d, o)
     {
         titleDialog = d.Attr("titleDialog");
-        targetName = d.Attr("targetName", "targetCounter");
+        targetName = d.Attr("targetName", "targetSlider");
         offsetY = d.Float("offsetY", -24f);
-        step = d.Int("step", 1);
+        step = d.Float("step", 1f);
+        _step = d.Attr("step", "1");
 
         Collider = new Hitbox(4f, 4f, -2f, -4f);
 
@@ -58,7 +59,8 @@ public class CounterModifier : BaseEntity
     public string titleDialog;
     public string targetName;
     public float offsetY;
-    public int step;
+    public float step;
+    private string _step;
 
     private bool interacting;
     private TalkComponent talk;
@@ -186,7 +188,7 @@ public class CounterModifier : BaseEntity
                && !Input.Jump.Pressed
                && interacting)
         {
-            value.TargetText = targetName.GetCounter().ToString();
+            value.TargetText = FormatSliderValue(targetName.GetSlider(), _step);
             UpdateDisplay();
 
             int sign = Math.Sign(Input.Aim.Value.X);
@@ -194,7 +196,7 @@ public class CounterModifier : BaseEntity
             // 只在方向键「按下」的那一帧调整数值，按住不会持续变化
             if (sign != 0 && sign != lastSign)
             {
-                targetName.SetCounter(targetName.GetCounter() + sign * step);
+                targetName.SetSlider(targetName.GetSlider() + sign * step);
             }
 
             lastSign = sign;
@@ -207,5 +209,17 @@ public class CounterModifier : BaseEntity
         SetRendering(false);
         interacting = false;
         player.StateMachine.State = 0;
+    }
+
+    public static string FormatSliderValue(float processNumber, string step)
+    {
+        return processNumber.ToString($"F{GetDecimalPlaces(step)}");
+    }
+
+    private static int GetDecimalPlaces(string step)
+    {
+        step = (step ?? string.Empty).Trim();
+        int dot = step.IndexOf('.');
+        return dot < 0 ? 0 : step.Length - dot - 1;
     }
 }

@@ -1638,6 +1638,7 @@ entities.ChroniaHelper/LanguageSessionSpecifier.attributes.description.LanguageS
 # ========================== Shattersong Zone
 
 entities.ChroniaHelper/ShattersongZone.placements.name.normal=Shattersong Zone
+
 # ========================== Sample Jump Through
 
 entities.ChroniaHelper/SampleJumpThroughUp.placements.name.up=Sample Jump Through (Up)
@@ -1697,10 +1698,23 @@ entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.cornerCorrect=Corne
 entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.cornerCorrect=If enabled, the player dashing against the edge of the board\nwill be nudged onto the board surface
 entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.attached=Attached
 entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.attached=If enabled, the board will stick to the solid it touches\nand move along with it
+
+# ========================== Counter Modifier
+
 entities.ChroniaHelper/CounterModifier.placements.name.modifier=Counter Modifier
 entities.ChroniaHelper/CounterModifier.attributes.name.targetName=Target Name
 entities.ChroniaHelper/CounterModifier.attributes.description.targetName=The name of the session counter this entity reads from and writes to\nDefault is "targetCounter"
 entities.ChroniaHelper/CounterModifier.attributes.name.offsetY=Offset Y
 entities.ChroniaHelper/CounterModifier.attributes.description.offsetY=The distance above the entity where the counter value is displayed,\nnegative values go upwards. Default is -24
-entities.ChroniaHelper/CounterModifier.attributes.name.step=Step
+entities.ChroniaHelper/CounterModifier.attributes.name.step=Step of the changes
 entities.ChroniaHelper/CounterModifier.attributes.description.step=How much the counter changes for each press of left or right,\nleft subtracts and right adds. Default is 1
+
+# ========================== Slider Modifier
+
+entities.ChroniaHelper/SliderModifier.placements.name.modifier=Slider Modifier
+entities.ChroniaHelper/SliderModifier.attributes.name.targetName=Target Name
+entities.ChroniaHelper/SliderModifier.attributes.description.targetName=The name of the session counter this entity reads from and writes to\nDefault is "targetCounter"
+entities.ChroniaHelper/SliderModifier.attributes.name.offsetY=Offset Y
+entities.ChroniaHelper/SliderModifier.attributes.description.offsetY=The distance above the entity where the counter value is displayed,\nnegative values go upwards. Default is -24
+entities.ChroniaHelper/SliderModifier.attributes.name.step=Step of the changes
+entities.ChroniaHelper/SliderModifier.attributes.description.step=How much the counter changes for each press of left or right,\nleft subtracts and right adds. Default is 1

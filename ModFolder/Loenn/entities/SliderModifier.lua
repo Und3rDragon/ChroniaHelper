@@ -8,14 +8,14 @@ local depthOptions = require("mods").requireFromPlugin("consts.depths")
 
 local modifier = {}
 
-modifier.name = "ChroniaHelper/CounterModifier"
+modifier.name = "ChroniaHelper/SliderModifier"
 modifier.placements = {
     name = "modifier",
     data = {
         titleDialog = "",
-        targetName = "targetCounter",
+        targetName = "targetSlider",
         offsetY = -24.0,
-        step = 1,
+        step = "0.01",
     },
 }
 
@@ -25,9 +25,6 @@ modifier.fieldOrder = {
 }
 
 modifier.fieldInformation = {
-    step = {
-        fieldType = "integer",
-    },
 }
 
 modifier.sprite = function(room, entity)
