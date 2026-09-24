@@ -28,6 +28,8 @@ public class CounterModifier : BaseEntity
 
     public CounterModifier(EntityData d, Vc2 o) : base(d, o)
     {
+        Depth = d.Int("depth", -100);
+
         titleDialog = d.Attr("titleDialog");
         targetName = d.Attr("targetName", "targetCounter");
         offsetY = d.Float("offsetY", -24f);
@@ -42,7 +44,8 @@ public class CounterModifier : BaseEntity
             Outlined = true
         };
         titleHost = new TitleRenderer(title);
-        
+        titleHost.Depth = Depth;
+
         value = new()
         {
             RelativePosition = Vc2.Zero,

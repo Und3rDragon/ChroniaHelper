@@ -28,6 +28,8 @@ public class SliderModifier : BaseEntity
 
     public SliderModifier(EntityData d, Vc2 o) : base(d, o)
     {
+        Depth = d.Int("depth", -100);
+
         titleDialog = d.Attr("titleDialog");
         targetName = d.Attr("targetName", "targetSlider");
         offsetY = d.Float("offsetY", -24f);
@@ -43,6 +45,7 @@ public class SliderModifier : BaseEntity
             Outlined = true
         };
         titleHost = new TitleRenderer(title);
+        titleHost.Depth = Depth;
         
         value = new()
         {

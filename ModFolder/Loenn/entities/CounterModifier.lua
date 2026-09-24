@@ -16,6 +16,7 @@ modifier.placements = {
         targetName = "targetCounter",
         offsetY = -24.0,
         step = 1,
+        depth = -100,
     },
 }
 
@@ -28,6 +29,7 @@ modifier.fieldInformation = {
     step = {
         fieldType = "integer",
     },
+    depth = require("mods").requireFromPlugin("helpers.field_options").depths
 }
 
 modifier.sprite = function(room, entity)

@@ -16,6 +16,7 @@ modifier.placements = {
         targetName = "targetSlider",
         offsetY = -24.0,
         step = "0.01",
+        depth = -100,
     },
 }
 
@@ -25,6 +26,7 @@ modifier.fieldOrder = {
 }
 
 modifier.fieldInformation = {
+    depth = require("mods").requireFromPlugin("helpers.field_options").depths
 }
 
 modifier.sprite = function(room, entity)
