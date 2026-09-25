@@ -1718,3 +1718,22 @@ entities.ChroniaHelper/SliderModifier.attributes.name.offsetY=Offset Y
 entities.ChroniaHelper/SliderModifier.attributes.description.offsetY=The distance above the entity where the counter value is displayed,\nnegative values go upwards. Default is -24
 entities.ChroniaHelper/SliderModifier.attributes.name.step=Step of the changes
 entities.ChroniaHelper/SliderModifier.attributes.description.step=How much the counter changes for each press of left or right,\nleft subtracts and right adds. Default is 1
+
+# ========================== Move Block (No Outline)
+
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_steer_fast=Move Block (Up, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_steer_slow=Move Block (Up, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_nosteer_fast=Move Block (Up, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_nosteer_slow=Move Block (Up, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_steer_fast=Move Block (Down, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_steer_slow=Move Block (Down, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_nosteer_fast=Move Block (Down, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_nosteer_slow=Move Block (Down, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_steer_fast=Move Block (Right, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_steer_slow=Move Block (Right, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_nosteer_fast=Move Block (Right, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_nosteer_slow=Move Block (Right, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_fast=Move Block (Left, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_slow=Move Block (Left, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_fast=Move Block (Left, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_slow=Move Block (Left, Slow, No Outline)
