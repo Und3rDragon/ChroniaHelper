@@ -1737,3 +1737,7 @@ entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_fast=Move B
 entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_slow=Move Block (Left, Steerable, Slow, No Outline)
 entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_fast=Move Block (Left, Fast, No Outline)
 entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_slow=Move Block (Left, Slow, No Outline)
+
+# ========================== Move Block Outline Remover
+
+triggers.ChroniaHelper/MoveBlockOutlineRemover.placements.name.outlineRemover=Move Block Outline Remover
