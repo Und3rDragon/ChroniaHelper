@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
 using Celeste.Mod.ChroniaHelperIndicatorZone;
@@ -113,6 +113,7 @@ public class ChroniaHelperModule : EverestModule
         // API Imports
         typeof(APIFrostHelper).ModInterop();
         typeof(APICameraDynamics).ModInterop();
+        typeof(APIGravityHelper).ModInterop();
 
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;

@@ -1,4 +1,4 @@
-﻿mods.ChroniaHelper.name=ChroniaHelper
+mods.ChroniaHelper.name=ChroniaHelper
 
 style.effects.ChroniaHelper/CustomRain.name=Custom Rain
 style.effects.ChroniaHelper/CustomRain.description.fadingX=Several faders separated by ";" \nEach fader contains 4 numbers separated by a comma, representing "positionFrom", "positionTo", "alphaFrom", "alphaTo" \nFor example: "100,200,0,1"
@@ -1634,3 +1634,106 @@ entities.ChroniaHelper/WiggleLiner.placements.name.line=Wiggle Liner
 entities.ChroniaHelper/LanguageSessionSpecifier.placements.name.controller=Language Session Specifier
 entities.ChroniaHelper/LanguageSessionSpecifier.attributes.description.targetName=When "session type" is "Flag", this is the name of the flag that will be set when the language matches\nif the language option is not left empty\nWhen "session type" is "Counter", this is the name of the counter that will be set,\nif the matching language options is filled by an integer\nWhen "session type" is "Slider", this is the name of the slider that will be set,\nif the matching language options is filled by a float number
 entities.ChroniaHelper/LanguageSessionSpecifier.attributes.description.LanguageScaleSpecify=A list of specifiers like "schinese, 1.25"\nA specifier is consist of 2 or 3 parameters\nThe leading parameter is the name of the language except English, all lower cases, like "french" represents French\nand "simplifiedchinese" or "schinese" represents Simplified Chinese\nThe second parameter is the scale number, if there's a third parameter, then the second number only works on Scale X\nThe third parameter is also a scale number, and it will override the Scale Y
+
+# ========================== Shattersong Zone
+
+entities.ChroniaHelper/ShattersongZone.placements.name.normal=Shattersong Zone
+
+# ========================== Sample Jump Through
+
+entities.ChroniaHelper/SampleJumpThroughUp.placements.name.up=Sample Jump Through (Up)
+entities.ChroniaHelper/SampleJumpThroughRight.placements.name.right=Sample Jump Through (Right)
+entities.ChroniaHelper/SampleJumpThroughDown.placements.name.down=Sample Jump Through (Down)
+entities.ChroniaHelper/SampleJumpThroughLeft.placements.name.left=Sample Jump Through (Left)
+
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.texture=The texture of the board, relative to \"Gameplay/objects/jumpthru/\"\nCan be browsed and picked from the atlas\nLeave empty to use the jump through texture of the current area
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.surfaceIndex=The sound index used when interacting with the board\n-1 means using the sound of the current area
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.animationDelay=The playback speed of the board animation\n0 means no animation
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.attached=If enabled, the board will stick to the solid it touches\nand move along with it
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.texture=The texture of the board, relative to \"Gameplay/objects/jumpthru/\"\nCan be browsed and picked from the atlas\nLeave empty to use the jump through texture of the current area
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.surfaceIndex=The sound index used when interacting with the board\n-1 means using the sound of the current area
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.animationDelay=The playback speed of the board animation\n0 means no animation
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.allowClimbing=Allow Climbing
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.allowClimbing=If enabled, the player can climb on the board surface
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.allowWallJumping=Allow Wall Jumping
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.allowWallJumping=If enabled, the player can wall jump off the board surface
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.letSeekersThrough=Let Seekers Through
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.letSeekersThrough=If enabled, seekers will ignore the board
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.cornerCorrect=Corner Correct
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.cornerCorrect=If enabled, the player dashing against the edge of the board\nwill be nudged onto the board surface
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.attached=If enabled, the board will stick to the solid it touches\nand move along with it
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.texture=The texture of the board, relative to \"Gameplay/objects/jumpthru/\"\nCan be browsed and picked from the atlas\nLeave empty to use the jump through texture of the current area
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.surfaceIndex=The sound index used when interacting with the board\n-1 means using the sound of the current area
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.animationDelay=The playback speed of the board animation\n0 means no animation
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.squishPlayer=Squish Player
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.squishPlayer=If enabled, the player will be squished when the attached board\npressed against them and cannot be pushed away
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.pushPlayer=Push Player
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.pushPlayer=If enabled, the player pressing against the board will be pushed away\nalong the blocked direction
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.attached=If enabled, the board will stick to the solid it touches\nand move along with it
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.texture=The texture of the board, relative to \"Gameplay/objects/jumpthru/\"\nCan be browsed and picked from the atlas\nLeave empty to use the jump through texture of the current area
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.surfaceIndex=The sound index used when interacting with the board\n-1 means using the sound of the current area
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.animationDelay=The playback speed of the board animation\n0 means no animation
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.allowClimbing=Allow Climbing
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.allowClimbing=If enabled, the player can climb on the board surface
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.allowWallJumping=Allow Wall Jumping
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.allowWallJumping=If enabled, the player can wall jump off the board surface
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.letSeekersThrough=Let Seekers Through
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.letSeekersThrough=If enabled, seekers will ignore the board
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.cornerCorrect=Corner Correct
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.cornerCorrect=If enabled, the player dashing against the edge of the board\nwill be nudged onto the board surface
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.attached=If enabled, the board will stick to the solid it touches\nand move along with it
+
+# ========================== Counter Modifier
+
+entities.ChroniaHelper/CounterModifier.placements.name.modifier=Counter Modifier
+entities.ChroniaHelper/CounterModifier.attributes.name.targetName=Target Name
+entities.ChroniaHelper/CounterModifier.attributes.description.targetName=The name of the session counter this entity reads from and writes to\nDefault is "targetCounter"
+entities.ChroniaHelper/CounterModifier.attributes.name.offsetY=Offset Y
+entities.ChroniaHelper/CounterModifier.attributes.description.offsetY=The distance above the entity where the counter value is displayed,\nnegative values go upwards. Default is -24
+entities.ChroniaHelper/CounterModifier.attributes.name.step=Step of the changes
+entities.ChroniaHelper/CounterModifier.attributes.description.step=How much the counter changes for each press of left or right,\nleft subtracts and right adds. Default is 1
+
+# ========================== Slider Modifier
+
+entities.ChroniaHelper/SliderModifier.placements.name.modifier=Slider Modifier
+entities.ChroniaHelper/SliderModifier.attributes.name.targetName=Target Name
+entities.ChroniaHelper/SliderModifier.attributes.description.targetName=The name of the session counter this entity reads from and writes to\nDefault is "targetCounter"
+entities.ChroniaHelper/SliderModifier.attributes.name.offsetY=Offset Y
+entities.ChroniaHelper/SliderModifier.attributes.description.offsetY=The distance above the entity where the counter value is displayed,\nnegative values go upwards. Default is -24
+entities.ChroniaHelper/SliderModifier.attributes.name.step=Step of the changes
+entities.ChroniaHelper/SliderModifier.attributes.description.step=How much the counter changes for each press of left or right,\nleft subtracts and right adds. Default is 1
+
+# ========================== Move Block (No Outline)
+
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_steer_fast=Move Block (Up, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_steer_slow=Move Block (Up, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_nosteer_fast=Move Block (Up, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_nosteer_slow=Move Block (Up, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_steer_fast=Move Block (Down, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_steer_slow=Move Block (Down, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_nosteer_fast=Move Block (Down, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_nosteer_slow=Move Block (Down, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_steer_fast=Move Block (Right, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_steer_slow=Move Block (Right, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_nosteer_fast=Move Block (Right, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_nosteer_slow=Move Block (Right, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_fast=Move Block (Left, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_slow=Move Block (Left, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_fast=Move Block (Left, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_slow=Move Block (Left, Slow, No Outline)

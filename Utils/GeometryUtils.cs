@@ -280,36 +280,6 @@ public static partial class GeometryUtils
         return points;
     }
     
-    public static Vc2 Floor(this Vc2 vector)
-    {
-        return new Vc2(float.Floor(vector.X), float.Floor(vector.Y));
-    }
-
-    public static Vc2 Ceiling(this Vc2 vector)
-    {
-        return new Vc2(float.Ceiling(vector.X), float.Ceiling(vector.Y));
-    }
-
-    public static Vc2 Round(this Vc2 vector)
-    {
-        return new Vc2(float.Round(vector.X), float.Round(vector.Y));
-    }
-
-    public static Vc3 Floor(this Vc3 vector)
-    {
-        return new Vc3(float.Floor(vector.X), float.Floor(vector.Y), float.Floor(vector.Z));
-    }
-
-    public static Vc3 Ceiling(this Vc3 vector)
-    {
-        return new Vc3(float.Ceiling(vector.X), float.Ceiling(vector.Y), float.Floor(vector.Z));
-    }
-
-    public static Vc3 Round(this Vc3 vector)
-    {
-        return new Vc3(float.Round(vector.X), float.Round(vector.Y), float.Floor(vector.Z));
-    }
-
     public struct Line
     {
         public Vector2 A;

@@ -247,28 +247,15 @@ public static class Miscs
     public static bool InView(this Vc2 pos, Vc2? size = null, 
         float extension = 16f, Vc2? overrideCameraPos = null)
     {
-        Camera camera = MaP.level.Camera;
         Vc2 cameraPosition = overrideCameraPos == null ? 
-            new Vc2(camera.X, camera.Y) : (Vc2)overrideCameraPos;
-        Vc2 cameraSize = Screen.Size;
+            MaP.cameraPos : (Vc2)overrideCameraPos;
         Vc2 pos2 = size == null ? pos : pos + ((Vc2)size).Abs();
         extension = extension.GetAbs();
 
-        if (APICameraDynamics.extendedCameraHooksEnabled)
-        {
-            cameraSize = APICameraDynamics.getCameraDimensions(MaP.level);
-        }
-
-        if (Md.MaddieLoaded)
-        {
-            cameraSize.X = RefMaxHelpingHand.CameraWidth;
-            cameraSize.Y = RefMaxHelpingHand.CameraHeight;
-        }
-
         return pos2.X > cameraPosition.X - extension &&
             pos2.Y > cameraPosition.Y - extension &&
-            pos.X < cameraPosition.X + cameraSize.X + extension &&
-            pos.Y < cameraPosition.Y + cameraSize.Y + extension;
+            pos.X < cameraPosition.X + Screen.Width + extension &&
+            pos.Y < cameraPosition.Y + Screen.Height + extension;
     }
 
     [Credits("VivHelper")]

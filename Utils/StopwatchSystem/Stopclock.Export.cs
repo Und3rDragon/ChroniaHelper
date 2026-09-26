@@ -27,6 +27,17 @@ public partial class Stopclock
     public string Digitals =>
         $"{year:00}{month:00}{day:00}{hour:00}{minute:00}{second:00}{millisecond:000}";
     
+    public struct Digits
+    {
+        public const int Millisecond = 0;
+        public const int Second = 1;
+        public const int Minute = 2;
+        public const int Hour = 3;
+        public const int Day = 4;
+        public const int Month = 5;
+        public const int Year = 6;
+    }
+
     public void GetTimeData(out int[] digitals)
     {
         digitals = new int[7] { millisecond, second, minute, hour, day, month, year };

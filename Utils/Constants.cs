@@ -56,4 +56,6 @@ public static class Constants
     public static Vc2 VanillaCanvas = new Vc2(320f, 180f);
 
     public static Vc2 HDCanvas = new Vc2(1920f, 1080f);
+    public const string DefaultDisplayerFontPath = "ChroniaHelper/DisplayFonts/font";
+    public const string DefaultStopclockFontPath = "ChroniaHelper/StopclockFonts/fontB";
 }

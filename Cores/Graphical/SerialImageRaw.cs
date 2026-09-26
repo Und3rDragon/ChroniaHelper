@@ -41,7 +41,7 @@ public class SerialImageRaw
         return result;
     }
 
-    public SerialImageRaw(string path)
+    public SerialImageRaw(string path = Cons.DefaultDisplayerFontPath)
     {
         GFX.Game.GetAtlasSubtextures(path).ApplyTo(out textures);
     }

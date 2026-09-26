@@ -260,6 +260,11 @@ public class ChroniaHelperSession : EverestModuleSession
     // Refill Hook values
     public float? RefillMaxStamina = null;
 
+    // Entity port: Refill Cancel Space
+    public bool ShowIndicator { get; set; } = true;
+    public float staminaCount { get; set; }
+    public int dashCount { get; set; }
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]

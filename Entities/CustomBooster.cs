@@ -559,10 +559,10 @@ public class CustomBooster : Booster
     {
         base.Render();
 
-        if (onlyOnce)
-        {
-            ActiveFont.Draw("!", Position, new Vector2(0.5f, 0.5f), new Vector2(0.35f, 0.35f), Color.Red);
-        }
+        //if (onlyOnce)
+        //{
+        //    ActiveFont.Draw("!", Position, new Vector2(0.5f, 0.5f), new Vector2(0.35f, 0.35f), Color.Red);
+        //}
     }
 
     // Usable but unecessary hooks

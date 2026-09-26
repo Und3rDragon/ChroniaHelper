@@ -66,7 +66,7 @@ public static class ConditionUtils
         }
         else if ((ConditionMode)mode == ConditionMode.FrostSessionExpression && Md.FrostHelperLoaded)
         {
-            object context = APIFrostHelper.CreateSessionExpressionContext(simpleCommands, functionCommands);
+            object context = APIFrostHelper.createSessionExpressionContext(simpleCommands, functionCommands);
             if(condition.tryCreateSessionExpression(context, out object exp))
             {
                 return exp.getFloatSessionExpressionValue();
