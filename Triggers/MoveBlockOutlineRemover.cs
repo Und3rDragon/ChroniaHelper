@@ -34,17 +34,20 @@ public class MoveBlockOutlineRemover : BaseTrigger
 
 public class NoMoveBlockOutline : BaseComponent
 {
-
+    public NoMoveBlockOutline()
+    {
+        Ldm.LoadHook(typeof(MoveBlockOutlineRemoveUtils));
+    }
 }
 
 public static class MoveBlockOutlineRemoveUtils
 {
-    [ExA.LoadHook]
+    [ExA.SelectiveLoadHook]
     public static void Load()
     {
         On.Celeste.MoveBlock.Update += OnMoveBlockLoad;
     }
-    [ExA.UnloadHook]
+    [ExA.SelectiveUnloadHook]
     public static void Unload()
     {
         On.Celeste.MoveBlock.Update -= OnMoveBlockLoad;

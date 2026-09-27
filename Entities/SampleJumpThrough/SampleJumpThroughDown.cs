@@ -23,8 +23,6 @@ public class SampleJumpThroughDown : JumpThru {
     private static ILHook playerOrigUpdateHook;
     private static Hook canUnDuckHook;
 
-    private static bool hooksActive = false;
-
     private static readonly Hitbox normalHitbox = new Hitbox(8f, 11f, -4f, -11f);
 
     [SelectiveLoadHook]
@@ -37,12 +35,8 @@ public class SampleJumpThroughDown : JumpThru {
         deactivateHooks();
     }
 
-    public static void activateHooks() {
-        if (hooksActive) {
-            return;
-        }
-        hooksActive = true;
-
+    public static void activateHooks() 
+    {
         // fix general actor/platform behavior to make them comply with jumpthrus.
         IL.Celeste.Actor.MoveVExact += addUpsideDownJumpthrusInMoveVExact;
         IL.Celeste.Platform.MoveVExactCollideSolids += addUpsideDownJumpthrusInCollideSolids;
@@ -71,12 +65,8 @@ public class SampleJumpThroughDown : JumpThru {
         }
     }
 
-    public static void deactivateHooks() {
-        if (!hooksActive) {
-            return;
-        }
-        hooksActive = false;
-
+    public static void deactivateHooks() 
+    {
         IL.Celeste.Actor.MoveVExact -= addUpsideDownJumpthrusInMoveVExact;
         IL.Celeste.Platform.MoveVExactCollideSolids -= addUpsideDownJumpthrusInCollideSolids;
 
