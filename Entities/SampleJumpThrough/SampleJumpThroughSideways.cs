@@ -36,12 +36,8 @@ public class SampleJumpThroughSideways : Entity {
         deactivateHooks();
     }
 
-    private static void activateHooks() {
-        if (hooksActive) {
-            return;
-        }
-        hooksActive = true;
-
+    private static void activateHooks() 
+    {
         // implement the basic collision between actors/platforms and sideways jumpthrus.
         IL.Celeste.Actor.MoveHExact += addSidewaysJumpthrusInHorizontalMoveMethods;
         IL.Celeste.Platform.MoveHExactCollideSolids += addSidewaysJumpthrusInHorizontalMoveMethods;
@@ -72,12 +68,8 @@ public class SampleJumpThroughSideways : Entity {
         hookOnUpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", BindingFlags.NonPublic | BindingFlags.Instance), modCollideChecks);
     }
 
-    private static void deactivateHooks() {
-        if (!hooksActive) {
-            return;
-        }
-        hooksActive = false;
-
+    private static void deactivateHooks() 
+    {
         IL.Celeste.Actor.MoveHExact -= addSidewaysJumpthrusInHorizontalMoveMethods;
         IL.Celeste.Platform.MoveHExactCollideSolids -= addSidewaysJumpthrusInHorizontalMoveMethods;
 
