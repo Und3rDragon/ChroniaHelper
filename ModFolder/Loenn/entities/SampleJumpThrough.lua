@@ -1,4 +1,5 @@
 local utils = require("utils")
+local core = require("mods").requireFromPlugin("utils.core")
 local drawableSprite = require("structs.drawable_sprite")
 local atlases = require("atlases")
 
@@ -6,13 +7,6 @@ local cellSize = 8
 
 -- 板体厚度与实体侧的碰撞盒厚度一致
 local thickness = 5
-
--- 各朝向的专属字段
-local sidewaysFields = {"allowClimbing", "allowWallJumping", "letSeekersThrough", "cornerCorrect"}
-local downFields = {"squishPlayer", "pushPlayer"}
-
--- 顺时针旋转目标：上、右、下、左
-local rotateTarget = {up = "right", right = "down", down = "left", left = "up"}
 
 -- 贴图所在图集的路径前缀
 local texturePrefix = "Graphics/Atlases/Gameplay/objects/jumpthru/"
@@ -47,50 +41,76 @@ local textureField = {
     end
 }
 
-local fieldInfo = {
-    texture = textureField,
-    surfaceIndex = {fieldType = "integer"},
-    animationDelay = {fieldType = "number"},
-    attached = {fieldType = "boolean"},
-    pushPlayer = {fieldType = "boolean"},
-    squishPlayer = {fieldType = "boolean"},
-    allowClimbing = {fieldType = "boolean"},
-    allowWallJumping = {fieldType = "boolean"},
-    letSeekersThrough = {fieldType = "boolean"},
-    cornerCorrect = {fieldType = "boolean"}
+-- 全部朝向共用的字段表：字段名 -> {data = 默认值, info = 字段信息}
+-- 所有朝向的实体都拥有同一套字段，仅按朝向隐藏，避免旋转后字段集变化
+local fieldTable = {
+    texture = {
+        data = "wood",
+        info = textureField
+    },
+    surfaceIndex = {
+        data = 8,
+        info = {fieldType = "integer"}
+    },
+    animationDelay = {
+        data = 0,
+        info = {fieldType = "number"}
+    },
+    attached = {
+        data = false,
+        info = {fieldType = "boolean"}
+    },
+    allowClimbing = {
+        data = true,
+        info = {fieldType = "boolean"}
+    },
+    allowWallJumping = {
+        data = true,
+        info = {fieldType = "boolean"}
+    },
+    letSeekersThrough = {
+        data = false,
+        info = {fieldType = "boolean"}
+    },
+    cornerCorrect = {
+        data = false,
+        info = {fieldType = "boolean"}
+    },
+    squishPlayer = {
+        data = false,
+        info = {fieldType = "boolean"}
+    },
+    pushPlayer = {
+        data = false,
+        info = {fieldType = "boolean"}
+    }
 }
 
 -- name       实体注册名
--- placement  放置项名称，亦用于旋转与 lang
+-- placement  朝向标识，亦用于旋转与 lang
 -- horizontal 是否沿宽度排布
--- animate    是否支持逐格动画
--- extra      该朝向专属字段
 local boardOrder = {"up", "right", "down", "left"}
 
 local boardDefinition = {
     up = {
         name = "ChroniaHelper/SampleJumpThroughUp",
-        horizontal = true,
-        animate = true,
-        extra = {}
+        placement = "up",
+        horizontal = true
     },
     right = {
         name = "ChroniaHelper/SampleJumpThroughRight",
-        horizontal = false,
-        animate = true,
-        extra = sidewaysFields
+        placement = "right",
+        horizontal = false
     },
     down = {
         name = "ChroniaHelper/SampleJumpThroughDown",
-        horizontal = true,
-        animate = true,
-        extra = downFields
+        placement = "down",
+        horizontal = true
     },
     left = {
         name = "ChroniaHelper/SampleJumpThroughLeft",
-        horizontal = false,
-        animate = true,
-        extra = sidewaysFields
+        placement = "left",
+        horizontal = false
     }
 }
 
@@ -101,9 +121,36 @@ for placement, definition in pairs(boardDefinition) do
     placementByName[definition.name] = placement
 end
 
+-- 顺时针旋转目标：上、右、下、左
+local rotateTarget = {up = "right", right = "down", down = "left", left = "up"}
+
 -- 上下朝向持有宽度，左右朝向持有高度
 local sizeField = function(horizontal)
     return horizontal and "width" or "height"
+end
+
+-- 是否属于侧向板（左右朝向）
+local isSideways = function(placement)
+    return placement == "left" or placement == "right"
+end
+
+-- 字段顺序：尺寸、通用字段、朝向专属字段
+local boardFieldOrder = function(horizontal)
+    local order = {"x", "y", sizeField(horizontal), "texture", "surfaceIndex", "animationDelay"}
+
+    if not horizontal then
+        table.insert(order, "allowClimbing")
+        table.insert(order, "allowWallJumping")
+        table.insert(order, "letSeekersThrough")
+        table.insert(order, "cornerCorrect")
+    else
+        table.insert(order, "squishPlayer")
+        table.insert(order, "pushPlayer")
+    end
+
+    table.insert(order, "attached")
+
+    return order
 end
 
 -- 图集为 24x16，按 8x8 切成 2 行 3 列，六块依次为：
@@ -264,78 +311,52 @@ local boardSelection = function(entity, horizontal)
     return utils.rectangle(x, y, cellSize, entity.height or cellSize)
 end
 
+-- 隐藏字段：另一轴的尺寸，以及其它朝向的专属字段
+local boardIgnoredFields = function(entity)
+    local placement = placementByName[entity._name]
+    local horizontal = placement and boardDefinition[placement] and boardDefinition[placement].horizontal
+
+    if horizontal == nil then
+        return {"_id", "_name"}
+    end
+
+    local ignored = {"_id", "_name", sizeField(not horizontal)}
+
+    if isSideways(placement) then
+        table.insert(ignored, "squishPlayer")
+        table.insert(ignored, "pushPlayer")
+    else
+        table.insert(ignored, "allowClimbing")
+        table.insert(ignored, "allowWallJumping")
+        table.insert(ignored, "letSeekersThrough")
+        table.insert(ignored, "cornerCorrect")
+    end
+
+    return ignored
+end
+
 -- 绘制面板
 local makeBoard = function(placement)
     local definition = boardDefinition[placement]
     local horizontal = definition.horizontal
-    local size = sizeField(horizontal)
 
-    -- 面板数据：列出该朝向适用的全部字段并给出默认值
+    -- 两轴尺寸都列出（各朝向键集一致），面板按朝向隐藏另一轴
     local data = {
-        [size] = cellSize,
-        texture = "wood",
-        surfaceIndex = 8,
-        attached = false
+        width = cellSize,
+        height = cellSize
     }
-
-    if definition.animate then
-        data.animationDelay = 0
-    end
-
-    for _, field in ipairs(definition.extra) do
-        -- 攀附相关的开关默认开放，其余默认关闭
-        data[field] = field == "allowClimbing" or field == "allowWallJumping"
-    end
-
-    -- 字段顺序：尺寸、通用字段、专属字段
-    local order = {"x", "y", size, "texture", "surfaceIndex"}
-
-    if definition.animate then
-        table.insert(order, "animationDelay")
-    end
-
-    for _, field in ipairs(definition.extra) do
-        table.insert(order, field)
-    end
-
-    table.insert(order, "attached")
-
-    -- 字段信息：只列出该朝向适用的字段
-    local fieldInformation = {}
-
-    for _, field in ipairs(order) do
-        if fieldInfo[field] ~= nil then
-            fieldInformation[field] = fieldInfo[field]
-        end
-    end
-
-    -- 不显示的字段：另一轴的尺寸，以及其它朝向的专属字段
-    local ignored = {"_id", "_name", sizeField(not horizontal)}
-
-    if not definition.animate then
-        table.insert(ignored, "animationDelay")
-    end
-
-    if placement ~= "down" then
-        table.insert(ignored, "squishPlayer")
-        table.insert(ignored, "pushPlayer")
-    end
-
-    if placement == "up" or placement == "down" then
-        for _, field in ipairs(sidewaysFields) do
-            table.insert(ignored, field)
-        end
-    end
 
     local board = {
         name = definition.name,
         placements = {
-            name = placement,
+            name = definition.placement,
             data = data
         },
-        fieldInformation = fieldInformation,
-        fieldOrder = order,
-        ignoredFields = ignored,
+        fieldInformation = {},
+        fieldOrder = boardFieldOrder(horizontal),
+        ignoredFields = function(entity)
+            return boardIgnoredFields(entity)
+        end,
         sprite = function(room, entity)
             return boardSprite(room, entity)
         end,
@@ -381,5 +402,8 @@ local boards = {}
 for _, placement in ipairs(boardOrder) do
     table.insert(boards, makeBoard(placement))
 end
+
+-- 所有朝向共享同一套字段，仅在面板上按朝向隐藏
+core.fieldCopy(fieldTable, boards)
 
 return boards
