@@ -528,11 +528,18 @@ public class SampleJumpThroughSideways : Entity {
             }
         }
 
+        // 冲刺角修正：玩家贴向板面冲刺时，把玩家吸附到板的材质表面
+        // 吸附范围与目标以实体位置为基准，均取自板体一侧的 6 像素区间
         if (cornerCorrect && (p.StateMachine.State == Player.StDash || p.StateMachine.State == Player.StRedDash) && Math.Abs(p.DashDir.X) < 0.1f) {
-            if (AllowLeftToRight && Right - p.Left <= 6f)
-                p.MoveHExact((int) (Right - p.Left));
-            else if (!AllowLeftToRight && p.Right - Left <= 6f)
-                p.MoveHExact((int) (Left - p.Right));
+            if (AllowLeftToRight) {
+                // 表面在右边缘：玩家左边缘落在 [X+2, Right] 内即吸附到 Right
+                if (p.Left >= X + 2f && p.Left <= Right)
+                    p.MoveHExact((int) (Right - p.Left));
+            } else {
+                // 表面在左边缘：玩家右边缘落在 [Left, Left+6] 内即吸附到 Left
+                if (p.Right >= Left && p.Right <= Left + 6f)
+                    p.MoveHExact((int) (Left - p.Right));
+            }
         }
     }
 

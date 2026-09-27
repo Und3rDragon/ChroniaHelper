@@ -136,13 +136,12 @@ end
 
 -- 字段顺序：尺寸、通用字段、朝向专属字段
 local boardFieldOrder = function(horizontal)
-    local order = {"x", "y", sizeField(horizontal), "texture", "surfaceIndex", "animationDelay"}
+    local order = {"x", "y", sizeField(horizontal), "texture", "surfaceIndex", "animationDelay", "cornerCorrect"}
 
     if not horizontal then
         table.insert(order, "allowClimbing")
         table.insert(order, "allowWallJumping")
         table.insert(order, "letSeekersThrough")
-        table.insert(order, "cornerCorrect")
     else
         table.insert(order, "squishPlayer")
         table.insert(order, "pushPlayer")
@@ -329,6 +328,10 @@ local boardIgnoredFields = function(entity)
         table.insert(ignored, "allowClimbing")
         table.insert(ignored, "allowWallJumping")
         table.insert(ignored, "letSeekersThrough")
+    end
+
+    -- 朝上的板沿用原版跳穿板行为，不使用冲刺角修正
+    if placement == "up" then
         table.insert(ignored, "cornerCorrect")
     end
 

@@ -355,6 +355,7 @@ public class SampleJumpThroughDown : JumpThru {
     private float animationDelay;
     private bool pushPlayer;
     private bool squishPlayer;
+    private bool cornerCorrect;
     private bool attached;
 
     private Vector2 shakeOffset;
@@ -369,6 +370,7 @@ public class SampleJumpThroughDown : JumpThru {
         overrideTexture = data.Attr("texture", "default");
         animationDelay = data.Float("animationDelay", 0f);
         pushPlayer = data.Bool("pushPlayer", false);
+        cornerCorrect = data.Bool("cornerCorrect", false);
         attached = data.Bool("attached", defaultValue: false);
         squishPlayer = data.Bool("squishPlayer", defaultValue: attached);
 
@@ -486,6 +488,17 @@ public class SampleJumpThroughDown : JumpThru {
 
                 p.MoveV(40f * Engine.DeltaTime);
             }
+        }
+
+        // 冲刺角修正：玩家水平冲刺贴向板的下表面时，把玩家吸附到板的材质表面
+        // 吸附范围与目标以实体位置为基准，取自板体一侧的 6 像素区间
+        if (cornerCorrect && (p = CollideFirst<Player>()) != null
+            && (p.StateMachine.State == Player.StDash || p.StateMachine.State == Player.StRedDash)
+            && Math.Abs(p.DashDir.Y) < 0.1f) {
+
+            // 表面在下边缘：玩家上边缘落在 [Y+2, Bottom] 内即吸附到 Bottom
+            if (p.Top >= Y + 2f && p.Top <= Bottom)
+                p.MoveVExact((int) (Bottom - p.Top));
         }
     }
 
