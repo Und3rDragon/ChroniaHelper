@@ -587,27 +587,38 @@ public static class StringUtils
 
                         float value = sliderName.GetSlider();
 
-                        // 格式化浮点数
-                        string format = $"F{decimalMaxDigits}";
-                        string formattedValue = value.ToString(format);
+                        // 分离整数和小数部分（处理负号）
+                        int intPart = (int)Math.Floor(Math.Abs(value));
+                        float fractionalPart = Math.Abs(value) - intPart;
 
-                        // 处理整数部分的最小位数
-                        string[] numberParts = formattedValue.Split('.');
-                        string intPart = numberParts[0];
-
-                        if (intPart.Length < intMinDigits)
+                        // 处理整数部分（含最小位数补零）
+                        string intStr = intPart.ToString();
+                        if (intMinDigits > intStr.Length)
                         {
-                            intPart = intPart.PadLeft(intMinDigits, '0');
+                            intStr = intStr.PadLeft(intMinDigits, '0');
                         }
 
-                        if (numberParts.Length > 1)
+                        // 处理小数部分
+                        string fractionalStr;
+                        if (decimalMaxDigits == 0)
                         {
-                            currentSegment += intPart + "." + numberParts[1];
+                            fractionalStr = "";
                         }
                         else
                         {
-                            currentSegment += intPart;
+                            // 四舍五入到指定小数位
+                            fractionalPart = (float)Math.Round(fractionalPart, decimalMaxDigits);
+                            fractionalStr = fractionalPart.ToString($"F{decimalMaxDigits}").Split('.')[1];
                         }
+
+                        // 组合最终结果（处理负号）
+                        string resultStr = value < 0 ? "-" + intStr : intStr;
+                        if (decimalMaxDigits > 0)
+                        {
+                            resultStr += "." + fractionalStr;
+                        }
+
+                        currentSegment += resultStr;
                     }
                     // 处理 {savedata name}
                     else if (cmd == "savedata" && parts.Length >= 2)
@@ -631,14 +642,14 @@ public static class StringUtils
                     {
                         // fieldName: xxx.xxx.xxx.xxx
                         string fieldName = parts[1];
-                        
+
                         int lastWordIndex = fieldName.LastIndexOf('.');
 
                         if (lastWordIndex != -1)
                         {
                             string className = fieldName.Substring(0, lastWordIndex);
                             string attrName = fieldName.Substring(lastWordIndex + 1);
-                            
+
                             Type arg = Type.GetType(className);
                             if (arg != null)
                             {
@@ -669,11 +680,11 @@ public static class StringUtils
                         }
                     }
                     // 处理{stopclock name}
-                    else if(cmd == "stopclock" && parts.Length >= 2)
+                    else if (cmd == "stopclock" && parts.Length >= 2)
                     {
                         string clock = parts[1];
 
-                        if(clock.GetStopclock(out Stopclock c))
+                        if (clock.GetStopclock(out Stopclock c))
                         {
                             c.GetClampedTimeData(out int[] digs, Stopclock.Digits.Millisecond, Stopclock.Digits.Hour);
                             currentSegment += $"{digs[3]}:{digs[2]}:{digs[1]}:{digs[0]}";
