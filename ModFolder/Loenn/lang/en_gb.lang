@@ -87,6 +87,11 @@ entities.ChroniaHelper/GroupedKillerBlock.attributes.description.springBlockOver
 entities.ChroniaHelper/KillerWall.placements.name.KillerWall=Killer Wall
 entities.ChroniaHelper/KillerWall.attributes.description.springBlockOverride=An override mode for the entity that will turn the entity into a Spring Block \nThe spring block will bounce player off like a spring each time the player touches it \nUnless the player is holding grab.
 
+entities.ChroniaHelper/ConnectedDashBlock.placements.name.ConnectedDashBlock=Connected Dash Block
+entities.ChroniaHelper/ConnectedDashBlock.attributes.description.blendin=Render the block blending into the level solids instead of as a standalone block
+entities.ChroniaHelper/ConnectedDashBlock.attributes.description.permanent=Whether the broken block stays gone after the room is reloaded
+entities.ChroniaHelper/ConnectedDashBlock.attributes.description.canDash=Whether dashing into the block breaks it. When disabled, the block is only broken during certain player states
+
 entities.ChroniaHelper/SpringBlock.placements.name.SpringBlock=Spring Block
 entities.ChroniaHelper/SpringBlock.attributes.description.standFall=Whether the player standing on the block will cause the block to fall
 entities.ChroniaHelper/SpringBlock.attributes.description.fallDelay=The shaking time before the block finally starts to fall

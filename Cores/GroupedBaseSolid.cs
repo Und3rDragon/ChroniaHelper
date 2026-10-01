@@ -45,7 +45,7 @@ public class GroupedBaseSolid : Solid
 
         PostGroupping();
 
-        GenerateGrid(bgTexture);
+        GenerateGrid();
 
         PostGridGenerating();
     }
@@ -54,7 +54,7 @@ public class GroupedBaseSolid : Solid
 
     public virtual void PostGridGenerating() { }
 
-    public virtual void GenerateGrid(bool bgTexture = false)
+    public virtual void GenerateGrid()
     {
         if (MasterOfGroup)
         {

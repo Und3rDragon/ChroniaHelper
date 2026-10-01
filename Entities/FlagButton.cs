@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Modules;
 using ChroniaHelper.Utils;
@@ -256,6 +257,7 @@ public class FlagButton : Entity {
     }
     
     public bool inside = false;
+    public DataPack<bool> completed = new(null, false);
     public void OnPlayer(Player player)
     {
         if (passwordProtected)
@@ -274,15 +276,6 @@ public class FlagButton : Entity {
         else
         {
             TurnOn();
-        }
-        
-        if (MaP.IsSwitchFlagCompleted(flag))
-        {
-            if (!inside && !level.Session.GetFlag(soundID))
-            {
-                SoundEmitter.Play(completeSound);
-                level.Session.SetFlag(soundID, true);
-            }
         }
     }
 
@@ -359,13 +352,25 @@ public class FlagButton : Entity {
         }
         else { inside = false; }
 
+        bool isCompleted = MaP.IsSwitchFlagCompleted(flag);
+
         timer += Engine.DeltaTime * 8f;
-        ease = Calc.Approach(ease, (MaP.IsSwitchFlagCompleted(flag) || Activated()) ? 1f : 0f, Engine.DeltaTime * 2f);
-        icon.Color = Color.Lerp(inactiveColor, MaP.IsSwitchFlagCompleted(flag) ? finishColor : activeColor, ease);
+        ease = Calc.Approach(ease, (isCompleted || Activated()) ? 1f : 0f, Engine.DeltaTime * 2f);
+        icon.Color = Color.Lerp(inactiveColor, isCompleted ? finishColor : activeColor, ease);
         icon.Color *= 0.5f + ((float)Math.Sin(timer) + 1f) / 2f * (1f - ease) * 0.5f + 0.5f * ease;
         bloom.Alpha = ease;
-        if (MaP.IsSwitchFlagCompleted(flag))
+        completed.SetValue(isCompleted);
+        if (isCompleted)
         {
+            if (completed.Value != completed._Value && completed.Value)
+            {
+                if (!level.Session.GetFlag(soundID))
+                {
+                    SoundEmitter.Play(completeSound);
+                    level.Session.SetFlag(soundID, true);
+                }
+            }
+
             if (icon.Rate > finishRate)
             {
                 icon.Rate -= 2f * Engine.DeltaTime;
