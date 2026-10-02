@@ -16,16 +16,16 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/RealFlagSwitch2")]
-public class FlagButton2 : Entity {
+[CustomEntity("ChroniaHelper/VanillaFlagButton")]
+public class VanillaFlagButton : Entity {
     
     // Default parameters
     public static ParticleType P_Fire;
     public static ParticleType P_FireWhite;
     public Switch Switch;
     public SoundSource touchSfx;
-    public Sprite border = new Sprite(GFX.Game, "objects/ChroniaHelper/flagTouchSwitchNew/container");
-    public Sprite icon = new Sprite(GFX.Game, "objects/ChroniaHelper/flagTouchSwitchNew/idle");
+    public MTexture border = GFX.Game["objects/touchswitch/container"];
+    public Sprite icon = new Sprite(GFX.Game, "objects/touchswitch/icon");
     public Color inactiveColor = Calc.HexToColor("5fcde4");
     public Color activeColor = Color.White;
     public Color finishColor = Calc.HexToColor("f141df");
@@ -38,46 +38,38 @@ public class FlagButton2 : Entity {
     public Level level;
 
     // Constants
+
+    private List<string> vanillanames = new List<string>
+        { "vanilla", "tall", "triangle", "circle", "diamond", "double", "heart", "square", "wide", "winged", "cross", "drop", "hourglass", "split", "star", "triple" };
     private ParticleType particle;
 
     // States
-
-    private bool Activated()
-    {
-        // Check status
-        return level.Session.GetFlag(flagID);
-    }
-
-    private bool Activated(bool set)
-    {
-        // Set and return status
-        level.Session.SetFlag(flagID, set);
-        return Activated();
-    }
+    public bool activated = false;
 
     // Inputs from Lonn
 
-    private string flag, hitSound, completeSound, hideFlag;
-    private string borderPath, iconPath;
-    private bool persistent, smoke, toggle, interactable;
+    private string flag, hitSound, switchSound, completeSound, hideFlag;
+    private string borderTexture, iconPath;
+    private bool vanilla;
+    private bool persistent, smoke, inverted, toggle, interactable;
     private enum switchKind { touch, wall }
     private switchKind classify;
+    private float idleInterval, spinInterval, onRate, finishRate;
 
     private int ew, eh;
     private float iw, ih;
     private Vector2 pos;
 
     private int ID;
-    private string flagID, soundID;
     
 
-    public FlagButton2(EntityData data, Vector2 offset)
+    public VanillaFlagButton(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
     {
 
     }
 
-    public FlagButton2(Vector2 position, EntityData data)
+    public VanillaFlagButton(Vector2 position, EntityData data)
         : base(position)
     {
         
@@ -87,9 +79,8 @@ public class FlagButton2 : Entity {
 
         // Inputs
         flag = data.Attr("flag");
-        flagID = $"ChroniaButtonFlag-{flag}-ButtonID-{ID}";
-        soundID = $"playedSound_{flag}_button";
         hitSound = data.Attr("hitSound");
+        switchSound = data.Attr("completeSoundFromSwitch");
         completeSound = data.Attr("completeSoundFromScene");
         hideFlag = data.Attr("hideIfFlag");
 
@@ -105,15 +96,21 @@ public class FlagButton2 : Entity {
 
         persistent = data.Bool("persistent");
         smoke = data.Bool("smoke");
+        inverted = data.Bool("inverted");
         toggle = data.Bool("allowDisable");
         interactable = data.Bool("playerCanActivate");
+
+        idleInterval = Math.Abs(data.Float("idleAnimDelay", 0.1f));
+        spinInterval = Math.Abs(data.Float("spinAnimDelay", 0.1f));
+        onRate = Math.Abs(data.Float("activatedAnimRate", 4f));
+        finishRate = Math.Abs(data.Float("finishedAnimRate", 0.1f));
 
         ew = data.Width;
         eh = data.Height;
         pos = data.Position;
 
-        borderPath = data.Attr("borderTexture");
-        iconPath = data.Attr("icon").TrimEnd('/') + '/';
+        borderTexture = data.Attr("borderTexture");
+        iconPath = data.Attr("icon");
 
         inactiveColor = Calc.HexToColor(data.Attr("inactiveColor", "5FCDE4"));
         activeColor = Calc.HexToColor(data.Attr("activeColor", "FFFFFF"));
@@ -143,11 +140,10 @@ public class FlagButton2 : Entity {
 
         // Sprite
         // Border texture
-        border = new Sprite(GFX.Game, borderPath);
-        border.AddLoop("idle", "", data.Float("borderAnimation", 0.1f));
-        Add(border);
-        border.Play("idle");
-        border.JustifyOrigin(0.5f, 0.5f);
+        if (!string.IsNullOrEmpty(borderTexture))
+        {
+            border = GFX.Game[borderTexture];
+        }
 
         particle = new ParticleType(TouchSwitch.P_Fire)
         {
@@ -155,17 +151,29 @@ public class FlagButton2 : Entity {
         };
 
         // Setup the icon
-        icon = new Sprite(GFX.Game, iconPath);
-        icon.AddLoop("idle", "idle", data.Float("iconIdleAnimation", 0.1f));
-        icon.AddLoop("spin", "spin", data.Float("iconSpinAnimation", 0.02f));
-        icon.Add("finishing", "finishing", data.Float("iconFinishingAnimation", 0.1f), "finished");
-        icon.AddLoop("finished", "finished", data.Float("iconFinishedAnimation", 0.1f));
+        if (vanillanames.Contains(iconPath))
+        {
+            vanilla = true;
+        }
+        else { vanilla = false; }
+
+        if (vanilla) { icon = new Sprite(GFX.Game, iconPath == "vanilla" ? "objects/touchswitch/icon" : $"objects/ChroniaHelper/flagTouchSwitch/{iconPath}/icon"); }
+        else { icon = new Sprite(GFX.Game, iconPath); }
 
         Add(icon);
+        if (vanilla)
+        {
+            icon.Add("idle", "", 0f, default(int));
+            icon.Add("spin", "", 0.1f, new Chooser<string>("spin", 1f), 0, 1, 2, 3, 4, 5);
+        }
+        else
+        {
+            icon.AddLoop("idle", "", idleInterval);
+            icon.AddLoop("spin", "", spinInterval);
+        }
 
-        icon.Play("idle");
+        icon.Play("spin");
         icon.Color = inactiveColor;
-        border.Color = icon.Color;
         ih = icon.Height;
         iw = icon.Width;
         icon.SetOrigin(-ew / 2 + icon.Width / 2, -eh / 2 + icon.Height / 2);
@@ -184,50 +192,43 @@ public class FlagButton2 : Entity {
         passwordID = data.Attr("passwordID");
         password = data.Attr("password");
         passwordProtected = passwordID.HasValidContent() && password.HasValidContent();
-
-        // Reset Mode
-        resetMode = (ResetMode)data.Int("resetMode", 0);
     }
     // Save or overwrite the existing values
     private bool passwordProtected = false; private string passwordID, password;
-    public enum ResetMode { Both, PerRoom, PerDeath }
-    public ResetMode resetMode = 0;
-
+    
     public void TurnOn()
     {
-        if (!Activated())
+        if (!activated)
         {
             touchSfx.Play(hitSound);
 
-            Activated(true);
+            activated = true;
             
-            SetIDAttribute();
-
             // animation
             wiggler.Start();
             for (int i = 0; i < 32; i++)
             {
-                float num = Rd.Random.NextFloat((float)Math.PI * 2f);
+                float num = Calc.Random.NextFloat((float)Math.PI * 2f);
                 level.Particles.Emit(particle, Position + new Vector2(ew / 2, eh / 2) + Calc.AngleToVector(num, 6f), num);
             }
-            icon.Play("spin");
+            icon.Rate = onRate;
         }
     }
 
     public void TurnOff()
     {
-        if (Activated())
+        if (activated)
         {
             touchSfx.Play(hitSound);
 
-            Activated(false);
+            activated = false;
             
             level.Session.SetFlag(flag, false);
-            level.Session.SetFlag(soundID, false);
 
             // animation
             wiggler.Stop();
-            icon.Play("idle");
+            icon.Play("spin");
+            icon.Rate = 1f;
         }
     }
     
@@ -244,7 +245,7 @@ public class FlagButton2 : Entity {
         {
             if (!inside)
             {
-                if (Activated()) { TurnOff(); }
+                if (activated) { TurnOff(); }
                 else { TurnOn(); }
             }
         }
@@ -272,113 +273,75 @@ public class FlagButton2 : Entity {
         base.Added(scene);
 
         level = SceneAs<Level>();
-        
-        ReconfirmStatus();
-        SetIDAttribute();
     }
 
     public override void Removed(Scene scene)
     {
-        ReconfirmStatus();
-        
         base.Removed(scene);
-    }
 
-    private void SetIDAttribute()
-    {
         if (!persistent)
         {
-            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
-            {
-                Md.Session.flagsPerRoom.Add(flagID);
-            }
-            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerDeath)
-            {
-                Md.Session.flagsPerDeath.Add(flagID);
-            }
+            flag.SetFlag(false);
+            activated = false;
         }
     }
 
-    private void ReconfirmStatus()
+    private List<VanillaFlagButton> Group = new();
+    public override void Awake(Scene scene)
     {
-        // Check flag status after just added
-        // If not persistent, reset the values
-        if (!persistent)
-        {
-            if(resetMode != ResetMode.PerDeath)
-            {
-                flagID.SetFlag(false);
-            }
-            
-            icon.Play("idle");
-            finished = false;
-        }
+        base.Awake(scene);
 
-        // If not completed, we should reset the flag too
-        if (!MaP.IsSwitchFlagCompleted(flag))
+        foreach(VanillaFlagButton button in level.Tracker.GetEntities<VanillaFlagButton>())
         {
-            level.Session.SetFlag(flag, false);
-            level.Session.SetFlag(soundID, false);
+            if(button.flag == flag)
+            {
+                Group.Add(button);
+            }
         }
     }
 
-    private bool finished = false;
+    public bool IsSwitchFlagCompleted()
+    {
+        return Group.All(b => b.activated);
+    }
+
     public override void Update()
     {
-        bool isCompleted = MaP.IsSwitchFlagCompleted(flag);
-        if (!flagID.GetFlag() && !isCompleted)
-        {
-            icon.Color = inactiveColor;
-            border.Color = icon.Color;
-            icon.Play("idle");
-            Activated(false);
-        }
-        else if (flagID.GetFlag() && !isCompleted)
-        {
-            icon.Color = activeColor;
-            border.Color = icon.Color;
-            icon.Play("spin");
-        }
-
         if (CollideCheck<Player>())
         {
             inside = true;
         }
         else { inside = false; }
 
+        bool isCompleted = IsSwitchFlagCompleted();
+
         timer += Engine.DeltaTime * 8f;
-        ease = Calc.Approach(ease, (isCompleted || Activated()) ? 1f : 0f, Engine.DeltaTime * 2f);
+        ease = Calc.Approach(ease, (isCompleted || activated) ? 1f : 0f, Engine.DeltaTime * 2f);
         icon.Color = Color.Lerp(inactiveColor, isCompleted ? finishColor : activeColor, ease);
         icon.Color *= 0.5f + ((float)Math.Sin(timer) + 1f) / 2f * (1f - ease) * 0.5f + 0.5f * ease;
-        border.Color = icon.Color;
         bloom.Alpha = ease;
         completed.SetValue(isCompleted);
         if (isCompleted)
         {
             if (completed.Value != completed._Value && completed.Value)
             {
-                if (!inside && !level.Session.GetFlag(soundID))
-                {
-                    SoundEmitter.Play(completeSound);
-                    level.Session.SetFlag(soundID, true);
-                }
+                SoundEmitter.Play(completeSound);
             }
 
-            if (icon.CurrentAnimationID != "finishing" && icon.CurrentAnimationID != "finished")
+            if (icon.Rate > finishRate)
             {
-                icon.Play("finishing");
-                finished = false;
-            }
-            else if (icon.CurrentAnimationID == "finished" && !finished)
-            {
-                wiggler.Start();
-                icon.Play("finished");
-                level.Displacement.AddBurst(Position + new Vector2(ew / 2, eh / 2), 0.6f, 4f, 28f, 0.2f);
-                finished = true;
+                icon.Rate -= 2f * Engine.DeltaTime;
+                if (icon.Rate <= finishRate)
+                {
+                    icon.Rate = finishRate;
+                    wiggler.Start();
+                    icon.Play("idle");
+                    level.Displacement.AddBurst(Position + new Vector2(ew /2, eh / 2), 0.6f, 4f, 28f, 0.2f);
+                }
             }
             else if (base.Scene.OnInterval(0.03f))
             {
-                Vector2 position = Position + new Vector2(ew /2, eh /2 + 1) + Calc.AngleToVector(Rd.Random.NextAngle(), 5f);
+                Vector2 position = Position + new Vector2(ew /2, eh /2 + 1) + Calc.AngleToVector(Calc.Random.NextAngle(), 5f);
                 // emit particles depending on the entity
                 if(classify == switchKind.touch) { level.ParticlesBG.Emit(particle, position); }
                 else { level.ParticlesBG.Emit(particle, EdgePosition()); }
@@ -393,18 +356,18 @@ public class FlagButton2 : Entity {
 
     public Vector2 EdgePosition()
     {
-        int def = Rd.Random.Range(0,4);
+        int def = Calc.Random.Range(0,4);
         int x, y;
         switch (def)
         {
             case 1:
-                x = ew; y = Rd.Random.Range(0, eh); break;
+                x = ew; y = Calc.Random.Range(0, eh); break;
             case 2:
-                x = Rd.Random.Range(0, ew); y = eh; break;
+                x = Calc.Random.Range(0, ew); y = eh; break;
             case 3:
-                x = 0; y = Rd.Random.Range(0, eh); break;
+                x = 0; y = Calc.Random.Range(0, eh); break;
             default:
-                x = Rd.Random.Range(0, ew); y = 0; break;
+                x = Calc.Random.Range(0, ew); y = 0; break;
         }
         return Position + new Vector2(x, y);
     }
@@ -414,8 +377,8 @@ public class FlagButton2 : Entity {
 
         if (this.classify == switchKind.touch)
         {
-            //border.DrawCentered(Position + new Vector2(ew / 2, eh / 2) + new Vector2(0f, -1f), Color.Black);
-            //border.DrawCentered(Position + new Vector2(ew / 2, eh / 2), icon.Color, pulse);
+            border.DrawCentered(Position + new Vector2(ew / 2, eh / 2) + new Vector2(0f, -1f), Color.Black);
+            border.DrawCentered(Position + new Vector2(ew / 2, eh / 2), icon.Color, pulse);
         }
         else
         {

@@ -47,9 +47,9 @@ public class FormulaBlockSpeedEquation : GroupedBaseSolid
 
     private float elapsed = 0f;
     
-    public override void GenerateGrid(bool bg = false)
+    public override void GenerateGrid()
     {
-        base.GenerateGrid(bgTexture);
+        base.GenerateGrid();
     }
 
     public override void PostGroupping()

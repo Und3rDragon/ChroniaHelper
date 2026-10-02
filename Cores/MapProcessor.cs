@@ -492,17 +492,6 @@ public static class MapProcessor
         return false;
     }
 
-    public static void AddOnce(this Entity entity, params Component[] components)
-    {
-        foreach(var component in components)
-        {
-            if (!entity.Components.Contains(component))
-            {
-                entity.Add(component);
-            }
-        }
-    }
-
     public static Color GetBloomColor()
     {
         return ChroniaHelperModule.Instance.HookManager.GetHookDataValue<Color>(HookId.BloomColor);

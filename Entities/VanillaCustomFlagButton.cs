@@ -16,8 +16,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace ChroniaHelper.Entities;
 
 [Tracked(true)]
-[CustomEntity("ChroniaHelper/RealFlagSwitch2")]
-public class FlagButton2 : Entity {
+[CustomEntity("ChroniaHelper/VanillaCustomFlagButton")]
+public class VanillaCustomFlagButton : Entity {
     
     // Default parameters
     public static ParticleType P_Fire;
@@ -41,19 +41,7 @@ public class FlagButton2 : Entity {
     private ParticleType particle;
 
     // States
-
-    private bool Activated()
-    {
-        // Check status
-        return level.Session.GetFlag(flagID);
-    }
-
-    private bool Activated(bool set)
-    {
-        // Set and return status
-        level.Session.SetFlag(flagID, set);
-        return Activated();
-    }
+    public bool activated = false;
 
     // Inputs from Lonn
 
@@ -68,16 +56,15 @@ public class FlagButton2 : Entity {
     private Vector2 pos;
 
     private int ID;
-    private string flagID, soundID;
     
 
-    public FlagButton2(EntityData data, Vector2 offset)
+    public VanillaCustomFlagButton(EntityData data, Vector2 offset)
         : this(data.Position + offset, data)
     {
 
     }
 
-    public FlagButton2(Vector2 position, EntityData data)
+    public VanillaCustomFlagButton(Vector2 position, EntityData data)
         : base(position)
     {
         
@@ -87,8 +74,6 @@ public class FlagButton2 : Entity {
 
         // Inputs
         flag = data.Attr("flag");
-        flagID = $"ChroniaButtonFlag-{flag}-ButtonID-{ID}";
-        soundID = $"playedSound_{flag}_button";
         hitSound = data.Attr("hitSound");
         completeSound = data.Attr("completeSoundFromScene");
         hideFlag = data.Attr("hideIfFlag");
@@ -184,25 +169,18 @@ public class FlagButton2 : Entity {
         passwordID = data.Attr("passwordID");
         password = data.Attr("password");
         passwordProtected = passwordID.HasValidContent() && password.HasValidContent();
-
-        // Reset Mode
-        resetMode = (ResetMode)data.Int("resetMode", 0);
     }
     // Save or overwrite the existing values
     private bool passwordProtected = false; private string passwordID, password;
-    public enum ResetMode { Both, PerRoom, PerDeath }
-    public ResetMode resetMode = 0;
 
     public void TurnOn()
     {
-        if (!Activated())
+        if (!activated)
         {
             touchSfx.Play(hitSound);
 
-            Activated(true);
+            activated = true;
             
-            SetIDAttribute();
-
             // animation
             wiggler.Start();
             for (int i = 0; i < 32; i++)
@@ -216,14 +194,13 @@ public class FlagButton2 : Entity {
 
     public void TurnOff()
     {
-        if (Activated())
+        if (activated)
         {
             touchSfx.Play(hitSound);
 
-            Activated(false);
+            activated = false;
             
             level.Session.SetFlag(flag, false);
-            level.Session.SetFlag(soundID, false);
 
             // animation
             wiggler.Stop();
@@ -244,7 +221,7 @@ public class FlagButton2 : Entity {
         {
             if (!inside)
             {
-                if (Activated()) { TurnOff(); }
+                if (activated) { TurnOff(); }
                 else { TurnOn(); }
             }
         }
@@ -272,68 +249,50 @@ public class FlagButton2 : Entity {
         base.Added(scene);
 
         level = SceneAs<Level>();
-        
-        ReconfirmStatus();
-        SetIDAttribute();
     }
 
     public override void Removed(Scene scene)
     {
-        ReconfirmStatus();
-        
         base.Removed(scene);
-    }
 
-    private void SetIDAttribute()
-    {
         if (!persistent)
         {
-            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerRoom)
-            {
-                Md.Session.flagsPerRoom.Add(flagID);
-            }
-            if (resetMode == ResetMode.Both || resetMode == ResetMode.PerDeath)
-            {
-                Md.Session.flagsPerDeath.Add(flagID);
-            }
+            flag.SetFlag(false);
+            activated = false;
         }
     }
 
-    private void ReconfirmStatus()
+    private List<VanillaCustomFlagButton> Group = new();
+    public override void Awake(Scene scene)
     {
-        // Check flag status after just added
-        // If not persistent, reset the values
-        if (!persistent)
-        {
-            if(resetMode != ResetMode.PerDeath)
-            {
-                flagID.SetFlag(false);
-            }
-            
-            icon.Play("idle");
-            finished = false;
-        }
+        base.Awake(scene);
 
-        // If not completed, we should reset the flag too
-        if (!MaP.IsSwitchFlagCompleted(flag))
+        foreach(VanillaCustomFlagButton button in level.Tracker.GetEntities<VanillaCustomFlagButton>())
         {
-            level.Session.SetFlag(flag, false);
-            level.Session.SetFlag(soundID, false);
+            if(button.flag == flag)
+            {
+                Group.Add(button);
+            }
         }
+    }
+
+    private bool IsSwitchFlagCompleted()
+    {
+        return Group.All(b => b.activated);
     }
 
     private bool finished = false;
     public override void Update()
     {
-        bool isCompleted = MaP.IsSwitchFlagCompleted(flag);
-        if (!flagID.GetFlag() && !isCompleted)
+        bool isCompleted = IsSwitchFlagCompleted();
+        if (!activated && !isCompleted)
         {
             icon.Color = inactiveColor;
             border.Color = icon.Color;
             icon.Play("idle");
-            Activated(false);
+            activated = false;
         }
-        else if (flagID.GetFlag() && !isCompleted)
+        else if (activated && !isCompleted)
         {
             icon.Color = activeColor;
             border.Color = icon.Color;
@@ -347,7 +306,7 @@ public class FlagButton2 : Entity {
         else { inside = false; }
 
         timer += Engine.DeltaTime * 8f;
-        ease = Calc.Approach(ease, (isCompleted || Activated()) ? 1f : 0f, Engine.DeltaTime * 2f);
+        ease = Calc.Approach(ease, (isCompleted || activated) ? 1f : 0f, Engine.DeltaTime * 2f);
         icon.Color = Color.Lerp(inactiveColor, isCompleted ? finishColor : activeColor, ease);
         icon.Color *= 0.5f + ((float)Math.Sin(timer) + 1f) / 2f * (1f - ease) * 0.5f + 0.5f * ease;
         border.Color = icon.Color;
@@ -357,11 +316,7 @@ public class FlagButton2 : Entity {
         {
             if (completed.Value != completed._Value && completed.Value)
             {
-                if (!inside && !level.Session.GetFlag(soundID))
-                {
-                    SoundEmitter.Play(completeSound);
-                    level.Session.SetFlag(soundID, true);
-                }
+                SoundEmitter.Play(completeSound);
             }
 
             if (icon.CurrentAnimationID != "finishing" && icon.CurrentAnimationID != "finished")
