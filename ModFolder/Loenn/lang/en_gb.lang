@@ -724,6 +724,10 @@ entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitch=Flag Button
 entities.ChroniaHelper/RealFlagSwitch.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
 entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitchwall=Flag Button Wall
 
+entities.ChroniaHelper/VanillaFlagButton.placements.name.flagswitch=Flag Button (Vanilla Styled)
+entities.ChroniaHelper/VanillaFlagButton.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
+entities.ChroniaHelper/VanillaFlagButton.placements.name.flagswitchwall=Flag Button Wall (Vanilla Styled)
+
 # ================= Real Flag Switch Alt
 
 entities.ChroniaHelper/RealFlagSwitchAlt.placements.name.flagswitch=(Obsoleted) Flag Button (Alternate)
@@ -741,6 +745,18 @@ entities.ChroniaHelper/RealFlagSwitch2.attributes.description.iconFinishingAnima
 entities.ChroniaHelper/RealFlagSwitch2.attributes.description.iconFinishedAnimation=The animation interval for "finished"
 entities.ChroniaHelper/RealFlagSwitch2.attributes.description.borderTexture=The file path for the outline sprite behind the icon, \ndoesn't include suffix numbers \neg. Your file is "objects/ChroniaHelper/myCustomSwitch/container00.png" \nYour option should be: objects/ChroniaHelper/myCustomSwitch/container
 entities.ChroniaHelper/RealFlagSwitch2.attributes.description.borderAnimation=The animation interval for your border
+
+entities.ChroniaHelper/VanillaCustomFlagButton.placements.name.flagswitch=Custom Flag Button (Vanilla Styled)
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.passwordID=The tag of the ChroniaHelper/PasswordKeyboard \nLeave empty to disable password protection
+entities.ChroniaHelper/VanillaCustomFlagButton.placements.name.flagswitchwall=Custom Flag Button Wall (Vanilla Styled)
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.icon=The folder path that contains following animations: \n"idle", "spin", "finishing", "finished"
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconIdleAnimation=The animation interval for "idle"
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconSpinAnimation=The animation interval for "spin"
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconFinishingAnimation=The animation interval for "finishing"
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconFinishedAnimation=The animation interval for "finished"
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.borderTexture=The file path for the outline sprite behind the icon, \ndoesn't include suffix numbers \neg. Your file is "objects/ChroniaHelper/myCustomSwitch/container00.png" \nYour option should be: objects/ChroniaHelper/myCustomSwitch/container
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.borderAnimation=The animation interval for your border
+
 
 # ================= Summit Cloud
 

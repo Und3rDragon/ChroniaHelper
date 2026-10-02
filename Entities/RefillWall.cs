@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
@@ -7,11 +8,11 @@ namespace ChroniaHelper.Entities;
 public class RefillWall : Refill
 {
 
-    private Color borderColor;
+    private ChroniaColor borderColor;
 
     private float borderAlpha;
 
-    private Color innerColor;
+    private ChroniaColor innerColor;
 
     private float innerAlpha;
 
@@ -43,9 +44,9 @@ public class RefillWall : Refill
         }
         base.outline.Position = centerPosition;
         base.bloomPoint.Position = (base.vertexLight.Position = centerPosition);
-        this.borderColor = !string.IsNullOrWhiteSpace(data.Attr("borderColor")) ? data.HexColor("borderColor") : (!base.twoDashes ? Refill.OneDashesParticleShatterColor : Refill.TwoDashesParticleShatterColor);
+        this.borderColor = data.GetChroniaColor("borderColor", !base.twoDashes ? Refill.OneDashesParticleShatterColor : Refill.TwoDashesParticleShatterColor);
         this.borderAlpha = data.Float("borderAlpha", 0.2F);
-        this.innerColor = !string.IsNullOrWhiteSpace(data.Attr("innerColor")) ? data.HexColor("innerColor") : (!base.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleRegenAndGlowColor);
+        this.innerColor = data.GetChroniaColor("innerColor", !base.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleRegenAndGlowColor);
         this.innerAlpha = data.Float("innerAlpha", 0.1F);
         this.borderColor *= this.borderAlpha;
         this.innerColor *= this.innerAlpha;
@@ -57,29 +58,31 @@ public class RefillWall : Refill
 
     protected override void RenderAfter(float respawnTimer)
     {
+        Color borderC = this.borderColor.Parsed(borderAlpha);
+        Color innerC = this.innerColor.Parsed(innerAlpha);
         if (respawnTimer <= 0)
         {
-            Draw.Line(base.TopLeft, base.TopRight, this.borderColor);
-            Draw.Line(base.TopLeft + Vector2.One, base.BottomLeft + Vector2.UnitX, this.borderColor);
-            Draw.Line(base.TopRight + Vector2.UnitY, base.BottomRight, this.borderColor);
-            Draw.Line(base.BottomLeft + new Vector2(1, -1), base.BottomRight - Vector2.One, this.borderColor);
-            Draw.Rect(base.TopLeft.X, base.TopLeft.Y, this.Collider.Width, this.Collider.Height, this.innerColor);
+            Draw.Line(base.TopLeft, base.TopRight, borderC);
+            Draw.Line(base.TopLeft + Vector2.One, base.BottomLeft + Vector2.UnitX, borderC);
+            Draw.Line(base.TopRight + Vector2.UnitY, base.BottomRight, borderC);
+            Draw.Line(base.BottomLeft + new Vector2(1, -1), base.BottomRight - Vector2.One, borderC);
+            Draw.Rect(base.TopLeft.X, base.TopLeft.Y, this.Collider.Width, this.Collider.Height, innerC);
         }
         else
         {
-            Draw.Point(base.TopLeft, this.borderColor);
-            Draw.Point(base.TopRight - Vector2.UnitX, this.borderColor);
-            Draw.Point(base.BottomRight - Vector2.One, this.borderColor);
-            Draw.Point(base.BottomLeft - Vector2.UnitY, this.borderColor);
+            Draw.Point(base.TopLeft, borderC);
+            Draw.Point(base.TopRight - Vector2.UnitX, borderC);
+            Draw.Point(base.BottomRight - Vector2.One, borderC);
+            Draw.Point(base.BottomLeft - Vector2.UnitY, borderC);
             for (int i = 1; i <= this.respawnHorizontalPointNumber; i++)
             {
-                Draw.Point(base.TopLeft + Vector2.UnitX * (i * this.respawnHorizontalPointStep), this.borderColor);
-                Draw.Point(base.BottomLeft + Vector2.UnitX * (i * this.respawnHorizontalPointStep) - Vector2.UnitY, this.borderColor);
+                Draw.Point(base.TopLeft + Vector2.UnitX * (i * this.respawnHorizontalPointStep), borderC);
+                Draw.Point(base.BottomLeft + Vector2.UnitX * (i * this.respawnHorizontalPointStep) - Vector2.UnitY, borderC);
             }
             for (int i = 1; i <= this.respawnVerticalPointNumber; i++)
             {
-                Draw.Point(base.TopLeft + Vector2.UnitY * (i * this.respawnVerticalPointStep), this.borderColor);
-                Draw.Point(base.TopRight + Vector2.UnitY * (i * this.respawnVerticalPointStep) - Vector2.UnitX, this.borderColor);
+                Draw.Point(base.TopLeft + Vector2.UnitY * (i * this.respawnVerticalPointStep), borderC);
+                Draw.Point(base.TopRight + Vector2.UnitY * (i * this.respawnVerticalPointStep) - Vector2.UnitX, borderC);
             }
         }
     }
