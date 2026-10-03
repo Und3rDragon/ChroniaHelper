@@ -1,4 +1,4 @@
-local defaultFields = require("mods").requireFromPlugin("consts.default_fields")
+ï»¿local defaultFields = require("mods").requireFromPlugin("consts.default_fields")
 local core = require("mods").requireFromPlugin("utils.core")
 
 local fieldTable = {
@@ -486,7 +486,7 @@ local refillWall = {
         {
             fieldType = "color",
             allowXNAColors = true,
-            useAlpha = true,
+            --useAlpha = true,
             allowEmpty = true
         },
         borderAlpha =
@@ -499,7 +499,7 @@ local refillWall = {
         {
             fieldType = "color",
             allowXNAColors = true,
-            useAlpha = true,
+            --useAlpha = true,
             allowEmpty = true
         },
         innerAlpha =
@@ -755,32 +755,32 @@ local refillCircle = {
 }
 
 function drawCircle(points, alpha)
-    local lines_to_draw = {} -- ´æ´¢½«Òª»æÖÆµÄÏß¶Î¶ÔÏó
+    local lines_to_draw = {} -- å­˜å‚¨å°†è¦ç»˜åˆ¶çš„çº¿æ®µå¯¹è±¡
 
-    -- ½âÎöÊäÈëµÄµãÊı¾İ
+    -- è§£æè¾“å…¥çš„ç‚¹æ•°æ®
     local center = {x = points[1], y = points[2]}
     local refPoint = {x = points[3], y = points[4]}
 
-    -- 1. ¼ÆËã°ë¾¶
+    -- 1. è®¡ç®—åŠå¾„
     local dx = center.x - refPoint.x
     local dy = center.y - refPoint.y
     local radius = math.sqrt(dx * dx + dy * dy)
 
-    -- 2. ¼ì²éÓĞĞ§ĞÔ²¢¼ÆËãµã
+    -- 2. æ£€æŸ¥æœ‰æ•ˆæ€§å¹¶è®¡ç®—ç‚¹
     if radius <= 0 then
-        -- Èç¹û°ë¾¶Îª0»ò¸ºÊı£¬ÔòÎŞ·¨»æÖÆÓĞĞ§Ô²£¬·µ»Ø¿ÕÁĞ±í
+        -- å¦‚æœåŠå¾„ä¸º0æˆ–è´Ÿæ•°ï¼Œåˆ™æ— æ³•ç»˜åˆ¶æœ‰æ•ˆåœ†ï¼Œè¿”å›ç©ºåˆ—è¡¨
         print("Warning: Radius is zero or negative. Cannot draw circle.")
         return lines_to_draw
     end
 
-    -- 3. ¼ÆËãÔ²ÖÜÉÏµÄ½üËÆµã
+    -- 3. è®¡ç®—åœ†å‘¨ä¸Šçš„è¿‘ä¼¼ç‚¹
     local points_on_circumference = {}
-    -- ¼ÆËãÖÜ³¤
+    -- è®¡ç®—å‘¨é•¿
     local circumference = 2 * math.pi * radius
-    -- ¼ÆËã·Ö±æÂÊ£¨µãµÄÊıÁ¿£©£¬²¢È·±£ÖÁÉÙÓĞ3¸öµã
+    -- è®¡ç®—åˆ†è¾¨ç‡ï¼ˆç‚¹çš„æ•°é‡ï¼‰ï¼Œå¹¶ç¡®ä¿è‡³å°‘æœ‰3ä¸ªç‚¹
     local num_points = math.max(3, math.floor(4 * circumference + 0.5))
 
-    -- Éú³ÉÔ²ÖÜÉÏµÄµã
+    -- ç”Ÿæˆåœ†å‘¨ä¸Šçš„ç‚¹
     for i = 1, num_points do
         local angle = (2 * math.pi * (i - 1)) / num_points
         local px = center.x + radius * math.cos(angle)
@@ -788,30 +788,30 @@ function drawCircle(points, alpha)
         table.insert(points_on_circumference, {px, py})
     end
 
-    -- 4. Ê¹ÓÃ drawable_line ´´½¨Á¬½ÓÕâĞ©µãµÄÏß¶Î
-    local line_struct = require("structs.drawable_line") -- »ñÈ¡ drawable_line ½á¹¹
+    -- 4. ä½¿ç”¨ drawable_line åˆ›å»ºè¿æ¥è¿™äº›ç‚¹çš„çº¿æ®µ
+    local line_struct = require("structs.drawable_line") -- è·å– drawable_line ç»“æ„
 
     if #points_on_circumference >= 2 then
-        -- Á¬½ÓÏàÁÚµÄµã
+        -- è¿æ¥ç›¸é‚»çš„ç‚¹
         for i = 1, #points_on_circumference - 1 do
             local p1 = points_on_circumference[i]
             local p2 = points_on_circumference[i + 1]
-            -- Ê¹ÓÃ fromPoints ´´½¨Ïß¶Î
+            -- ä½¿ç”¨ fromPoints åˆ›å»ºçº¿æ®µ
             local line_instance = line_struct.fromPoints({p1[1], p1[2], p2[1], p2[2]}, alpha)
             table.insert(lines_to_draw, line_instance)
         end
 
-        -- Á¬½Ó×îºóÒ»¸öµãºÍµÚÒ»¸öµã£¬±ÕºÏÔ²»·
+        -- è¿æ¥æœ€åä¸€ä¸ªç‚¹å’Œç¬¬ä¸€ä¸ªç‚¹ï¼Œé—­åˆåœ†ç¯
         local p_last = points_on_circumference[#points_on_circumference]
         local p_first = points_on_circumference[1]
         local closing_line_instance = line_struct.fromPoints({p_last[1], p_last[2], p_first[1], p_first[2]}, alpha)
         table.insert(lines_to_draw, closing_line_instance)
     else
-        -- ÀíÂÛÉÏ num_points >= 3£¬ÕâÀï×÷Îª½¡×³ĞÔ¼ì²é
+        -- ç†è®ºä¸Š num_points >= 3ï¼Œè¿™é‡Œä½œä¸ºå¥å£®æ€§æ£€æŸ¥
         print("Warning: Insufficient points generated to draw circle.")
     end
 
-    -- ·µ»Ø°üº¬ËùÓĞÏß¶ÎµÄÁĞ±í
+    -- è¿”å›åŒ…å«æ‰€æœ‰çº¿æ®µçš„åˆ—è¡¨
     return lines_to_draw
 end
 
