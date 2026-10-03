@@ -1766,3 +1766,10 @@ triggers.ChroniaHelper/MoveBlockOutlineRemover.placements.name.outlineRemover=Mo
 # ========================== Holdable Flag Controller
 
 entities.ChroniaHelper/HoldableFlagController.placements.name.controller=Holdable Flag Controller
+
+# ========================== Slider Wind Controller
+
+entities.ChroniaHelper/SliderWindController.placements.name.controller=Slider Wind Controller
+entities.ChroniaHelper/SliderWindController.attributes.description.chroniaFlagLogicExpression=An expression using "&&" as "and", "||" as "or", and "()" for layering,\nany other symbols will be seen as flag names, for eg.:\n(flagA || flagB) && (flagC || (flagD && flagE))
+entities.ChroniaHelper/SliderWindController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SliderWindController.attributes.description.parameters=When mode is "On Interval", this field will be the interval \nWhen mode is "On Flags", enter a series of flags separated by comma \nFlag begins with "!" is inverted
