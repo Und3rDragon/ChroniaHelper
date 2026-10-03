@@ -71,7 +71,126 @@ public class LoadingManager
     {
         UnloadHook(typeof(T));
     }
-    
+
+    /// <summary>
+    /// Extension method of loading hook directly instead of searching every single methods in the instance
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="funcs"></param>
+    public static void LoadHookWithMethod<T>(T instance, params Action[] funcs)
+    {
+        Type type = instance.GetType();
+
+        // if registered and loaded, return
+        if (selectiveLoadingHooks.Contains(type))
+        {
+            return;
+        }
+
+        foreach(Action func in funcs)
+        {
+            func?.Invoke();
+        }
+
+        selectiveLoadingHooks.Add(type);
+    }
+
+    public static void LoadHookWithMethod(Type type, params Action[] funcs)
+    {
+        // if registered and loaded, return
+        if (selectiveLoadingHooks.Contains(type))
+        {
+            return;
+        }
+
+        foreach (Action func in funcs)
+        {
+            func?.Invoke();
+        }
+
+        selectiveLoadingHooks.Add(type);
+    }
+
+    public static void LoadHookWithMethod<T>(params Action[] funcs)
+    {
+        Type type = typeof(T);
+
+        // if registered and loaded, return
+        if (selectiveLoadingHooks.Contains(type))
+        {
+            return;
+        }
+
+        foreach (Action func in funcs)
+        {
+            func?.Invoke();
+        }
+
+        selectiveLoadingHooks.Add(type);
+    }
+
+    /// <summary>
+    /// Extension method of unloading hook directly instead of searching every single methods in the instance
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="funcs"></param>
+    public static void UnloadHookWithMethod<T>(T instance, params Action[] funcs)
+    {
+        Type type = instance.GetType();
+
+        // if unregistered or unloaded, return
+        if (!selectiveLoadingHooks.Contains(type))
+        {
+            return;
+        }
+
+        // if not, unload the hook
+        foreach(Action func in funcs)
+        {
+            func?.Invoke();
+        }
+
+        selectiveLoadingHooks.Remove(type);
+    }
+
+    public static void UnloadHookWithMethod(Type type, params Action[] funcs)
+    {
+        // if unregistered or unloaded, return
+        if (!selectiveLoadingHooks.Contains(type))
+        {
+            return;
+        }
+
+        // if not, unload the hook
+        foreach (Action func in funcs)
+        {
+            func?.Invoke();
+        }
+
+        selectiveLoadingHooks.Remove(type);
+    }
+
+    public static void UnloadHookWithMethod<T>(params Action[] funcs)
+    {
+        Type type = typeof(T);
+
+        // if unregistered or unloaded, return
+        if (!selectiveLoadingHooks.Contains(type))
+        {
+            return;
+        }
+
+        // if not, unload the hook
+        foreach (Action func in funcs)
+        {
+            func?.Invoke();
+        }
+
+        selectiveLoadingHooks.Remove(type);
+    }
+
     public static void Load()
     {
         Execute(typeof(LoadHook), "ChroniaHelper");

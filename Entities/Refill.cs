@@ -269,7 +269,7 @@ public class Refill : Entity
         this.setAsMax = data.Bool("changePlayerMax", false);
         if (setAsMax)
         {
-            Ldm.LoadHook<Refill>();
+            Ldm.LoadHookWithMethod<Refill>(Load);
         }
         this.touchSound = !string.IsNullOrWhiteSpace(data.Attr("touchSound", null)) ? data.Attr("touchSound") : (!this.twoDashes ? Refill.RefillTouchSoundEvent : Refill.RefillTwoTouchSoundEvent);
         this.respawnSound = !string.IsNullOrWhiteSpace(data.Attr("respawnSound", null)) ? data.Attr("respawnSound") : (!this.twoDashes ? Refill.RefillRespawnSoundEvent : Refill.RefillTwoRespawnSoundEvent);
