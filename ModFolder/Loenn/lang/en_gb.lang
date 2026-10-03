@@ -1762,3 +1762,7 @@ entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_slow=Move
 # ========================== Move Block Outline Remover
 
 triggers.ChroniaHelper/MoveBlockOutlineRemover.placements.name.outlineRemover=Move Block Outline Remover
+
+# ========================== Holdable Flag Controller
+
+entities.ChroniaHelper/HoldableFlagController.placements.name.controller=Holdable Flag Controller
