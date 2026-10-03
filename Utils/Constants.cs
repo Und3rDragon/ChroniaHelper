@@ -22,7 +22,10 @@ global using Ldm = ChroniaHelper.Cores.LoadingManager;
 global using ExA = ChroniaHelper.Cores.ExtendedAttributes;
 using Celeste.Mod.CommunalHelper.Imports;
 using System.Reflection;
-using static ChroniaHelper.Imports.APICommunalHelper;
+using static ChroniaHelper.Imports.APICommunalHelperDashStates;
+using static ChroniaHelper.Imports.APICommunalHelperElytra;
+using static ChroniaHelper.Imports.APICommunalHelperEntities;
+using static ChroniaHelper.Imports.APICommunalHelperShape3DExports;
 using static ChroniaHelper.Imports.APIFrostHelper; 
 using static ChroniaHelper.Imports.APISpeedrunTool;
 using static ChroniaHelper.References.RefCommunalHelper; // usual
