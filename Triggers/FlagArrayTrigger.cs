@@ -31,6 +31,8 @@ public class FlagArrayTrigger : FlagManageTrigger
         }
         posMode = data.Enum("positionMode", PositionModes.NoEffect);
         staircase = data.Fetch("staircase", false);
+
+        Tag = Tags.FrozenUpdate;
     }
     private int ID;
     private string[] flags;
