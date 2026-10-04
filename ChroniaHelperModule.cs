@@ -114,6 +114,10 @@ public class ChroniaHelperModule : EverestModule
         typeof(APIFrostHelper).ModInterop();
         typeof(APICameraDynamics).ModInterop();
         typeof(APIGravityHelper).ModInterop();
+        typeof(APICommunalHelperDashStates).ModInterop();
+        typeof(APICommunalHelperElytra).ModInterop();
+        typeof(APICommunalHelperEntities).ModInterop();
+        typeof(APICommunalHelperShape3DExports).ModInterop();
 
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;

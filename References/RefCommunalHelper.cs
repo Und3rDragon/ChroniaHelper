@@ -34,7 +34,4 @@ public static class RefCommunalHelper
     }
 
     public static ButtonBinding ActivateFlagController => GetSettings().ActivateFlagController;
-
-    public static DynamicData DreamTunnelDashDynData = new DynamicData(typeof(DreamTunnelDash));
-    public static bool DreamTunnelDashAttacking => (bool)DreamTunnelDashDynData.Get("dreamTunnelDashAttacking");
 }

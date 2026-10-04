@@ -87,7 +87,7 @@ end
 
 local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
     return function (room, args)
-        -- »ñÈ¡ĞÂÊµÌå£¨replaceWith£©µÄÄ¬ÈÏÊôĞÔÄ£°å£¨º¬ x/y/width/height£©
+        -- è·å–æ–°å®ä½“ï¼ˆreplaceWithï¼‰çš„é»˜è®¤å±æ€§æ¨¡æ¿ï¼ˆå« x/y/width/heightï¼‰
         local defaultData = getPlacementData({allowPreserving = false}, handler)
         
         local scan = {}
@@ -100,7 +100,7 @@ local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
         
         for _, entity in ipairs(scan) do
             if entity._name == entityName then
-                -- 1. ĞŞ¸ÄÊµÌåÀàĞÍ
+                -- 1. ä¿®æ”¹å®ä½“ç±»å‹
                 entity._name = replaceWith
                 
                 local ew = 0
@@ -114,7 +114,7 @@ local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
                     print(key,value)
                 end
                 
-                -- 2. ÊÕ¼¯¾ÉÊµÌåµÄËùÓĞ·ÇÃô¸ĞÊôĞÔÃû£¨×¼±¸ºóĞøÅĞ¶ÏÊÇ·ñÒª±£Áô£©
+                -- 2. æ”¶é›†æ—§å®ä½“çš„æ‰€æœ‰éæ•æ„Ÿå±æ€§åï¼ˆå‡†å¤‡åç»­åˆ¤æ–­æ˜¯å¦è¦ä¿ç•™ï¼‰
                 local removeAttrs = {}
                 for key in pairs(entity) do
                     local isSensitive = (key == "_name" or 
@@ -131,43 +131,43 @@ local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
                     end
                 end
 
-                -- 3. ¾ö¶¨Ã¿¸öÊôĞÔÊÇ·ñ±£Áô or ±»Ìæ»»
-                --    Í¬Ê±±ê¼ÇÄÄĞ©ÊôĞÔ²»Ó¦±»É¾³ı£¨¼´Òª±£Áô£©
-                local keepAttrs = {}  -- ¼ÇÂ¼²»Ó¦É¾³ıµÄÊôĞÔÃû
+                -- 3. å†³å®šæ¯ä¸ªå±æ€§æ˜¯å¦ä¿ç•™ or è¢«æ›¿æ¢
+                --    åŒæ—¶æ ‡è®°å“ªäº›å±æ€§ä¸åº”è¢«åˆ é™¤ï¼ˆå³è¦ä¿ç•™ï¼‰
+                local keepAttrs = {}  -- è®°å½•ä¸åº”åˆ é™¤çš„å±æ€§å
                 
-                -- ±éÀúĞÂÊµÌåµÄËùÓĞÄ¬ÈÏÊôĞÔ£¨¼´¿ÉÄÜÒªÉèÖÃµÄÊôĞÔ£©
+                -- éå†æ–°å®ä½“çš„æ‰€æœ‰é»˜è®¤å±æ€§ï¼ˆå³å¯èƒ½è¦è®¾ç½®çš„å±æ€§ï¼‰
                 for propName, defaultValue in pairs(defaultData) do
-                    -- ¼ì²é¾ÉÊµÌåÊÇ·ñÒÑÓĞ¸ÃÊôĞÔ
+                    -- æ£€æŸ¥æ—§å®ä½“æ˜¯å¦å·²æœ‰è¯¥å±æ€§
                     local hadSameProp = entity[propName] ~= nil
                     
                     if hadSameProp then
-                        -- ÅĞ¶ÏÊÇ·ñÓ¦¸ÃÓÃĞÂÖµÌæ»»
+                        -- åˆ¤æ–­æ˜¯å¦åº”è¯¥ç”¨æ–°å€¼æ›¿æ¢
                         local shouldReplace = true
                         
                         if args[getChangePropName(propName)] ~= nil then
-                            -- ¿´ÓÃ»§ÊÇ·ñ¹´Ñ¡ÁË replace_propName
+                            -- çœ‹ç”¨æˆ·æ˜¯å¦å‹¾é€‰äº† replace_propName
                             shouldReplace = args[getChangePropName(propName)]
                         end
                         
                         if shouldReplace then
-                            -- Ìæ»»ÎªĞÂÖµ£¨ÓÃ»§ÊäÈë or Ä¬ÈÏÖµ£©
-                            entity[propName] = args[propName]  -- ×¢Òâ£ºÕâÀïÒÀÀµ args[propName] ÒÑÉèÖÃ
+                            -- æ›¿æ¢ä¸ºæ–°å€¼ï¼ˆç”¨æˆ·è¾“å…¥ or é»˜è®¤å€¼ï¼‰
+                            entity[propName] = args[propName]  -- æ³¨æ„ï¼šè¿™é‡Œä¾èµ– args[propName] å·²è®¾ç½®
                         else
-                            -- ²»Ìæ»» ¡ú ±£Áô¾ÉÖµ
+                            -- ä¸æ›¿æ¢ â†’ ä¿ç•™æ—§å€¼
                             table.insert(keepAttrs, propName)
                         end
                     else
-                        -- ¾ÉÊµÌåÃ»ÓĞÕâ¸öÊôĞÔ ¡ú Ö±½ÓÉèÖÃĞÂÖµ£¨ĞÂÔöÊôĞÔ£©
+                        -- æ—§å®ä½“æ²¡æœ‰è¿™ä¸ªå±æ€§ â†’ ç›´æ¥è®¾ç½®æ–°å€¼ï¼ˆæ–°å¢å±æ€§ï¼‰
                         entity[propName] = args[propName]
                     end
 
-                    -- ÎŞÂÛÊÇ·ñ hadSameProp£¬Ö»ÒªÉèÖÃÁËÖµ£¬¾Í²»¸Ã±» removeAttrs É¾³ı
+                    -- æ— è®ºæ˜¯å¦ hadSamePropï¼Œåªè¦è®¾ç½®äº†å€¼ï¼Œå°±ä¸è¯¥è¢« removeAttrs åˆ é™¤
                     table.insert(keepAttrs, propName)
                 end
 
-                -- 4. ÇåÀí£ºÖ»É¾³ıÄÇĞ©¡°²»ÔÚ keepAttrs ÖĞ¡±µÄ¾ÉÊôĞÔ
+                -- 4. æ¸…ç†ï¼šåªåˆ é™¤é‚£äº›â€œä¸åœ¨ keepAttrs ä¸­â€çš„æ—§å±æ€§
                 for _, key in ipairs(removeAttrs) do
-                    -- Èç¹ûÕâ¸öÊôĞÔ²»ÔÚ±£ÁôÁĞ±íÖĞ£¬ÔòÉ¾³ı
+                    -- å¦‚æœè¿™ä¸ªå±æ€§ä¸åœ¨ä¿ç•™åˆ—è¡¨ä¸­ï¼Œåˆ™åˆ é™¤
                     if not tableContains(keepAttrs, key) then
                         entity[key] = nil
                     end

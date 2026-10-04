@@ -5,6 +5,7 @@ using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using static Celeste.CrushBlock;
 using static ChroniaHelper.Cores.ExtendedAttributes;
+using ChroniaHelper.Imports;
 
 namespace FASF2025Helper.Entities;
 
@@ -32,7 +33,7 @@ public class DreamKevin : Solid
     {
         if (Md.CommunalHelperLoaded)
         {
-            return !RefCommunalHelper.DreamTunnelDashAttacking;
+            return !(APICommunalHelperDashStates.IsDreamTunnelDashAttacking?.Invoke() ?? false);
         }
 
         return true;

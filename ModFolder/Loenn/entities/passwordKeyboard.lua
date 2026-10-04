@@ -87,23 +87,23 @@ entity.sprite = function(room, entity)
     sprite = drawableSprite.fromTexture(defaultTexture, entity)
     table.insert(sprites, sprite)
 
-    local str = entity.accessZone -- ´ı·Ö¸îµÄ×Ö·û´®
-    local parameters = {} -- ÓÃÓÚ´æ´¢·Ö¸îºóµÄ²ÎÊı
-    local start = 1 -- ×Ó´®µÄÆğÊ¼Î»ÖÃ
+    local str = entity.accessZone -- å¾…åˆ†å‰²çš„å­—ç¬¦ä¸²
+    local parameters = {} -- ç”¨äºå­˜å‚¨åˆ†å‰²åçš„å‚æ•°
+    local start = 1 -- å­ä¸²çš„èµ·å§‹ä½ç½®
 
-    -- Ñ­»·²éÕÒ¶ººÅ£¬·Ö¸î×Ö·û´®
+    -- å¾ªç¯æŸ¥æ‰¾é€—å·ï¼Œåˆ†å‰²å­—ç¬¦ä¸²
     while true do
-        local commaPos = string.find(str, ",", start) -- ²éÕÒÏÂÒ»¸ö¶ººÅµÄÎ»ÖÃ
-        if commaPos == nil then -- Èç¹ûÃ»ÓĞÕÒµ½¶ººÅ£¬ËµÃ÷ÊÇ×îºóÒ»¸ö²ÎÊı
-            table.insert(parameters, string.sub(str, start)) -- Ìí¼Ó×îºóÒ»¸ö²ÎÊı
-            break -- ÍË³öÑ­»·
+        local commaPos = string.find(str, ",", start) -- æŸ¥æ‰¾ä¸‹ä¸€ä¸ªé€—å·çš„ä½ç½®
+        if commaPos == nil then -- å¦‚æœæ²¡æœ‰æ‰¾åˆ°é€—å·ï¼Œè¯´æ˜æ˜¯æœ€åä¸€ä¸ªå‚æ•°
+            table.insert(parameters, string.sub(str, start)) -- æ·»åŠ æœ€åä¸€ä¸ªå‚æ•°
+            break -- é€€å‡ºå¾ªç¯
         else
-            table.insert(parameters, string.sub(str, start, commaPos - 1)) -- Ìí¼ÓÕÒµ½µÄ²ÎÊı
-            start = commaPos + 1 -- ¸üĞÂÆğÊ¼Î»ÖÃµ½ÏÂÒ»¸ö²ÎÊıµÄ¿ªÊ¼
+            table.insert(parameters, string.sub(str, start, commaPos - 1)) -- æ·»åŠ æ‰¾åˆ°çš„å‚æ•°
+            start = commaPos + 1 -- æ›´æ–°èµ·å§‹ä½ç½®åˆ°ä¸‹ä¸€ä¸ªå‚æ•°çš„å¼€å§‹
         end
     end
 
-    -- Éè¶¨Ò»¸ö¾ØĞÎ±êÖ¾ÇøÓò
+    -- è®¾å®šä¸€ä¸ªçŸ©å½¢æ ‡å¿—åŒºåŸŸ
     local rectangle = drawableRectangle.fromRectangle("bordered",entity.x + tonumber(parameters[1]),entity.y + tonumber(parameters[2]),tonumber(parameters[3]),tonumber(parameters[4]),{0,0,0,0.01},{255,255,255,1})
 
     if entity.accessZoneIndicator then

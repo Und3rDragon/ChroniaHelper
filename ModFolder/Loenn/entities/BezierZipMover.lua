@@ -215,8 +215,8 @@ function zip.selection(room, entity)
     return mainRectangle, nodeRectangles
 end
 
--- ±´Èû¶ûÇúÏß
--- ¸¨Öú£ºÍ³Ò»»ñÈ¡µãµÄ x, y
+-- è´å¡å°”æ›²çº¿
+-- è¾…åŠ©ï¼šç»Ÿä¸€è·å–ç‚¹çš„ x, y
 local function getXY(p)
     if type(p[1]) == "number" then
         return p[1], p[2]
@@ -225,7 +225,7 @@ local function getXY(p)
     end
 end
 
--- ´´½¨±´Èû¶ûÇúÏß²ÉÑùµãµÄº¯Êı
+-- åˆ›å»ºè´å¡å°”æ›²çº¿é‡‡æ ·ç‚¹çš„å‡½æ•°
 local function evalBezier(points, t)
     local n = #points
     if n == 0 then return {x = 0, y = 0} end
@@ -241,7 +241,7 @@ local function evalBezier(points, t)
         temp[i] = {x = x, y = y}
     end
 
-    -- de Casteljau¼ÆËã·½·¨
+    -- de Casteljauè®¡ç®—æ–¹æ³•
     for r = 1, n - 1 do
         for i = 1, n - r do
             temp[i].x = (1 - t) * temp[i].x + t * temp[i + 1].x
@@ -252,28 +252,28 @@ local function evalBezier(points, t)
     return {x = temp[1].x, y = temp[1].y}
 end
 
--- Ö÷º¯Êı£º´´½¨²¢»æÖÆ±´Èû¶ûÇúÏß
+-- ä¸»å‡½æ•°ï¼šåˆ›å»ºå¹¶ç»˜åˆ¶è´å¡å°”æ›²çº¿
 function CreateBezierCurve(sprite, points, resolution, offset, thickness)
     if not points or #points == 0 then
-        error("µã¼¯²»ÄÜÎª¿Õ")
+        error("ç‚¹é›†ä¸èƒ½ä¸ºç©º")
     end
     if not resolution or resolution < 1 then
-        resolution = 10  -- Ä¬ÈÏÖµ
+        resolution = 10  -- é»˜è®¤å€¼
     end
 
-    -- ½âÎö offset
+    -- è§£æ offset
     local ox, oy = getXY(offset or {0, 0})
 
-    -- ²ÉÑùµãÁĞ±í
+    -- é‡‡æ ·ç‚¹åˆ—è¡¨
     local samples = {}
     for i = 0, resolution do
         local t = i / resolution
         local pt = evalBezier(points, t)
-        -- Ó¦ÓÃÆ«ÒÆ
+        -- åº”ç”¨åç§»
         table.insert(samples, {x = pt.x + ox, y = pt.y + oy})
     end
 
-    -- »æÖÆÏß¶Î
+    -- ç»˜åˆ¶çº¿æ®µ
     for i = 1, #samples - 1 do
         local p1 = samples[i]
         local p2 = samples[i + 1]
@@ -286,14 +286,14 @@ function CreateBezierCurve(sprite, points, resolution, offset, thickness)
     end
 end
 
--- ¸¨Öú£º¼ÆËãÁ½µã¼ä¾àÀë
+-- è¾…åŠ©ï¼šè®¡ç®—ä¸¤ç‚¹é—´è·ç¦»
 local function distance(p1, p2)
     local dx = p2.x - p1.x
     local dy = p2.y - p1.y
     return math.sqrt(dx * dx + dy * dy)
 end
 
--- »ñÈ¡±´Èû¶ûÇúÏß½üËÆ³¤¶È
+-- è·å–è´å¡å°”æ›²çº¿è¿‘ä¼¼é•¿åº¦
 function GetBezierCurveLength(points, resolution)
     if not points or #points == 0 then
         return 0.0
@@ -302,7 +302,7 @@ function GetBezierCurveLength(points, resolution)
         return 0.0
     end
 
-    resolution = resolution or 100  -- Ä¬ÈÏ²ÉÑù100¶Î
+    resolution = resolution or 100  -- é»˜è®¤é‡‡æ ·100æ®µ
     if resolution < 1 then resolution = 1 end
 
     local totalLength = 0.0

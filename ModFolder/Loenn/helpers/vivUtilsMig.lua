@@ -303,11 +303,11 @@ function vivUtilsMig.GetFilePathWithTrailingNumbers(AllowEmpty, atlasName)
                 return ""
             end
 
-            -- Step 1: ÒÆ³ıÂ·¾¶Ç°×º£¨Èç Atlases/Gameplay/...£©
+            -- Step 1: ç§»é™¤è·¯å¾„å‰ç¼€ï¼ˆå¦‚ Atlases/Gameplay/...ï¼‰
             local offset = 19 + #atlas
             local path = str:sub(offset)
 
-            -- Step 2: ÒÆ³ı×îºóÒ»¸ö .xxx À©Õ¹Ãû
+            -- Step 2: ç§»é™¤æœ€åä¸€ä¸ª .xxx æ‰©å±•å
             local name = path:match("(.+)%.[^%.]+$") or path
 
             return name
