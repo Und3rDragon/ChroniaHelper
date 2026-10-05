@@ -265,6 +265,13 @@ public class ChroniaHelperSession : EverestModuleSession
     public float staminaCount { get; set; }
     public int dashCount { get; set; }
 
+    // Dash Seed
+    /// <summary>当前由冲刺籽提供的冲刺数，0 表示没有籽提供的冲刺。</summary>
+    public int DashSeedDashes { get; set; } = 0;
+
+    /// <summary>上一帧记录的玩家冲刺数，用于检测玩家是否刚冲刺过。</summary>
+    public int DashSeedLastDashes { get; set; } = 0;
+
     [Note("For Chronia Flag-Counter-Slider System")]
     public HashSet<string> flagsPerRoom = new();
     [Note("For Chronia Flag-Counter-Slider System")]
