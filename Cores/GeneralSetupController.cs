@@ -114,6 +114,8 @@ public abstract class GeneralSetupController : BaseEntity
         Mode = data.Int("mode", Modes.OnEntityAdded);
         CurrentState = false;
         LastState = false;
+
+        Tag = Tags.TransitionUpdate | Tags.PauseUpdate | Tags.FrozenUpdate;
     }
 
     public virtual void Execute() { }
