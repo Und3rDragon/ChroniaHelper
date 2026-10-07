@@ -308,28 +308,28 @@ public class ModifiedAnimatedParallax : Parallax
         // override speed and position first
         if (overridePositionX.HasValidContent())
         {
-            Position.X = overridePositionX.GetSlider();
+            Position.X = overridePositionX.ParseMathExpression();
         }
         if (overridePositionY.HasValidContent())
         {
-            Position.Y = overridePositionY.GetSlider();
+            Position.Y = overridePositionY.ParseMathExpression();
         }
         if (overrideSpeedX.HasValidContent())
         {
-            Speed.X = overrideSpeedX.GetSlider();
+            Speed.X = overrideSpeedX.ParseMathExpression();
         }
         if (overrideSpeedY.HasValidContent())
         {
-            Speed.Y = overrideSpeedY.GetSlider();
+            Speed.Y = overrideSpeedY.ParseMathExpression();
         }
 
         if (overrideScrollX.HasValidContent())
         {
-            Scroll.X = overrideScrollX.GetSlider();
+            Scroll.X = overrideScrollX.ParseMathExpression();
         }
         if (overrideScrollY.HasValidContent())
         {
-            Scroll.Y = overrideScrollY.GetSlider();
+            Scroll.Y = overrideScrollY.ParseMathExpression();
         }
 
         // bugfix: setting new position
@@ -337,11 +337,11 @@ public class ModifiedAnimatedParallax : Parallax
 
         if (deltaPosX.HasValidContent())
         {
-            Position.X += deltaPosX.GetSlider();
+            Position.X += deltaPosX.ParseMathExpression();
         }
         if (deltaPosY.HasValidContent())
         {
-            Position.Y += deltaPosY.GetSlider();
+            Position.Y += deltaPosY.ParseMathExpression();
         }
 
         if (!resetFlag.IsNullOrEmpty())
@@ -554,28 +554,28 @@ public class ModifiedStaticParallax : Parallax
         // override speed and position first
         if (overridePositionX.HasValidContent())
         {
-            Position.X = overridePositionX.GetSlider();
+            Position.X = overridePositionX.ParseMathExpression();
         }
         if (overridePositionY.HasValidContent())
         {
-            Position.Y = overridePositionY.GetSlider();
+            Position.Y = overridePositionY.ParseMathExpression();
         }
         if (overrideSpeedX.HasValidContent())
         {
-            Speed.X = overrideSpeedX.GetSlider();
+            Speed.X = overrideSpeedX.ParseMathExpression();
         }
         if (overrideSpeedY.HasValidContent())
         {
-            Speed.Y = overrideSpeedY.GetSlider();
+            Speed.Y = overrideSpeedY.ParseMathExpression();
         }
 
         if (overrideScrollX.HasValidContent())
         {
-            Scroll.X = overrideScrollX.GetSlider();
+            Scroll.X = overrideScrollX.ParseMathExpression();
         }
         if (overrideScrollY.HasValidContent())
         {
-            Scroll.Y = overrideScrollY.GetSlider();
+            Scroll.Y = overrideScrollY.ParseMathExpression();
         }
 
         // bugfix: setting new position
@@ -583,11 +583,11 @@ public class ModifiedStaticParallax : Parallax
 
         if (deltaPosX.HasValidContent())
         {
-            Position.X += deltaPosX.GetSlider();
+            Position.X += deltaPosX.ParseMathExpression();
         }
         if (deltaPosY.HasValidContent())
         {
-            Position.Y += deltaPosY.GetSlider();
+            Position.Y += deltaPosY.ParseMathExpression();
         }
 
         if (alphaExpression != null)

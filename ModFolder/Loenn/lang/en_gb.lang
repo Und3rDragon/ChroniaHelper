@@ -1778,3 +1778,7 @@ entities.ChroniaHelper/SliderWindController.attributes.description.parameters=Wh
 # ========================== Event Volume Fade
 
 triggers.T8MC/EventVolumeFadeTrigger.placements.name.trigger=Event Volume Fade
+
+# ========================== Level Data To Session Controller
+
+entities.ChroniaHelper/LevelDataToSessionController.placements.name.controller=Level Data To Session Controller

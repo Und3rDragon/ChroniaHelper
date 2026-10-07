@@ -84,7 +84,43 @@ public static class MathExpression
         {
             return (new DateTime(MaP.level?.Session.Time ?? 0) - new DateTime(0)).TotalMilliseconds / 1000; // double
         }
-        
+        if (new string[] { "playerX, playerx, player_x"}.Contains(variable))
+        {
+            if(PUt.TryGetPlayer(out Player p))
+            {
+                return p.Position.X;
+            }
+
+            return 0;
+        }
+        if (new string[] { "playerY, playery, player_y" }.Contains(variable))
+        {
+            if (PUt.TryGetPlayer(out Player p))
+            {
+                return p.Position.Y;
+            }
+
+            return 0;
+        }
+        if (new string[] { "playerSpeedX", "playerspeedx", "player_speed_x" }.Contains(variable))
+        {
+            if (PUt.TryGetPlayer(out Player p))
+            {
+                return p.Speed.X;
+            }
+
+            return 0;
+        }
+        if (new string[] { "playerSpeedY", "playerspeedy", "player_speed_y" }.Contains(variable))
+        {
+            if (PUt.TryGetPlayer(out Player p))
+            {
+                return p.Speed.Y;
+            }
+
+            return 0;
+        }
+
         return MaP.level?.Session.GetSlider(variable) ?? 0.0;
     }
 }
