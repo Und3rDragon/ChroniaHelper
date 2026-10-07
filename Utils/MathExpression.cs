@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Utils.LogicExpression;
 
 namespace ChroniaHelper.Utils.MathExpression;
 public static class MathExpression 
@@ -130,7 +132,8 @@ public enum TokenType
 {
     Number, Variable, Function, Flag, Plus, Minus, Multiply, Divide, Power, Modulo, 
     LessThan, GreaterThan, LessEqual, GreaterEqual, EqualEqual, 
-    LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace, Comma, End
+    LeftParen, RightParen, LeftBracket, RightBracket, LeftBrace, RightBrace, Comma, End,
+    ExternalBlock
 }
 
 internal class Token 
@@ -138,6 +141,10 @@ internal class Token
     public TokenType Type;
     public string Value;
     public double NumberValue;
+    /// <summary>
+    /// 外部表达式块的额外内容（如主体表达式）。
+    /// </summary>
+    public string Extra;
     public Token(TokenType type, string value = null, double num = 0)
     {
         Type = type;
@@ -260,6 +267,23 @@ internal class Lexer
         return new Token(TokenType.Number, null, num);
     }
 
+    /// <summary>
+    /// 需要以 externalFunc[]@ 形式调用的外部函数名集合（尾部必须紧跟 '@'）。
+    /// </summary>
+    private static readonly HashSet<string> ExternalFunctionNames = new()
+    {
+        "frost", "se", "sessionexpression", "frostse"
+    };
+
+    /// <summary>
+    /// 主体需要整体原样读取、交由内置引擎求值的函数名集合（不带尾部 '@'）。
+    /// 这些函数的主体不是 CH 的数学表达式语法，不能在 CH 层被解析。
+    /// </summary>
+    private static readonly HashSet<string> RawBodyFunctionNames = new()
+    {
+        "logic"
+    };
+
     private Token ReadIdentifier() 
     {
         var sb = new StringBuilder();
@@ -279,12 +303,65 @@ internal class Lexer
         while (tempPos < _input.Length && char.IsWhiteSpace(_input[tempPos])) tempPos++;
         if (tempPos < _input.Length && _input[tempPos] == '[') 
         {
+            string lower = name.ToLowerInvariant();
+            // 外部函数：读取整个 [...] 主体，并检查末尾是否是 '@'
+            if (ExternalFunctionNames.Contains(lower))
+            {
+                return ReadExternalFunctionBody(name, tempPos, true);
+            }
+            // 主体需整体原样读取的内置函数（如 logic）：不含尾部 '@'
+            if (RawBodyFunctionNames.Contains(lower))
+            {
+                return ReadExternalFunctionBody(name, tempPos, false);
+            }
             return new Token(TokenType.Function, name);
         }
         else 
         {
             return new Token(TokenType.Variable, name);
         }
+    }
+
+    /// <summary>
+    /// 读取 externalFunc[...]@ 或 rawFunc[...] 形式的函数调用，主体内容原样保留。
+    /// requireAt 为 true 时，右括号后必须紧跟（无空白）一个 '@' 才视为外部函数格式。
+    /// </summary>
+    private Token ReadExternalFunctionBody(string name, int bracketPos, bool requireAt)
+    {
+        _pos = bracketPos + 1; // skip '['
+
+        var bodySb = new StringBuilder();
+        while (_pos < _input.Length && _input[_pos] != ']')
+        {
+            bodySb.Append(_input[_pos]);
+            _pos++;
+        }
+        if (_pos >= _input.Length)
+        {
+            throw new InvalidOperationException("Unclosed '[' in external function call.");
+        }
+        _pos++; // skip ']'
+
+        if (requireAt)
+        {
+            // 检查紧跟的字符是否是 '@'（不允许空白）
+            if (_pos < _input.Length && _input[_pos] == '@')
+            {
+                _pos++; // skip '@'
+                var token = new Token(TokenType.ExternalBlock, name, 0);
+                token.Extra = bodySb.ToString();
+                return token;
+            }
+
+            // 没有 '@' → 不是外部函数格式，退回普通函数（内容不会被 CH 解析，最终按未知函数返回 0）
+            var fallback = new Token(TokenType.Function, name);
+            fallback.Extra = bodySb.ToString();
+            return fallback;
+        }
+
+        var rawToken = new Token(TokenType.ExternalBlock, name, 0);
+        rawToken.Extra = bodySb.ToString();
+        return rawToken;
     }
 
     private Token ReadFlagContent() 
@@ -311,6 +388,12 @@ internal class Parser
 {
     private readonly List<Token> _tokens;
     private int _current = 0;
+
+    /// <summary>
+    /// 缓存已编译的外部表达式（如 Frost Session Expression），避免重复编译。
+    /// key 为表达式主体字符串，value 为编译后的表达式对象。
+    /// </summary>
+    internal static readonly Dictionary<string, object> _externalExpressionCache = new();
 
     private Func<string, double> _getVariableFunc = MathExpression.GetVariable;
     private Func<string, double> _getFlagFunc = (s) => s.GetFlag() ? 1.0 : 0.0;
@@ -450,8 +533,53 @@ internal class Parser
             case TokenType.Minus: Consume(); return -ParseFactor();
             case TokenType.Plus: Consume(); return ParseFactor();
             case TokenType.Flag: Consume(); return _getFlagFunc(token.Value);
+            case TokenType.ExternalBlock: Consume(); return EvaluateExternalBlock(token.Value, token.Extra);
             default: throw new InvalidOperationException($"Unexpected token in factor: {token.Type}");
         }
+    }
+
+    /// <summary>
+    /// 求值一个外部/原样函数调用。
+    /// 目前支持：
+    /// - frost / sessionexpression / se / frostse（需 externalFunc[]@ 形式）：调用 FrostHelper 的 Session Expression。
+    /// - logic（rawFunc[] 形式）：调用本项目的逻辑表达式。
+    /// 名字不匹配时直接返回 0。
+    /// </summary>
+    private double EvaluateExternalBlock(string name, string expression)
+    {
+        switch (name.ToLowerInvariant())
+        {
+            case "frost":
+            case "sessionexpression":
+            case "se":
+            case "frostse":
+                return EvaluateFrostExpression(expression);
+            case "logic":
+                return expression.ParseLogicExpression() ? 1d : 0d;
+            default:
+                // 名字不匹配，整段作废返回 0
+                return 0d;
+        }
+    }
+
+    /// <summary>
+    /// 求值一段 FrostHelper Session Expression 表达式，返回 float。
+    /// 编译结果会被缓存以便复用。
+    /// </summary>
+    private double EvaluateFrostExpression(string expression)
+    {
+        if (!_externalExpressionCache.TryGetValue(expression, out var compiled))
+        {
+            // Frost 未安装或编译失败时返回 false
+            if (!expression.tryCreateSessionExpression(out var exp))
+            {
+                return 0d;
+            }
+            compiled = exp;
+            _externalExpressionCache[expression] = compiled;
+        }
+
+        return compiled.getFloatSessionExpressionValue();
     }
 
     private double ParseFunctionCall() 
