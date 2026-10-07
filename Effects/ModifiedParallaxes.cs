@@ -367,14 +367,7 @@ public class ModifiedAnimatedParallax : Parallax
 
         if(overrideScale.HasValidContent())
         {
-            if(float.TryParse(overrideScale, out float f))
-            {
-                scale = f;
-            }
-            else
-            {
-                scale = overrideScale.GetSlider();
-            }
+            overrideScale.ParseMathExpression();
         }
 
         // If frame or index is overrided by counter
@@ -610,7 +603,7 @@ public class ModifiedStaticParallax : Parallax
             }
             else
             {
-                scale = overrideScale.GetSlider();
+                scale = overrideScale.ParseMathExpression();
             }
         }
     }

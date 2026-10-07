@@ -84,7 +84,7 @@ public static class MathExpression
         {
             return (new DateTime(MaP.level?.Session.Time ?? 0) - new DateTime(0)).TotalMilliseconds / 1000; // double
         }
-        if (new string[] { "playerX, playerx, player_x"}.Contains(variable))
+        if (new string[] { "playerX", "playerx", "player_x"}.Contains(variable))
         {
             if(PUt.TryGetPlayer(out Player p))
             {
@@ -93,7 +93,7 @@ public static class MathExpression
 
             return 0;
         }
-        if (new string[] { "playerY, playery, player_y" }.Contains(variable))
+        if (new string[] { "playerY", "playery", "player_y" }.Contains(variable))
         {
             if (PUt.TryGetPlayer(out Player p))
             {
