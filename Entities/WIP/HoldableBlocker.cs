@@ -173,8 +173,7 @@ public class HoldableBlocker : Solid
             cursor.GotoNext();
         }
 
-        Logger.Log("DJMapHelper/TheoCrystalBarrier",
-            $"Injecting code to make theo crystal barrier light in IL for {cursor.Method.Name}");
+        Log.Info($"[DJMapHelper/TheoCrystalBarrier]Injecting code to make theo crystal barrier light in IL for {cursor.Method.Name}");
     }
 
     private static void CheckCollide(CollisionData data)

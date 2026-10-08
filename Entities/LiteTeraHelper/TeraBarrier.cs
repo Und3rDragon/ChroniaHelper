@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -56,7 +57,7 @@ public class TeraBarrier : Solid
         ILCursor cursor = new ILCursor(il);
         if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchRet()))
         {
-            Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on tera barrier at {cursor.Index} in IL for {cursor.Method.Name}");
+            Log.Info($"Injecting code to apply tera effect on tera barrier at {cursor.Index} in IL for {cursor.Method.Name}");
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.EmitDelegate(CollideBarrier);
         }

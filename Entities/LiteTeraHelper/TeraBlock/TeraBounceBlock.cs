@@ -2,6 +2,7 @@
 using System.Reflection;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -47,7 +48,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(100f) || instr.MatchLdcR4(35f) || instr.MatchLdcR4(40f) || instr.MatchLdcR4(140f) || instr.MatchLdcR4(200f)))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on bounce block speed at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on bounce block speed at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.EmitDelegate(GetSpeedMultipler);
                 cursor.Emit(OpCodes.Mul);
@@ -55,7 +56,7 @@ namespace ChroniaHelper.Entities
             cursor.Index = 0;
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchStloc(2)))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on bounce block activate at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on bounce block activate at {cursor.Index} in IL for {cursor.Method.Name}");
                 ILLabel label = null;
                 cursor.GotoNext(MoveType.After, instr => instr.MatchBrfalse(out label));
                 cursor.Emit(OpCodes.Ldarg_0);

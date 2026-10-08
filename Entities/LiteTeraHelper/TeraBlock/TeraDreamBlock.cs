@@ -1,6 +1,7 @@
 ﻿using System;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -55,7 +56,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchStloc(0) && instr.Next.MatchLdloc(0)))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on dream block check at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on dream block check at {cursor.Index} in IL for {cursor.Method.Name}");
                 ILLabel label = null;
                 cursor.GotoNext(MoveType.After, instr => instr.MatchBrfalse(out label));
                 cursor.Emit(OpCodes.Ldloc_0);
@@ -72,7 +73,7 @@ namespace ChroniaHelper.Entities
                 var labelIntoSolid = cursor.MarkLabel();
                 if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdarg(0) && instr.Next.MatchLdloc(1)))
                 {
-                    Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on dream dash into solid at {cursor.Index} in IL for {cursor.Method.Name}");
+                    Log.Info($"Injecting code to apply tera effect on dream dash into solid at {cursor.Index} in IL for {cursor.Method.Name}");
                     cursor.MoveAfterLabels();
                     cursor.Emit(OpCodes.Ldloc_1);
                     cursor.EmitDelegate(PlayerActivate);

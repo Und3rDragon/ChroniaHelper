@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
+using ChroniaHelper.Utils;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
@@ -172,7 +173,7 @@ namespace ChroniaHelper.Entities {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchNewobj<Color>())) {
-                Logger.Log("ChroniaHelper/MovingFlagTouchSwitch", $"Customizing moving flag touch switch color at {cursor.Index} in IL for MovingTouchSwitch.TriggeredSwitch");
+                Log.Info($"[ChroniaHelper/MovingFlagTouchSwitch]Customizing moving flag touch switch color at {cursor.Index} in IL for MovingTouchSwitch.TriggeredSwitch");
 
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldfld, movingTouchSwitchStateMachineType.GetField("<>4__this"));
@@ -188,7 +189,7 @@ namespace ChroniaHelper.Entities {
             cursor.Index = 0;
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.8f))) {
-                Logger.Log("ChroniaHelper/MovingFlagTouchSwitch", $"Customizing moving flag touch switch delay at {cursor.Index} in IL for MovingTouchSwitch.TriggeredSwitch");
+                Log.Info($"[ChroniaHelper/MovingFlagTouchSwitch]Customizing moving flag touch switch delay at {cursor.Index} in IL for MovingTouchSwitch.TriggeredSwitch");
 
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldfld, movingTouchSwitchStateMachineType.GetField("<>4__this"));

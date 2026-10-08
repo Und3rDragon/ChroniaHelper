@@ -1,4 +1,4 @@
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using FMOD.Studio;
@@ -181,12 +181,11 @@ public class EventVolumeFadeTrigger : BaseTrigger
                 {
                     rule.Description = Audio.GetEventDescription(pair.Key);
                     if (rule.Description == null || !rule.Description.isValid())
-                        Logger.Log(LogLevel.Warn, "T8MCAudioFade", "FMOD Event not found: " + pair.Key);
+                        Log.Warn("[T8MCAudioFade]FMOD Event not found: " + pair.Key);
                 }
                 catch (Exception error)
                 {
-                    Logger.Log(LogLevel.Warn, "T8MCAudioFade",
-                        "Cannot resolve FMOD Event " + pair.Key + ": " + error.Message);
+                    Log.Warn("[T8MCAudioFade]Cannot resolve FMOD Event " + pair.Key + ": " + error.Message);
                 }
             }
             // Also catches looping sounds already active before entering the trigger,

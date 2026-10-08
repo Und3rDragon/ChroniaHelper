@@ -331,7 +331,7 @@ public class PatientBooster : Booster
 
 		if (!cursor.TryGotoPrev(MoveType.AfterLabel, instr => instr.MatchCallvirt<Player>("RefillDash")))
 		{
-			Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed IL Hook for Booster.BoostBegin (RefillDash)");
+			Log.Error($"Failed IL Hook for Booster.BoostBegin (RefillDash)");
 			return;
 		}
 

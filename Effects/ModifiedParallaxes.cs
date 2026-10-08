@@ -29,7 +29,7 @@ public static class ModifiedParallaxUtils
         ILCursor cursor = new ILCursor(il);
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchNewobj(typeof(Parallax))))
         {
-            Logger.Log("ChroniaHelper Modification: MaxHelpingHand/AnimatedParallax", $"Handling animated parallaxes at {cursor.Index} in IL for MapData.ParseBackdrop");
+            Log.Info($"[ChroniaHelper Modification: MaxHelpingHand/AnimatedParallax]Handling animated parallaxes at {cursor.Index} in IL for MapData.ParseBackdrop");
 
             cursor.EmitDelegate<Func<Parallax, Parallax>>(orig => {
                 // This part is for avoiding conflict with Maddie's Anim Parallax

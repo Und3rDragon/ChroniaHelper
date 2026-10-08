@@ -182,12 +182,12 @@ public class ChroniaHelperModule : EverestModule
     {
         try
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", "Emergency save due to crash...");
+            Log.Error("Emergency save due to crash...");
             GlobalData?.SaveAll();
         }
         catch (Exception ex)
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Emergency save failed: {ex}");
+            Log.Error($"Emergency save failed: {ex}");
         }
     }
 

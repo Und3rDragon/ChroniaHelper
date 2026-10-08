@@ -66,7 +66,7 @@ public class CustomGlider : Actor
         }
         else
         {
-            Logger.Log(LogLevel.Warn, "ChroniaHelper", "CustomGlider: holding-acceleration anchor not found in Player.NormalUpdate.");
+            Log.Warn("CustomGlider: holding-acceleration anchor not found in Player.NormalUpdate.");
         }
 
         // —— 手持时的重力倍率（原版 num7 *= 0.5f）——
@@ -83,7 +83,7 @@ public class CustomGlider : Actor
         }
         else
         {
-            Logger.Log(LogLevel.Warn, "ChroniaHelper", "CustomGlider: holding-gravity anchor not found in Player.NormalUpdate.");
+            Log.Warn("CustomGlider: holding-gravity anchor not found in Player.NormalUpdate.");
         }
     }
 

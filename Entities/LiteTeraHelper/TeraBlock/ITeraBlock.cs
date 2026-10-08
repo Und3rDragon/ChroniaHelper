@@ -125,7 +125,7 @@ namespace ChroniaHelper.Entities
         private static void TriggerSpikeCheck(ILContext il)
         {
             ILCursor cursor = new ILCursor(il);
-            Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on trigger spikes at {cursor.Index} in IL for {cursor.Method.Name}");
+            Log.Info($"Injecting code to apply tera effect on trigger spikes at {cursor.Index} in IL for {cursor.Method.Name}");
             var assembly = typeof(TriggerSpikes).Assembly;
             var t = assembly.GetType("Celeste.TriggerSpikes+SpikeInfo");
             var f = t.GetField("Parent", BindingFlags.Public | BindingFlags.Instance);
@@ -176,7 +176,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Spring>("BounceAnimate")))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on spring collide player at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on spring collide player at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldarg_1);
                 cursor.EmitDelegate(ActorUseSpring);
@@ -188,7 +188,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Spring>("BounceAnimate")))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on spring collide holdable at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on spring collide holdable at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldarg_1);
                 cursor.EmitDelegate(HoldableUseSpring);
@@ -199,7 +199,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Spring>("BounceAnimate")))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on spring collide puffer at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on spring collide puffer at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldarg_1);
                 cursor.EmitDelegate(ActorUseSpring);
@@ -210,7 +210,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Spring>("BounceAnimate")))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on spring collide seeker at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on spring collide seeker at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldarg_1);
                 cursor.EmitDelegate(ActorUseSpring);
@@ -232,7 +232,7 @@ namespace ChroniaHelper.Entities
             if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call &&
                                                             (instr.Operand as MethodReference)?.GetID() == "System.Boolean Monocle.Entity::CollideCheck<Celeste.Spikes>(Microsoft.Xna.Framework.Vector2)"))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on spikes at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on spikes at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.EmitDelegate(IsDangerousSpike);
             }
@@ -292,7 +292,7 @@ namespace ChroniaHelper.Entities
                 if (cursor.TryGotoPrev(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_S && (((VariableDefinition)instr.Operand).Index == 4)))
                 {
                     VariableDefinition variable = (VariableDefinition)cursor.Prev.Operand;
-                    Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on solid move H at {cursor.Index} in IL for {cursor.Method.Name}");
+                    Log.Info($"Injecting code to apply tera effect on solid move H at {cursor.Index} in IL for {cursor.Method.Name}");
                     cursor.Goto(current);
                     cursor.Emit(OpCodes.Ldarg_0);
                     cursor.Emit(OpCodes.Ldloc_S, variable);
@@ -305,7 +305,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Actor>("set_LiftSpeed")))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on solid move V at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on solid move V at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldloc_3);
                 cursor.EmitDelegate(OnTeraSolidMove);
@@ -321,7 +321,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(250f) || instr.MatchLdcR4(-130f)))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on player lift boost at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on player lift boost at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.EmitDelegate(GetLiftBoost);
                 cursor.Emit(OpCodes.Mul);

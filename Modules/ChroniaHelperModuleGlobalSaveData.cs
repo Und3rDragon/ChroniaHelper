@@ -7,6 +7,7 @@ using System.Reflection;
 using Celeste;
 using Celeste.Mod;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using Monocle;
 using static ChroniaHelper.Cores.ExtendedAttributes;
 
@@ -114,11 +115,11 @@ namespace ChroniaHelper.Modules
                         YamlHelper.Serializer.Serialize(writer, dataToSave);
                     }
                     
-                    Logger.Log("ChroniaHelper", $"Saved global data to: {filePath}");
+                    Log.Info($"Saved global data to: {filePath}");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ChroniaHelper", $"Failed to save global data to {filePath}: {ex}");
+                    Log.Info($"Failed to save global data to {filePath}: {ex}");
                 }
             }
         }
@@ -159,11 +160,11 @@ namespace ChroniaHelper.Modules
                         }
                     }
 
-                    Logger.Log("ChroniaHelper", $"Loaded global data from: {filePath}");
+                    Log.Info($"Loaded global data from: {filePath}");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ChroniaHelper", $"Failed to load global data from {filePath}: {ex}");
+                    Log.Info($"Failed to load global data from {filePath}: {ex}");
                 }
             }
         }
@@ -250,7 +251,7 @@ namespace ChroniaHelper.Modules
             }
             catch (Exception ex)
             {
-                Logger.Log("ChroniaHelper", $"Failed to set value for member '{member.Name}': {ex}");
+                Log.Info($"Failed to set value for member '{member.Name}': {ex}");
             }
         }
     }
