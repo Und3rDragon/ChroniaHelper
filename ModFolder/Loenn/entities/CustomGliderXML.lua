@@ -56,8 +56,20 @@ reskinJelly.ignoredFields = function(entity)
         "deathAnimInterval",
     }
 
+    local mechanicAttrs = {
+        "gliderFastFall","gliderWindUpFall","gliderSlowFall","gliderMaxFall","gliderWindMaxFall",
+        "holdingMaxRun","gliderMaxRun",
+        "holdingAccelerationMultiplier","holdingGravityMultiplier",
+    }
+
     if entity.XMLOverride then
         for _, item in ipairs(gfxAttrs) do
+            table.insert(attrs, item)
+        end
+    end
+
+    if not entity.modifyMechanics then
+        for _, item in ipairs(mechanicAttrs) do
             table.insert(attrs, item)
         end
     end
@@ -107,6 +119,8 @@ reskinJelly.placements = {
         gliderMaxRun = 108,
         holdingAccelerationMultiplier = 0.5,
         holdingGravityMultiplier = 0.5,
+
+        modifyMechanics = false,
     }
 }
 

@@ -183,7 +183,10 @@ public class CustomGlider : Actor
     public CustomGlider(EntityData e, Vector2 offset)
         : base(e.Position + offset)
     {
-        Ldm.LoadHookWithMethod(typeof(CustomGlider), Load);
+        if (e.Bool("modifyMechanics", false))
+        {
+            Ldm.LoadHookWithMethod(typeof(CustomGlider), Load);
+        }
 
         outline = e.Bool("outline", true);
         bubble = e.Bool("bubble");
