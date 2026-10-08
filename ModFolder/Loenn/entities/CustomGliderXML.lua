@@ -97,6 +97,16 @@ reskinJelly.placements = {
         droppingSpeedXMultiplier = false,
         XMLOverride = true,
         outline = true,
+
+        gliderFastFall = 120,
+        gliderWindUpFall = -32,
+        gliderSlowFall = 24,
+        gliderMaxFall = 40,
+        gliderWindMaxFall = 0,
+        holdingMaxRun = 70,
+        gliderMaxRun = 108,
+        holdingAccelerationMultiplier = 0.5,
+        holdingGravityMultiplier = 0.5,
     }
 }
 

@@ -22,6 +22,9 @@ local reskinJelly = {
         "respawnPath","respawnAnimInterval",
         "hitboxParameters","holdableParameters",
         "tutorialTitle","tutorialText",
+        "gliderFastFall","gliderWindUpFall","gliderSlowFall","gliderMaxFall","gliderWindMaxFall",
+        "holdingMaxRun","gliderMaxRun",
+        "holdingAccelerationMultiplier","holdingGravityMultiplier",
         'bubble','tutorial',
     },
     fieldInformation = {
@@ -94,9 +97,20 @@ reskinJelly.placements = {
         holdableParameters = "20,22,-10,-16",
         tutorialTitle = "",
         tutorialText = "",
+        
         droppingSpeedXMultiplier = false,
         XMLOverride = false,
         outline = true,
+
+        gliderFastFall = 120,
+        gliderWindUpFall = -32,
+        gliderSlowFall = 24,
+        gliderMaxFall = 40,
+        gliderWindMaxFall = 0,
+        holdingMaxRun = 70,
+        gliderMaxRun = 108,
+        holdingAccelerationMultiplier = 0.5,
+        holdingGravityMultiplier = 0.5,
     }
 }
 

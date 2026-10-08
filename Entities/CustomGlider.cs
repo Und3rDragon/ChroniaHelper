@@ -1,17 +1,120 @@
 ﻿using System;
+using System.Reflection;
+using Celeste.Mod;
 using Celeste.Mod.Entities;
 using System.Collections;
+using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 
 [Tracked(false)]
 [CustomEntity("ChroniaHelper/CustomGlider", "ChroniaHelper/CustomGliderXML")]
-public partial class CustomGlider : Actor
+public class CustomGlider : Actor
 {
-    
+    [SelectiveLoadHook]
+    public static void Load()
+    {
+        IL.Celeste.Player.NormalUpdate += Player_NormalUpdate;
+    }
+
+    [SelectiveUnloadHook]
+    public static void Unload()
+    {
+        IL.Celeste.Player.NormalUpdate -= Player_NormalUpdate;
+    }
+
+    /// <summary>
+    /// 取「玩家当前手持的 CustomGlider」，没有则返回 null。
+    /// </summary>
+    private static CustomGlider HeldGlider(Player player)
+    {
+        return player?.Holding?.Entity as CustomGlider;
+    }
+
+    /// <summary>
+    /// 手持 CustomGlider 时，把玩家滑翔的下落速度上限与水平速度改成实体自己配置的值。
+    ///
+    /// 原版这些数值在 <c>Player.NormalUpdate</c> 里是直接写死的字面量，因此这里按值定位它们，
+    /// 命中后插一句「把该字面量替换为手持实体对应字段」的调用；没拿着 CustomGlider 时原样返回。
+    /// </summary>
+    private static void Player_NormalUpdate(ILContext il)
+    {
+        ILCursor cursor = new ILCursor(il);
+
+        // —— 下落速度上限（原版 120 / -32 / 24 / 0 / 40）——
+        PatchFloat(cursor, 120f, player => HeldGlider(player)?.gliderFastFall);
+        PatchFloat(cursor, -32f, player => HeldGlider(player)?.gliderWindUpFall);
+        PatchFloat(cursor, 24f, player => HeldGlider(player)?.gliderSlowFall);
+        PatchFloat(cursor, 0f, player => HeldGlider(player)?.gliderWindMaxFall);
+        PatchFloat(cursor, 40f, player => HeldGlider(player)?.gliderMaxFall);
+
+        // —— 水平移动速度（原版 70 / 108.000008 / 90）——
+        PatchFloat(cursor, 70f, player => HeldGlider(player)?.holdingMaxRun);
+        PatchFloat(cursor, 108.000008f, player => HeldGlider(player)?.gliderMaxRun);
+
+        // —— 手持时的水平加速倍率（原版紧跟在上面的 108 常量之后，num2 *= 0.5f）——
+        if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(108.000008f))
+            && cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.5f)))
+        {
+            EmitMultiplier(cursor, g => g.holdingAccelerationMultiplier);
+        }
+        else
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", "CustomGlider: holding-acceleration anchor not found in Player.NormalUpdate.");
+        }
+
+        // —— 手持时的重力倍率（原版 num7 *= 0.5f）——
+        // 形态特征：ldloc V; ldc.r4 0.5; mul; stloc V（乘回同一个局部变量）
+        if (cursor.TryGotoNext(MoveType.After,
+                instr => instr.MatchLdloc(out _),
+                instr => instr.MatchLdcR4(0.5f),
+                instr => instr.MatchMul(),
+                instr => instr.MatchStloc(out _)))
+        {
+            // 游标停在 stloc 之后：回退 1 步到 mul，使插入点在 ldc.r4 0.5 之后（栈上正是刚压入的 0.5）
+            cursor.Index -= 1;
+            EmitMultiplier(cursor, g => g.holdingGravityMultiplier);
+        }
+        else
+        {
+            Logger.Log(LogLevel.Warn, "ChroniaHelper", "CustomGlider: holding-gravity anchor not found in Player.NormalUpdate.");
+        }
+    }
+
+    /// <summary>
+    /// 把当前光标位置压栈的常量替换成「手持 CustomGlider 时的倍率」。
+    /// </summary>
+    private static void EmitMultiplier(ILCursor cursor, Func<CustomGlider, float> pick)
+    {
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.EmitDelegate<Func<float, Player, float>>((value, player) => {
+            CustomGlider glider = HeldGlider(player);
+            return glider == null ? value : pick(glider);
+        });
+    }
+
+    /// <summary>
+    /// 把 <c>NormalUpdate</c> 里值为 <paramref name="from"/> 的常量替换成
+    /// <paramref name="pick"/> 从「当前手持的 CustomGlider」取到的值（取不到则保持原值）。
+    /// </summary>
+    private static void PatchFloat(ILCursor cursor, float from, Func<Player, float?> pick)
+    {
+        while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(from)))
+        {
+            cursor.Emit(OpCodes.Ldarg_0);
+            cursor.EmitDelegate<Func<float, Player, float>>((value, player) => pick(player) ?? value);
+        }
+
+        cursor.Index = 0;
+    }
+
+
     public ParticleType P_Glide;
 
     public ParticleType P_GlideUp;
@@ -80,6 +183,8 @@ public partial class CustomGlider : Actor
     public CustomGlider(EntityData e, Vector2 offset)
         : base(e.Position + offset)
     {
+        Ldm.LoadHookWithMethod(typeof(CustomGlider), Load);
+
         outline = e.Bool("outline", true);
         bubble = e.Bool("bubble");
         this.tutorial = e.Bool("tutorial");
