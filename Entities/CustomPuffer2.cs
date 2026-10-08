@@ -60,7 +60,7 @@ public class CustomPuffer2 : Puffer
         Add(inflateWiggler);
 
         overrideOutline = data.Int("overrideOutline", 0);
-        indicatorColor = data.GetChroniaColor("indicatorColor", Color.White);
+        indicatorColor = data.PackColor("indicatorColor", Color.White);
 
         Depth = data.Int("depth", 1);
     }

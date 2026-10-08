@@ -9,7 +9,7 @@ namespace ChroniaHelper.Entities;
 
 [Tracked(false)]
 [CustomEntity("ChroniaHelper/CustomGlider", "ChroniaHelper/CustomGliderXML")]
-public class CustomGlider : Actor
+public partial class CustomGlider : Actor
 {
     
     public ParticleType P_Glide;
@@ -65,6 +65,17 @@ public class CustomGlider : Actor
     public float idleTime, heldTime, fallTime, fallLoopTime, deathTime, respawnAnimTime;
 
     public string tutorialTitle, tutorialText;
+
+    /// <summary>
+    /// 手持本滑翔伞时的滑翔手感参数（对应原版 <c>Player</c> 内的硬编码值）。
+    /// 由 <see cref="CustomGliderHooks"/> 在玩家持有本实体时覆盖到玩家身上。
+    /// </summary>
+    public float gliderFastFall, gliderWindUpFall, gliderSlowFall, gliderMaxFall, gliderWindMaxFall;
+
+    /// <summary>
+    /// 手持本滑翔伞时的水平速度与倍率参数（对应原版 <c>Player</c> 内的硬编码值）。
+    /// </summary>
+    public float holdingMaxRun, gliderMaxRun, holdingAccelerationMultiplier, holdingGravityMultiplier;
 
     public CustomGlider(EntityData e, Vector2 offset)
         : base(e.Position + offset)
@@ -218,6 +229,17 @@ public class CustomGlider : Actor
         // Tutorial Text
         tutorialTitle = e.Attr("tutorialTitle");
         tutorialText = e.Attr("tutorialText");
+
+        // Max Fall Speed and Holding Move Speed
+        gliderFastFall = e.Float("gliderFastFall", 120f);
+        gliderWindUpFall = e.Float("gliderWindUpFall", -32f);
+        gliderSlowFall = e.Float("gliderSlowFall", 24f);
+        gliderMaxFall = e.Float("gliderMaxFall", 40f);
+        gliderWindMaxFall = e.Float("gliderWindMaxFall", 0f);
+        holdingMaxRun = e.Float("holdingMaxRun", 70f);
+        gliderMaxRun = e.Float("gliderMaxRun", 108.000008f);
+        holdingAccelerationMultiplier = e.Float("holdingAccelerationMultiplier", 0.5f);
+        holdingGravityMultiplier = e.Float("holdingGravityMultiplier", 0.5f);
     }
     private Vector2 droppingSpeed;
     private bool droppingSpeedXMultiplier;

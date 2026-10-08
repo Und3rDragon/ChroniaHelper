@@ -35,8 +35,8 @@ public class ParallaxText : BaseEntity {
         
         Vector2 textSize = Vector2.Zero;
         textScalar = new Vector2(data.Float("textScalarX", 1.25f), data.Float("textScalarY", 1.25f));
-        textColor = data.GetChroniaColor("color", Color.White);
-        borderColor = data.GetChroniaColor("borderColor", Color.Black);
+        textColor = data.PackColor("color", Color.White);
+        borderColor = data.PackColor("borderColor", Color.Black);
 
         //The 'error text' is part of the SC2020 hunt. If you get it unexpectedly, it means
         //		that the text you placed has no 'dialog' attribute, likely an ahorn/lonn integration error

@@ -51,7 +51,7 @@ public class OutlinerRectangle : BaseEntity
     public OutlinerRectangle(EntityData data, Vector2 offset)
         : base(data, offset)
     {
-        this.tintColor = data.GetChroniaColor("tintColor", "ffffffff");
+        this.tintColor = data.PackColor("tintColor", "ffffffff");
         //this.fillerColor = data.GetChroniaColor("fillerColor", "ffffff33");
 
         visibleFlag = new(data.Attr("visibleFlag"));

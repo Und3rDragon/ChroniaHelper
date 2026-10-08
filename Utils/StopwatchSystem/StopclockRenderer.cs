@@ -28,7 +28,7 @@ public class StopclockRenderer : SerialImageRendererRaw
         image.origin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("positionAlign", 5)];
         image.segmentOrigin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("segmentAlign", 5)];
         image.distance = d.Float("segmentDistance", 4f);
-        image.color = d.GetChroniaColor("rendererColor", Color.White);
+        image.color = d.PackColor("rendererColor", Color.White);
         maxAlpha = image.color.alpha;
         overrideAlpha = 0f;
         image.color.alpha = overrideAlpha;

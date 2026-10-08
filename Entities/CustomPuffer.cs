@@ -160,7 +160,7 @@ public class CustomPuffer : Actor
         pushAny = data.Bool("pushAnyDir");
         oneUse = data.Bool("oneUse");
         deathFlag = data.Attr("deathFlag");
-        outlineColor = data.GetChroniaColor("outlineColor", Color.White);
+        outlineColor = data.PackColor("outlineColor", Color.White);
         canUpdateHome = !data.Bool("returnToStart", true);
         holdFlip = data.Bool("holdFlip");
         boostMode = data.Enum("boostMode", BoostModes.SetSpeed);

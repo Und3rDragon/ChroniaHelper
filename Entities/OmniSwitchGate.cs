@@ -63,9 +63,9 @@ public class OmniSwitchGate : Solid
         easers = data.Array("easers", (s) => EaseUtils.StringToEase(s));
         easers2 = data.Array("returnEasers", (s) => EaseUtils.StringToEase(s));
         
-        inactiveColor = data.GetChroniaColor("inactiveColor", Calc.HexToColor("5fcde4"));
-        activeColor = data.GetChroniaColor("activeColor", Color.White);
-        finishColor = data.GetChroniaColor("finishColor", Calc.HexToColor("f141df"));
+        inactiveColor = data.PackColor("inactiveColor", Calc.HexToColor("5fcde4"));
+        activeColor = data.PackColor("activeColor", Color.White);
+        finishColor = data.PackColor("finishColor", Calc.HexToColor("f141df"));
         string iconName = data.Attr("icon", "objects/switchgate/icon");
 
         smoke = data.Bool("smoke", true);

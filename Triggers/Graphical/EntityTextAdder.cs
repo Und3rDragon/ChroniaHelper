@@ -14,11 +14,11 @@ public class EntityTextAdder : BaseTrigger
         relativePosition = data.Vector2("relativePositionX", "relativePositionY", Vc2.Zero);
         alignment = data.Vector2("alignX", "alignY", Vc2.One * 0.5f);
         scale =  data.Vector2("scaleX", "scaleY", Vc2.One);
-        textColor = data.GetChroniaColor("textColor", Color.White);
+        textColor = data.PackColor("textColor", Color.White);
         stroke = data.Float("stroke", 0f);
-        strokeColor = data.GetChroniaColor("strokeColor", Color.White);
+        strokeColor = data.PackColor("strokeColor", Color.White);
         edgeDepth = data.Float("edgeDepth", 0f);
-        edgeColor = data.GetChroniaColor("edgeColor", Color.White);
+        edgeColor = data.PackColor("edgeColor", Color.White);
         outlined = data.Bool("outlined", false);
     }
     public string targetText;

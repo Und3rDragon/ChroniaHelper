@@ -81,11 +81,11 @@ public class CounterCassetteBlock : CassetteBlock
     {
         Ldm.LoadHook(typeof(CounterCassetteBlock));
         
-        color = (baseColor = data.GetChroniaColor("color", Color.White)).Parsed();
+        color = (baseColor = data.PackColor("color", Color.White)).Parsed();
         this.prefix = data.Attr("directory", "objects/ChroniaHelper/counterCassetteBlock/").TrimEnd('/') + '/';
         this.counter = data.Attr("counter", "counterCassetteBlockCounter");
 
-        backColor = data.GetChroniaColor("disabledColor", "667da5");
+        backColor = data.PackColor("disabledColor", "667da5");
         backColor.alpha = baseColor.alpha;
 
         switchOnSfx = data.Attr("switchOnSfx");

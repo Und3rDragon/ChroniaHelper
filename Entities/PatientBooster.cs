@@ -124,12 +124,12 @@ public class PatientBooster : Booster
         customBurstParticleType = new ParticleType(red ? P_BurstRed : P_Burst);
 		if (data.Attr("burstParticleColor").IsNotNullOrEmpty())
 		{
-            customBurstParticleType.Color = data.GetChroniaColor("burstParticleColor", Color.White).Parsed();
+            customBurstParticleType.Color = data.PackColor("burstParticleColor", Color.White).Parsed();
         }
         customAppearParticleType = new ParticleType(red ? P_RedAppear : P_Appear);
 		if (data.Attr("appearParticleColor").IsNotNullOrEmpty())
 		{
-            customAppearParticleType.Color = data.GetChroniaColor("appearParticleColor", Color.White).Parsed();
+            customAppearParticleType.Color = data.PackColor("appearParticleColor", Color.White).Parsed();
         }
 
         Remove(sprite);

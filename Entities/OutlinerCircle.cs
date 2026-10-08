@@ -25,9 +25,9 @@ public class OutlinerCircle : BaseEntity
 
         Collider = new Circle(radius);
 
-        innerColor = data.GetChroniaColor("innerColor", Color.White);
+        innerColor = data.PackColor("innerColor", Color.White);
         innerColor.alpha = data.Float("innerAlpha", 0.3f);
-        borderColor = data.GetChroniaColor("borderColor", Color.White);
+        borderColor = data.PackColor("borderColor", Color.White);
         borderColor.alpha = data.Float("borderAlpha", 1f);
 
         attached = data.Bool("attached", false);

@@ -426,28 +426,28 @@ public static class ColorUtils
         }
     }
 
-    public static ChroniaColor GetChroniaColor(this Color color, float alpha = 1f)
+    public static ChroniaColor PackColor(this Color color, float alpha = 1f)
     {
         return new ChroniaColor(color, alpha);
     }
 
-    public static ChroniaColor GetChroniaColor(this string hex)
+    public static ChroniaColor PackColor(this string hex)
     {
         return new ChroniaColor(hex);
     }
     
-    public static ChroniaColor GetChroniaColor(this EntityData data, string colorAttributeName, string defaultColor = "ffffff")
+    public static ChroniaColor PackColor(this EntityData data, string colorAttributeName, string defaultColor = "ffffff")
     {
         return new ChroniaColor(data.Attr(colorAttributeName, defaultColor));
     }
 
-    public static ChroniaColor GetChroniaColor(this EntityData data, string colorAttributeName, Color defaultColor)
+    public static ChroniaColor PackColor(this EntityData data, string colorAttributeName, Color defaultColor)
     {
-        return data.GetChroniaColor(colorAttributeName, defaultColor.RgbaToHex());
+        return data.PackColor(colorAttributeName, defaultColor.RgbaToHex());
     }
     
-    public static ChroniaColor GetChroniaColor(this EntityData data, string colorAttributeName, ChroniaColor defaultColor)
+    public static ChroniaColor PackColor(this EntityData data, string colorAttributeName, ChroniaColor defaultColor)
     {
-        return data.GetChroniaColor(colorAttributeName, defaultColor.Parsed());
+        return data.PackColor(colorAttributeName, defaultColor.Parsed());
     }
 }
