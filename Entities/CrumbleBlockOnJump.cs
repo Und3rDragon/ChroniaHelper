@@ -1,5 +1,7 @@
 ﻿using Celeste.Mod.Entities;
+using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System.Collections;
@@ -16,8 +18,6 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
     private bool permanent;
     private bool destroyStaticMovers;
     private bool createDebris;
-    private EntityID id;
-
     public CrumbleBlockOnJump(EntityData data, Vector2 offset, EntityID id)
         : base(data, offset, false)
     {
@@ -141,7 +141,7 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
         }
 
         if (permanent)
-            SceneAs<Level>().Session.DoNotLoad.Add(id);
+            SceneAs<Level>().Session.DoNotLoad.Add(SourceId);
 
         if (destroyStaticMovers)
             DestroyStaticMovers();
@@ -149,13 +149,22 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
         RemoveSelf();
     }
 
+    private DataPack<bool> JumpPressed = new(null, false), BreakCondition = new(null, false);
     private IEnumerator Sequence()
     {
         while (!Triggered && !HasPlayerRider() && (!triggerOnLean || Input.MoveX == 0 || !CollideCheck<Player>(Position - Input.MoveX * Vector2.UnitX)))
             yield return null;
 
         for (float time = 0f; time < delay; time += Engine.DeltaTime)
+        {
+            JumpPressed.SetValue(Input.Jump.Pressed);
+            BreakCondition.SetValue(HasPlayerRider() || CollideCheck<Player>(Position - Input.MoveX * Vector2.UnitX));
+            if (JumpPressed.Value && BreakCondition._Value)
+            {
+                break;
+            }
             yield return null;
+        }
 
         Break();
     }
