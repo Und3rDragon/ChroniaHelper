@@ -701,7 +701,7 @@ entities.ChroniaHelper/CustomBoosterXML.attributes.description..keepPlayerSpeed=
 
 # ================= Custom Glider
 
-entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Glider
+entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Jellyfish
 entities.ChroniaHelper/CustomGlider.attributes.description.Directory=The folder path of your sprite files\nThe sprites should contain: "idle", "held", "fall", "fallLoop" and "death" animations
 entities.ChroniaHelper/CustomGlider.attributes.description.hitboxParameters=A series of numbers representing\nHitbox Width, Hitbox Height, Hitbox X, and Hitbox Y
 entities.ChroniaHelper/CustomGlider.attributes.description.holdableParameters=A series of nmbers representing\nHoldable Hitbox Width, Holdable Hitbox Height,\nHoldable Hitbox X, and Holdable Hitbox Y
@@ -1800,3 +1800,7 @@ triggers.T8MC/EventVolumeFadeTrigger.placements.name.trigger=Event Volume Fade
 # ========================== Level Data To Session Controller
 
 entities.ChroniaHelper/LevelDataToSessionController.placements.name.controller=Level Data To Session Controller
+
+# ========================== Crumble Block On Jump
+
+entities.ChroniaHelper/CrumbleBlockOnJump.placements.name.default=Crumble Block On Jump (Groupped)
