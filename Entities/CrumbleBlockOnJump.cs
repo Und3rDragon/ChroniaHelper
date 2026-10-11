@@ -1,17 +1,94 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System.Collections;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/CrumbleBlockOnJump"), Tracked]
 public class CrumbleBlockOnJump : GroupedBaseSolid
 {
+    /// <summary>
+    /// 跳跃类钩子：玩家起跳离开方块的那一瞬间，立刻打断倒计时并让整组破碎。
+    /// </summary>
+    [SelectiveLoadHook]
+    public static void Load()
+    {
+        On.Celeste.Player.Jump += Player_Jump;
+        On.Celeste.Player.SuperJump += Player_SuperJump;
+        On.Celeste.Player.WallJump += Player_WallJump;
+        On.Celeste.Player.ClimbJump += Player_ClimbJump;
+        On.Celeste.Player.SuperWallJump += Player_SuperWallJump;
+    }
+
+    [SelectiveUnloadHook]
+    public static void Unload()
+    {
+        On.Celeste.Player.Jump -= Player_Jump;
+        On.Celeste.Player.SuperJump -= Player_SuperJump;
+        On.Celeste.Player.WallJump -= Player_WallJump;
+        On.Celeste.Player.ClimbJump -= Player_ClimbJump;
+        On.Celeste.Player.SuperWallJump -= Player_SuperWallJump;
+    }
+
+    /// <summary>
+    /// 玩家当前重力方向（重力翻转时为向上）。
+    /// </summary>
+    private static Vector2 GravityDirection => APIGravityHelper.playerInverted ? -Vector2.UnitY : Vector2.UnitY;
+
+    /// <summary>
+    /// 找出紧贴玩家、位于指定方向上的方块，并让整组立刻破碎。
+    /// </summary>
+    private static void BreakNearby(Player player, Vector2 dir)
+    {
+        if (player.CollideFirst<CrumbleBlockOnJump>(player.Position + dir) is { } block)
+        {
+            (block.master as CrumbleBlockOnJump)?.BreakAll();
+        }
+    }
+
+    private static void Player_Jump(On.Celeste.Player.orig_Jump orig, Player self, bool particles, bool playsfx)
+    {
+        orig(self, particles, playsfx);
+        BreakNearby(self, GravityDirection);
+    }
+
+    private static void Player_SuperJump(On.Celeste.Player.orig_SuperJump orig, Player self)
+    {
+        orig(self);
+        BreakNearby(self, GravityDirection);
+    }
+
+    private static void Player_WallJump(On.Celeste.Player.orig_WallJump orig, Player self, int dir)
+    {
+        orig(self, dir);
+        BreakNearby(self, -3 * dir * Vector2.UnitX);
+    }
+
+    private static void Player_ClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self)
+    {
+        orig(self);
+
+        int dir = (int)Input.MoveX;
+        if (dir == 0)
+        {
+            dir = (int)self.Facing;
+        }
+
+        BreakNearby(self, 3 * dir * Vector2.UnitX);
+    }
+
+    private static void Player_SuperWallJump(On.Celeste.Player.orig_SuperWallJump orig, Player self, int dir)
+    {
+        orig(self, dir);
+        BreakNearby(self, -5 * dir * Vector2.UnitX);
+    }
+
     private float delay;
     private string breakSound;
     private bool triggerOnLean;
@@ -21,6 +98,8 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
     public CrumbleBlockOnJump(EntityData data, Vector2 offset, EntityID id)
         : base(data, offset, false)
     {
+        Ldm.LoadHookWithMethod(typeof(CrumbleBlockOnJump), Load);
+
         delay = data.Float("delay");
         tileType = data.Char("tiletype", '3');
         breakSound = data.Attr("breakSound", SFX.game_10_quake_rockbreak);
@@ -37,21 +116,26 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
 
         Add(new LightOcclude());
 
-        if(data.Bool("triggerFromBottom", false))
+        triggerFromBottom = data.Bool("triggerFromBottom", false);
+        if (triggerFromBottom)
         {
-            standaloneCollider = new(CollideBottom,
-            new Hitbox(Width, 2f, 0f, Height));
-            Add(standaloneCollider);
+            listener = new(CollideBottom,
+            new Hitbox(Width, 4f, 0f, Height));
+            Add(listener);
         }
 
         autoGroupping = data.Bool("autoGroupping", true);
     }
+    private bool triggerFromBottom;
     private bool autoGroupping;
-    private PlayerCollider standaloneCollider;
+    private PlayerCollider listener;
 
-    private void CollideBottom(Player player)
+    private void CollideBottom(Player p)
     {
-        Trigger();
+        if(p.Speed.Y >= 0f && Input.Jump.Pressed)
+        {
+            (master as CrumbleBlockOnJump).BreakAll();
+        }
     }
 
     public override void Awake(Scene scene)
@@ -118,7 +202,7 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
         }
     }
 
-    //public override void OnStaticMoverTrigger(StaticMover sm) => Triggered = true;
+    public override void OnStaticMoverTrigger(StaticMover sm) => TriggerAll();
 
     public void Break()
     {
@@ -149,7 +233,6 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
         RemoveSelf();
     }
 
-    private DataPack<bool> JumpPressed = new(null, false), BreakCondition = new(null, false);
     private IEnumerator Sequence()
     {
         while (!Triggered && !HasPlayerRider() && (!triggerOnLean || Input.MoveX == 0 || !CollideCheck<Player>(Position - Input.MoveX * Vector2.UnitX)))
@@ -157,15 +240,21 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
 
         for (float time = 0f; time < delay; time += Engine.DeltaTime)
         {
-            JumpPressed.SetValue(Input.Jump.Pressed);
-            BreakCondition.SetValue(HasPlayerRider() || CollideCheck<Player>(Position - Input.MoveX * Vector2.UnitX));
-            if (JumpPressed.Value && BreakCondition._Value)
-            {
-                break;
-            }
             yield return null;
         }
 
-        Break();
+        (master as CrumbleBlockOnJump).BreakAll();
+    }
+
+    private bool breaking = false;
+    private void BreakAll()
+    {
+        if (breaking) { return; }
+
+        breaking = true;
+        foreach(CrumbleBlockOnJump j in Group)
+        {
+            j.Break();
+        }
     }
 }

@@ -297,6 +297,14 @@ public class GroupedBaseSolid : Solid
             master.Triggered = true;
         }
     }
+
+    public void TriggerAll()
+    {
+        foreach(var i in Group)
+        {
+            i.Triggered = true;
+        }
+    }
     
     public void AddToGroupAndFindChildren()
     {
@@ -436,14 +444,7 @@ public class GroupedBaseSolid : Solid
 
     public override void OnStaticMoverTrigger(StaticMover sm)
     {
-        if (MasterOfGroup)
-        {
-            Triggered = true;
-        }
-        else
-        {
-            master.Triggered = true;
-        }
+        Trigger();
     }
 
     public override void OnShake(Vector2 amount)
