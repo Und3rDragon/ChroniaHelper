@@ -267,7 +267,7 @@ public class ColoredCustomCoreMessage : Entity
     {
         if (useSE && Md.FrostHelperLoaded)
         {
-            fLine = se.getIntSessionExpressionValue();
+            fLine = se != null ? se.getIntSessionExpressionValue() : 0;
             if (fLine != line)
             {
                 line = fLine;

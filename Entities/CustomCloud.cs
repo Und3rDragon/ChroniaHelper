@@ -35,7 +35,7 @@ public class CustomCloud : JumpThru
         timer = Rd.Random.NextFloat() * 4f;
         Add(wiggler = Wiggler.Create(0.3f, 4f));
         particleType = (fragile ? new(Cloud.P_FragileCloud) : new(Cloud.P_Cloud));
-        particleType.Color = data.GetChroniaColor("particleColor", particleType.Color).Parsed();
+        particleType.Color = data.PackColor("particleColor", particleType.Color).Parsed();
         SurfaceSoundIndex = data.Int("soundIndex", 4);
         Add(new LightOcclude(data.Float("lightOcclude", 0.2f)));
         origScale = scale = data.Vector2("scaleX", "scaleY", Vc2.One);

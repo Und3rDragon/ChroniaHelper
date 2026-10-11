@@ -35,7 +35,7 @@ public class CustomShield : BaseEntity
         Add(bloom = new BloomPoint(bloomAlpha.Value, bloomRadius.Value.GetAbs()));
 
         lightFlag = data.Attr("lightFlag", "lightOn");
-        lightColor = data.GetChroniaColor("lightColor", Color.White);
+        lightColor = data.PackColor("lightColor", Color.White);
         lightAlpha = data.Slider("lightAlpha", 1f, new(0f, 1f));
         lightStartFade = data.Slider("lightStartFade", 16f);
         lightEndFade = data.Slider("lightEndFade", 48f);
@@ -52,7 +52,7 @@ public class CustomShield : BaseEntity
         moveWiggle.StartZero = true;
         Add(moveWiggle);
 
-        color = data.GetChroniaColor("color", Color.White);
+        color = data.PackColor("color", Color.White);
         horizontalMult = data.Slider("horizontalSpeedMultiplier", 1.2f);
     }
     private string radius;

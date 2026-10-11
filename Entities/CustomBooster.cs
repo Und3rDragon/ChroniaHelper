@@ -399,7 +399,7 @@ public class CustomBooster : Booster
 
         if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("RefillStamina")))
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed IL Hook for Booster.BoostBegin (RefillStamina)");
+            Log.Error($"Failed IL Hook for Booster.BoostBegin (RefillStamina)");
             return;
         }
 
@@ -407,7 +407,7 @@ public class CustomBooster : Booster
 
         if (!cursor.TryGotoPrev(MoveType.AfterLabel, instr => instr.MatchCallvirt<Player>("RefillDash")))
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Failed IL Hook for Booster.BoostBegin (RefillDash)");
+            Log.Error($"Failed IL Hook for Booster.BoostBegin (RefillDash)");
             return;
         }
 

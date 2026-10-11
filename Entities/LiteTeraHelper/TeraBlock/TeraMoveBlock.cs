@@ -2,6 +2,7 @@
 using System.Reflection;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -77,7 +78,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Solid>("HasPlayerRider")))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on zip mover activate at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on zip mover activate at {cursor.Index} in IL for {cursor.Method.Name}");
                 ILLabel label = null;
                 cursor.GotoNext(MoveType.After, instr => instr.MatchBrfalse(out label));
                 cursor.Emit(OpCodes.Ldloc_1);
@@ -87,7 +88,7 @@ namespace ChroniaHelper.Entities
             cursor.Index = 0;
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(60f) || instr.MatchLdcR4(75f)))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on zip mover speed at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on zip mover speed at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldloc_1);
                 cursor.EmitDelegate(GetSpeedMultipler);
                 cursor.Emit(OpCodes.Mul);

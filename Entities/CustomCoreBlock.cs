@@ -207,10 +207,10 @@ public class CustomCoreBlock : Solid
         iceRubblePath = data.Attr("iceRubbleTexture", "objects/BumpBlockNew/ice_rubble");
         fireRubblePath = data.Attr("fireRubbleTexture", "objects/BumpBlockNew/fire_rubble");
         
-        iceBreak = new(data.Attr("iceBreakParticleColor").IsNullOrEmpty(), data.GetChroniaColor("iceBreakParticleColor"));
-        fireBreak = new(data.Attr("fireBreakParticleColor").IsNullOrEmpty(), data.GetChroniaColor("fireBreakParticleColor"));
-        iceRespawn = new(data.Attr("iceRespawnParticleColor").IsNullOrEmpty(), data.GetChroniaColor("iceRespawnParticleColor"));
-        fireRespawn = new(data.Attr("fireRespawnParticleColor").IsNullOrEmpty(), data.GetChroniaColor("fireRespawnParticleColor"));
+        iceBreak = new(data.Attr("iceBreakParticleColor").IsNullOrEmpty(), data.PackColor("iceBreakParticleColor"));
+        fireBreak = new(data.Attr("fireBreakParticleColor").IsNullOrEmpty(), data.PackColor("fireBreakParticleColor"));
+        iceRespawn = new(data.Attr("iceRespawnParticleColor").IsNullOrEmpty(), data.PackColor("iceRespawnParticleColor"));
+        fireRespawn = new(data.Attr("fireRespawnParticleColor").IsNullOrEmpty(), data.PackColor("fireRespawnParticleColor"));
     }
     
     public CustomCoreBlock(EntityData data, Vector2 offset)

@@ -44,9 +44,9 @@ public class RefillWall : Refill
         }
         base.outline.Position = centerPosition;
         base.bloomPoint.Position = (base.vertexLight.Position = centerPosition);
-        this.borderColor = data.GetChroniaColor("borderColor", !base.twoDashes ? Refill.OneDashesParticleShatterColor : Refill.TwoDashesParticleShatterColor);
+        this.borderColor = data.PackColor("borderColor", !base.twoDashes ? Refill.OneDashesParticleShatterColor : Refill.TwoDashesParticleShatterColor);
         this.borderAlpha = data.Float("borderAlpha", 0.2F);
-        this.innerColor = data.GetChroniaColor("innerColor", !base.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleRegenAndGlowColor);
+        this.innerColor = data.PackColor("innerColor", !base.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor : Refill.TwoDashesParticleRegenAndGlowColor);
         this.innerAlpha = data.Float("innerAlpha", 0.1F);
         this.borderColor *= this.borderAlpha;
         this.innerColor *= this.innerAlpha;

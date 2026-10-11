@@ -2,6 +2,7 @@
 using System.Reflection;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -91,7 +92,7 @@ namespace ChroniaHelper.Entities
             //if HasPlayerRider && PlayerActivate
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall<Solid>("HasPlayerRider") || instr.MatchCall<Solid>("HasPlayerOnTop")))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on falling block check at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on falling block check at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.EmitDelegate(PlayerActivate);
                 cursor.Emit(OpCodes.And);
@@ -102,7 +103,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(130f) || instr.MatchLdcR4(160f)))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on falling block speed at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on falling block speed at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldloc_1);
                 cursor.EmitDelegate(GetSpeedMultipler);
                 cursor.Emit(OpCodes.Mul);
@@ -110,7 +111,7 @@ namespace ChroniaHelper.Entities
             cursor.Index = cursor.Instrs.Count - 1;
             if (cursor.TryGotoPrev(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue_S))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on falling block restart at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on falling block restart at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Index--;
                 cursor.Emit(OpCodes.Ldloc_1);
                 cursor.EmitDelegate(UnableToCrush);
@@ -139,7 +140,7 @@ namespace ChroniaHelper.Entities
                 if (cursor.TryGotoPrev(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_S && (((VariableDefinition)instr.Operand).Index == 5)))
                 {
                     VariableDefinition variable = (VariableDefinition)cursor.Prev.Operand;
-                    Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on kevin trigger falling block at {cursor.Index} in IL for {cursor.Method.Name}");
+                    Log.Info($"Injecting code to apply tera effect on kevin trigger falling block at {cursor.Index} in IL for {cursor.Method.Name}");
                     cursor.Goto(current);
                     cursor.Emit(OpCodes.Ldloc_S, variable);
                     cursor.Emit(OpCodes.Ldloc_1);

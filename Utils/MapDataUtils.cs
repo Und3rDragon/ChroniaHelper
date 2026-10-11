@@ -444,7 +444,7 @@ public static class MapDataUtils
             }
         }
 
-        return data.Attr(tag, _fallback.Parsed().RgbaToHex()).GetChroniaColor();
+        return data.Attr(tag, _fallback.Parsed().RgbaToHex()).PackColor();
     }
     
     public static List<T> List<T>(this EntityData data, string tag, Func<string, T> convert, 

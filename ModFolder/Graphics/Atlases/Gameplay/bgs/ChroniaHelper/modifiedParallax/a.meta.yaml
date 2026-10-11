@@ -110,3 +110,8 @@ TextureIndexFlag:
 # OverrideScale: a slider name or a value
 # WARNING: USE THIS WITH CAUTION
 # OverrideScale: bgScale
+
+# ExpressionType, define the expressions type used in this file, by default 0
+# ChroniaHelper math expression as 0
+# FrostHelper Session Expression as 1
+ExpressionType: 0

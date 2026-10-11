@@ -28,7 +28,7 @@ public class RealTimeRenderer : SerialImageRendererRaw
         image.origin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("positionAlign", 5)];
         image.segmentOrigin = AlignUtils.AlignToJustify[(AlignUtils.Aligns)d.Int("segmentAlign", 5)];
         image.distance = d.Float("segmentDistance", 4f);
-        image.color = d.GetChroniaColor("rendererColor", Color.White);
+        image.color = d.PackColor("rendererColor", Color.White);
         d.Attr("segmentOffset").Split(';', StringSplitOptions.TrimEntries).ApplyTo(out string[] _segOffset);
         foreach (var s in _segOffset)
         {

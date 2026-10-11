@@ -36,6 +36,7 @@ public class GroupedBaseSolid : Solid
     public GroupedBaseSolid master;
     public TileGrid grid;
     public bool bgTexture = false;
+    public bool blendIn = false;
 
     public override void Awake(Scene scene)
     {
@@ -86,6 +87,16 @@ public class GroupedBaseSolid : Solid
                 EdgesIgnoreOutOfLevel = false,
                 PaddingIgnoreOutOfLevel = false,
             };
+
+            if (blendIn)
+            {
+                tilingBehaviour = new()
+                {
+                    EdgesExtend = true,
+                    EdgesIgnoreOutOfLevel = true,
+                    PaddingIgnoreOutOfLevel = true,
+                };
+            }
             grid = bgTexture
                 ? GFX.BGAutotiler.GenerateMap(charMap, tilingBehaviour).TileGrid
                 : GFX.FGAutotiler.GenerateMap(charMap, tilingBehaviour).TileGrid;

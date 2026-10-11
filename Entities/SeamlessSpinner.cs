@@ -260,8 +260,8 @@ public class SeamlessSpinner : Entity
             Add(new BloomPoint(Collidable ? Collider.Center : Position + new Vector2(8f, 8f), bloomAlpha, data.Float("bloomRadius")));
         }
 
-        spriteColor = data.GetChroniaColor("colorOverlay", "ffffff");
-        bgSpriteColor = string.IsNullOrEmpty(data.Attr("bgColorOverlay")) ? spriteColor : data.GetChroniaColor("bgColorOverlay", "ffffff");
+        spriteColor = data.PackColor("colorOverlay", "ffffff");
+        bgSpriteColor = string.IsNullOrEmpty(data.Attr("bgColorOverlay")) ? spriteColor : data.PackColor("bgColorOverlay", "ffffff");
 
         noBorder = data.Bool("noBorder");
 

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Imports;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
 using ChroniaHelper.Utils.MathExpression;
@@ -28,7 +29,7 @@ public static class ModifiedParallaxUtils
         ILCursor cursor = new ILCursor(il);
         while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchNewobj(typeof(Parallax))))
         {
-            Logger.Log("ChroniaHelper Modification: MaxHelpingHand/AnimatedParallax", $"Handling animated parallaxes at {cursor.Index} in IL for MapData.ParseBackdrop");
+            Log.Info($"[ChroniaHelper Modification: MaxHelpingHand/AnimatedParallax]Handling animated parallaxes at {cursor.Index} in IL for MapData.ParseBackdrop");
 
             cursor.EmitDelegate<Func<Parallax, Parallax>>(orig => {
                 // This part is for avoiding conflict with Maddie's Anim Parallax
@@ -72,6 +73,7 @@ public class ParallaxMeta
     public string OverrideScrollX { get; set; } = null;
     public string OverrideScrollY { get; set; } = null;
     public string OverrideScale { get; set; } = null;
+    public int? ExpressionType { get; set; } = null;
 }
 
 [Credits("Maddie for Maddie's Helping Hand codes")]
@@ -101,6 +103,10 @@ public class ModifiedAnimatedParallax : Parallax
     private string deltaPosX = null, deltaPosY = null;
     private string overrideScrollX = null, overrideScrollY = null;
     private string overrideScale = null;
+    /// <summary>
+    /// Chronia Expression as 0, Frost Session Expression as 1
+    /// </summary>
+    private int expressionType = 0;
 
     public ModifiedAnimatedParallax(MTexture texture) : base(texture)
     {
@@ -235,6 +241,11 @@ public class ModifiedAnimatedParallax : Parallax
             {
                 overrideScale = meta.OverrideScale;
             }
+
+            if(meta.ExpressionType != null)
+            {
+                expressionType = meta.ExpressionType.Value;
+            }
         }
         
         AnalyzeIndexFlags();
@@ -308,28 +319,70 @@ public class ModifiedAnimatedParallax : Parallax
         // override speed and position first
         if (overridePositionX.HasValidContent())
         {
-            Position.X = overridePositionX.GetSlider();
+            if (expressionType == 1 && overridePositionX.tryCreateSessionExpression(out var exp))
+            {
+                Position.X = exp.getFloatSessionExpressionValue();
+            }
+            else if(expressionType == 0)
+            {
+                Position.X = overridePositionX.ParseMathExpression();
+            }
         }
         if (overridePositionY.HasValidContent())
         {
-            Position.Y = overridePositionY.GetSlider();
+            if (expressionType == 1 && overridePositionY.tryCreateSessionExpression(out var exp))
+            {
+                Position.Y = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Position.Y = overridePositionY.ParseMathExpression();
+            }
         }
         if (overrideSpeedX.HasValidContent())
         {
-            Speed.X = overrideSpeedX.GetSlider();
+            if (expressionType == 1 && overrideSpeedX.tryCreateSessionExpression(out var exp))
+            {
+                Speed.X = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Speed.X = overrideSpeedX.ParseMathExpression();
+            }
         }
         if (overrideSpeedY.HasValidContent())
         {
-            Speed.Y = overrideSpeedY.GetSlider();
+            if (expressionType == 1 && overrideSpeedY.tryCreateSessionExpression(out var exp))
+            {
+                Speed.Y = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Speed.Y = overrideSpeedY.ParseMathExpression();
+            }
         }
 
         if (overrideScrollX.HasValidContent())
         {
-            Scroll.X = overrideScrollX.GetSlider();
+            if (expressionType == 1 && overrideScrollX.tryCreateSessionExpression(out var exp))
+            {
+                Scroll.X = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Scroll.X = overrideScrollX.ParseMathExpression();
+            }
         }
         if (overrideScrollY.HasValidContent())
         {
-            Scroll.Y = overrideScrollY.GetSlider();
+            if (expressionType == 1 && overrideScrollY.tryCreateSessionExpression(out var exp))
+            {
+                Scroll.Y = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Scroll.Y = overrideScrollY.ParseMathExpression();
+            }
         }
 
         // bugfix: setting new position
@@ -337,11 +390,25 @@ public class ModifiedAnimatedParallax : Parallax
 
         if (deltaPosX.HasValidContent())
         {
-            Position.X += deltaPosX.GetSlider();
+            if (expressionType == 1 && deltaPosX.tryCreateSessionExpression(out var exp))
+            {
+                Position.X += exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Position.X += deltaPosX.ParseMathExpression();
+            }
         }
         if (deltaPosY.HasValidContent())
         {
-            Position.Y += deltaPosY.GetSlider();
+            if (expressionType == 1 && deltaPosY.tryCreateSessionExpression(out var exp))
+            {
+                Position.Y += exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Position.Y += deltaPosY.ParseMathExpression();
+            }
         }
 
         if (!resetFlag.IsNullOrEmpty())
@@ -355,7 +422,14 @@ public class ModifiedAnimatedParallax : Parallax
         
         if (alphaExpression != null)
         {
-            Alpha = alphaExpression.ParseMathExpression();
+            if (expressionType == 1 && alphaExpression.tryCreateSessionExpression(out var exp))
+            {
+                Alpha = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Alpha = alphaExpression.ParseMathExpression();
+            }
         }
         
         if (!IsVisible(scene as Level))
@@ -367,13 +441,13 @@ public class ModifiedAnimatedParallax : Parallax
 
         if(overrideScale.HasValidContent())
         {
-            if(float.TryParse(overrideScale, out float f))
+            if (expressionType == 1 && overrideScale.tryCreateSessionExpression(out var exp))
             {
-                scale = f;
+                scale = exp.getFloatSessionExpressionValue();
             }
-            else
+            else if (expressionType == 0)
             {
-                scale = overrideScale.GetSlider();
+                scale = overrideScale.ParseMathExpression();
             }
         }
 
@@ -474,6 +548,10 @@ public class ModifiedStaticParallax : Parallax
     private string deltaPosX = null, deltaPosY = null;
     private string overrideScrollX = null, overrideScrollY = null;
     private string overrideScale = null;
+    /// <summary>
+    /// Chronia Expression as 0, Frost Session Expression as 1
+    /// </summary>
+    private int expressionType = 0;
 
     public ModifiedStaticParallax(MTexture texture) : base(texture)
     {
@@ -538,6 +616,11 @@ public class ModifiedStaticParallax : Parallax
             {
                 overrideScale = meta.OverrideScale;
             }
+
+            if (meta.ExpressionType != null)
+            {
+                expressionType = meta.ExpressionType.Value;
+            }
         }
     }
 
@@ -554,28 +637,70 @@ public class ModifiedStaticParallax : Parallax
         // override speed and position first
         if (overridePositionX.HasValidContent())
         {
-            Position.X = overridePositionX.GetSlider();
+            if (expressionType == 1 && overridePositionX.tryCreateSessionExpression(out var exp))
+            {
+                Position.X = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Position.X = overridePositionX.ParseMathExpression();
+            }
         }
         if (overridePositionY.HasValidContent())
         {
-            Position.Y = overridePositionY.GetSlider();
+            if (expressionType == 1 && overridePositionY.tryCreateSessionExpression(out var exp))
+            {
+                Position.Y = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Position.Y = overridePositionY.ParseMathExpression();
+            }
         }
         if (overrideSpeedX.HasValidContent())
         {
-            Speed.X = overrideSpeedX.GetSlider();
+            if (expressionType == 1 && overrideSpeedX.tryCreateSessionExpression(out var exp))
+            {
+                Speed.X = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Speed.X = overrideSpeedX.ParseMathExpression();
+            }
         }
         if (overrideSpeedY.HasValidContent())
         {
-            Speed.Y = overrideSpeedY.GetSlider();
+            if (expressionType == 1 && overrideSpeedY.tryCreateSessionExpression(out var exp))
+            {
+                Speed.Y = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Speed.Y = overrideSpeedY.ParseMathExpression();
+            }
         }
 
         if (overrideScrollX.HasValidContent())
         {
-            Scroll.X = overrideScrollX.GetSlider();
+            if (expressionType == 1 && overrideScrollX.tryCreateSessionExpression(out var exp))
+            {
+                Scroll.X = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Scroll.X = overrideScrollX.ParseMathExpression();
+            }
         }
         if (overrideScrollY.HasValidContent())
         {
-            Scroll.Y = overrideScrollY.GetSlider();
+            if (expressionType == 1 && overrideScrollY.tryCreateSessionExpression(out var exp))
+            {
+                Scroll.Y = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Scroll.Y = overrideScrollY.ParseMathExpression();
+            }
         }
 
         // bugfix: setting new position
@@ -583,16 +708,37 @@ public class ModifiedStaticParallax : Parallax
 
         if (deltaPosX.HasValidContent())
         {
-            Position.X += deltaPosX.GetSlider();
+            if (expressionType == 1 && deltaPosX.tryCreateSessionExpression(out var exp))
+            {
+                Position.X += exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Position.X += deltaPosX.ParseMathExpression();
+            }
         }
         if (deltaPosY.HasValidContent())
         {
-            Position.Y += deltaPosY.GetSlider();
+            if (expressionType == 1 && deltaPosY.tryCreateSessionExpression(out var exp))
+            {
+                Position.Y += exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Position.Y += deltaPosY.ParseMathExpression();
+            }
         }
 
         if (alphaExpression != null)
         {
-            Alpha = alphaExpression.ParseMathExpression();
+            if (expressionType == 1 && alphaExpression.tryCreateSessionExpression(out var exp))
+            {
+                Alpha = exp.getFloatSessionExpressionValue();
+            }
+            else if (expressionType == 0)
+            {
+                Alpha = alphaExpression.ParseMathExpression();
+            }
         }
         
         if (!IsVisible(scene as Level))
@@ -604,13 +750,13 @@ public class ModifiedStaticParallax : Parallax
 
         if(overrideScale.HasValidContent())
         {
-            if(float.TryParse(overrideScale, out float f))
+            if (expressionType == 1 && overrideScale.tryCreateSessionExpression(out var exp))
             {
-                scale = f;
+                scale = exp.getFloatSessionExpressionValue();
             }
-            else
+            else if (expressionType == 0)
             {
-                scale = overrideScale.GetSlider();
+                scale = overrideScale.ParseMathExpression();
             }
         }
     }

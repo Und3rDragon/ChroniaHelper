@@ -2,6 +2,7 @@
 using System.Reflection;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -63,7 +64,7 @@ namespace ChroniaHelper.Entities
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(240f) || instr.MatchLdcR4(60f)))
             {
-                Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on kevin block speed at {cursor.Index} in IL for {cursor.Method.Name}");
+                Log.Info($"Injecting code to apply tera effect on kevin block speed at {cursor.Index} in IL for {cursor.Method.Name}");
                 cursor.Emit(OpCodes.Ldloc_1);
                 cursor.EmitDelegate(GetSpeedMultipler);
                 cursor.Emit(OpCodes.Mul);

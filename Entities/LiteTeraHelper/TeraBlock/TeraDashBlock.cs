@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices.ComTypes;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using ChroniaHelper.Cores.LiteTeraHelper;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -78,7 +79,7 @@ namespace ChroniaHelper.Entities
                 if (cursor.TryGotoPrev(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_S && (((VariableDefinition)instr.Operand).Index == 5)))
                 {
                     VariableDefinition variable = (VariableDefinition)cursor.Prev.Operand;
-                    Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on kevin crush dash block H at {cursor.Index} in IL for {cursor.Method.Name}");
+                    Log.Info($"Injecting code to apply tera effect on kevin crush dash block H at {cursor.Index} in IL for {cursor.Method.Name}");
                     cursor.Goto(current);
                     cursor.Emit(OpCodes.Ldloc_S, variable);
                     cursor.Emit(OpCodes.Ldarg_0);
@@ -98,7 +99,7 @@ namespace ChroniaHelper.Entities
                 if (cursor.TryGotoPrev(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_S && (((VariableDefinition)instr.Operand).Index == 5)))
                 {
                     VariableDefinition variable = (VariableDefinition)cursor.Prev.Operand;
-                    Logger.Log(nameof(ChroniaHelperModule), $"Injecting code to apply tera effect on kevin crush dash block V at {cursor.Index} in IL for {cursor.Method.Name}");
+                    Log.Info($"Injecting code to apply tera effect on kevin crush dash block V at {cursor.Index} in IL for {cursor.Method.Name}");
                     cursor.Goto(current);
                     cursor.Emit(OpCodes.Ldloc_S, variable);
                     cursor.Emit(OpCodes.Ldarg_0);

@@ -25,7 +25,7 @@ public class FntDisplayZone : SerialImageRenderer
         template.origin = new Vc2(d.Float("lineOriginX", 0.5f), d.Float("lineOriginY", 0.5f));
         template.segmentOrigin = new Vc2(d.Float("letterOriginX", 0f), d.Float("letterOriginY", 0f));
         template.distance = d.Float("letterDistance", 1f);
-        template.color = d.GetChroniaColor("fontColor", Color.White);
+        template.color = d.PackColor("fontColor", Color.White);
         primaryAlpha = template.color.alpha;
         template.color.alpha = 0f;
 

@@ -70,7 +70,7 @@ public class CustomTheoCrystal : TheoCrystal
         }
 
         vertexLightOffset = data.Vector2("vertexLightOffsetX", "vertexLightOffsetY", Vc2.Zero);
-        CColor hexLightColor = data.GetChroniaColor("hexLightColor", Color.White);
+        CColor hexLightColor = data.PackColor("hexLightColor", Color.White);
         this.Add((Component) new VertexLight(this.Collider.Center + vertexLightOffset, 
             hexLightColor.color, hexLightColor.alpha, 
             data.Int("vertexLightStartFade", 32),

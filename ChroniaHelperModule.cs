@@ -57,7 +57,7 @@ public class ChroniaHelperModule : EverestModule
 
     public static bool InstanceReady => Session != null && SaveData != null;
 
-    public static bool FrostHelperLoaded => CheckDependency("FrostHelper", "1.70.2");
+    public static bool FrostHelperLoaded => CheckDependency("FrostHelper", "1.81.0");
     public static bool CommunalHelperLoaded => CheckDependency("CommunalHelper", "1.23.0");
     public static bool MaddieLoaded => CheckDependency("MaxHelpingHand", "1.38.0");
     public static bool XaphanHelperLoaded => CheckDependency("XaphanHelper", "1.0.78");
@@ -182,12 +182,12 @@ public class ChroniaHelperModule : EverestModule
     {
         try
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", "Emergency save due to crash...");
+            Log.Error("Emergency save due to crash...");
             GlobalData?.SaveAll();
         }
         catch (Exception ex)
         {
-            Logger.Log(LogLevel.Error, "ChroniaHelper", $"Emergency save failed: {ex}");
+            Log.Error($"Emergency save failed: {ex}");
         }
     }
 

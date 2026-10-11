@@ -237,7 +237,7 @@ public class Refill : Entity
         this.connectTag = data.Attr("connectedTag");
         this.twoDashes = data.Bool("twoDashes", false);
         this.spritePath = data.Attr("sprite", null);
-        this.spriteColor = data.GetChroniaColor("spriteColor");
+        this.spriteColor = data.PackColor("spriteColor");
         this.respawnTime = data.Float("respawnTime", 2.5F);
         if (this.respawnTime <= 0)
         {
@@ -273,16 +273,16 @@ public class Refill : Entity
         }
         this.touchSound = !string.IsNullOrWhiteSpace(data.Attr("touchSound", null)) ? data.Attr("touchSound") : (!this.twoDashes ? Refill.RefillTouchSoundEvent : Refill.RefillTwoTouchSoundEvent);
         this.respawnSound = !string.IsNullOrWhiteSpace(data.Attr("respawnSound", null)) ? data.Attr("respawnSound") : (!this.twoDashes ? Refill.RefillRespawnSoundEvent : Refill.RefillTwoRespawnSoundEvent);
-        this.outlineColor = data.GetChroniaColor("outlineColor", "000000");
+        this.outlineColor = data.PackColor("outlineColor", "000000");
         this.outlineWidth = data.Int("outlineWidth", 1);
         this.bloomAlpha = data.Float("bloomAlpha", 0.8F);
         this.bloomRadius = data.Float("bloomRadius", 16F);
-        this.particleShatterColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor1", null)) ? data.Attr("particleShatterColor1").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleShatterColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
-        this.particleShatterColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor2", null)) ? data.Attr("particleShatterColor2").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleShatterColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
-        this.ParticleRegenColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor1", null)) ? data.Attr("particleRegenColor1").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
-        this.particleRegenColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor2", null)) ? data.Attr("particleRegenColor2").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
-        this.particleGlowColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor1", null)) ? data.Attr("particleGlowColor1").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
-        this.particleGlowColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor2", null)) ? data.Attr("particleGlowColor2").GetChroniaColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.GetChroniaColor() : Refill.TwoDashesParticleShatterColor.GetChroniaColor());
+        this.particleShatterColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor1", null)) ? data.Attr("particleShatterColor1").PackColor() : (!this.twoDashes ? Refill.OneDashesParticleShatterColor.PackColor() : Refill.TwoDashesParticleShatterColor.PackColor());
+        this.particleShatterColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleShatterColor2", null)) ? data.Attr("particleShatterColor2").PackColor() : (!this.twoDashes ? Refill.OneDashesParticleShatterColor.PackColor() : Refill.TwoDashesParticleShatterColor.PackColor());
+        this.ParticleRegenColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor1", null)) ? data.Attr("particleRegenColor1").PackColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.PackColor() : Refill.TwoDashesParticleShatterColor.PackColor());
+        this.particleRegenColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleRegenColor2", null)) ? data.Attr("particleRegenColor2").PackColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.PackColor() : Refill.TwoDashesParticleShatterColor.PackColor());
+        this.particleGlowColor1 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor1", null)) ? data.Attr("particleGlowColor1").PackColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.PackColor() : Refill.TwoDashesParticleShatterColor.PackColor());
+        this.particleGlowColor2 = !string.IsNullOrWhiteSpace(data.Attr("particleGlowColor2", null)) ? data.Attr("particleGlowColor2").PackColor() : (!this.twoDashes ? Refill.OneDashesParticleRegenAndGlowColor.PackColor() : Refill.TwoDashesParticleShatterColor.PackColor());
         this.waveFrequency = data.Float("waveFrequency", 0.6F);
         this.waveRadius = data.Float("waveRadius", 2F);
         this.waveMode = data.Enum<WaveMode>("waveMode", WaveMode.Vertical);

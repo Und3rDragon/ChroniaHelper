@@ -160,8 +160,8 @@ public class BezierZipmover : Solid
         returnTime = returnTime <= Engine.DeltaTime ? Engine.DeltaTime : returnTime;
         moveEase = EaseUtils.StringToEase(e.Attr("moveEase", "sinein"), Ease.SineIn);
         returnEase = EaseUtils.StringToEase(e.Attr("returnEase", "sinein"), Ease.SineIn);
-        baseColor = e.GetChroniaColor("baseColor", Color.Black);
-        ropeColor = e.GetChroniaColor("ropeColor", "663931");
+        baseColor = e.PackColor("baseColor", Color.Black);
+        ropeColor = e.PackColor("ropeColor", "663931");
         renderGap = e.Int("renderGap", 0);
         renderStyle = e.Int("renderStyle", 0);
         triggerFlag = e.Attr("triggerFlag");

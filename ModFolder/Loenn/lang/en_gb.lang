@@ -701,7 +701,7 @@ entities.ChroniaHelper/CustomBoosterXML.attributes.description..keepPlayerSpeed=
 
 # ================= Custom Glider
 
-entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Glider
+entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Jellyfish
 entities.ChroniaHelper/CustomGlider.attributes.description.Directory=The folder path of your sprite files\nThe sprites should contain: "idle", "held", "fall", "fallLoop" and "death" animations
 entities.ChroniaHelper/CustomGlider.attributes.description.hitboxParameters=A series of numbers representing\nHitbox Width, Hitbox Height, Hitbox X, and Hitbox Y
 entities.ChroniaHelper/CustomGlider.attributes.description.holdableParameters=A series of nmbers representing\nHoldable Hitbox Width, Holdable Hitbox Height,\nHoldable Hitbox X, and Holdable Hitbox Y
@@ -709,6 +709,15 @@ entities.ChroniaHelper/CustomGlider.attributes.description.XMLOverride=If enable
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedY=The maximum falling speed of the glider when there are no winds or else
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedX=After you throw the glider, the glider will decelerate on its Speed X\nAnd this option will set up the final Speed X of this glider
 entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedXMultiplier=If enabled, the value filled in "dropping speed x" will be a multiplier to the throwing speed\ninstead of a certain value
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderFastFall=Hold a Custom Glider and press down: the maximum falling speed (vanilla: 120)
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderWindUpFall=Hold a Custom Glider, press up while moving up with the wind: the falling speed (vanilla: -32, negative means going up)
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderSlowFall=Hold a Custom Glider and press up: the maximum falling speed (vanilla: 24)
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderMaxFall=Hold a Custom Glider without any input: the maximum falling speed (vanilla: 40)
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderWindMaxFall=Hold a Custom Glider while being lifted by the wind: the maximum falling speed (vanilla: 0, meaning hovering)
+entities.ChroniaHelper/CustomGlider.attributes.description.holdingMaxRun=Hold a Custom Glider and walk on the ground: the maximum horizontal speed (vanilla: 70).\nRequires the glider's "Slow Run" behavior
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderMaxRun=Hold a Custom Glider and move in mid-air: the maximum horizontal speed (vanilla: 108.000008)
+entities.ChroniaHelper/CustomGlider.attributes.description.holdingAccelerationMultiplier=Hold a Custom Glider in mid-air: the multiplier applied to the horizontal acceleration (vanilla: 0.5, meaning half acceleration)
+entities.ChroniaHelper/CustomGlider.attributes.description.holdingGravityMultiplier=Hold a Custom Glider: the multiplier applied to gravity, i.e. how fast the vertical speed approaches the target falling speed. It does not change the final falling speed itself (vanilla: 0.5, meaning half gravity)
 
 entities.ChroniaHelper/CustomGliderXML.placements.name.glider=Custom Glider (XML Sprite)
 entities.ChroniaHelper/CustomGliderXML.attributes.description.Directory=The XML tag in Sprites.xml
@@ -718,6 +727,15 @@ entities.ChroniaHelper/CustomGliderXML.attributes.description.XMLOverride=If ena
 entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedY=The maximum falling speed of the glider when there are no winds or else
 entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedX=After you throw the glider, the glider will decelerate on its Speed X\nAnd this option will set up the final Speed X of this glider
 entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedXMultiplier=If enabled, the value filled in "dropping speed x" will be a multiplier to the throwing speed\ninstead of a certain value
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderFastFall=Hold a Custom Glider and press down: the maximum falling speed (vanilla: 120)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderWindUpFall=Hold a Custom Glider, press up while moving up with the wind: the falling speed (vanilla: -32, negative means going up)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderSlowFall=Hold a Custom Glider and press up: the maximum falling speed (vanilla: 24)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderMaxFall=Hold a Custom Glider without any input: the maximum falling speed (vanilla: 40)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderWindMaxFall=Hold a Custom Glider while being lifted by the wind: the maximum falling speed (vanilla: 0, meaning hovering)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdingMaxRun=Hold a Custom Glider and walk on the ground: the maximum horizontal speed (vanilla: 70).\nRequires the glider's "Slow Run" behavior
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderMaxRun=Hold a Custom Glider and move in mid-air: the maximum horizontal speed (vanilla: 108.000008)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdingAccelerationMultiplier=Hold a Custom Glider in mid-air: the multiplier applied to the horizontal acceleration (vanilla: 0.5, meaning half acceleration)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdingGravityMultiplier=Hold a Custom Glider: the multiplier applied to gravity, i.e. how fast the vertical speed approaches the target falling speed. It does not change the final falling speed itself (vanilla: 0.5, meaning half gravity)
 
 # ================= Real Flag Switch
 
@@ -1774,3 +1792,15 @@ entities.ChroniaHelper/SliderWindController.placements.name.controller=Slider Wi
 entities.ChroniaHelper/SliderWindController.attributes.description.chroniaFlagLogicExpression=An expression using "&&" as "and", "||" as "or", and "()" for layering,\nany other symbols will be seen as flag names, for eg.:\n(flagA || flagB) && (flagC || (flagD && flagE))
 entities.ChroniaHelper/SliderWindController.attributes.description.chroniaMathExpession=For ChroniaHelper Chronia Expressions, the rules are as follows:\nThere are built-in words that represents a constant, like "pi", "e", etc.\nAny unrecognizable string will be treated as a Session.Slider value\nEg. "hahaha", "Undefined123", etc.\nYou can use normal algorithm symbols to connect different values.\nEg. "1+2", "someSlider-anotherSlider+25"\nYou can ONLY do the layering by using a bracket.\nEg. "(3+4)*mySlider-(27+3)*15"\nBy using a "{}", you can read flag values in game, true flags equal as 1, false flags equal as 0\nEg. "{myFlag}+({anotherFlag}-3)*17"\nYou can use "[]" to define a function, currently only a small amount of expressions are supported,\nlike "sin", "cos", "tan", "log", "pow", "sqrt" etc.\nEg. "8*sin[2*pow[t,2]]+4"
 entities.ChroniaHelper/SliderWindController.attributes.description.parameters=When mode is "On Interval", this field will be the interval \nWhen mode is "On Flags", enter a series of flags separated by comma \nFlag begins with "!" is inverted
+
+# ========================== Event Volume Fade
+
+triggers.T8MC/EventVolumeFadeTrigger.placements.name.trigger=Event Volume Fade
+
+# ========================== Level Data To Session Controller
+
+entities.ChroniaHelper/LevelDataToSessionController.placements.name.controller=Level Data To Session Controller
+
+# ========================== Crumble Block On Jump
+
+entities.ChroniaHelper/CrumbleBlockOnJump.placements.name.default=Crumble Block On Jump (Groupped)
