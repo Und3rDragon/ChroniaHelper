@@ -1,0 +1,45 @@
+local lineConnector = {}
+
+lineConnector.name = "ChroniaHelper/LineConnector"
+lineConnector.nodeLimits = { 1, 1 }
+lineConnector.nodeLineRenderType = "line"
+lineConnector.nodeVisibility = "always"
+
+lineConnector.fieldInformation = {
+    color = { 
+        fieldType = "color",
+    },
+    depth = { 
+        fieldType = "integer",
+    }
+}
+
+lineConnector.placements = {
+    name = "connector",
+    type = "line",
+    data = {
+        color = "4DA6FF",
+        thickness = 2.0,
+        dashed = false,
+        dashLength = 8.0,
+        gapLength = 6.0,
+        depth = 99
+    }
+}
+
+lineConnector.sprite = function(room, entity)
+    return require("structs.drawable_line").fromPoints({entity.x, entity.y, entity.nodes[1].x, entity.nodes[1].y}, HexToColor(entity.color), entity.thickness)
+end
+
+lineConnector.selection = function(room, entity)
+    local main = require("utils").rectangle(entity.x - 4, entity.y - 4, 8, 8)
+    
+    local nodeRecs = {}
+    local node = require("utils").rectangle(entity.nodes[1].x - 4, entity.nodes[1].y - 4, 8, 8)
+
+    table.insert(recs, node)
+
+    return main, nodeRecs
+end
+
+return lineConnector
