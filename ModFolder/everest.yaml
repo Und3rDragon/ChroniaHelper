@@ -19,3 +19,5 @@
       Version: 0.1.0
     - Name: ExtendedCameraDynamics
       Version: 1.2.0
+    - Name: BounceHelper
+      Version: 1.2.0

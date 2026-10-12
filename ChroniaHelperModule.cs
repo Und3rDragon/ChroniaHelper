@@ -122,6 +122,8 @@ public class ChroniaHelperModule : EverestModule
         // Map Hider?
         IL.Celeste.AreaData.Load += HookAreaDataLoad;
 
+        // BounceHelper 兼容：上冲反弹后的处理
+        LoadingManager.LoadHook(typeof(References.BounceHelperUtils));
         Everest.Events.Level.OnExit += OnLevelExit;
     }
 

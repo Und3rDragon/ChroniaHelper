@@ -2,6 +2,7 @@
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Imports;
+using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Monocle;
@@ -98,7 +99,8 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
     public CrumbleBlockOnJump(EntityData data, Vector2 offset, EntityID id)
         : base(data, offset, false)
     {
-        Ldm.LoadHookWithMethod(typeof(CrumbleBlockOnJump), Load);
+        Ldm.LoadHook<CrumbleBlockOnJump>();
+        Ldm.LoadHook(typeof(BounceHelperUtils));
 
         delay = data.Float("delay");
         tileType = data.Char("tiletype", '3');
@@ -122,6 +124,10 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
             listener = new(CollideBottom,
             new Hitbox(Width, 4f, 0f, Height));
             Add(listener);
+
+            bottomBreak = new(BottomBreak());
+            bottomBreak.Active = false;
+            Add(bottomBreak);
         }
 
         autoGroupping = data.Bool("autoGroupping", true);
@@ -129,13 +135,21 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
     private bool triggerFromBottom;
     private bool autoGroupping;
     private PlayerCollider listener;
+    private Coroutine bottomBreak;
 
     private void CollideBottom(Player p)
     {
-        if(p.Speed.Y >= 0f && Input.Jump.Pressed)
+        if (!RefBounceHelper.BounceModeEnabled)
         {
-            (master as CrumbleBlockOnJump).BreakAll();
+            bottomBreak?.Active = true;
         }
+    }
+
+    private IEnumerator BottomBreak()
+    {
+        yield return 0.1f;
+
+        (master as CrumbleBlockOnJump).BreakAll();
     }
 
     public override void Awake(Scene scene)
@@ -247,7 +261,7 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
     }
 
     private bool breaking = false;
-    private void BreakAll()
+    public void BreakAll()
     {
         if (breaking) { return; }
 

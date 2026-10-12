@@ -54,6 +54,10 @@
 		<CelesteModReference Include="LakeSideCode" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<CelesteModReference Include="BounceHelper" />
+	</ItemGroup>
+
     <!--Implement dependencies here in an ItemGroup-->
 
 
