@@ -2,6 +2,7 @@
 using System.Reflection;
 using Celeste.Mod.BounceHelper;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Entities;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
@@ -87,6 +88,10 @@ public static class BounceHelperUtils
         if (solid is Entities.CrumbleBlockOnJump block)
         {
             block.BreakAll();
+        }
+        else if(solid is CustomFallingBlock block2)
+        {
+            block2.TriggerAll();
         }
     }
 }

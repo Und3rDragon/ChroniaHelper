@@ -1804,3 +1804,30 @@ entities.ChroniaHelper/LevelDataToSessionController.placements.name.controller=L
 # ========================== Crumble Block On Jump
 
 entities.ChroniaHelper/CrumbleBlockOnJump.placements.name.default=Crumble Block On Jump (Groupped)
+
+# ========================== Custom Falling Block
+
+entities.ChroniaHelper/CustomFallingBlock.placements.name.default=Custom Falling Block (Groupped)
+
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.tiletype=The tile type this block is made of.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.direction=The direction the block falls towards (0 = Down, 1 = Left, 2 = Up, 3 = Right).
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.accel=How quickly the block accelerates towards its maximum falling speed.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.maxSpeed=The maximum falling speed of the block.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.fallDelay=How long the block waits before it starts falling, after being triggered.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.climbFall=If enabled, the block also falls when a player is climbing on its side.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.bufferClimbFall=If enabled, the block falls earlier when the player buffers a grab on its side.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.legacy=If enabled, uses the legacy triggering behaviour (metatriggering appears as soon as the block gets triggered).
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.behind=If enabled, the block is drawn behind the player.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.crushBlockTrigger=If enabled, the block can also be triggered by a crush block.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.breakDashBlocks=If enabled, the block destroys dash blocks it passes through while falling.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.shakeForAllFalls=If enabled, the block keeps shaking during every fall instead of only the first one.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagTrigger=The flag that triggers the block to fall.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnFall=The flag set while the block is falling.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnGround=The flag set when the block lands on the ground.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnly=If enabled, the block only falls when triggered by its flag, ignoring the player.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.finalBoss=If enabled, the block uses the final boss behaviour (highlight layer and shorter delays).
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.shakeSfx=The sound played while the block is shaking, right before it falls.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.impactSfx=The sound played when the block lands.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.blendIn=If enabled, the block blends in with the tiles around it.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.bgTexture=If enabled, the block uses the background tileset.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.depth=The depth at which the block is drawn.

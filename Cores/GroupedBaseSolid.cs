@@ -107,7 +107,7 @@ public class GroupedBaseSolid : Solid
         }
     }
 
-    public bool PlayerFallCheck()
+    public virtual bool PlayerFallCheck()
     {
         foreach (GroupedBaseSolid block in Group)
         {
@@ -140,7 +140,7 @@ public class GroupedBaseSolid : Solid
         return false;
     }
 
-    public bool PlayerWaitCheck()
+    public virtual bool PlayerWaitCheck()
     {
         if (Triggered && this.canTrigger)
         {
