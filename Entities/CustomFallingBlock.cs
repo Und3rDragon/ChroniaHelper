@@ -16,6 +16,7 @@ namespace ChroniaHelper.Entities;
 /// 可配置的下落方块：按指定方向加速下落，撞击后停止；支持分组。
 /// </summary>
 [CustomEntity("ChroniaHelper/CustomFallingBlock"), Tracked]
+[ExA.Credits("Viv for VivHelper CustomFallingBlock codes")]
 public class CustomFallingBlock : GroupedBaseSolid
 {
     /// <summary>

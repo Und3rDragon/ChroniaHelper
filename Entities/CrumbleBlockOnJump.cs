@@ -12,6 +12,7 @@ using static ChroniaHelper.Cores.ExtendedAttributes;
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/CrumbleBlockOnJump"), Tracked]
+[ExA.Credits("Programmatic for Prog Helper Crumble Block On Jump source codes")]
 public class CrumbleBlockOnJump : GroupedBaseSolid
 {
     /// <summary>
