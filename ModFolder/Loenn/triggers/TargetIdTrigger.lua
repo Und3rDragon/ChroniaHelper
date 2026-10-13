@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 return {
     triggerText = function(room, entity)
         return "Target Id\n(" .. entity.targetId .. ")"

@@ -1,4 +1,4 @@
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components.Graphical;
 using ChroniaHelper.Utils;
 using YoctoHelper.Cores;

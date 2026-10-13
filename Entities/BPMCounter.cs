@@ -1,4 +1,4 @@
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using Celeste.Pico8;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;

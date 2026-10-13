@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
-using Celeste.Mod.BounceHelper;
+using Celeste.Mod;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Entities;
 using ChroniaHelper.Utils;
@@ -9,22 +10,64 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.References;
 
 /// <summary>
 /// 对 BounceHelper 的引用，用于让 CH 自己的实体也能被它的「反弹」机制处理。
-/// BounceHelper 在 everest.yaml 中是可选依赖，加载早于 ChroniaHelper。
+/// BounceHelper 是可选的第三方模组，未安装时这里的所有查询都安全地返回默认值。
 /// </summary>
 public static class RefBounceHelper
 {
     /// <summary>
+    /// BounceHelper 的模块类型全名，用于在不直接引用它的情况下查找它。
+    /// </summary>
+    private const string ModuleTypeName = "Celeste.Mod.BounceHelper.BounceHelperModule";
+
+    /// <summary>
+    /// BounceHelper 是否已加载。
+    /// </summary>
+    public static bool IsLoaded => GetModule() != null;
+
+    private static EverestModule GetModule()
+    {
+        return Everest.Modules.FirstOrDefault(m => m.GetType().FullName == ModuleTypeName);
+    }
+
+    /// <summary>
     /// 当前是否处于 Bounce 模式（BounceHelper 触发器设置的会话标记，或它的全局开关）。
     /// </summary>
-    public static bool BounceModeEnabled =>
-        ((Engine.Scene is Level level && level.Session != null) && level.Session.GetFlag("bounceModeEnabled"))
-        || BounceHelperModule.Settings.ForceBounceMode;
+    public static bool BounceModeEnabled
+    {
+        get
+        {
+            EverestModule module = GetModule();
+
+            if (module == null)
+            {
+                return false;
+            }
+
+            if (Engine.Scene is Level level && level.Session != null && level.Session.GetFlag("bounceModeEnabled"))
+            {
+                return true;
+            }
+
+            return DynamicData.For(module).Get<object>("Settings") is { } settings
+                && DynamicData.For(settings).Get<bool>("ForceBounceMode");
+        }
+    }
+
+    /// <summary>
+    /// BounceHelper 处理反弹的方法（对私有实例方法 bounce 的反射引用）。
+    /// </summary>
+    public static MethodInfo GetBounceMethod()
+    {
+        return GetModule()?.GetType().GetMethod("bounce",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+    }
 }
 
 /// <summary>
@@ -38,8 +81,12 @@ public static class BounceHelperUtils
     [SelectiveLoadHook]
     public static void Load()
     {
-        MethodInfo bounce = typeof(BounceHelperModule).GetMethod("bounce",
-            BindingFlags.Instance | BindingFlags.NonPublic);
+        if (!RefBounceHelper.IsLoaded)
+        {
+            return;
+        }
+
+        MethodInfo bounce = RefBounceHelper.GetBounceMethod();
 
         if (bounce == null)
         {
@@ -81,7 +128,7 @@ public static class BounceHelperUtils
     }
 
     /// <summary>
-    /// BounceHelper 反弹时遍历到的方块；如果它是 CH 的可碎方块，就让它破碎。
+    /// BounceHelper 反弹时遍历到的方块；如果它是 CH 的方块，就做出对应反应。
     /// </summary>
     private static void HandleBouncedSolid(Solid solid)
     {
@@ -89,9 +136,9 @@ public static class BounceHelperUtils
         {
             block.BreakAll();
         }
-        else if(solid is CustomFallingBlock block2)
+        else if (solid is CustomFallingBlock fallingBlock)
         {
-            block2.TriggerAll();
+            fallingBlock.TriggerAll();
         }
     }
 }

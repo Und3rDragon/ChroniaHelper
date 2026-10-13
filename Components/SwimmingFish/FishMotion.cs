@@ -1,4 +1,4 @@
-using ChroniaHelper.Components.SwimmingFish;
+﻿using ChroniaHelper.Components.SwimmingFish;
 using ChroniaHelper.Cores;
 using Microsoft.Xna.Framework;
 using Monocle;

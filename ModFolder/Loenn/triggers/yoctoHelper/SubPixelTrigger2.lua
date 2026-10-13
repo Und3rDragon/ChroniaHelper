@@ -1,4 +1,4 @@
-﻿local baseTrigger = require("mods").requireFromPlugin("helpers.base_trigger")
+local baseTrigger = require("mods").requireFromPlugin("helpers.base_trigger")
 
 local trigger = {
     triggerText = function(room, entity)

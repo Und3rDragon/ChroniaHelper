@@ -1,4 +1,4 @@
-using ChroniaHelper.Cores;
+﻿using ChroniaHelper.Cores;
 using MonoMod.Utils;
 
 namespace ChroniaHelper.Components;

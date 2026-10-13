@@ -1,4 +1,4 @@
-using ChroniaHelper.Entities;
+﻿using ChroniaHelper.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Utils;

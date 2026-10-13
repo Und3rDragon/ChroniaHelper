@@ -1,4 +1,4 @@
-﻿local fieldOptions = { }
+local fieldOptions = { }
 
 --[[
 local fieldOptions = require("mods").requireFromPlugin("consts.field_options")

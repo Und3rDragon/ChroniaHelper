@@ -1,4 +1,4 @@
-﻿local fieldOptions = require("mods").requireFromPlugin("helpers.field_options")
+local fieldOptions = require("mods").requireFromPlugin("helpers.field_options")
 
 local baseTrigger = { }
 
