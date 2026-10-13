@@ -16,28 +16,20 @@ using static ChroniaHelper.Cores.ExtendedAttributes;
 namespace ChroniaHelper.References;
 
 /// <summary>
-/// 对 BounceHelper 的引用，用于让 CH 自己的实体也能被它的「反弹」机制处理。
-/// BounceHelper 是可选的第三方模组，未安装时这里的所有查询都安全地返回默认值。
+/// 对 BounceHelper 的引用，用于查询其反弹模式状态。
+/// 未安装该模组时所有查询都安全地返回默认值。
 /// </summary>
 public static class RefBounceHelper
 {
-    /// <summary>
-    /// BounceHelper 的模块类型全名，用于在不直接引用它的情况下查找它。
-    /// </summary>
-    private const string ModuleTypeName = "Celeste.Mod.BounceHelper.BounceHelperModule";
-
-    /// <summary>
-    /// BounceHelper 是否已加载。
-    /// </summary>
-    public static bool IsLoaded => GetModule() != null;
+    private const string BounceModuleName = "Celeste.Mod.BounceHelper.BounceHelperModule";
 
     private static EverestModule GetModule()
     {
-        return Everest.Modules.FirstOrDefault(m => m.GetType().FullName == ModuleTypeName);
+        return Everest.Modules.FirstOrDefault(m => m.GetType().FullName == BounceModuleName);
     }
 
     /// <summary>
-    /// 当前是否处于 Bounce 模式（BounceHelper 触发器设置的会话标记，或它的全局开关）。
+    /// 当前是否处于 Bounce 模式。
     /// </summary>
     public static bool BounceModeEnabled
     {
@@ -61,7 +53,7 @@ public static class RefBounceHelper
     }
 
     /// <summary>
-    /// BounceHelper 处理反弹的方法（对私有实例方法 bounce 的反射引用）。
+    /// 获取 BounceHelper 处理反弹的方法。
     /// </summary>
     public static MethodInfo GetBounceMethod()
     {
@@ -71,8 +63,7 @@ public static class RefBounceHelper
 }
 
 /// <summary>
-/// 把 CH 的方块接入 BounceHelper 的反弹流程：
-/// 在它的 bounce 方法遍历碰撞到的方块时，一并处理 CH 自己的方块。
+/// 把 CH 的方块接入 BounceHelper 的反弹流程。
 /// </summary>
 public static class BounceHelperUtils
 {
@@ -81,7 +72,7 @@ public static class BounceHelperUtils
     [SelectiveLoadHook]
     public static void Load()
     {
-        if (!RefBounceHelper.IsLoaded)
+        if (!Md.BounceHelperLoaded)
         {
             return;
         }
@@ -105,13 +96,12 @@ public static class BounceHelperUtils
     }
 
     /// <summary>
-    /// 在 bounce 遍历碰撞到的方块时，插入对 CH 方块的检查。
+    /// 在 BounceHelper 处理碰撞到的方块时，一并处理 CH 的方块。
     /// </summary>
     private static void PatchBounce(ILContext il)
     {
         ILCursor cursor = new ILCursor(il);
 
-        // 锚点：foreach 循环体里 Solid 局部变量的第一次使用（isinst DreamBlock）
         if (!cursor.TryGotoNext(MoveType.Before,
                 instr => instr.MatchLdloc(out _),
                 instr => instr.MatchIsinst<DreamBlock>()))
@@ -120,7 +110,6 @@ public static class BounceHelperUtils
             return;
         }
 
-        // 此时游标停在 ldloc（循环变量 Solid）之前；取该局部变量以便复用
         VariableDefinition solidVar = (cursor.Next.Operand as VariableDefinition);
 
         cursor.Emit(OpCodes.Ldloc, solidVar);
@@ -128,7 +117,7 @@ public static class BounceHelperUtils
     }
 
     /// <summary>
-    /// BounceHelper 反弹时遍历到的方块；如果它是 CH 的方块，就做出对应反应。
+    /// 对 BounceHelper 反弹时接触到的 CH 方块作出反应。
     /// </summary>
     private static void HandleBouncedSolid(Solid solid)
     {

@@ -64,6 +64,7 @@ public class ChroniaHelperModule : EverestModule
     public static bool MoreDashelineLoaded => CheckDependency("MoreDasheline", "1.7.1");
     public static bool LakeSideLoaded => CheckDependency("LakeSideCode", "0.1.0");
     public static bool ExCamLoaded => CheckDependency("ExtendedCameraDynamics", "1.2.0");
+    public static bool BounceHelperLoaded => CheckDependency("BounceHelper", "1.14.0");
 
     public static bool CheckDependency(string modName, string minimumVersion)
     {

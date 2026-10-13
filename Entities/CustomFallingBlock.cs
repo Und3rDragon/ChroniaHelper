@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
+using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.References;
 using ChroniaHelper.Utils;
@@ -108,8 +109,15 @@ public class CustomFallingBlock : GroupedBaseSolid
 
         Add(new LightOcclude());
 
-        Ldm.LoadHook(typeof(BounceHelperUtils));
+        bounceModeAdapter = new("bounceModeEnabled")
+        {
+            onEnable = () => Ldm.LoadHook(typeof(BounceHelperUtils)),
+            onDisable = () => Ldm.UnloadHook(typeof(BounceHelperUtils)),
+        };
+
+        Add(bounceModeAdapter);
     }
+    private FlagListener bounceModeAdapter;
 
     public override void Awake(Scene scene)
     {
@@ -136,6 +144,11 @@ public class CustomFallingBlock : GroupedBaseSolid
         }
 
         Add(new Coroutine(Sequence()));
+        
+        // 按下落方向排序，使最靠前的方块优先移动，避免组内方块互相误判为碰撞。
+        Vc2 moveDir = Vc2.UnitX.Rotate(angle);
+        Group.Sort((a, b) =>
+            Vc2.Dot(b.Center, moveDir).CompareTo(Vc2.Dot(a.Center, moveDir)));
     }
 
     public override void Update()
@@ -196,20 +209,25 @@ public class CustomFallingBlock : GroupedBaseSolid
     {
         base.PostGroupping();
 
-        foreach (CustomFallingBlock f in Group)
+        SyncGroup<CustomFallingBlock>(f =>
         {
-            f.direction = (master as CustomFallingBlock).direction;
-            f.angle = (master as CustomFallingBlock).angle;
-            f.accel = (master as CustomFallingBlock).accel;
-            f.maxSpeed = (master as CustomFallingBlock).maxSpeed;
-            f.tileType = (master as CustomFallingBlock).tileType;
-            f.climbFall = (master as CustomFallingBlock).climbFall;
-            f.finalBoss = (master as CustomFallingBlock).finalBoss;
-            f.dashBlock = (master as CustomFallingBlock).dashBlock;
-            f.legacy = (master as CustomFallingBlock).legacy;
-            f.disableEndShake = (master as CustomFallingBlock).disableEndShake;
-            f.impactSfx = (master as CustomFallingBlock).impactSfx;
-            f.shakeSfx = (master as CustomFallingBlock).shakeSfx;
+            f.direction = direction;
+            f.angle = angle;
+            f.accel = accel;
+            f.maxSpeed = maxSpeed;
+            f.tileType = tileType;
+            f.climbFall = climbFall;
+            f.finalBoss = finalBoss;
+            f.dashBlock = dashBlock;
+            f.legacy = legacy;
+            f.disableEndShake = disableEndShake;
+            f.impactSfx = impactSfx;
+            f.shakeSfx = shakeSfx;
+        });
+
+        if (MasterOfGroup)
+        {
+            SortGroupByMoveDirection(Vc2.UnitX.Rotate(angle));
         }
     }
 
@@ -325,8 +343,8 @@ public class CustomFallingBlock : GroupedBaseSolid
                 float moveV = MathF.Sin(angle) * speed * Engine.DeltaTime;
                 float moveH = MathF.Cos(angle) * speed * Engine.DeltaTime;
 
-                // 任一组员撞到实体则整组停下：撞到的不回退（它已贴到障碍），
-                // 其余组员回退本帧位移，保证全组位置一致
+                // 组内任一方块撞到实体则整组停止：撞到的保持在贴合位置，
+                // 其余方块回退本帧位移，使整组位置保持一致。
                 bool hit = false;
                 List<CustomFallingBlock> hittersV = new();
                 List<CustomFallingBlock> hittersH = new();
@@ -475,12 +493,6 @@ public class CustomFallingBlock : GroupedBaseSolid
     {
         foreach (CustomFallingBlock block in Group)
             block.HasStartedFalling = value;
-    }
-
-    private void SetGroupVisibility(bool value)
-    {
-        foreach (CustomFallingBlock block in Group)
-            block.Collidable = block.Visible = value;
     }
 
     private IEnumerator HighlightFade(float to)

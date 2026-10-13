@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
+using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Imports;
 using ChroniaHelper.References;
@@ -132,11 +133,20 @@ public class CrumbleBlockOnJump : GroupedBaseSolid
         }
 
         autoGroupping = data.Bool("autoGroupping", true);
+
+        bounceModeAdapter = new("bounceModeEnabled")
+        {
+            onEnable = () => Ldm.LoadHook(typeof(BounceHelperUtils)),
+            onDisable = () => Ldm.UnloadHook(typeof(BounceHelperUtils)),
+        };
+        
+        Add(bounceModeAdapter);
     }
     private bool triggerFromBottom;
     private bool autoGroupping;
     private PlayerCollider listener;
     private Coroutine bottomBreak;
+    private FlagListener bounceModeAdapter;
 
     private void CollideBottom(Player p)
     {
