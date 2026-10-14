@@ -2,6 +2,7 @@
 using Celeste.Mod.Backdrops;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Components;
 
 namespace ChroniaHelper.Effects;
 
@@ -31,7 +32,7 @@ public class CustomRain : Backdrop {
     public float speedMult, alpha;
     public List<Particle> particles = new();
     public List<Particle> currentParticles = new();
-    public string count;
+    public SelectiveCounter count;
     public int? trueCount = null;
 
     private float visibleFade = 1f;
@@ -146,7 +147,7 @@ public class CustomRain : Backdrop {
         }
 
         // Update particle counts (expand)
-        activeCount = trueCount ?? count.GetCounter().ClampMin(0);
+        activeCount = trueCount ?? ((int)count).ClampMin(0);
 
         if (particles.Count < activeCount)
         {

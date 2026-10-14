@@ -1,96 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Celeste;
-using Celeste.Mod.Entities;
-using Monocle;
-using Microsoft.Xna.Framework;
+﻿using ChroniaHelper.Cores;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.Utils;
-using MonoMod.RuntimeDetour;
-using Mono.Cecil;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace ChroniaHelper.Components;
 
 [Tracked(false)]
-public class SolidModifierComponent : Component
+public class SolidModifierComponent : BaseComponent
 {
-
-    private readonly static string[] LegacyMapSIDs = new string[] {
-        "MOCE/issy/MOCE_CPCL",
-        "MOCE/issy/MOCE_LXVI",
-        "Tardigrade/WaterbearMountain/WaterbearMountain",
-        "Cabob/AmberTerminus/1-AmberTerminus",
-        "Cabob/AmberTerminus/1-AmberTerminus-B",
-        "AnarchyCollab2022/1-Submissions/02_ellatas",
-        "AnarchyCollab2022/1-Submissions/22_pogseal",
-        "AnarchyCollab2022/1-Submissions/ZZ_heartside",
-        "WinterCollab2021/1-Maps/Jackal",
-        "WinterCollab2021/1-Maps/Jackal_KAERRA"
-    };
-
+    [ExA.SelectiveLoadHook]
     public static void Load()
     {
+        On.Celeste.GameLoader.Begin += LateInitialize;
         On.Celeste.Player.IsRiding_Solid += Player_IsRiding_Solid;
         On.Celeste.Player.ClimbJump += Player_ClimbJump;
         On.Celeste.Player.WallJump += Player_WallJump;
-        // pre-Core: using (new DetourContext { After = { "MaxHelpingHand" } })
-        using (new DetourConfigContext(new DetourConfig("VivHelper", before: new[] { "MaxHelpingHand" })).Use())
-            IL.Celeste.Player.WallJumpCheck += Player_WallJumpCheck;
-
+        On.Celeste.Player.Update += Player_Update;
+        IL.Celeste.Player.WallJumpCheck += Player_WallJumpCheck;
         On.Monocle.StateMachine.Update += StateMachine_Update;
     }
-
+    [ExA.SelectiveUnloadHook]
     public static void Unload()
     {
+        On.Celeste.GameLoader.Begin += LateInitialize;
         On.Celeste.Player.IsRiding_Solid -= Player_IsRiding_Solid;
         On.Celeste.Player.ClimbJump -= Player_ClimbJump;
-        On.Celeste.Player.WallJump -= Player_WallJump;
+        On.Celeste.Player.Update -= Player_Update;
         IL.Celeste.Player.WallJumpCheck -= Player_WallJumpCheck;
         On.Monocle.StateMachine.Update -= StateMachine_Update;
     }
 
-
     private static void StateMachine_Update(On.Monocle.StateMachine.orig_Update orig, StateMachine self)
     {
-        orig(self); // currentActiveSolidModifier should be gotten within the StateMachine's codebase, i.e. ClimbJump/WallJump/etc., so we nullify it afterwards.
-        if (self.Entity is Player player)
+        orig.Invoke(self);
+        if (self.Entity is Player)
+        {
             Md.Session.currentActiveSolidModifier = null;
+        }
     }
 
     private static bool Player_IsRiding_Solid(On.Celeste.Player.orig_IsRiding_Solid orig, Player self, Solid solid)
     {
-        if (orig(self, solid)) return true;
-        if (solid.Get<SolidModifierComponent>() is SolidModifierComponent smc)
+        bool flag;
+        if (orig.Invoke(self, solid))
         {
-            if (smc.bufferClimbJump && smc.HasBeenBufferJumpedOn)
-            {
-                smc.HasBeenBufferJumpedOn = false;
-                return true;
-            }
-            return smc.triggerClimbOnTouch && self.CollideCheck(solid, self.Position + Vc2.UnitX * (int)self.Facing) ||
-            smc.OnTouchFromBelow && self.CollideCheck(solid, self.Position - Vc2.UnitY);
+            flag = true;
         }
-        return false;
-
-
+        else
+        {
+            SolidModifierComponent solidModifierComponent = solid.Get<SolidModifierComponent>();
+            if (solidModifierComponent != null)
+            {
+                if (solidModifierComponent.bufferClimbJump && solidModifierComponent.HasBeenBufferJumpedOn)
+                {
+                    solidModifierComponent.HasBeenBufferJumpedOn = false;
+                    flag = true;
+                }
+                else
+                {
+                    flag = (solidModifierComponent.triggerClimbOnTouch && self.CollideCheck(solid, self.Position + Vector2.UnitX * (float)self.Facing)) || (solidModifierComponent.OnTouchFromBelow && self.CollideCheck(solid, self.Position - Vector2.UnitY));
+                }
+            }
+            else
+            {
+                flag = false;
+            }
+        }
+        return flag;
     }
 
     private static void Player_ClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self)
     {
         if (Md.Session.currentActiveSolidModifier == null)
         {
-            orig(self);
+            orig.Invoke(self);
             return;
         }
         Md.Session.currentActiveSolidModifier.HasBeenBufferJumpedOn = true;
-        orig(self);
+        orig.Invoke(self);
         if (Md.Session.currentActiveSolidModifier.CornerBoostBlock == -2 || Md.Session.currentActiveSolidModifier.CornerBoostRetention)
+        {
             DynamicData.For(self).Set("wallSpeedRetained", self.Speed.X);
+        }
         Md.Session.currentActiveSolidModifier = null;
     }
 
@@ -101,140 +93,235 @@ public class SolidModifierComponent : Component
             Md.Session.currentActiveSolidModifier.HasBeenBufferJumpedOn = true;
             Md.Session.currentActiveSolidModifier = null;
         }
-        orig(self, dir);
+        orig.Invoke(self, dir);
     }
 
-    //I'm rewriting this whole fucking thing, i'm sick of this shit code
     private static void Player_WallJumpCheck(ILContext il)
     {
-        ILCursor cursor = new ILCursor(il);
-        VariableDefinition varDef = new VariableDefinition(il.Import(typeof(Vc2)));
-        il.Body.Variables.Add(varDef);
-        if (cursor.TryGotoNext(MoveType.Before, i => (i.OpCode == OpCodes.Call || i.OpCode == OpCodes.Callvirt) && (i.Operand as MethodReference)?.FullName == "System.Boolean Monocle.Entity::CollideCheck<Celeste.Solid>(Microsoft.Xna.Framework.Vector2)"))
+        ILCursor ilcursor = new ILCursor(il);
+        VariableDefinition variableDefinition = new VariableDefinition(il.Import(typeof(Vector2)));
+        il.Body.Variables.Add(variableDefinition);
+        ILCursor ilcursor2 = ilcursor;
+        MoveType moveType = MoveType.Before;
+        Func<Instruction, bool>[] array = new Func<Instruction, bool>[1];
+        array[0] = delegate (Instruction i)
         {
-            cursor.Emit(OpCodes.Stloc, varDef);
-            cursor.Emit(OpCodes.Ldloc, varDef);
-            cursor.GotoNext(MoveType.After, i => (i.OpCode == OpCodes.Call || i.OpCode == OpCodes.Callvirt) && (i.Operand as MethodReference)?.FullName == "System.Boolean Monocle.Entity::CollideCheck<Celeste.Solid>(Microsoft.Xna.Framework.Vector2)");
-            cursor.Emit(OpCodes.Ldarg_0);
-            cursor.Emit(OpCodes.Ldarg_1);
-            cursor.Emit(OpCodes.Ldloc, varDef);
-            cursor.Emit(OpCodes.Call, typeof(SolidModifierComponent).GetMethod("ModifyWallJumpCheck"));
+            bool flag;
+            if (i.OpCode == OpCodes.Call || i.OpCode == OpCodes.Callvirt)
+            {
+                MethodReference methodReference = i.Operand as MethodReference;
+                flag = ((methodReference != null) ? methodReference.FullName : null) == "System.Boolean Monocle.Entity::CollideCheck<Celeste.Solid>(Microsoft.Xna.Framework.Vector2)";
+            }
+            else
+            {
+                flag = false;
+            }
+            return flag;
+        };
+        if (ilcursor2.TryGotoNext(moveType, array))
+        {
+            ilcursor.Emit(OpCodes.Stloc, variableDefinition);
+            ilcursor.Emit(OpCodes.Ldloc, variableDefinition);
+            ILCursor ilcursor3 = ilcursor;
+            MoveType moveType2 = MoveType.After;
+            Func<Instruction, bool>[] array2 = new Func<Instruction, bool>[1];
+            array2[0] = delegate (Instruction i)
+            {
+                bool flag2;
+                if (i.OpCode == OpCodes.Call || i.OpCode == OpCodes.Callvirt)
+                {
+                    MethodReference methodReference2 = i.Operand as MethodReference;
+                    flag2 = ((methodReference2 != null) ? methodReference2.FullName : null) == "System.Boolean Monocle.Entity::CollideCheck<Celeste.Solid>(Microsoft.Xna.Framework.Vector2)";
+                }
+                else
+                {
+                    flag2 = false;
+                }
+                return flag2;
+            };
+            ilcursor3.GotoNext(moveType2, array2);
+            ilcursor.Emit(OpCodes.Ldarg_0);
+            ilcursor.Emit(OpCodes.Ldarg_1);
+            ilcursor.Emit(OpCodes.Ldloc, variableDefinition);
+            ilcursor.Emit(OpCodes.Call, typeof(SolidModifierComponent).GetMethod("ModifyWallJumpCheck"));
         }
     }
 
-    public static bool ModifyWallJumpCheck(bool prev, Player player, int dir, Vc2 legacyAt)
-    { // We want this to be relatively "variable" 
-        if (!player.Scene.Tracker.Components.TryGetValue(typeof(SolidModifierComponent), out var q) || q.Count == 0)
-            return prev; // Counting the components list is faster than counting the Solids list because they should always be attached to a solid
-        if (LegacyMapSIDs.Contains(player.SceneAs<Level>().Session.Area.SID))
-        { // Legacy code, this is literally copy-pasted you cannot tell me this is broken
-            if (prev) return true; // We can confirm that previous works here
-            bool a = false;
-            Vc2 position = player.Position;
-            player.Position = legacyAt;
-            foreach (var smc in q)
-            {
-                if (smc.Entity is Solid solid)
-                {
-                    a |= LegacyCollideCheck(solid, player, (smc as SolidModifierComponent).CornerBoostBlock);
-                    if (a)
-                        break;
-                }
-            }
-            player.Position = position;
-            return a;
+    public static bool ModifyWallJumpCheck(bool prev, Player player, int dir, Vector2 legacyAt)
+    {
+        List<Component> list;
+        bool flag;
+        if (!player.Scene.Tracker.Components.TryGetValue(typeof(SolidModifierComponent), out list) || list.Count == 0)
+        {
+            flag = prev;
         }
-        return WJ_CollideCheck(q, player, dir, false) || prev; // We need WJ_CollideCheck to run first to ensure the active Solid Modifier is settable.
+        else if (Enumerable.Contains<string>(SolidModifierComponent.LegacyMapSIDs, player.SceneAs<Level>().Session.Area.SID))
+        {
+            if (prev)
+            {
+                flag = true;
+            }
+            else
+            {
+                bool flag2 = false;
+                Vector2 position = player.Position;
+                player.Position = legacyAt;
+                foreach (Component component in list)
+                {
+                    Solid solid = component.Entity as Solid;
+                    if (solid != null)
+                    {
+                        flag2 |= SolidModifierComponent.LegacyCollideCheck(solid, player, (component as SolidModifierComponent).CornerBoostBlock);
+                        if (flag2)
+                        {
+                            break;
+                        }
+                    }
+                }
+                player.Position = position;
+                flag = flag2;
+            }
+        }
+        else
+        {
+            flag = SolidModifierComponent.WJ_CollideCheck(list, player, dir, false) || prev;
+        }
+        return flag;
     }
 
     public static Func<Player, int, int> player_WallJumpCheck_getNum;
-    
     public static bool WJ_CollideCheck(List<Component> q, Player player, int dir, bool includeOrig)
     {
-        int num = player_WallJumpCheck_getNum?.Invoke(player, dir) ?? 3;
-        int end = Math.Max(num, (int)Math.Ceiling(Math.Abs(player.Speed.X) * Engine.DeltaTime) + 1);
-        var scene = player.Scene;
-        var s = includeOrig ? 4 : 0;
-        if (end < s)
-            return false;
-        foreach (SolidModifierComponent smc in q)
+        Func<Player, int, int> player_WallJumpCheck_getNum = SolidModifierComponent.player_WallJumpCheck_getNum;
+        int num = Math.Max((player_WallJumpCheck_getNum != null) ? player_WallJumpCheck_getNum(player, dir) : 3, (int)Math.Ceiling((double)(Math.Abs(player.Speed.X) * Engine.DeltaTime)) + 1);
+        Scene scene = player.Scene;
+        int num2 = (includeOrig ? 4 : 0);
+        if (num >= num2)
         {
-            if (smc.Entity is Solid solid)
+            foreach (Component component in q)
             {
-                int _end = smc.CornerBoostBlock > 0 ? smc.CornerBoostBlock : end; // -1 = Speed base, -2 = Speed base + Wall Retention
-                // TODO - rewrite the Collision Check to occur of groups of 4px first, and then do backsteps at the first detection, if one exists.
-                for (int i = s; i <= _end; i++)
+                SolidModifierComponent solidModifierComponent = (SolidModifierComponent)component;
+                Solid solid = solidModifierComponent.Entity as Solid;
+                if (solid != null)
                 {
-                    if (player.ClimbBoundsCheck(dir) && !ClimbBlocker.EdgeCheck(scene, player, dir * i))
+                    int num3 = ((solidModifierComponent.CornerBoostBlock > 0) ? solidModifierComponent.CornerBoostBlock : num);
+                    for (int i = num2; i <= num3; i++)
                     {
-                        if (Collide.Check(player, solid, player.Position + Vc2.UnitX * (dir * i)))
-                        { // If the CornerBoostBlock state is not changing the behavior of the walljumpcheck, continue on
-                            Md.Session.currentActiveSolidModifier = smc;
+                        if (player.ClimbBoundsCheck(dir) && !ClimbBlocker.EdgeCheck(scene, player, dir * i) && Collide.Check(player, solid, player.Position + Vector2.UnitX * (float)(dir * i)))
+                        {
+                            Md.Session.currentActiveSolidModifier = solidModifierComponent;
                             return true;
                         }
                     }
                 }
             }
+            return false;
         }
         return false;
     }
-    // Method is just "check every horizontal position"
-    // Replaces standard CollideCheck by checking every valid point up to the next moved frame
+
     private static bool LegacyCollideCheck(Solid solid, Player player, int a)
     {
-        bool b = false;
-        int c = a < 0 ? Math.Max(3, (int)Math.Ceiling(Math.Abs(player.Speed.X) * Engine.DeltaTime)) : 3;
-        for (int i = 0; i <= c; i++)
+        bool flag = false;
+        int num = ((a < 0) ? Math.Max(3, (int)Math.Ceiling((double)(Math.Abs(player.Speed.X) * Engine.DeltaTime))) : 3);
+        for (int i = 0; i <= num; i++)
         {
-
-            b |= a > 1 ? solid.CollideCheck(player, solid.Position - Vc2.UnitX * ((int)player.Facing * i)) : player.CollideCheck(solid, player.Position + Vc2.UnitX * ((int)player.Facing * i));
-            if (b)
+            flag |= ((a > 1) ? solid.CollideCheck(player, solid.Position - Vector2.UnitX * (float)((int)player.Facing * i)) : player.CollideCheck(solid, player.Position + Vector2.UnitX * (float)((int)player.Facing * i)));
+            if (flag)
+            {
                 break;
+            }
         }
-        return b;
+        return flag;
     }
+
     private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
     {
-        if (self.Scene == null)
-            return;
-        if (self.Scene.Tracker.Components.TryGetValue(typeof(SolidModifierComponent), out var q))
-            foreach (SolidModifierComponent smc in q)
-                smc.HasBeenBufferJumpedOn = false;
-        orig(self);
-
+        if (self.Scene != null)
+        {
+            List<Component> list;
+            if (self.Scene.Tracker.Components.TryGetValue(typeof(SolidModifierComponent), out list))
+            {
+                foreach (Component component in list)
+                {
+                    ((SolidModifierComponent)component).HasBeenBufferJumpedOn = false;
+                }
+            }
+            orig.Invoke(self);
+        }
     }
 
-
-
-    // 0 = Normal, -1 = CBB, -2 = CBB + Wall Retention
-    public int CornerBoostBlock;
-    public bool CornerBoostRetention;
-    public bool bufferClimbJump;
-    public bool triggerClimbOnTouch;
-    public bool OnTouchFromBelow;
-    public bool Legacy;
-
-    public bool HasBeenBufferJumpedOn;
-
-    public SolidModifierComponent(int cornerBoostBlock, bool bufferClimbJump, bool triggerClimbOnTouch, bool onTouchFromBelow = false) : base(true, false)
+    public SolidModifierComponent(int cornerBoostBlock, bool bufferClimbJump, bool triggerClimbOnTouch, bool onTouchFromBelow = false)
+        : base(true, false)
     {
-        CornerBoostBlock = -cornerBoostBlock; // New Negation 
+        this.CornerBoostBlock = -cornerBoostBlock;
         this.bufferClimbJump = bufferClimbJump;
         this.triggerClimbOnTouch = triggerClimbOnTouch;
-        OnTouchFromBelow = onTouchFromBelow;
+        this.OnTouchFromBelow = onTouchFromBelow;
+
+        Ldm.LoadHookWithMethod(this, Load);
     }
 
-    public SolidModifierComponent(SolidModifierComponent c) : base(true, false)
+    public SolidModifierComponent(SolidModifierComponent c)
+        : base(true, false)
     {
-        CornerBoostBlock = c.CornerBoostBlock;
-        bufferClimbJump = c.bufferClimbJump;
-        triggerClimbOnTouch = c.triggerClimbOnTouch;
-        OnTouchFromBelow = c.OnTouchFromBelow;
+        this.CornerBoostBlock = c.CornerBoostBlock;
+        this.bufferClimbJump = c.bufferClimbJump;
+        this.triggerClimbOnTouch = c.triggerClimbOnTouch;
+        this.OnTouchFromBelow = c.OnTouchFromBelow;
+
+        Ldm.LoadHookWithMethod(this, Load);
     }
 
     public override string ToString()
     {
-        return $"SMC: {CornerBoostBlock}\nBuffer: {bufferClimbJump}\tTouch: {triggerClimbOnTouch}\nBelow: {OnTouchFromBelow}\n";
+        return string.Format("SMC: {0}\nBuffer: {1}\tTouch: {2}\nBelow: {3}\n", new object[] { this.CornerBoostBlock, this.bufferClimbJump, this.triggerClimbOnTouch, this.OnTouchFromBelow });
     }
 
+    private static readonly string[] LegacyMapSIDs = new string[] { "MOCE/issy/MOCE_CPCL", "MOCE/issy/MOCE_LXVI", "Tardigrade/WaterbearMountain/WaterbearMountain", "Cabob/AmberTerminus/1-AmberTerminus", "Cabob/AmberTerminus/1-AmberTerminus-B", "AnarchyCollab2022/1-Submissions/02_ellatas", "AnarchyCollab2022/1-Submissions/22_pogseal", "AnarchyCollab2022/1-Submissions/ZZ_heartside", "WinterCollab2021/1-Maps/Jackal", "WinterCollab2021/1-Maps/Jackal_KAERRA" };
+
+    public int CornerBoostBlock;
+
+    public bool CornerBoostRetention;
+
+    public bool bufferClimbJump;
+
+    public bool triggerClimbOnTouch;
+
+    public bool OnTouchFromBelow;
+
+    public bool Legacy;
+
+    public bool HasBeenBufferJumpedOn;
+
+    public static void LateInitialize(On.Celeste.GameLoader.orig_Begin orig, GameLoader self)
+    {
+        orig.Invoke(self);
+        SolidModifierComponent.player_WallJumpCheck_getNum = delegate (Player player, int dir)
+        {
+            int num = 3;
+            bool flag = player.DashAttacking && player.DashDir.X == 0f && player.DashDir.Y == -1f;
+            bool flag2 = flag;
+            if (flag2)
+            {
+                Spikes.Directions directions = ((dir <= 0) ? Spikes.Directions.Right : Spikes.Directions.Left);
+                foreach (Entity entity in player.Scene.Tracker.GetEntities<Spikes>())
+                {
+                    Spikes spikes = (Spikes)entity;
+                    bool flag3 = spikes.Direction == directions && player.CollideCheck(spikes, player.Position + Vector2.UnitX * (float)dir * 5f);
+                    if (flag3)
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            bool flag4 = flag;
+            if (flag4)
+            {
+                num = 5;
+            }
+            return num;
+        };
+    }
 }

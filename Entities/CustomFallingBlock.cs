@@ -104,7 +104,7 @@ public class CustomFallingBlock : GroupedBaseSolid
 
         if (climbFall)
         {
-            this.AddOrAddToSolidModifierComponent(new SolidModifierComponent(0, true, false));
+            this.AddOrAddToSolidModifierComponent(solidModifier = new SolidModifierComponent(0, true, false));
         }
 
         Add(new LightOcclude());
@@ -118,6 +118,7 @@ public class CustomFallingBlock : GroupedBaseSolid
         Add(bounceModeAdapter);
     }
     private FlagListener bounceModeAdapter;
+    private SolidModifierComponent solidModifier = null;
 
     public override void Awake(Scene scene)
     {
@@ -157,7 +158,16 @@ public class CustomFallingBlock : GroupedBaseSolid
 
         Level level = SceneAs<Level>();
 
-        if (flagTrigger != "" && level.Session.GetFlag(flagTrigger) && !Triggered && !metaTriggered)
+        bool condition1 = flagTrigger != "" && 
+            level.Session.GetFlag(flagTrigger) && 
+            !Triggered && !metaTriggered;
+        bool condition2 = RefBounceHelper.BounceModeEnabled && 
+            (solidModifier?.bufferClimbJump ?? false) &&
+            (CollideCheck<Player>(Position + Vc2.UnitX) || 
+                CollideCheck<Player>(Position - Vc2.UnitX)
+            );
+
+        if (condition1)
         {
             if (legacy)
                 TriggerAll();
@@ -166,7 +176,9 @@ public class CustomFallingBlock : GroupedBaseSolid
         }
 
         if (Triggered && flagOnFall != "" && !level.Session.GetFlag(flagOnFall))
+        {
             level.Session.SetFlag(flagOnFall, true);
+        }
     }
 
     public override void OnShake(Vector2 amount)

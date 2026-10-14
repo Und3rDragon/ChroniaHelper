@@ -42,6 +42,15 @@ public class SelectiveSlider : SelectiveSessionValue
 
         return Expression.GetSlider(Fallback);
     }
+
+    public static implicit operator string(SelectiveSlider s)
+        => s.Expression;
+
+    public static implicit operator SelectiveSlider(string s)
+        => new(s);
+
+    public static implicit operator float(SelectiveSlider s)
+        => s.GetValue();
 }
 
 public static class SelectiveSliderExtension
