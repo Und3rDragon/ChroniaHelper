@@ -10,7 +10,7 @@ namespace ChroniaHelper.Effects;
 [CustomBackdrop("ChroniaHelper/CustomRain")]
 public class CustomRain : Backdrop {
     
-    public struct Particle {
+    public struct CustomRainParticle {
         public Vector2 Position;
 
         public Vector2 Speed;
@@ -30,8 +30,8 @@ public class CustomRain : Backdrop {
     }
 
     public float speedMult, alpha;
-    public List<Particle> particles = new();
-    public List<Particle> currentParticles = new();
+    public List<CustomRainParticle> particles = new();
+    public List<CustomRainParticle> currentParticles = new();
     public SelectiveCounter count;
     public int? trueCount = null;
 
@@ -97,7 +97,7 @@ public class CustomRain : Backdrop {
         // Prepare initial counts
         int initialCount = trueCount ?? (count.GetCounter() <= 0 ? 100 : count.GetCounter());
         for (int i = 0; i < initialCount; i++) {
-            Particle p = new();
+            CustomRainParticle p = new();
             p.Init(_angle + Rd.Random.Range(-_angleDiff, _angleDiff), speedMult, Rd.Random.Choose<Color>(_colors), extX, extY);
             particles.Add(p);
         }
@@ -153,7 +153,7 @@ public class CustomRain : Backdrop {
         {
             for (int i = particles.Count; i < activeCount; i++)
             {
-                Particle p = new();
+                CustomRainParticle p = new();
                 p.Init(_angle + Rd.Random.Range(-_angleDiff, _angleDiff), speedMult, Rd.Random.Choose<Color>(_colors), extX, extY);
                 particles.Add(p);
             }
@@ -162,7 +162,7 @@ public class CustomRain : Backdrop {
         Vector2 windOffset = level.Wind * windStrength;
 
         for (int i = 0; i < activeCount; i++) {
-            Particle p = particles[i];
+            CustomRainParticle p = particles[i];
             p.Position += (p.Speed + windOffset) * Engine.DeltaTime;
             particles[i] = p;
         }
@@ -179,7 +179,7 @@ public class CustomRain : Backdrop {
 
             int getCount = activeCount.ClampMax(particles.Count - 1);
             for (int i = 0; i < getCount; i++) {
-                Particle p = particles[i];
+                CustomRainParticle p = particles[i];
 
                 Vector2 position = new Vector2(
                     NumberUtils.Mod(p.Position.X - camera.X * Scroll.X, screenSize.X),

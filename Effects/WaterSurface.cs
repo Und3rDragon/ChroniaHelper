@@ -14,7 +14,7 @@ namespace ChroniaHelper.Effects;
 public class WaterSurface : Backdrop
 {
 
-    public struct Particle
+    public struct WaterSurfaceParticle
     {
         public Vector2 Position;
 
@@ -35,7 +35,7 @@ public class WaterSurface : Backdrop
         }
     }
 
-    public Particle[] particles, backParticles;
+    public WaterSurfaceParticle[] particles, backParticles;
     public int count, backCount;
 
     public WaterSurface(BinaryPacker.Element child)
@@ -103,7 +103,7 @@ public class WaterSurface : Backdrop
 
         // Setting up particles
         this.count = count;
-        particles = new Particle[count];
+        particles = new WaterSurfaceParticle[count];
         List<Color> _colors = new List<Color>();
         if (string.IsNullOrEmpty(colors))
         {
@@ -141,7 +141,7 @@ public class WaterSurface : Backdrop
 
         // Setting up back particles
         this.backCount = backParticleCount;
-        backParticles = new Particle[backParticleCount];
+        backParticles = new WaterSurfaceParticle[backParticleCount];
         List<Color> _colorsBG = new List<Color>();
         if (string.IsNullOrEmpty(backParticleColor))
         {
