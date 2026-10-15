@@ -3,8 +3,6 @@ local script = {}
 script.name = "fastSerial"
 script.displayName = "Fast Name Array"
 
---script.tooltip = "Converts VivHelper Spinners to Chronia Helper Spinners"
-
 script.tooltips = {
     objectName = "The name displayed on top of the entity or trigger window that looks like 'xxxHelper/xxx'",
     targetAttribute = "The option name you wanna apply this name array on",
@@ -16,10 +14,6 @@ script.parameters = {
     targetAttribute = "",
     serialName = "",
 }
-
-
-
---script.fieldOrder = {}
 
 function script.run(room, args)
     local i = 0
