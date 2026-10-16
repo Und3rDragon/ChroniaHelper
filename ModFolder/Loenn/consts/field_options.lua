@@ -106,7 +106,10 @@ fieldOptions.generalSetup = {
         ["On Flags State"] = 17,
         ["On Chronia Expression State"] = 18,
         ["On Frost Session Expression State"] = 19,
-        ["On Chronia Flag Logic Expression State"] = 20
+        ["On Chronia Flag Logic Expression State"] = 20,
+        ["On Core Mode None"] = 21,
+        ["On Core Mode Cold"] = 22,
+        ["On Core Mode Hot"] = 23,
     },
     editable = false,
 }

@@ -142,7 +142,7 @@ public class OmniZipSolid : ConnectedSolid
 
         public Vector2[] nodes;
 
-        public bool hideRope, hideCog;
+        public bool hideRope, hideCog, shadow = true;
 
         public PathRenderer(OmniZipSolid zipMover, Vector2[] nodes, Color color, Color lightColor)
         {
@@ -199,9 +199,12 @@ public class OmniZipSolid : ConnectedSolid
             if (!cameraBounds.Intersects(bounds))
                 return;
 
-            foreach (Segment seg in segments)
-                if (seg.Seen = cameraBounds.Intersects(seg.Bounds))
-                    seg.RenderShadow(zipMover.percent, hideRope);
+            if (shadow)
+            {
+                foreach (Segment seg in segments)
+                    if (seg.Seen = cameraBounds.Intersects(seg.Bounds))
+                        seg.RenderShadow(zipMover.percent, hideRope);
+            }
 
             foreach (Segment seg in segments)
                 if (seg.Seen)

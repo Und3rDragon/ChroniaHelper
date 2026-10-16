@@ -1831,3 +1831,36 @@ entities.ChroniaHelper/CustomFallingBlock.attributes.description.impactSfx=The s
 entities.ChroniaHelper/CustomFallingBlock.attributes.description.blendIn=If enabled, the block blends in with the tiles around it.
 entities.ChroniaHelper/CustomFallingBlock.attributes.description.bgTexture=If enabled, the block uses the background tileset.
 entities.ChroniaHelper/CustomFallingBlock.attributes.description.depth=The depth at which the block is drawn.
+
+# ================= Flag Filter / Regex Series
+
+triggers.ChroniaHelper/FlagFilterOperation.placements.name.trigger=Flag Filter Operation Trigger
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.contains=A substring the flag name should contain.\nLeave empty to skip this condition.
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.startsWith=A substring the flag name should start with.\nLeave empty to skip this condition.
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.endsWith=A substring the flag name should end with.\nLeave empty to skip this condition.
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.mode=How the matched flags are modified:\n"Off" - disable all matched flags\n"Set as flag value" - set matched flags to the value read from "Parameter" as a flag name\n"Equals to Chronia Helper Expression not 0" - set matched flags by the result of a Chronia math expression in "Parameter"\n"Equals to Frost Session Expression not 0" - set matched flags by the result of a Frost Helper session expression in "Parameter"
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.parameter=The source used by "Mode" to decide the value to apply.\nDepends on the selected mode, it is read as a flag name, a Chronia math expression, or a Frost session expression.
+
+triggers.ChroniaHelper/FlagRegexOperation.placements.name.trigger=Flag Regex Operation Trigger
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.regex=A regular expression tested against every session flag.
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.mode=How the matched flags are handled:\n"Off" - disable all flags matching the regex\n"Replace" - replace the matching part of each flag name with "Parameter"; the flag itself is not renamed\n"Count" - count how many flags match the regex and store the amount into "Parameter" as a counter
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.parameter=Used as the replacement text when "Mode" is "Replace",\nor as the target counter name when "Mode" is "Count".\nIgnored when "Mode" is "Off".
+
+entities.ChroniaHelper/FlagFilterController.placements.name.controller=Flag Filter Controller
+entities.ChroniaHelper/FlagFilterController.attributes.description.contains=A substring the flag name should contain.\nLeave empty to skip this condition.
+entities.ChroniaHelper/FlagFilterController.attributes.description.startsWith=A substring the flag name should start with.\nLeave empty to skip this condition.
+entities.ChroniaHelper/FlagFilterController.attributes.description.endsWith=A substring the flag name should end with.\nLeave empty to skip this condition.
+entities.ChroniaHelper/FlagFilterController.attributes.description.operationMode=How the matched flags are modified:\n"Off" - disable all matched flags\n"Set as flag value" - set matched flags to the value read from "Operation Parameter" as a flag name\n"Equals to Chronia Helper Expression not 0" - set matched flags by the result of a Chronia math expression in "Operation Parameter"\n"Equals to Frost Session Expression not 0" - set matched flags by the result of a Frost Helper session expression in "Operation Parameter"
+entities.ChroniaHelper/FlagFilterController.attributes.description.operationParameter=The source used by "Operation Mode" to decide the value to apply.\nDepends on the selected mode, it is read as a flag name, a Chronia math expression, or a Frost session expression.
+
+entities.ChroniaHelper/FlagRegexController.placements.name.controller=Flag Regex Controller
+entities.ChroniaHelper/FlagRegexController.attributes.description.regex=A regular expression tested against every session flag.
+entities.ChroniaHelper/FlagRegexController.attributes.description.regexMode=How the matched flags are handled:\n"Off" - disable all flags matching the regex\n"Replace" - replace the matching part of each flag name with "Regex Parameter"; the flag itself is not renamed\n"Count" - count how many flags match the regex and store the amount into "Regex Parameter" as a counter
+entities.ChroniaHelper/FlagRegexController.attributes.description.regexParameter=Used as the replacement text when "Regex Mode" is "Replace",\nor as the target counter name when "Regex Mode" is "Count".\nIgnored when "Regex Mode" is "Off".
+
+entities.ChroniaHelper/CoreModeFlagController.placements.name.controller=Core Mode Flag Controller
+entities.ChroniaHelper/CoreModeFlagController.attributes.description.coreMode=The core mode this controller reacts to:\n"None", "Cold", or "Hot".
+entities.ChroniaHelper/CoreModeFlagController.attributes.description.flag=This flag is kept active whenever the room's core mode matches "Core Mode", and disabled otherwise.
+
+triggers.ChroniaHelper/FlagToggleTrigger.placements.name.trigger=Flag Toggle Trigger
+triggers.ChroniaHelper/FlagToggleTrigger.attributes.description.flag=The flag whose value is toggled each time the player enters the trigger.
