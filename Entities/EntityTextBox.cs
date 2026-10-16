@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml;
-using AsmResolver.IO;
-using Celeste.Mod.Entities;
-using ChroniaHelper.Components;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Components.StateListeners;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using ChroniaHelper.Utils.ChroniaSystem;
+using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace ChroniaHelper.Entities;
 
@@ -33,8 +25,9 @@ public class EntityTextBox : BaseEntity
         string dialogID = d.Attr("dialog", "dialogID");
         string dialog = dialogID.StartsWith('#') ?
             Md.Session.keystrings[dialogID.TrimStart('#')] :
-            dialogID.ParseDialogToString();
-        text = FancyText.Parse(dialog, 
+            Dialog.Get(dialogID, Dialog.Language);
+        dialog = ProcessSessionData(dialog);
+        text = FancyText.Parse(dialog,
             (int)maxWidth, linesPerPage, 1f, null, Dialog.Language);
 
         index = 0;
@@ -149,7 +142,7 @@ public class EntityTextBox : BaseEntity
     public override void Render()
     {
         base.Render();
-        
+
         int remainLines = 1;
         for (int i = Start; i < text.Nodes.Count; i++)
         {
@@ -174,5 +167,80 @@ public class EntityTextBox : BaseEntity
             (Position - MaP.cameraPos) * Cons.HDScale,
             justification, new Vector2(1f, textEase) * assistiveScaling * scale,
             textEase, Start, index);
+    }
+
+    public string ProcessSessionData(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        // 处理 {counter xxx n} 格式
+        string result = Regex.Replace(input, @"\{counter\s+(\w+)(?:\s+(\d+))?\}", match =>
+        {
+            string name = match.Groups[1].Value;
+            int minDigits = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
+
+            int value = name.GetCounter();
+            return value.ToString(minDigits == 0 ? "" : $"D{minDigits}");
+        });
+
+        // 处理 {slider xxx m n} 格式
+        result = Regex.Replace(result, @"\{slider\s+(\w+)(?:\s+(\d+))?(?:\s+(\d+))?\}", match =>
+        {
+            string name = match.Groups[1].Value;
+
+            // 解析参数
+            int intDigits = 0;  // m - 整数位最小位数
+            int decimalPlaces = 2;  // n - 小数位最大位数
+
+            if (match.Groups[2].Success)
+            {
+                intDigits = int.Parse(match.Groups[2].Value);
+
+                if (match.Groups[3].Success)
+                {
+                    decimalPlaces = int.Parse(match.Groups[3].Value);
+                }
+                // 如果只有m，n默认为2
+            }
+            // 如果没有参数，保持默认值 (intDigits = 0, decimalPlaces = 2)
+
+            float value = name.GetSlider();
+
+            // 分离整数和小数部分
+            int intPart = (int)Math.Floor(Math.Abs(value));
+            float fractionalPart = Math.Abs(value) - intPart;
+
+            // 处理整数部分（包括负号）
+            string intStr = intPart.ToString();
+            if (intDigits > intStr.Length)
+            {
+                intStr = intStr.PadLeft(intDigits, '0');
+            }
+
+            // 处理小数部分
+            string fractionalStr;
+            if (decimalPlaces == 0)
+            {
+                fractionalStr = "";
+            }
+            else
+            {
+                // 四舍五入到指定小数位
+                fractionalPart = (float)Math.Round(fractionalPart, decimalPlaces);
+                fractionalStr = fractionalPart.ToString($"F{decimalPlaces}").Split('.')[1];
+            }
+
+            // 组合最终结果
+            string resultStr = value < 0 ? "-" + intStr : intStr;
+            if (decimalPlaces > 0)
+            {
+                resultStr += "." + fractionalStr;
+            }
+
+            return resultStr;
+        });
+
+        return result;
     }
 }

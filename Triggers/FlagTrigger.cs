@@ -34,6 +34,8 @@ public class FlagTrigger : BaseTrigger
         filtering = data.Bool("ignoreUnchanged", false);
         onStay = data.Bool("onStay", false);
         perRoom = data.Bool("perRoom", false);
+
+        enterDelay = data.Float("enterDelay", -1);
         
         // flag processing
         string input = data.Attr("flag", "Flag");

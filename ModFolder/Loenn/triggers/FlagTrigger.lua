@@ -16,6 +16,8 @@ return{
 			ignoreUnchanged = false,
 			onStay = false,
 			perRoom = false,
+
+			enterDelay = -1,
 		}
 	},
 	fieldInformation = {

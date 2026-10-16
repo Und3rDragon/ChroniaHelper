@@ -310,11 +310,10 @@ public class OmniZipMover : OmniZipSolid
             sideSensitive = true;
         }
 
-        shadow = data.Bool("zipperShadow", true);
+        zipperShadow = data.Bool("zipperShadow", true);
     }
     private PlayerCollider bottom, side;
     private bool bottomSensitive = false, sideSensitive = false;
-    private bool shadow = true;
 
     public override void Awake(Scene scene)
     {
@@ -337,8 +336,6 @@ public class OmniZipMover : OmniZipSolid
     {
         base.Added(scene);
         level = SceneAs<Level>();
-        scene.Add(pathRenderer = new(this, nodes, ropeColor, ropeLightColor));
-        pathRenderer.shadow = shadow;
     }
 
     public override void Removed(Scene scene)
