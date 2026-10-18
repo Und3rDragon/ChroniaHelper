@@ -1867,4 +1867,9 @@ triggers.ChroniaHelper/FlagToggleTrigger.attributes.description.flag=The flag wh
 
 # ================= Loenn Menu
 
+ui.menubar.ChroniaHelper_convertPastedPaths=Convert Pasted Paths [ChroniaHelper]
+ui.menubar.ChroniaHelper_enableOneOnly=Enable One Only
 ui.menubar.ChroniaHelper_convertDecalPaths=Convert Decal Paths To Decals [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertJumpThruPaths=Convert Jump Through Paths To Vanilla Jump Through [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertSpinnerPaths=Convert Spinner Paths To Chronia Seamless Spinner [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertBoosterPaths=Convert Booster Paths To Chronia Custom Booster [ChroniaHelper]

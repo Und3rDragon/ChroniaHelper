@@ -2,8 +2,9 @@
 
 local decalBuilder = {}
 
--- Path segment that every Celeste atlas resource sits behind.
-local ATLAS_MARKER = "Graphics/Atlases/Gameplay/"
+-- Path segment every decal texture sits behind. Everything before it is mod
+-- specific, so only what follows is written into the entity.
+local ATLAS_MARKER = "Graphics/Atlases/Gameplay/decals/"
 
 -- Defaults written into every generated decal.
 local DECAL_TEMPLATE = {
@@ -53,10 +54,11 @@ end
 --[[
     Turns an absolute image path into the texture name Lönn uses for atlases.
 
-    A trailing run of digits marks an animation frame. Every frame resolves to
-    the first frame of its sequence, so "timerA1" and "timerA0" both become
-    "timerA00" when the original numbering is two digits, keeping the zero
-    padding of the original numbering.
+    Everything from the decals folder onwards is kept, the extension is dropped
+    and a trailing run of digits is removed, so every animation frame resolves to
+    the same base name.
+
+    For example, "E:/.../Gameplay/decals/a/b00.png" becomes "a/b".
 ]]
 local function pathToTexture(path)
     local markerStart = path:find(ATLAS_MARKER, 1, true)
@@ -65,20 +67,18 @@ local function pathToTexture(path)
         return nil
     end
 
-    local texture = path:sub(markerStart + #ATLAS_MARKER)
+    -- The decal texture name is relative to the decals folder, so the entity
+    -- reads it back from there without repeating the folder itself.
+    local texture = "decals/" .. path:sub(markerStart + #ATLAS_MARKER)
 
     if texture:lower():sub(-4) == ".png" then
         texture = texture:sub(1, -5)
     end
 
-    -- Replace the trailing digit run with zeroes of the same length
-    local head, digits = texture:match("^(.-)(%d+)$")
+    -- Drop the trailing digits, which mark an animation frame
+    texture = texture:gsub("%d+$", "")
 
-    if digits then
-        texture = head .. string.rep("0", #digits)
-    end
-
-    if texture == "" then
+    if texture == "decals/" then
         return nil
     end
 
