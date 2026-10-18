@@ -1864,3 +1864,7 @@ entities.ChroniaHelper/CoreModeFlagController.attributes.description.flag=This f
 
 triggers.ChroniaHelper/FlagToggleTrigger.placements.name.trigger=Flag Toggle Trigger
 triggers.ChroniaHelper/FlagToggleTrigger.attributes.description.flag=The flag whose value is toggled each time the player enters the trigger.
+
+# ================= Loenn Menu
+
+ui.menubar.ChroniaHelper_convertDecalPaths=Convert Decal Paths To Decals [ChroniaHelper]
