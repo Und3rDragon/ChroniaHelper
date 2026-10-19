@@ -1865,6 +1865,9 @@ entities.ChroniaHelper/CoreModeFlagController.attributes.description.flag=This f
 triggers.ChroniaHelper/FlagToggleTrigger.placements.name.trigger=Flag Toggle Trigger
 triggers.ChroniaHelper/FlagToggleTrigger.attributes.description.flag=The flag whose value is toggled each time the player enters the trigger.
 
+# ================= Breaker Box
+
+entities.ChroniaHelper/LightningBreakerBox.placements.name.box=Lightning Breaker Box (Disabled Bloom Strength Modifications)
 # ================= Loenn Menu
 
 ui.menubar.ChroniaHelper_convertPastedPaths=Convert Pasted Paths [ChroniaHelper]
