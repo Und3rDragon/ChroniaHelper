@@ -1868,6 +1868,22 @@ triggers.ChroniaHelper/FlagToggleTrigger.attributes.description.flag=The flag wh
 # ================= Breaker Box
 
 entities.ChroniaHelper/LightningBreakerBox.placements.name.box=Lightning Breaker Box (Disabled Bloom Strength Modifications)
+
+# ================= Bound Refill
+
+entities.ChroniaHelper/BoundRefill.placements.name.bound=Bound Refill
+entities.ChroniaHelper/BoundRefill.placements.description.bound=From KAERRA's Furry Week. Grants the player a spring-like dash.
+entities.ChroniaHelper/BoundRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.ChroniaHelper/BoundRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.ChroniaHelper/BoundRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.ChroniaHelper/BoundRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.ChroniaHelper/BoundRefill.attributes.description.direction=Bounce direction when the dash is cancelled (0 = Up, 1 = Left, 2 = Right, 3 = Down).
+entities.ChroniaHelper/BoundRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+
+# ================= Lightning Box
+
+entities.ChroniaHelper/LightningBreakerBoxWithNoBloomEffect.placements.name.default=Lightning Breaker Box (No Legacy Bloom Strength Effect)
+
 # ================= Loenn Menu
 
 ui.menubar.ChroniaHelper_convertPastedPaths=Convert Pasted Paths [ChroniaHelper]

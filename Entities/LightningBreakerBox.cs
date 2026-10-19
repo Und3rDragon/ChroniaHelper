@@ -1,331 +1,314 @@
 ﻿using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
+using ChroniaHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ChroniaHelper.Entities;
 
-[CustomEntity("ChroniaHelper/LightningBreakerBox")]
-public class LightningBreakerBox : Solid
+[CustomEntity("ChroniaHelper/LightningBreakerBoxWithNoBloomEffect")]
+public class LightningBreakerBoxWithNoBloomEffect : LightningBreakerBox
 {
-    public static ParticleType P_Smash;
-
-    public static ParticleType P_Sparks;
-
-    public Sprite sprite;
-
-    public SineWave sine;
-
-    public Vector2 start;
-
-    public float sink;
-
-    public int health = 2;
-
-    public bool flag;
-
-    public float shakeCounter;
-
-    public string music;
-
-    public int musicProgress = -1;
-
-    public bool musicStoreInSession;
-
-    public Vector2 bounceDir;
-
-    public Wiggler bounce;
-
-    public Shaker shaker;
-
-    public bool makeSparks;
-
-    public bool smashParticles;
-
-    public Coroutine pulseRoutine;
-
-    public SoundSource firstHitSfx;
-
-    public bool spikesLeft;
-
-    public bool spikesRight;
-
-    public bool spikesUp;
-
-    public bool spikesDown;
-
-    public LightningBreakerBox(Vector2 position, bool flipX)
-        : base(position, 32f, 32f, safe: true)
+    public bool HasVanillaColors
     {
-        SurfaceSoundIndex = 9;
-        start = Position;
-        sprite = GFX.SpriteBank.Create("breakerBox");
-        Sprite obj = sprite;
-        obj.OnLastFrame = (Action<string>)Delegate.Combine(obj.OnLastFrame, (Action<string>)([MethodImpl(MethodImplOptions.NoInlining)] (string anim) =>
+        get
         {
-            if (anim == "break")
-            {
-                Visible = false;
-            }
-            else if (anim == "open")
-            {
-                makeSparks = true;
-            }
-        }));
-        sprite.Position = new Vector2(base.Width, base.Height) / 2f;
-        sprite.FlipX = flipX;
-        Add(sprite);
-        sine = new SineWave(0.5f, 0f);
-        Add(sine);
-        bounce = Wiggler.Create(1f, 0.5f);
-        bounce.StartZero = false;
-        Add(bounce);
-        Add(shaker = new Shaker(on: false));
-        OnDashCollide = Dashed;
-    }
-
-    public LightningBreakerBox(EntityData e, Vector2 levelOffset)
-        : this(e.Position + levelOffset, e.Bool("flipX"))
-    {
-        flag = e.Bool("flag");
-        music = e.Attr("music", null);
-        musicProgress = e.Int("music_progress", -1);
-        musicStoreInSession = e.Bool("music_session");
-
-        vanillaLighting = e.Bool("vanillaLightingChanges", false);
-    }
-    private bool vanillaLighting;
-
-    public override void Awake(Scene scene)
-    {
-        base.Awake(scene);
-        spikesUp = CollideCheck<Spikes>(Position - Vector2.UnitY);
-        spikesDown = CollideCheck<Spikes>(Position + Vector2.UnitY);
-        spikesLeft = CollideCheck<Spikes>(Position - Vector2.UnitX);
-        spikesRight = CollideCheck<Spikes>(Position + Vector2.UnitX);
-    }
-
-    public DashCollisionResults Dashed(Player player, Vector2 dir)
-    {
-        if (!SaveData.Instance.Assists.Invincible)
-        {
-            if (dir == Vector2.UnitX && spikesLeft)
-            {
-                return DashCollisionResults.NormalCollision;
-            }
-
-            if (dir == -Vector2.UnitX && spikesRight)
-            {
-                return DashCollisionResults.NormalCollision;
-            }
-
-            if (dir == Vector2.UnitY && spikesUp)
-            {
-                return DashCollisionResults.NormalCollision;
-            }
-
-            if (dir == -Vector2.UnitY && spikesDown)
-            {
-                return DashCollisionResults.NormalCollision;
-            }
+            return this.BurstColor == LightningBreakerBoxWithNoBloomEffect.DefaultBurst && this.BurstColor2 == LightningBreakerBoxWithNoBloomEffect.DefaultBurst2 && this.FenceColor == LightningBreakerBoxWithNoBloomEffect.DefaultFence && this.FenceColor2 == LightningBreakerBoxWithNoBloomEffect.DefaultFence2;
         }
+    }
 
-        (base.Scene as Level).DirectionalShake(dir);
-        sprite.Scale = new Vector2(1f + Math.Abs(dir.Y) * 0.4f - Math.Abs(dir.X) * 0.4f, 1f + Math.Abs(dir.X) * 0.4f - Math.Abs(dir.Y) * 0.4f);
-        health--;
-        if (health > 0)
+    public LightningBreakerBoxWithNoBloomEffect(EntityData data, Vector2 offset)
+        : base(data, offset)
+    {
+        this.hits = Calc.Clamp(data.Int("hits", 2), 1, 9);
+        this.bloomPulse = Calc.Clamp(data.Float("bloomPulse", 1.2f), 0f, 8f);
+        this.bloomBreak = Calc.Clamp(data.Float("bloomBreak", 1.5f), 0f, 8f);
+        this.bloomRest = Calc.Clamp(data.Float("bloomRest", 1f), 0f, 8f);
+        this.BurstColor = LightningBreakerBoxWithNoBloomEffect.ParseColorChecked(data, "burstColor", "FFFC75", LightningBreakerBoxWithNoBloomEffect.DefaultBurst);
+        this.BurstColor2 = LightningBreakerBoxWithNoBloomEffect.ParseColorChecked(data, "burstColor2", "6BFFFF", LightningBreakerBoxWithNoBloomEffect.DefaultBurst2);
+        this.FenceColor = LightningBreakerBoxWithNoBloomEffect.ParseColorChecked(data, "fenceColor", "B9FEFE", LightningBreakerBoxWithNoBloomEffect.DefaultFence);
+        this.FenceColor2 = LightningBreakerBoxWithNoBloomEffect.ParseColorChecked(data, "fenceColor2", "FFF263", LightningBreakerBoxWithNoBloomEffect.DefaultFence2);
+        if (LightningBreakerBoxWithNoBloomEffect.HealthField != null)
         {
-            Add(firstHitSfx = new SoundSource("event:/new_content/game/10_farewell/fusebox_hit_1"));
-            Celeste.Celeste.Freeze(0.1f);
-            shakeCounter = 0.2f;
-            shaker.On = true;
-            bounceDir = dir;
-            bounce.Start();
-            smashParticles = true;
-            Pulse();
-            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+            LightningBreakerBoxWithNoBloomEffect.HealthField.SetValue(this, this.hits);
         }
         else
         {
-            if (firstHitSfx != null)
-            {
-                firstHitSfx.Stop();
-            }
-
-            Audio.Play("event:/new_content/game/10_farewell/fusebox_hit_2", Position);
-            Celeste.Celeste.Freeze(0.2f);
-            player.RefillDash();
-            Break();
-            Input.Rumble(RumbleStrength.Strong, RumbleLength.Long);
-            SmashParticles(dir.Perpendicular());
-            SmashParticles(-dir.Perpendicular());
+            Logger.Log(LogLevel.Warn, "PowerBoxHelper", "LightningBreakerBox.health not found, hits falls back to vanilla");
         }
-
-        return DashCollisionResults.Rebound;
+        this.ApplyParticleColors();
+        this.OnDashCollide = new DashCollision(this.TunableDashed);
     }
 
-    public void SmashParticles(Vector2 dir)
+    private static readonly Dictionary<Level, Profile> Profiles = new Dictionary<Level, Profile>();
+    private readonly struct Profile
     {
-        float direction;
-        Vector2 position;
-        Vector2 positionRange;
-        int num;
-        if (dir == Vector2.UnitX)
+        public Profile(float pulse, float breakValue, float rest)
         {
-            direction = 0f;
-            position = base.CenterRight - Vector2.UnitX * 12f;
-            positionRange = Vector2.UnitY * (base.Height - 6f) * 0.5f;
-            num = (int)(base.Height / 8f) * 4;
-        }
-        else if (dir == -Vector2.UnitX)
-        {
-            direction = MathF.PI;
-            position = base.CenterLeft + Vector2.UnitX * 12f;
-            positionRange = Vector2.UnitY * (base.Height - 6f) * 0.5f;
-            num = (int)(base.Height / 8f) * 4;
-        }
-        else if (dir == Vector2.UnitY)
-        {
-            direction = MathF.PI / 2f;
-            position = base.BottomCenter - Vector2.UnitY * 12f;
-            positionRange = Vector2.UnitX * (base.Width - 6f) * 0.5f;
-            num = (int)(base.Width / 8f) * 4;
-        }
-        else
-        {
-            direction = -MathF.PI / 2f;
-            position = base.TopCenter + Vector2.UnitY * 12f;
-            positionRange = Vector2.UnitX * (base.Width - 6f) * 0.5f;
-            num = (int)(base.Width / 8f) * 4;
+            this.Pulse = pulse;
+            this.Break = breakValue;
+            this.Rest = rest;
         }
 
-        num += 2;
-        SceneAs<Level>().Particles.Emit(P_Smash, num, position, positionRange, direction);
+        public bool IsBloomVanilla
+        {
+            get
+            {
+                return this.Pulse == 1.2f && this.Break == 1.5f && this.Rest == 1f;
+            }
+        }
+
+        public readonly float Pulse;
+
+        public readonly float Break;
+
+        public readonly float Rest;
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
+    private DashCollisionResults TunableDashed(Player player, Vector2 dir)
+    {
+        Level level = base.Scene as Level;
+        if (level != null)
+        {
+            Set(level, this.bloomPulse, this.bloomBreak, this.bloomRest);
+        }
+        return base.Dashed(player, dir);
+    }
+
+    public static void Set(Level level, float pulse, float breakValue, float rest)
+    {
+        if (Profiles.Count > 0)
+        {
+            List<Level> stale = null;
+            foreach (Level key in Profiles.Keys)
+            {
+                if (key != level)
+                {
+                    List<Level> list;
+                    if ((list = stale) == null)
+                    {
+                        list = (stale = new List<Level>());
+                    }
+                    list.Add(key);
+                }
+            }
+            if (stale != null)
+            {
+                foreach (Level key2 in stale)
+                {
+                    Profiles.Remove(key2);
+                }
+            }
+        }
+        Profiles[level] = new Profile(pulse, breakValue, rest);
+    }
+
     public override void Added(Scene scene)
     {
         base.Added(scene);
-        if (flag && (base.Scene as Level).Session.GetFlag("disable_lightning"))
+        if (LightningBreakerBoxWithNoBloomEffect.particleOwner != null && LightningBreakerBoxWithNoBloomEffect.particleOwner != this && LightningBreakerBoxWithNoBloomEffect.particleOwner.Scene != scene)
         {
-            RemoveSelf();
+            LightningBreakerBoxWithNoBloomEffect.RestoreParticleColors();
         }
     }
 
-    public override void Update()
+    public override void Removed(Scene scene)
     {
-        base.Update();
-        if (makeSparks && base.Scene.OnInterval(0.03f))
+        base.Removed(scene);
+        if (LightningBreakerBoxWithNoBloomEffect.particleOwner == this)
         {
-            SceneAs<Level>().ParticlesFG.Emit(P_Sparks, 1, base.Center, Vector2.One * 12f);
+            LightningBreakerBoxWithNoBloomEffect.RestoreParticleColors();
         }
-
-        if (shakeCounter > 0f)
-        {
-            shakeCounter -= Engine.DeltaTime;
-            if (shakeCounter <= 0f)
-            {
-                shaker.On = false;
-                sprite.Scale = Vector2.One * 1.2f;
-                sprite.Play("open");
-            }
-        }
-
-        if (Collidable)
-        {
-            bool flag = HasPlayerRider();
-            sink = Calc.Approach(sink, flag ? 1 : 0, 2f * Engine.DeltaTime);
-            sine.Rate = MathHelper.Lerp(1f, 0.5f, sink);
-            Vector2 vector = start;
-            vector.Y += sink * 6f + sine.Value * MathHelper.Lerp(4f, 2f, sink);
-            vector += bounce.Value * bounceDir * 12f;
-            MoveToX(vector.X);
-            MoveToY(vector.Y);
-            if (smashParticles)
-            {
-                smashParticles = false;
-                SmashParticles(bounceDir.Perpendicular());
-                SmashParticles(-bounceDir.Perpendicular());
-            }
-        }
-
-        sprite.Scale.X = Calc.Approach(sprite.Scale.X, 1f, Engine.DeltaTime * 4f);
-        sprite.Scale.Y = Calc.Approach(sprite.Scale.Y, 1f, Engine.DeltaTime * 4f);
-        LiftSpeed = Vector2.Zero;
     }
 
-    public override void Render()
+    private void ApplyParticleColors()
     {
-        Vector2 position = sprite.Position;
-        sprite.Position += shaker.Value;
-        base.Render();
-        sprite.Position = position;
+        if (this.HasVanillaColors)
+        {
+            return;
+        }
+        if (LightningBreakerBox.P_Smash == null || LightningBreakerBox.P_Sparks == null || Lightning.P_Shatter == null)
+        {
+            Log.Warn("particle types are not initialized yet, particle colors skipped");
+            return;
+        }
+        if (LightningBreakerBoxWithNoBloomEffect.particleOwner == null || LightningBreakerBoxWithNoBloomEffect.particleOwner == this)
+        {
+            if (LightningBreakerBoxWithNoBloomEffect.originalSmash == null)
+            {
+                LightningBreakerBoxWithNoBloomEffect.originalSmash = LightningBreakerBox.P_Smash;
+            }
+            if (LightningBreakerBoxWithNoBloomEffect.originalSparks == null)
+            {
+                LightningBreakerBoxWithNoBloomEffect.originalSparks = LightningBreakerBox.P_Sparks;
+            }
+            if (LightningBreakerBoxWithNoBloomEffect.originalShatter == null)
+            {
+                LightningBreakerBoxWithNoBloomEffect.originalShatter = Lightning.P_Shatter;
+            }
+        }
+        LightningBreakerBoxWithNoBloomEffect.particleOwner = this;
+        LightningBreakerBox.P_Smash = LightningBreakerBoxWithNoBloomEffect.Clone(LightningBreakerBoxWithNoBloomEffect.originalSmash, this.BurstColor, this.BurstColor2);
+        LightningBreakerBox.P_Sparks = LightningBreakerBoxWithNoBloomEffect.Clone(LightningBreakerBoxWithNoBloomEffect.originalSparks, this.BurstColor, this.BurstColor2);
+        Lightning.P_Shatter = LightningBreakerBoxWithNoBloomEffect.Clone(LightningBreakerBoxWithNoBloomEffect.originalShatter, this.FenceColor, this.FenceColor2);
+        
+        //LogLevel logLevel = LogLevel.Info;
+        //LogLevel logLevel2 = logLevel;
+        //string text = "PowerBoxHelper";
+        //string text2 = text;
+        //bool flag;
+        //Logger.LogInterpolatedStringHandler logInterpolatedStringHandler = new Logger.LogInterpolatedStringHandler(44, 4, logLevel, text, out flag);
+        //if (flag)
+        //{
+        //    logInterpolatedStringHandler.AppendLiteral("particle colors applied: burst=#");
+        //    logInterpolatedStringHandler.AppendFormatted(LightningBreakerBoxWithNoBloomEffect.Hex(this.BurstColor));
+        //    logInterpolatedStringHandler.AppendLiteral("/#");
+        //    logInterpolatedStringHandler.AppendFormatted(LightningBreakerBoxWithNoBloomEffect.Hex(this.BurstColor2));
+        //    logInterpolatedStringHandler.AppendLiteral(" fence=#");
+        //    logInterpolatedStringHandler.AppendFormatted(LightningBreakerBoxWithNoBloomEffect.Hex(this.FenceColor));
+        //    logInterpolatedStringHandler.AppendLiteral("/#");
+        //    logInterpolatedStringHandler.AppendFormatted(LightningBreakerBoxWithNoBloomEffect.Hex(this.FenceColor2));
+        //}
+        //Logger.Log(logLevel2, text2, logInterpolatedStringHandler);
     }
 
-    public void Pulse()
+    internal static void RestoreParticleColors()
     {
-        pulseRoutine = new Coroutine(Lightning.PulseRoutine(SceneAs<Level>()));
-        pulseRoutine.Active = vanillaLighting;
-        Add(pulseRoutine);
+        if (LightningBreakerBoxWithNoBloomEffect.particleOwner == null)
+        {
+            return;
+        }
+        if (LightningBreakerBoxWithNoBloomEffect.originalSmash != null)
+        {
+            LightningBreakerBox.P_Smash = LightningBreakerBoxWithNoBloomEffect.originalSmash;
+        }
+        if (LightningBreakerBoxWithNoBloomEffect.originalSparks != null)
+        {
+            LightningBreakerBox.P_Sparks = LightningBreakerBoxWithNoBloomEffect.originalSparks;
+        }
+        if (LightningBreakerBoxWithNoBloomEffect.originalShatter != null)
+        {
+            Lightning.P_Shatter = LightningBreakerBoxWithNoBloomEffect.originalShatter;
+        }
+        LightningBreakerBoxWithNoBloomEffect.particleOwner = null;
     }
 
-    public void Break()
+    private static ParticleType Clone(ParticleType source, Color color, Color color2)
     {
-        Session session = (base.Scene as Level).Session;
-        RumbleTrigger.ManuallyTrigger(base.Center.X, 1.2f);
-        base.Tag = Tags.Persistent;
-        shakeCounter = 0f;
-        shaker.On = false;
-        sprite.Play("break");
-        Collidable = false;
-        DestroyStaticMovers();
-        if (flag)
+        return new ParticleType(source)
         {
-            session.SetFlag("disable_lightning");
-        }
-
-        if (musicStoreInSession)
-        {
-            if (!string.IsNullOrEmpty(music))
-            {
-                session.Audio.Music.Event = SFX.EventnameByHandle(music);
-            }
-
-            if (musicProgress >= 0)
-            {
-                session.Audio.Music.SetProgress(musicProgress);
-            }
-
-            session.Audio.Apply(forceSixteenthNoteHack: false);
-        }
-        else
-        {
-            if (!string.IsNullOrEmpty(music))
-            {
-                Audio.SetMusic(SFX.EventnameByHandle(music), startPlaying: false);
-            }
-
-            if (musicProgress >= 0)
-            {
-                Audio.SetMusicParam("progress", musicProgress);
-            }
-
-            if (!string.IsNullOrEmpty(music) && Audio.CurrentMusicEventInstance != null)
-            {
-                Audio.CurrentMusicEventInstance.start();
-            }
-        }
-
-        if (pulseRoutine != null)
-        {
-            pulseRoutine.Active = false;
-        }
-
-        Add(new Coroutine(Lightning.RemoveRoutine(SceneAs<Level>(), base.RemoveSelf)));
+            Color = color,
+            Color2 = color2
+        };
     }
+
+    private static string Hex(Color c)
+    {
+        return c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+    }
+
+    private static Color ParseColorChecked(EntityData data, string key, string defaultHex, Color fallback)
+    {
+        string raw = data.Attr(key, defaultHex);
+        Color color = LightningBreakerBoxWithNoBloomEffect.ParseColor(raw, fallback);
+        string norm = (raw ?? string.Empty).Trim();
+        if (norm.StartsWith("#"))
+        {
+            norm = norm.Substring(1);
+        }
+        if (color == fallback && norm.Length > 0 && !string.Equals(norm, defaultHex, StringComparison.OrdinalIgnoreCase))
+        {
+            //LogLevel logLevel = LogLevel.Warn;
+            //LogLevel logLevel2 = logLevel;
+            //string text = "PowerBoxHelper";
+            //string text2 = text;
+            //bool flag;
+            //Logger.LogInterpolatedStringHandler logInterpolatedStringHandler = new Logger.LogInterpolatedStringHandler(56, 3, logLevel, text, out flag);
+            //if (flag)
+            //{
+            //    logInterpolatedStringHandler.AppendLiteral("invalid color for ");
+            //    logInterpolatedStringHandler.AppendFormatted(key);
+            //    logInterpolatedStringHandler.AppendLiteral(": '");
+            //    logInterpolatedStringHandler.AppendFormatted(raw);
+            //    logInterpolatedStringHandler.AppendLiteral("' (expected RRGGBB), using default ");
+            //    logInterpolatedStringHandler.AppendFormatted(defaultHex);
+            //}
+            //Logger.Log(logLevel2, text2, logInterpolatedStringHandler);
+        }
+        return color;
+    }
+
+    internal static Color ParseColor(string value, Color fallback)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return fallback;
+        }
+        string hex = value.Trim();
+        if (hex.StartsWith("#"))
+        {
+            hex = hex.Substring(1);
+        }
+        if (hex.Length != 6)
+        {
+            return fallback;
+        }
+        string text = hex;
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (!Uri.IsHexDigit(text[i]))
+            {
+                return fallback;
+            }
+        }
+        Color color;
+        try
+        {
+            color = Calc.HexToColor(hex);
+        }
+        catch
+        {
+            color = fallback;
+        }
+        return color;
+    }
+
+    internal static readonly Color DefaultBurst = Calc.HexToColor("FFFC75");
+
+    internal static readonly Color DefaultBurst2 = Calc.HexToColor("6BFFFF");
+
+    internal static readonly Color DefaultFence = Calc.HexToColor("B9FEFE");
+
+    internal static readonly Color DefaultFence2 = Calc.HexToColor("FFF263");
+
+    private static readonly FieldInfo HealthField = typeof(LightningBreakerBox).GetField("health", BindingFlags.Instance | BindingFlags.NonPublic);
+
+    private static ParticleType originalSmash;
+
+    private static ParticleType originalSparks;
+
+    private static ParticleType originalShatter;
+
+    private static LightningBreakerBoxWithNoBloomEffect particleOwner;
+
+    private readonly int hits;
+
+    private readonly float bloomPulse;
+
+    private readonly float bloomBreak;
+
+    private readonly float bloomRest;
+
+    internal readonly Color BurstColor;
+
+    internal readonly Color BurstColor2;
+
+    internal readonly Color FenceColor;
+
+    internal readonly Color FenceColor2;
 }
