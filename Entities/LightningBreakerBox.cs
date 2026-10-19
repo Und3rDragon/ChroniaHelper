@@ -2,18 +2,39 @@
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/LightningBreakerBoxWithNoBloomEffect")]
 public class LightningBreakerBoxWithNoBloomEffect : LightningBreakerBox
 {
+    [SelectiveLoadHook]
+    public static void Load()
+    {
+        On.Celeste.Lightning.SetPulseValue += HookSetPulseValue;
+        On.Celeste.Lightning.SetBreakValue += HookSetBreakValue;
+        On.Celeste.Lightning.PulseRoutine += HookPulseRoutine;
+        On.Celeste.Lightning.RemoveRoutine += HookRemoveRoutine;
+    }
+
+    [SelectiveUnloadHook]
+    public static void Unload()
+    {
+        On.Celeste.Lightning.SetPulseValue -= HookSetPulseValue;
+        On.Celeste.Lightning.SetBreakValue -= HookSetBreakValue;
+        On.Celeste.Lightning.PulseRoutine -= HookPulseRoutine;
+        On.Celeste.Lightning.RemoveRoutine -= HookRemoveRoutine;
+        Profiles.Clear();
+    }
+
     public bool HasVanillaColors
     {
         get
@@ -25,6 +46,8 @@ public class LightningBreakerBoxWithNoBloomEffect : LightningBreakerBox
     public LightningBreakerBoxWithNoBloomEffect(EntityData data, Vector2 offset)
         : base(data, offset)
     {
+        Ldm.LoadHook(typeof(LightningBreakerBoxWithNoBloomEffect));
+
         this.hits = Calc.Clamp(data.Int("hits", 2), 1, 9);
         this.bloomPulse = Calc.Clamp(data.Float("bloomPulse", 1.2f), 0f, 8f);
         this.bloomBreak = Calc.Clamp(data.Float("bloomBreak", 1.5f), 0f, 8f);
@@ -39,7 +62,7 @@ public class LightningBreakerBoxWithNoBloomEffect : LightningBreakerBox
         }
         else
         {
-            Logger.Log(LogLevel.Warn, "PowerBoxHelper", "LightningBreakerBox.health not found, hits falls back to vanilla");
+            Log.Warn("LightningBreakerBox.health not found, hits falls back to vanilla");
         }
         this.ApplyParticleColors();
         this.OnDashCollide = new DashCollision(this.TunableDashed);
@@ -105,7 +128,76 @@ public class LightningBreakerBoxWithNoBloomEffect : LightningBreakerBox
                 }
             }
         }
-        Profiles[level] = new Profile(pulse, breakValue, rest);
+    }
+
+    /// <summary>
+    /// 撞击瞬间的短脉冲：本关已登记该电箱的配置时，用配置的起止值替换默认的 bloom 区间。
+    /// </summary>
+    private static void HookSetPulseValue(On.Celeste.Lightning.orig_SetPulseValue orig, Level level, float t)
+    {
+        if (level is null || !Profiles.TryGetValue(level, out Profile profile) || profile.IsBloomVanilla)
+        {
+            orig(level, t);
+            return;
+        }
+
+        Glitch.Value = MathHelper.Lerp(0f, 0.075f, t);
+        level.Bloom.Strength = MathHelper.Lerp(profile.Rest, profile.Pulse, t);
+
+        LightningRenderer renderer = level.Tracker.GetEntity<LightningRenderer>();
+        if (renderer != null)
+        {
+            renderer.Fade = t * 0.2f;
+        }
+    }
+
+    /// <summary>
+    /// 电箱破损瞬间的强脉冲：本关已登记该电箱的配置时，用配置的起止值替换默认的 bloom 区间。
+    /// </summary>
+    private static void HookSetBreakValue(On.Celeste.Lightning.orig_SetBreakValue orig, Level level, float t)
+    {
+        if (level is null || !Profiles.TryGetValue(level, out Profile profile) || profile.IsBloomVanilla)
+        {
+            orig(level, t);
+            return;
+        }
+
+        Glitch.Value = MathHelper.Lerp(0f, 0.15f, t);
+        level.Bloom.Strength = MathHelper.Lerp(profile.Rest, profile.Break, t);
+
+        LightningRenderer renderer = level.Tracker.GetEntity<LightningRenderer>();
+        if (renderer != null)
+        {
+            renderer.Fade = t * 0.6f;
+        }
+    }
+
+    /// <summary>
+    /// 脉冲动画结束后注销本关的临时配置，避免后续房间继续沿用。
+    /// </summary>
+    private static IEnumerator HookPulseRoutine(On.Celeste.Lightning.orig_PulseRoutine orig, Level level)
+    {
+        IEnumerator routine = orig(level);
+        while (routine.MoveNext())
+        {
+            yield return routine.Current;
+        }
+
+        Profiles.Remove(level);
+    }
+
+    /// <summary>
+    /// 电网消失动画结束后注销本关的临时配置，避免后续房间继续沿用。
+    /// </summary>
+    private static IEnumerator HookRemoveRoutine(On.Celeste.Lightning.orig_RemoveRoutine orig, Level level, Action onComplete)
+    {
+        IEnumerator routine = orig(level, onComplete);
+        while (routine.MoveNext())
+        {
+            yield return routine.Current;
+        }
+
+        Profiles.Remove(level);
     }
 
     public override void Added(Scene scene)
