@@ -66,6 +66,7 @@ class ReversedGravityJelly : Actor
         hold.OnPickup = new Action(PickupHandler);
         hold.OnRelease = new Action<Vector2>(ReleaseHandler);
         hold.SpeedGetter = () => { return speed; };
+        hold.SpeedSetter = (Vector2 v) => { speed = v; };
         hold.OnHitSpring = SpringHandler;
         Add(platformSine = new SineWave(0.3f, 0));
         platformSine.Randomize();
