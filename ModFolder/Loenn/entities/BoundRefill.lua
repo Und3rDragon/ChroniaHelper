@@ -17,8 +17,8 @@ refill.placements = {
             pulseFlag = "",
             directory = "objects/FemtoHelper/boundRefill/",
             speedXOnHorizontal = 240,
-            speedYOnHorizontal = 140,
-            speedXOnVertical = 0,
+            --speedYOnHorizontal = 140,
+            --speedXOnVertical = 0,
             speedYOnVertical = 300,
         }
     },

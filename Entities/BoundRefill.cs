@@ -38,25 +38,26 @@ public class BoundRefill : CustomRefill
         if (self.Get<Bounder>() is not { } b) return;
 
         b.RemoveSelf();
-
+        
         // Fetch Direction
         int dir = b.Direction;
+
         if(dir == 4)
         {
-            float angle = (((Vc2)Input.Aim).SafeNormalize(-Vc2.UnitY)).Angle();
+            float angle = (Input.GetAimVector() * new Vc2(1f, -1f)).SafeNormalize(-Vc2.UnitY).Angle();
 
             switch (angle)
             {
-                case var a when a >= -3f / 4 * float.Pi && a < -1f / 4 * float.Pi:
+                case var a when a >= -3f / 4 * float.Pi && a <= -1f / 4 * float.Pi:
                     dir = 3;
                     break;
-                case var a when a >= 1f / 4 * float.Pi && a < 3f / 4 * float.Pi:
+                case var a when a >= 1f / 4 * float.Pi && a <= 3f / 4 * float.Pi:
                     dir = 0;
                     break;
-                case var a when a >= 3f / 4 * float.Pi || a < -3f / 4 * float.Pi:
+                case var a when a > 3f / 4 * float.Pi || a < -3f / 4 * float.Pi:
                     dir = 1;
                     break;
-                case var a when a >= -1f / 4 * float.Pi || a < 1f / 4 * float.Pi:
+                case var a when a > -1f / 4 * float.Pi || a < 1f / 4 * float.Pi:
                     dir = 2;
                     break;
                 default:
@@ -65,32 +66,26 @@ public class BoundRefill : CustomRefill
             }
         }
 
-        self.Add(new Coroutine(BoundRoutine(self, b)));
+        self.Add(new Coroutine(BoundRoutine(self, dir, b)));
     }
 
-    public static IEnumerator BoundRoutine(Player player, Bounder b)
+    public static IEnumerator BoundRoutine(Player player, int direction, Bounder b)
     {
         yield return null;
 
-        switch (b.Direction)
+        switch (direction)
         {
             case 1: // Left
-                //player.Speed.X = -b.Horizontal.X;
-                //player.Speed.Y = -b.Horizontal.Y;
-                player.Speed = -b.Horizontal;
+                player.Speed.X = -b.Horizontal.X;
                 break;
             case 2: // Right
-                //player.Speed.X = b.Horizontal.X;
-                //player.Speed.Y = -b.Horizontal.Y;
-                player.Speed = b.Horizontal * new Vc2(1f, -1f);
+                player.Speed.X = b.Horizontal.X;
                 break;
             case 3: // Down
-                //player.Speed.Y = b.Vertical.Y;
-                player.Speed = b.Vertical;
+                player.Speed.Y = b.Vertical.Y;
                 break;
             default: // Up
-                //player.Speed.Y = -b.Vertical.Y;
-                player.Speed = b.Vertical * new Vc2(1f, -1f);
+                player.Speed.Y = -b.Vertical.Y;
                 break;
         }
         player.StateMachine.ForceState(Player.StNormal);

@@ -1832,6 +1832,20 @@ entities.ChroniaHelper/CustomFallingBlock.attributes.description.blendIn=If enab
 entities.ChroniaHelper/CustomFallingBlock.attributes.description.bgTexture=If enabled, the block uses the background tileset.
 entities.ChroniaHelper/CustomFallingBlock.attributes.description.depth=The depth at which the block is drawn.
 
+# ========================== Custom Push Block
+
+entities.ChroniaHelper/CustomPushBlock.placements.name.default=Custom Push Block (Groupped)
+
+entities.ChroniaHelper/CustomPushBlock.attributes.description.tiletype=The tile type this block is made of.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyTop=If enabled, the block ignores gravity while something is directly above it, so it can hang from a ceiling.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyBottom=If enabled, the block is treated as attached to the floor below it.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyLeft=If enabled, the block ignores gravity while something is directly to its left, so it can stick to a wall.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyRight=If enabled, the block ignores gravity while something is directly to its right, so it can stick to a wall.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.debrisTileset=The tileset used by the debris that appears when the block gets dash-pushed.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.blendIn=If enabled, the block blends in with the tiles around it.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.bgTexture=If enabled, the block uses the background tileset.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.depth=The depth at which the block is drawn.
+
 # ================= Flag Filter / Regex Series
 
 triggers.ChroniaHelper/FlagFilterOperation.placements.name.trigger=Flag Filter Operation Trigger
