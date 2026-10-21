@@ -23,20 +23,20 @@ public static class SpriteClipUtils
 
         if (outwards.Y < 0F)
         {
-            return new Rectangle(x, y - 8, size, 8);
+            return new Rectangle(x - 2, y - 16, size + 4, 16);
         }
 
         if (outwards.Y > 0F)
         {
-            return new Rectangle(x, y, size, 8);
+            return new Rectangle(x - 2, y, size + 4, 16);
         }
 
         if (outwards.X < 0F)
         {
-            return new Rectangle(x - 8, y, 8, size);
+            return new Rectangle(x - 16, y - 2, 16, size + 4);
         }
 
-        return new Rectangle(x, y, 8, size);
+        return new Rectangle(x, y - 2, 16, size + 4);
     }
 
     /// <summary>
