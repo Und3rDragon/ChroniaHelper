@@ -1885,7 +1885,7 @@ entities.ChroniaHelper/LightningBreakerBox.placements.name.box=Lightning Breaker
 
 # ================= Bound Refill
 
-entities.ChroniaHelper/BoundRefill.placements.name.bound=Bound Refill
+entities.ChroniaHelper/BoundRefill.placements.name.bound=Bound Refill (Custom Direction)
 entities.ChroniaHelper/BoundRefill.placements.description.bound=From KAERRA's Furry Week. Grants the player a spring-like dash.
 entities.ChroniaHelper/BoundRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
 entities.ChroniaHelper/BoundRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
