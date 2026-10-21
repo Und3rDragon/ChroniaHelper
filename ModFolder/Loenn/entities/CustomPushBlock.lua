@@ -15,6 +15,7 @@ return {
 			depth = -12999,
 			width = 32,
 			height = 32,
+			pushSpeed = 320,
 		},
 	},
 	fieldOrder = {

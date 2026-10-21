@@ -17,7 +17,7 @@ namespace ChroniaHelper.Entities;
 public class CustomPushBlock : GroupedBaseSolid
 {
     /// <summary>被撞后获得的速度。</summary>
-    private const float PushSpeed = 320f;
+    private float PushSpeed = 320f;
 
     /// <summary>滑动后每帧的减速。</summary>
     private const float Friction = 960f;
@@ -69,6 +69,8 @@ public class CustomPushBlock : GroupedBaseSolid
 
         Add(new LightOcclude());
         OnDashCollide = OnDashed;
+
+        PushSpeed = data.Float("pushSpeed", 320f);
     }
 
     public override void Added(Scene scene)
@@ -511,7 +513,8 @@ public class CustomPushBlock : GroupedBaseSolid
             && block.stickyBottom == stickyBottom
             && block.stickyLeft == stickyLeft
             && block.stickyRight == stickyRight
-            && block.Depth == Depth;
+            && block.Depth == Depth
+            && block.PushSpeed == PushSpeed;
     }
 
     public override void PostGroupping()
@@ -525,6 +528,7 @@ public class CustomPushBlock : GroupedBaseSolid
             block.stickyLeft = stickyLeft;
             block.stickyRight = stickyRight;
             block.debrisTileset = debrisTileset;
+            block.PushSpeed = PushSpeed;
         });
     }
 
