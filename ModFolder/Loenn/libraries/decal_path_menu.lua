@@ -10,6 +10,8 @@ local jumpThruBuilder = requireFromPlugin("libraries.jumpthru_path_converter")
 local decalBuilder = requireFromPlugin("libraries.decal_path_converter")
 local spinnerBuilder = requireFromPlugin("libraries.spinner_path_converter")
 local boosterBuilder = requireFromPlugin("libraries.booster_path_converter")
+local vanillaSpikeBuilder = requireFromPlugin("libraries.vanilla_spike_path_converter")
+local chroniaSpikeBuilder = requireFromPlugin("libraries.chronia_spike_path_converter")
 
 local library = {}
 
@@ -20,6 +22,8 @@ local DECAL_MENU_KEY = "ChroniaHelper_convertDecalPaths"
 local ONE_ONLY_MENU_KEY = "ChroniaHelper_enableOneOnly"
 local SPINNER_MENU_KEY = "ChroniaHelper_convertSpinnerPaths"
 local BOOSTER_MENU_KEY = "ChroniaHelper_convertBoosterPaths"
+local SPIKE_MENU_KEY = "ChroniaHelper_convertSpikePaths"
+local CHRONIA_SPIKE_MENU_KEY = "ChroniaHelper_convertChroniaSpikePaths"
 
 -- Reads and writes the persisted switch states.
 local MOD_SETTINGS_NAME = "ChroniaHelper"
@@ -30,6 +34,8 @@ local JUMPTHRU_SETTINGS_KEY = "convertJumpThruPathsToJumpThrus"
 local DECAL_SETTINGS_KEY = "convertDecalPathsToDecals"
 local SPINNER_SETTINGS_KEY = "convertSpinnerPathsToSpinners"
 local BOOSTER_SETTINGS_KEY = "convertBoosterPathsToBoosters"
+local SPIKE_SETTINGS_KEY = "convertSpikePathsToVanillaSpikes"
+local CHRONIA_SPIKE_SETTINGS_KEY = "convertSpikePathsToChroniaSpikes"
 
 --[[
     Every converter starts disabled, so plain copy and paste keeps working until
@@ -46,6 +52,8 @@ initSetting(JUMPTHRU_SETTINGS_KEY)
 initSetting(DECAL_SETTINGS_KEY)
 initSetting(SPINNER_SETTINGS_KEY)
 initSetting(BOOSTER_SETTINGS_KEY)
+initSetting(SPIKE_SETTINGS_KEY)
+initSetting(CHRONIA_SPIKE_SETTINGS_KEY)
 
 local INSTALL_FLAG = "keypressed_hooked_by_ChroniaHelperDecalPaths"
 
@@ -72,8 +80,19 @@ local function isBoosterEnabled()
 end
 
 
+local function isSpikeEnabled()
+    return modSettings[SPIKE_SETTINGS_KEY] == true
+end
+
+
+local function isChroniaSpikeEnabled()
+    return modSettings[CHRONIA_SPIKE_SETTINGS_KEY] == true
+end
+
+
 local function isAnyEnabled()
     return isJumpThruEnabled() or isDecalEnabled() or isSpinnerEnabled() or isBoosterEnabled()
+        or isSpikeEnabled() or isChroniaSpikeEnabled()
 end
 
 
@@ -104,8 +123,10 @@ end
     Converters in the order they are tried.
 
     Path matching is more specific for jump throughs and decals, so those are
-    checked first. Spinners and boosters both accept any gameplay texture path,
-    which is why they come last and settle the remaining paths between them.
+    checked first, followed by vanilla spikes which only accept their own folder.
+    Spinners, boosters and the spike ring converter all accept any gameplay
+    texture path, which is why they come last and settle the remaining paths
+    between them.
 ]]
 local function getConverters()
     local converters = {}
@@ -122,6 +143,12 @@ local function getConverters()
         end)
     end
 
+    if isSpikeEnabled() then
+        table.insert(converters, function(clipboard)
+            return vanillaSpikeBuilder.buildFromClipboardText(clipboard)
+        end)
+    end
+
     if isSpinnerEnabled() then
         table.insert(converters, function(clipboard)
             return spinnerBuilder.buildFromClipboardText(clipboard)
@@ -131,6 +158,12 @@ local function getConverters()
     if isBoosterEnabled() then
         table.insert(converters, function(clipboard)
             return boosterBuilder.buildFromClipboardText(clipboard)
+        end)
+    end
+
+    if isChroniaSpikeEnabled() then
+        table.insert(converters, function(clipboard)
+            return chroniaSpikeBuilder.buildFromClipboardText(clipboard)
         end)
     end
 
@@ -294,11 +327,13 @@ local function buildConverterGroup()
 
     addConverterCheckbox(group, JUMPTHRU_MENU_KEY, JUMPTHRU_SETTINGS_KEY)
     addConverterCheckbox(group, DECAL_MENU_KEY, DECAL_SETTINGS_KEY)
+    addConverterCheckbox(group, SPIKE_MENU_KEY, SPIKE_SETTINGS_KEY)
 
     local oneOnly = {}
 
     addConverterCheckbox(oneOnly, SPINNER_MENU_KEY, SPINNER_SETTINGS_KEY)
     addConverterCheckbox(oneOnly, BOOSTER_MENU_KEY, BOOSTER_SETTINGS_KEY)
+    addConverterCheckbox(oneOnly, CHRONIA_SPIKE_MENU_KEY, CHRONIA_SPIKE_SETTINGS_KEY)
 
     table.insert(group, { ONE_ONLY_MENU_KEY, oneOnly })
 

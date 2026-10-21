@@ -327,6 +327,8 @@ public class AdvancedSpikes : Entity
 
     private bool randomTexture;
 
+    private bool clip;
+
     private Level level;
 
     private Vector2 outwards;
@@ -418,6 +420,7 @@ public class AdvancedSpikes : Entity
         this.rainbow = data.Bool("rainbow", false);
         this.randomTexture = data.Bool("randomTexture", true);
         this.dream = data.Bool("dream", false);
+        this.clip = data.Bool("clip", false);
         if (this.triggerDelay <= 0F)
         {
             this.triggerDelay = Engine.DeltaTime;
@@ -776,11 +779,22 @@ public class AdvancedSpikes : Entity
                 break;
         }
 
+        Rectangle clipBox = SpriteClipUtils.GetSpikeClipBox(base.Position, this.outwards, this.size);
+
         for (int i = 0; i < this.spikes.Length; i++)
         {
             MTexture mTexture = this.spikeTextures[this.spikes[i].textureIndex];
             Vector2 position = base.Position + vector * (4 + i * this.singleSize) + this.outwards * (this.spriteOrigin + this.spikes[i].lerp * 4F);
-            mTexture.DrawJustified(position, justify, this.spikes[i].color * this.spriteAlpha, this.spriteScale, this.spriteRotation);
+            Color color = this.spikes[i].color * this.spriteAlpha;
+
+            if (this.clip)
+            {
+                mTexture.DrawClipped(position, justify, color, this.spriteScale, this.spriteRotation, clipBox);
+            }
+            else
+            {
+                mTexture.DrawJustified(position, justify, color, this.spriteScale, this.spriteRotation);
+            }
         }
 
         Position = pos;

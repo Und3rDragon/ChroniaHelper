@@ -266,6 +266,8 @@ public class AnimatedSpikes : Entity
 
     private bool rainbow;
 
+    private bool clip;
+
     private Level level;
 
     public Vector2 outwards;
@@ -405,6 +407,7 @@ public class AnimatedSpikes : Entity
         this.attached = data.Bool("attached", true);
         this.grouped = data.Bool("grouped", false);
         this.rainbow = data.Bool("rainbow", false);
+        this.clip = data.Bool("clip", false);
 
         Old(data); // Disabled?
 
@@ -833,6 +836,8 @@ public class AnimatedSpikes : Entity
                 justify = new Vector2(0.1F, 0.5F);
                 break;
         }
+        Rectangle clipBox = SpriteClipUtils.GetSpikeClipBox(base.Position, this.outwards, this.size);
+
         for (int i = 0; i < this.spikes.Length; i++)
         {
             if ((this.spikes[i].triggered) && (this.spritingMode == SpritingMode.ChangeSprite))
@@ -841,10 +846,27 @@ public class AnimatedSpikes : Entity
             }
             MTexture mTexture = this.disableds[(int)(this.spikes[i].disabledFrame % this.disableds.Count)];
             Vector2 position = base.Position + vector * (4 + i * this.singleSize) + this.outwards * (this.disabledOrigin + this.spikes[i].lerp * 4F) + this.disabledOffset;
-            mTexture.DrawJustified(position, justify, this.spikes[i].disabledColor * this.disabledAlpha, this.disabledScale, this.disabledRotation);
+            Color color = this.spikes[i].disabledColor * this.disabledAlpha;
+
+            if (this.clip)
+            {
+                mTexture.DrawClipped(position, justify, color, this.disabledScale, this.disabledRotation, clipBox);
+            }
+            else
+            {
+                mTexture.DrawJustified(position, justify, color, this.disabledScale, this.disabledRotation);
+            }
+
             if (this.spikeType == SpikeType.Dust)
             {
-                mTexture.DrawJustified(position + vector, justify, Color.Black, this.disabledScale, this.disabledRotation);
+                if (this.clip)
+                {
+                    mTexture.DrawClipped(position + vector, justify, Color.Black, this.disabledScale, this.disabledRotation, clipBox);
+                }
+                else
+                {
+                    mTexture.DrawJustified(position + vector, justify, Color.Black, this.disabledScale, this.disabledRotation);
+                }
             }
         }
         if (this.spritingMode == SpritingMode.ChangeSprite)
@@ -857,6 +879,8 @@ public class AnimatedSpikes : Entity
 
     private void RenderTextureSpikes()
     {
+        Rectangle clipBox = SpriteClipUtils.GetSpikeClipBox(base.Position, this.outwards, this.size);
+
         Vector2 vector = new Vector2(Math.Abs(this.outwards.Y), Math.Abs(this.outwards.X));
         for (int i = 0; i < this.spikes.Length; i++)
         {
@@ -866,7 +890,17 @@ public class AnimatedSpikes : Entity
             }
             MTexture mTexture = this.enableds[(int)(this.spikes[i].enabledFrame % this.enableds.Count)];
             Vector2 position = base.Position + vector * (2 + i * this.singleSize) + this.outwards * (this.disabledOrigin + this.spikes[i].lerp * this.spikes[i].enabledExterior);
-            mTexture.DrawCentered(position, this.spikes[i].enabledColor * this.enabledAlpha, this.enabledScale * this.spikes[i].lerp, this.spikes[i].enabledRotation);
+            Vector2 scale = this.enabledScale * this.spikes[i].lerp;
+            Color color = this.spikes[i].enabledColor * this.enabledAlpha;
+
+            if (this.clip)
+            {
+                mTexture.DrawClipped(position, new Vector2(0.5F, 0.5F), color, scale, this.spikes[i].enabledRotation, clipBox);
+            }
+            else
+            {
+                mTexture.DrawCentered(position, color, scale, this.spikes[i].enabledRotation);
+            }
         }
     }
 

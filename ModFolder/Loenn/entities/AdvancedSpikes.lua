@@ -303,6 +303,15 @@ local fieldTable = {
             fieldType = "boolean",
             allowEmpty = false
         }
+    },
+    clip =
+    {
+        data = false,
+        info =
+        {
+            fieldType = "boolean",
+            allowEmpty = false
+        }
     }
 }
 
