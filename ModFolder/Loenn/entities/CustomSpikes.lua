@@ -123,6 +123,7 @@ local upSpikes = {
             grouped = false,
             rainbow = false,
             randomTexture = true,
+            clip = false,
             childMode = "",
         }
     },
@@ -163,6 +164,7 @@ local downSpikes = {
             grouped = false,
             rainbow = false,
             randomTexture = true,
+            clip = false,
             childMode = "",
         }
     },
@@ -203,6 +205,7 @@ local leftSpikes = {
             grouped = false,
             rainbow = false,
             randomTexture = true,
+            clip = false,
             childMode = "",
         }
     },
@@ -243,6 +246,7 @@ local rightSpikes = {
             grouped = false,
             rainbow = false,
             randomTexture = true,
+            clip = false,
             childMode = "",
         }
     },
