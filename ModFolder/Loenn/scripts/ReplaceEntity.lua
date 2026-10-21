@@ -18,12 +18,14 @@ local script = {
     tooltips = {
         type = "The SID of entities that will be impacted by this script",
         replaceWith = "The SID that affected entities will be turned into. Leave blank to not change entity type",
-        allowPreserving = "If enabled, extra settings will be added to allow to leave some properties untouched on affected entities.\nUseful when only changing one property of entities in bulk."
+        allowPreserving = "If enabled, extra settings will be added to allow to leave some properties untouched on affected entities.\nUseful when only changing one property of entities in bulk.",
+        keepNodes = "If enabled, the node list of affected entities is carried over to the resulting entities instead of being discarded.",
     },
     parameters = {
         type = "",
         replaceWith = "",
         allowPreserving = false,
+        keepNodes = false,
     },
     fieldInformation = {
         type = {
@@ -38,7 +40,7 @@ local script = {
             editable = true
         }
     },
-    fieldOrder = {"type", "allowPreserving", "replaceWith"}
+    fieldOrder = {"type", "allowPreserving", "replaceWith", "keepNodes"}
 }
 
 local function getChangePropName(propName)
@@ -85,7 +87,7 @@ local function getFieldOrder(args, handler)
     return order
 end
 
-local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
+local function getReplaceScriptRunFunction(entityName, replaceWith, handler, keepNodes)
     return function (room, args)
         -- 获取新实体（replaceWith）的默认属性模板（含 x/y/width/height）
         local defaultData = getPlacementData({allowPreserving = false}, handler)
@@ -167,8 +169,11 @@ local function getReplaceScriptRunFunction(entityName, replaceWith, handler)
 
                 -- 4. 清理：只删除那些“不在 keepAttrs 中”的旧属性
                 for _, key in ipairs(removeAttrs) do
+                    -- 节点列表在勾选保留时不受影响
+                    local keepForNodes = (key == "nodes" and keepNodes)
+
                     -- 如果这个属性不在保留列表中，则删除
-                    if not tableContains(keepAttrs, key) then
+                    if not keepForNodes and not tableContains(keepAttrs, key) then
                         entity[key] = nil
                     end
                 end
@@ -209,7 +214,7 @@ function script.prerun(args, layer, ctx)
         parameters = placementData,
         fieldOrder = fieldOrder,
         fieldInformation = entityHandler.fieldInformation,
-        run = getReplaceScriptRunFunction(entityName, replaceWith, entityHandler),
+        run = getReplaceScriptRunFunction(entityName, replaceWith, entityHandler, args.keepNodes),
     }
 
     script.scriptsTool.useScript(changeHandler, ctx)

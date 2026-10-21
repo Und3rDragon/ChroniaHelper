@@ -1,5 +1,5 @@
 - Name: ChroniaHelper
-  Version: 1.56.9
+  Version: 1.57.0
   DLL: Code/ChroniaHelper.dll
   Dependencies:
     - Name: Everest
@@ -18,4 +18,6 @@
     - Name: LakeSideCode
       Version: 0.1.0
     - Name: ExtendedCameraDynamics
+      Version: 1.2.0
+    - Name: BounceHelper
       Version: 1.2.0

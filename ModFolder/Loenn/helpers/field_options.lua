@@ -1,4 +1,4 @@
-﻿local musics = require("consts.songs")
+local musics = require("consts.songs")
 local ambiences = require("consts.ambient_sounds")
 
 --[[

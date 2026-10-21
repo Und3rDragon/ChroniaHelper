@@ -14,29 +14,37 @@ public class ChroniaSystem
     [LoadHook]
     public static void Onload()
     {
-        On.Celeste.Level.Reload += OnLevelReload;
         On.Celeste.Level.LoadLevel += OnLoadLevel;
-        On.Monocle.Scene.Update += GlobalUpdate;
         On.Celeste.Level.TransitionRoutine += OnLevelTransition;
-        On.Celeste.Player.Die += OnPlayerDeath;
         On.Celeste.Level.Begin += OnLevelBegin;
-        On.Celeste.Level.End += OnLevelEnd;
         On.Celeste.Level.Update += OnLevelUpdate;
+        On.Celeste.Player.IntroRespawnBegin += BeforeRespawn;
+        //On.Celeste.Level.Reload += OnLevelReload;
+        //On.Monocle.Scene.Update += GlobalUpdate;
+        //On.Celeste.Player.Die += OnPlayerDeath;
+        //On.Celeste.Level.End += OnLevelEnd;
     }
 
     [UnloadHook]
     public static void Unload()
     {
-        On.Celeste.Level.Reload -= OnLevelReload;
         On.Celeste.Level.LoadLevel -= OnLoadLevel;
-        On.Monocle.Scene.Update -= GlobalUpdate;
         On.Celeste.Level.TransitionRoutine -= OnLevelTransition;
-        On.Celeste.Player.Die -= OnPlayerDeath;
         On.Celeste.Level.Begin -= OnLevelBegin;
-        On.Celeste.Level.End -= OnLevelEnd;
         On.Celeste.Level.Update -= OnLevelUpdate;
+        On.Celeste.Player.IntroRespawnBegin += BeforeRespawn;
+        //On.Celeste.Level.End -= OnLevelEnd;
+        //On.Celeste.Player.Die -= OnPlayerDeath;
+        //On.Monocle.Scene.Update -= GlobalUpdate;
+        //On.Celeste.Level.Reload -= OnLevelReload;
     }
 
+    public static void BeforeRespawn(On.Celeste.Player.orig_IntroRespawnBegin orig, Player self)
+    {
+        orig(self);
+
+        ResetPerDeath(MaP.level);
+    }
 
     public static IEnumerator OnLevelTransition(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData levelData, Vector2 dir)
     {
@@ -46,24 +54,12 @@ public class ChroniaSystem
         yield return new SwapImmediately(orig(self, levelData, dir)); //On transition
     }
 
-    public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
-    {
-        orig(self); // Once per reload, not on first enter, not on F5
-        // After LoadLevel
-
-    }
-
     public static void OnLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes intro, bool fromLoader)
     {
         orig(self, intro, fromLoader); // Once per level load, also reload
 
         ResetPerRoom(self);
         ApplyGlobals(self);
-    }
-
-    public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
-    {
-        orig(self);
     }
 
     public static void OnLevelUpdate(On.Celeste.Level.orig_Update orig, Level self)
@@ -136,13 +132,6 @@ public class ChroniaSystem
         //}
     }
     
-    public static PlayerDeadBody OnPlayerDeath(On.Celeste.Player.orig_Die orig, Player self, Vc2 dir, bool eii, bool reg)
-    {
-        ResetPerDeath(MaP.level);
-        
-        return orig(self, dir, eii, reg);
-    }
-
     public static void OnLevelBegin(On.Celeste.Level.orig_Begin orig, Level self)
     {
         orig(self);
@@ -166,12 +155,6 @@ public class ChroniaSystem
             $"ChroniaHelper_ChroniaColor_{name}_B".SetCounter(item.Value.color.B);
             $"ChroniaHelper_ChroniaColor_{name}_A".SetSlider(item.Value.alpha);
         }
-    }
-
-    public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
-    {
-
-        orig(self);
     }
 
     public static void ResetPerRoom(Level self)
@@ -239,4 +222,32 @@ public class ChroniaSystem
             self.Session.SetSlider(item.Key, item.Value);
         }
     }
+
+    #region Currently inactive hooks
+
+    public static PlayerDeadBody OnPlayerDeath(On.Celeste.Player.orig_Die orig, Player self, Vc2 dir, bool eii, bool reg)
+    {
+        return orig(self, dir, eii, reg);
+    }
+
+    public static void GlobalUpdate(On.Monocle.Scene.orig_Update orig, Scene self)
+    {
+        orig(self);
+    }
+
+    public static void OnLevelReload(On.Celeste.Level.orig_Reload orig, Level self)
+    {
+        orig(self); // Once per reload, not on first enter, not on F5
+        // After LoadLevel
+
+    }
+
+    public static void OnLevelEnd(On.Celeste.Level.orig_End orig, Level self)
+    {
+
+        orig(self);
+    }
+
+    #endregion
+
 }

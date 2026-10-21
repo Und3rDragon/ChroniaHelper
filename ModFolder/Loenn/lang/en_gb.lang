@@ -1804,3 +1804,105 @@ entities.ChroniaHelper/LevelDataToSessionController.placements.name.controller=L
 # ========================== Crumble Block On Jump
 
 entities.ChroniaHelper/CrumbleBlockOnJump.placements.name.default=Crumble Block On Jump (Groupped)
+
+# ========================== Custom Falling Block
+
+entities.ChroniaHelper/CustomFallingBlock.placements.name.default=Custom Falling Block (Groupped)
+
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.tiletype=The tile type this block is made of.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.direction=The direction the block falls towards (0 = Down, 1 = Left, 2 = Up, 3 = Right).
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.accel=How quickly the block accelerates towards its maximum falling speed.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.maxSpeed=The maximum falling speed of the block.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.fallDelay=How long the block waits before it starts falling, after being triggered.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.climbFall=If enabled, the block also falls when a player is climbing on its side.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.bufferClimbFall=If enabled, the block falls earlier when the player buffers a grab on its side.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.legacy=If enabled, uses the legacy triggering behaviour (metatriggering appears as soon as the block gets triggered).
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.behind=If enabled, the block is drawn behind the player.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.crushBlockTrigger=If enabled, the block can also be triggered by a crush block.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.breakDashBlocks=If enabled, the block destroys dash blocks it passes through while falling.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.shakeForAllFalls=If enabled, the block keeps shaking during every fall instead of only the first one.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagTrigger=The flag that triggers the block to fall.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnFall=The flag set while the block is falling.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnGround=The flag set when the block lands on the ground.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnly=If enabled, the block only falls when triggered by its flag, ignoring the player.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.finalBoss=If enabled, the block uses the final boss behaviour (highlight layer and shorter delays).
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.shakeSfx=The sound played while the block is shaking, right before it falls.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.impactSfx=The sound played when the block lands.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.blendIn=If enabled, the block blends in with the tiles around it.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.bgTexture=If enabled, the block uses the background tileset.
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.depth=The depth at which the block is drawn.
+
+# ========================== Custom Push Block
+
+entities.ChroniaHelper/CustomPushBlock.placements.name.default=Custom Push Block (Groupped)
+
+entities.ChroniaHelper/CustomPushBlock.attributes.description.tiletype=The tile type this block is made of.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyTop=If enabled, the block ignores gravity while something is directly above it, so it can hang from a ceiling.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyBottom=If enabled, the block is treated as attached to the floor below it.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyLeft=If enabled, the block ignores gravity while something is directly to its left, so it can stick to a wall.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyRight=If enabled, the block ignores gravity while something is directly to its right, so it can stick to a wall.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.debrisTileset=The tileset used by the debris that appears when the block gets dash-pushed.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.blendIn=If enabled, the block blends in with the tiles around it.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.bgTexture=If enabled, the block uses the background tileset.
+entities.ChroniaHelper/CustomPushBlock.attributes.description.depth=The depth at which the block is drawn.
+
+# ================= Flag Filter / Regex Series
+
+triggers.ChroniaHelper/FlagFilterOperation.placements.name.trigger=Flag Filter Operation Trigger
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.contains=A substring the flag name should contain.\nLeave empty to skip this condition.
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.startsWith=A substring the flag name should start with.\nLeave empty to skip this condition.
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.endsWith=A substring the flag name should end with.\nLeave empty to skip this condition.
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.mode=How the matched flags are modified:\n"Off" - disable all matched flags\n"Set as flag value" - set matched flags to the value read from "Parameter" as a flag name\n"Equals to Chronia Helper Expression not 0" - set matched flags by the result of a Chronia math expression in "Parameter"\n"Equals to Frost Session Expression not 0" - set matched flags by the result of a Frost Helper session expression in "Parameter"
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.parameter=The source used by "Mode" to decide the value to apply.\nDepends on the selected mode, it is read as a flag name, a Chronia math expression, or a Frost session expression.
+
+triggers.ChroniaHelper/FlagRegexOperation.placements.name.trigger=Flag Regex Operation Trigger
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.regex=A regular expression tested against every session flag.
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.mode=How the matched flags are handled:\n"Off" - disable all flags matching the regex\n"Replace" - replace the matching part of each flag name with "Parameter"; the flag itself is not renamed\n"Count" - count how many flags match the regex and store the amount into "Parameter" as a counter
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.parameter=Used as the replacement text when "Mode" is "Replace",\nor as the target counter name when "Mode" is "Count".\nIgnored when "Mode" is "Off".
+
+entities.ChroniaHelper/FlagFilterController.placements.name.controller=Flag Filter Controller
+entities.ChroniaHelper/FlagFilterController.attributes.description.contains=A substring the flag name should contain.\nLeave empty to skip this condition.
+entities.ChroniaHelper/FlagFilterController.attributes.description.startsWith=A substring the flag name should start with.\nLeave empty to skip this condition.
+entities.ChroniaHelper/FlagFilterController.attributes.description.endsWith=A substring the flag name should end with.\nLeave empty to skip this condition.
+entities.ChroniaHelper/FlagFilterController.attributes.description.operationMode=How the matched flags are modified:\n"Off" - disable all matched flags\n"Set as flag value" - set matched flags to the value read from "Operation Parameter" as a flag name\n"Equals to Chronia Helper Expression not 0" - set matched flags by the result of a Chronia math expression in "Operation Parameter"\n"Equals to Frost Session Expression not 0" - set matched flags by the result of a Frost Helper session expression in "Operation Parameter"
+entities.ChroniaHelper/FlagFilterController.attributes.description.operationParameter=The source used by "Operation Mode" to decide the value to apply.\nDepends on the selected mode, it is read as a flag name, a Chronia math expression, or a Frost session expression.
+
+entities.ChroniaHelper/FlagRegexController.placements.name.controller=Flag Regex Controller
+entities.ChroniaHelper/FlagRegexController.attributes.description.regex=A regular expression tested against every session flag.
+entities.ChroniaHelper/FlagRegexController.attributes.description.regexMode=How the matched flags are handled:\n"Off" - disable all flags matching the regex\n"Replace" - replace the matching part of each flag name with "Regex Parameter"; the flag itself is not renamed\n"Count" - count how many flags match the regex and store the amount into "Regex Parameter" as a counter
+entities.ChroniaHelper/FlagRegexController.attributes.description.regexParameter=Used as the replacement text when "Regex Mode" is "Replace",\nor as the target counter name when "Regex Mode" is "Count".\nIgnored when "Regex Mode" is "Off".
+
+entities.ChroniaHelper/CoreModeFlagController.placements.name.controller=Core Mode Flag Controller
+entities.ChroniaHelper/CoreModeFlagController.attributes.description.coreMode=The core mode this controller reacts to:\n"None", "Cold", or "Hot".
+entities.ChroniaHelper/CoreModeFlagController.attributes.description.flag=This flag is kept active whenever the room's core mode matches "Core Mode", and disabled otherwise.
+
+triggers.ChroniaHelper/FlagToggleTrigger.placements.name.trigger=Flag Toggle Trigger
+triggers.ChroniaHelper/FlagToggleTrigger.attributes.description.flag=The flag whose value is toggled each time the player enters the trigger.
+
+# ================= Breaker Box
+
+entities.ChroniaHelper/LightningBreakerBox.placements.name.box=Lightning Breaker Box (Disabled Bloom Strength Modifications)
+
+# ================= Bound Refill
+
+entities.ChroniaHelper/BoundRefill.placements.name.bound=Bound Refill (Custom Direction)
+entities.ChroniaHelper/BoundRefill.placements.description.bound=From KAERRA's Furry Week. Grants the player a spring-like dash.
+entities.ChroniaHelper/BoundRefill.attributes.description.oneUse=Whether the refill should disappear once collected.
+entities.ChroniaHelper/BoundRefill.attributes.description.respawnTime=The time it takes for the refill to respawn.
+entities.ChroniaHelper/BoundRefill.attributes.description.visualOffsetX=Applies a visual-only horizontal offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.ChroniaHelper/BoundRefill.attributes.description.visualOffsetY=Applies a visual-only vertical offset to the refill's sprite.\nThe refill's hitbox is not affected.
+entities.ChroniaHelper/BoundRefill.attributes.description.direction=Bounce direction when the dash is cancelled (0 = Up, 1 = Left, 2 = Right, 3 = Down).
+entities.ChroniaHelper/BoundRefill.attributes.description.pulseFlag=Activates this flag for one frame when the refill is collected. Does nothing if the field is empty.\nTo achieve other flag behaviors, this 1-frame flag pulse should be listened to with, for example, a Frost Helper Activator.
+
+# ================= Lightning Box
+
+entities.ChroniaHelper/LightningBreakerBoxWithNoBloomEffect.placements.name.default=Lightning Breaker Box (No Legacy Bloom Strength Effect)
+
+# ================= Loenn Menu
+
+ui.menubar.ChroniaHelper_convertPastedPaths=Convert Pasted Paths [ChroniaHelper]
+ui.menubar.ChroniaHelper_enableOneOnly=Enable One Only
+ui.menubar.ChroniaHelper_convertDecalPaths=Convert Decal Paths To Decals [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertJumpThruPaths=Convert Jump Through Paths To Vanilla Jump Through [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertSpinnerPaths=Convert Spinner Paths To Chronia Seamless Spinner [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertBoosterPaths=Convert Booster Paths To Chronia Custom Booster [ChroniaHelper]

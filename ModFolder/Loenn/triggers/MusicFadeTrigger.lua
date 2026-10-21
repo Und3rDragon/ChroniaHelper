@@ -1,4 +1,4 @@
-﻿local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
+local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
 local celesteData = require("mods").requireFromPlugin("consts.celeste_data")
 
 return {

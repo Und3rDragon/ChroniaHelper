@@ -21,7 +21,7 @@ public class WindTunnel : Entity
     private readonly float _loopHeight;
     private readonly float _strength;
     private readonly Direction _direction;
-    private readonly Particle[] _particles;
+    private readonly WindTunnelParticle[] _particles;
     private float scale;
     private float _percent;
     private bool _speedingUp;
@@ -128,7 +128,7 @@ public class WindTunnel : Entity
             .Select(str => Calc.HexToColor(str.Trim()))
             .ToArray();
 
-        _particles = new Particle[particlecount];
+        _particles = new WindTunnelParticle[particlecount];
         for (int i = 0; i < _particles.Length; i++)
         {
             Reset(i, Calc.Random.NextFloat(_baseAlpha));
@@ -338,7 +338,7 @@ public class WindTunnel : Entity
         _particles[i].Color = Calc.Random.Next(_colors.Length);
     }
 
-    public struct Particle
+    public struct WindTunnelParticle
     {
         public Vector2 Position;
         public float Percent;

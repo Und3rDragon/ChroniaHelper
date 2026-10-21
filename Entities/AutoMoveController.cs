@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Cores;
 using ChroniaHelper.Utils.ChroniaSystem;

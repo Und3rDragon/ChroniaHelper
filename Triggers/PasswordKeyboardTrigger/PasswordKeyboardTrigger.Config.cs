@@ -1,4 +1,4 @@
-namespace ChroniaHelper.Entities.PasswordKeyboard;
+﻿namespace ChroniaHelper.Entities.PasswordKeyboard;
 
 partial class PasswordKeyboardTrigger
 {

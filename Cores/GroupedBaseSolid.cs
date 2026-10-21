@@ -107,7 +107,7 @@ public class GroupedBaseSolid : Solid
         }
     }
 
-    public bool PlayerFallCheck()
+    public virtual bool PlayerFallCheck()
     {
         foreach (GroupedBaseSolid block in Group)
         {
@@ -140,7 +140,7 @@ public class GroupedBaseSolid : Solid
         return false;
     }
 
-    public bool PlayerWaitCheck()
+    public virtual bool PlayerWaitCheck()
     {
         if (Triggered && this.canTrigger)
         {
@@ -297,6 +297,14 @@ public class GroupedBaseSolid : Solid
             master.Triggered = true;
         }
     }
+
+    public void TriggerAll()
+    {
+        foreach(var i in Group)
+        {
+            i.Triggered = true;
+        }
+    }
     
     public void AddToGroupAndFindChildren()
     {
@@ -436,14 +444,7 @@ public class GroupedBaseSolid : Solid
 
     public override void OnStaticMoverTrigger(StaticMover sm)
     {
-        if (MasterOfGroup)
-        {
-            Triggered = true;
-        }
-        else
-        {
-            master.Triggered = true;
-        }
+        Trigger();
     }
 
     public override void OnShake(Vector2 amount)
@@ -570,6 +571,196 @@ public class GroupedBaseSolid : Solid
         {
             currentKillTimer = -1;
         }
+    }
+    #endregion
+
+    #region 组内同步
+    /// <summary>
+    /// 设置组内所有成员的可见性与碰撞开关。
+    /// </summary>
+    public void SetGroupVisibility(bool value)
+    {
+        foreach (GroupedBaseSolid block in Group)
+        {
+            block.Collidable = block.Visible = value;
+        }
+    }
+
+    /// <summary>
+    /// 把组内成员统一为指定配置。
+    /// </summary>
+    public void SyncGroup<T>(Action<T> apply) where T : GroupedBaseSolid
+    {
+        foreach (GroupedBaseSolid block in Group)
+        {
+            if (block is T target)
+            {
+                apply(target);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 按移动方向排序组内成员：沿移动方向「最靠前」的排在前面，
+    /// 使其先让开位置，其余成员移动时不会与同组成员互相误判为碰撞。
+    /// </summary>
+    public void SortGroupByMoveDirection(Vc2 moveDir)
+    {
+        Group.Sort((a, b) =>
+            Vc2.Dot(b.Center, moveDir).CompareTo(Vc2.Dot(a.Center, moveDir)));
+    }
+    #endregion
+
+    #region 组内移动
+    /// <summary>
+    /// 记录各分组内各骑乘者最近一次被带动的时间，用于保证同一组在一帧内
+    /// 只会带动同一骑乘者一次，避免玩家同时位于多块交界处时位移翻倍。
+    /// </summary>
+    private static readonly Dictionary<(int, Actor), float> carriedStamp = new();
+
+    /// <summary>
+    /// 判断当前骑乘者是否应由本组带动：本帧尚未被本组带动过则返回 true。
+    /// 独立方块不存在重复带动的问题，始终返回 true。
+    /// </summary>
+    private bool TryCarryRider(Actor actor)
+    {
+        if (Group.Count <= 1)
+        {
+            return true;
+        }
+
+        float now = Scene == null ? 0f : Scene.TimeActive;
+
+        if (carriedStamp.TryGetValue((GroupTag, actor), out float last) && last == now)
+        {
+            return false;
+        }
+
+        carriedStamp[(GroupTag, actor)] = now;
+        return true;
+    }
+
+    /// <summary>
+    /// 竖直方向精确移动；骑乘者每帧每组只被带动一次。
+    /// </summary>
+    public override void MoveVExact(int move)
+    {
+        MoveGroupExact(move, true);
+    }
+
+    /// <summary>
+    /// 水平方向精确移动；骑乘者每帧每组只被带动一次。
+    /// </summary>
+    public override void MoveHExact(int move)
+    {
+        MoveGroupExact(move, false);
+    }
+
+    /// <summary>
+    /// 组内方块的精确移动：沿指定轴移动自身并同步带动骑乘者，
+    /// 同时把移动路径上的其他角色推开。
+    /// </summary>
+    protected virtual void MoveGroupExact(int move, bool vertical)
+    {
+        Vc2 dir = vertical ? Vc2.UnitY : Vc2.UnitX;
+
+        GetRiders();
+
+        float top = Top;
+        float bottom = Bottom;
+        float left = Left;
+        float right = Right;
+
+        Position += dir * move;
+        MoveStaticMovers(dir * move);
+
+
+        if (!Collidable)
+        {
+            return;
+        }
+
+        foreach (Actor entity in Scene.Tracker.GetEntities<Actor>())
+        {
+            if (!entity.AllowPushing)
+            {
+                continue;
+            }
+
+            bool collidable = entity.Collidable;
+            entity.Collidable = true;
+
+            if (!entity.TreatNaive && CollideCheck(entity, Position))
+            {
+
+                Collidable = false;
+
+                if (vertical)
+                {
+                    int moveV = (move <= 0) ? (move - (int)(entity.Bottom - top)) : (move - (int)(entity.Top - bottom));
+                    entity.MoveVExact(moveV, entity.SquishCallback, this);
+                }
+                else
+                {
+                    int moveH = (move <= 0) ? (move - (int)(entity.Right - left)) : (move - (int)(entity.Left - right));
+                    entity.MoveHExact(moveH, entity.SquishCallback, this);
+                }
+
+                entity.LiftSpeed = LiftSpeed;
+                Collidable = true;
+            }
+            else if (riders.Contains(entity))
+            {
+                bool carry = TryCarryRider(entity);
+
+                if (!carry)
+                {
+                    entity.Collidable = collidable;
+                    continue;
+                }
+
+                // 玩家可能同时位于组内多块的交界处，带动他时需让这些方块暂时不参与碰撞，
+                // 否则他会在移动途中被相邻的同组方块挡住而无法跟随。
+                List<GroupedBaseSolid> ridingBlocks = new();
+
+                foreach (GroupedBaseSolid block in Group)
+                {
+                    if (block.Collidable && entity.IsRiding(block))
+                    {
+                        ridingBlocks.Add(block);
+                        block.Collidable = false;
+                    }
+                }
+
+                Collidable = false;
+
+                if (entity.TreatNaive)
+                {
+                    entity.NaiveMove(dir * move);
+                }
+                else if (vertical)
+                {
+                    entity.MoveVExact(move);
+                }
+                else
+                {
+                    entity.MoveHExact(move);
+                }
+
+                entity.LiftSpeed = LiftSpeed;
+
+                Collidable = true;
+
+                foreach (GroupedBaseSolid block in ridingBlocks)
+                {
+                    block.Collidable = true;
+                }
+            }
+
+            entity.Collidable = collidable;
+        }
+
+        riders.Clear();
     }
     #endregion
 }

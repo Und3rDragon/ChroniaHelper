@@ -1,4 +1,4 @@
-﻿return {
+return {
     name = "ChroniaHelper/FlagStateTrigger",
     placements =
     {

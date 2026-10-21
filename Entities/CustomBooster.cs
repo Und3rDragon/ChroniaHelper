@@ -240,7 +240,10 @@ public class CustomBooster : Booster
         outline.Visible = false;
         outline.Add(image);
         outline.Add(new MirrorReflection());
-        scene.Add(outline);
+        if (!onlyOnce)
+        {
+            scene.Add(outline);
+        }
     }
 
     private static void Booster_PlayerBoosted(On.Celeste.Booster.orig_PlayerBoosted orig, Booster self, Player player, Vector2 direction)
@@ -290,7 +293,7 @@ public class CustomBooster : Booster
             booster.Tag = (int)Tags.Persistent | (int)Tags.TransitionUpdate;
             booster.sprite.Play("spin");
             booster.sprite.FlipX = player.Facing == Facings.Left;
-            booster.outline.Visible = true;
+            booster.outline?.Visible = true;
             booster.wiggler.Start();
             booster.dashRoutine.Replace(booster.BoostRoutine(player, direction));
         }

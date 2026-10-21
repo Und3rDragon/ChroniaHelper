@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Celeste.Mod.Core;
 using ChroniaHelper.Utils;
 using Microsoft.Xna.Framework.Input;

@@ -1,4 +1,4 @@
-﻿local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
+local fieldOptions = require("mods").requireFromPlugin("consts.field_options")
 
 return {
     name = "ChroniaHelper/FlagSwitchTrigger",

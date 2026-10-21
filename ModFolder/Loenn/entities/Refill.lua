@@ -1,4 +1,4 @@
-﻿local defaultFields = require("mods").requireFromPlugin("consts.default_fields")
+local defaultFields = require("mods").requireFromPlugin("consts.default_fields")
 local core = require("mods").requireFromPlugin("utils.core")
 
 local fieldTable = {

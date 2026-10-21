@@ -142,7 +142,7 @@ public class OmniZipSolid : ConnectedSolid
 
         public Vector2[] nodes;
 
-        public bool hideRope, hideCog;
+        public bool hideRope, hideCog, shadow = true;
 
         public PathRenderer(OmniZipSolid zipMover, Vector2[] nodes, Color color, Color lightColor)
         {
@@ -200,19 +200,28 @@ public class OmniZipSolid : ConnectedSolid
                 return;
 
             foreach (Segment seg in segments)
-                if (seg.Seen = cameraBounds.Intersects(seg.Bounds))
-                    seg.RenderShadow(zipMover.percent, hideRope);
+            {
+                seg.Seen = cameraBounds.Intersects(seg.Bounds);
 
-            foreach (Segment seg in segments)
-                if (seg.Seen)
+                if(seg.Seen)
+                {
+                    if (shadow)
+                    {
+                        seg.RenderShadow(zipMover.percent, hideRope);
+                    }
                     seg.Render(zipMover.percent, color, lightColor, hideRope);
+                }
+            }
 
             float rotation = zipMover.percent * MathHelper.TwoPi;
             foreach (Vector2 node in nodes)
             {
                 if (!hideCog)
                 {
-                    zipMover.cog.DrawCentered(node + Vector2.UnitY, Color.Black, 1f, rotation);
+                    if (shadow)
+                    {
+                        zipMover.cog.DrawCentered(node + Vector2.UnitY, Color.Black, 1f, rotation);
+                    }
                     zipMover.cog.DrawCentered(node, Color.White, 1f, rotation);
                 }
 
@@ -280,11 +289,16 @@ public class OmniZipSolid : ConnectedSolid
 
     public bool moving = false;
 
+    public bool zipperShadow = true;
+
     public override void Added(Scene scene)
     {
         base.Added(scene);
         level = SceneAs<Level>();
-        scene.Add(pathRenderer = new(this, nodes, ropeColor, ropeLightColor));
+
+        pathRenderer = new(this, nodes, ropeColor, ropeLightColor);
+        pathRenderer.shadow = zipperShadow;
+        scene.Add(pathRenderer);
     }
 
     // OnDash parameters
@@ -683,7 +697,7 @@ public class OmniZipSolid : ConnectedSolid
                     while(!ActivateArg(i - 1,false))
                         yield return null;
                 }
-                streetlight.SetAnimationFrame(2);
+                streetlight.SetAnimationFrame(3);
 
                 // Changed Subjects
                 if (i <= this.delays.Length)

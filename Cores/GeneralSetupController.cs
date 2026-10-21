@@ -108,6 +108,10 @@ public abstract class GeneralSetupController : BaseEntity
                                Mode == Modes.OnFrostSessionExpressionState || 
                                Mode == Modes.OnChroniaFlagLogicExpressionState;
 
+    public bool IsCoreMode => Mode == Modes.OnCoreModeNone ||
+                                Mode == Modes.OnCoreModeCold ||
+                                Mode == Modes.OnCoreModeHot;
+
     public GeneralSetupController(EntityData data, Vc2 offset) : base(data, offset)
     {
         Parameter = data.Attr("parameters");
@@ -202,6 +206,36 @@ public abstract class GeneralSetupController : BaseEntity
             case var m when IsFlagLogicMode:
                 EvaluateFlagLogicMode();
                 break;
+
+            case var m when IsCoreMode:
+                EvaluateCoreMode();
+                break;
+        }
+    }
+
+    private void EvaluateCoreMode()
+    {
+        EnumWrapper<Session.CoreModes> coremode = SceneAs<Level>().Session.CoreMode;
+
+        if(coremode == Session.CoreModes.None && Mode == Modes.OnCoreModeNone)
+        {
+            CurrentState = true;
+            Execute();
+        }
+        else if (coremode == Session.CoreModes.Cold && Mode == Modes.OnCoreModeCold)
+        {
+            CurrentState = true;
+            Execute();
+        }
+        else if (coremode == Session.CoreModes.Hot && Mode == Modes.OnCoreModeHot)
+        {
+            CurrentState = true;
+            Execute();
+        }
+        else
+        {
+            CurrentState = false;
+            Revert();
         }
     }
 
@@ -299,5 +333,8 @@ public abstract class GeneralSetupController : BaseEntity
         public const int OnChroniaExpressionState = 18;
         public const int OnFrostSessionExpressionState = 19;
         public const int OnChroniaFlagLogicExpressionState = 20;
+        public const int OnCoreModeNone = 21;
+        public const int OnCoreModeCold = 22;
+        public const int OnCoreModeHot = 23;
     }
 }

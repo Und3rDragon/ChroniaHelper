@@ -1,4 +1,4 @@
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using MonoMod.Utils;

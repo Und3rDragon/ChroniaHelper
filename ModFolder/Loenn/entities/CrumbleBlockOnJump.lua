@@ -23,18 +23,7 @@ return {
 		}
 	},
 	fieldOrder = {
-		"x",
-		"y",
-		"width",
-		"height",
-		"delay",
-		"tiletype",
-		"breakSound",
-		"triggerOnLean",
-		"permanent",
-		"blendIn",
-		"destroyStaticMovers",
-		"createDebris"
+		
 	},
 	fieldInformation = function(entity)
 		local orig = {}

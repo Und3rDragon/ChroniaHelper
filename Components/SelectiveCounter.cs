@@ -3,6 +3,7 @@ using ChroniaHelper.Utils.ChroniaSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,6 +41,15 @@ public class SelectiveCounter : SelectiveSessionValue
 
         return Expression.GetCounter(Fallback);
     }
+
+    public static implicit operator string(SelectiveCounter s)
+        => s.Expression;
+
+    public static implicit operator SelectiveCounter(string s)
+        => new (s);
+
+    public static implicit operator int(SelectiveCounter s)
+        => s.GetValue();
 }
 
 public static class SelectiveCounterExtension

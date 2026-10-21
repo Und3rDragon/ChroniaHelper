@@ -19,7 +19,7 @@ using Celeste.Mod.Backdrops;
 namespace ChroniaHelper.Effects {
     [CustomBackdrop("ChroniaHelper/WindRainFG")]
     public class WindRainFG : Backdrop {
-        private struct Particle {
+        private struct WindRainParticle {
             public Vector2 Position;
 
             public float Speed;
@@ -44,7 +44,7 @@ namespace ChroniaHelper.Effects {
 
         private float linearFade = 1f;
 
-        private Particle[] particles;
+        private WindRainParticle[] particles;
 
         public Color[] Colors;
 
@@ -66,7 +66,7 @@ namespace ChroniaHelper.Effects {
         {
             this.Scroll = scroll;
             this.windStrength = windStrength;
-            particles = new Particle[amount];
+            particles = new WindRainParticle[amount];
             if (string.IsNullOrEmpty(colors)) { this.Colors = new Color[] { Calc.HexToColor("161933") }; }
             else if (colors[0] == '§')
             {

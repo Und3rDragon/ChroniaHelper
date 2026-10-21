@@ -172,6 +172,7 @@ for i, theme in ipairs(themes) do
             displayParameters = false,
             indicator = "",
             indicatorExpansion = 0,
+            zipperShadow = true,
         }
     }
 end

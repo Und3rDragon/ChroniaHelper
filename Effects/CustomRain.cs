@@ -1,14 +1,8 @@
 ﻿using Celeste;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Monocle;
-using static Celeste.ClutterBlock;
-using ChroniaHelper.Utils;
 using Celeste.Mod.Backdrops;
+using ChroniaHelper.Utils;
+using ChroniaHelper.Utils.ChroniaSystem;
+using ChroniaHelper.Components;
 
 namespace ChroniaHelper.Effects;
 
@@ -16,7 +10,7 @@ namespace ChroniaHelper.Effects;
 [CustomBackdrop("ChroniaHelper/CustomRain")]
 public class CustomRain : Backdrop {
     
-    public struct Particle {
+    public struct CustomRainParticle {
         public Vector2 Position;
 
         public Vector2 Speed;
@@ -36,8 +30,10 @@ public class CustomRain : Backdrop {
     }
 
     public float speedMult, alpha;
-    public Particle[] particles;
-    public int count;
+    public List<CustomRainParticle> particles = new();
+    public List<CustomRainParticle> currentParticles = new();
+    public SelectiveCounter count;
+    public int? trueCount = null;
 
     private float visibleFade = 1f;
 
@@ -45,24 +41,36 @@ public class CustomRain : Backdrop {
 
     public float windStrength = 0f;
 
+    /// <summary>
+    /// 本帧实际参与更新与绘制的粒子数，逐帧按计数器刷新一次。
+    /// </summary>
+    private int activeCount = 0;
+
     public CustomRain(BinaryPacker.Element child)
         :this(new Vector2(child.AttrFloat("Scrollx"), child.AttrFloat("Scrolly")), 
              child.AttrFloat("angle", 270f), child.AttrFloat("angleDiff", 3f), child.AttrFloat("speedMult", 1f), 
-             child.AttrInt("Amount", 240), child.Attr("Colors", "161933"), child.AttrFloat("alpha", 1f),
+             child.Attr("Amount", "240"), child.Attr("Colors", "161933"), child.AttrFloat("alpha", 1f),
              child.AttrFloat("extendedBorderX", 0f), child.AttrFloat("extendedBorderY", 0f),
              child.Attr("fadingX"), child.Attr("fadingY"), child.AttrFloat("windStrength")
              )
     { }
 
-    public CustomRain(Vector2 scroll, float angle, float angleDiff, float speedMult, int count, string colors, float alpha,
+    public CustomRain(Vector2 scroll, float angle, float angleDiff, float speedMult, string count, string colors, float alpha,
         float extX, float extY, string fadeX, string fadeY, float windStrength
         ) 
     {
         this.Scroll = scroll;
         this.windStrength = windStrength;
         this.count = count;
-        particles = new Particle[count];
-        List<Color> _colors = new List<Color>();
+        this.speedMult = speedMult;
+        if(count.TryParse(out int n))
+        {
+            trueCount = n;
+        }
+
+        particles = new();
+
+        _colors = new List<Color>();
         if (string.IsNullOrEmpty(colors))
         {
             _colors = new List<Color>() { Color.White };
@@ -82,10 +90,16 @@ public class CustomRain : Backdrop {
                 _colors.Add(Calc.HexToColor(p.Trim().TrimStart('#')));
             }
         }
-        var _angle = angle * -Calc.DegToRad;
-        var _angleDiff = Math.Abs(angleDiff * Calc.DegToRad);
-        for (int i = 0; i < count; i++) {
-            particles[i].Init(_angle + Rd.Random.Range(-_angleDiff, _angleDiff), speedMult, Rd.Random.Choose<Color>(_colors), extX, extY);
+        _angle = angle * -Calc.DegToRad;
+        _angleDiff = Math.Abs(angleDiff * Calc.DegToRad);
+        this.extX = extX;
+        this.extY = extY;
+        // Prepare initial counts
+        int initialCount = trueCount ?? (count.GetCounter() <= 0 ? 100 : count.GetCounter());
+        for (int i = 0; i < initialCount; i++) {
+            CustomRainParticle p = new();
+            p.Init(_angle + Rd.Random.Range(-_angleDiff, _angleDiff), speedMult, Rd.Random.Choose<Color>(_colors), extX, extY);
+            particles.Add(p);
         }
         this.alpha = alpha;
 
@@ -116,9 +130,12 @@ public class CustomRain : Backdrop {
         }
     }
 
+    private float _angle, _angleDiff, extX, extY;
+    private List<Color> _colors = new();
     public override void Update(Scene scene) {
         base.Update(scene);
-        bool flag = ((scene as Level).Raining = IsVisible(scene as Level));
+        Level level = scene as Level;
+        bool flag = (level.Raining = IsVisible(level));
         visibleFade = Calc.Approach(visibleFade, flag ? 1 : 0, Engine.DeltaTime * (flag ? 10f : 0.25f));
         if (FadeX != null) {
             linearFade = FadeX.Value(PUt.player?.Position.X ?? 0);
@@ -128,23 +145,50 @@ public class CustomRain : Backdrop {
             float v = FadeY.Value(PUt.player?.Position.Y ?? 0);
             linearFade = linearFade.Clamp(0f, v);
         }
-        for (int i = 0; i < count; i++) {
-            particles[i].Position += (particles[i].Speed + (scene as Level).Wind * windStrength) * Engine.DeltaTime;
+
+        // Update particle counts (expand)
+        activeCount = trueCount ?? ((int)count).ClampMin(0);
+
+        if (particles.Count < activeCount)
+        {
+            for (int i = particles.Count; i < activeCount; i++)
+            {
+                CustomRainParticle p = new();
+                p.Init(_angle + Rd.Random.Range(-_angleDiff, _angleDiff), speedMult, Rd.Random.Choose<Color>(_colors), extX, extY);
+                particles.Add(p);
+            }
+        }
+
+        Vector2 windOffset = level.Wind * windStrength;
+
+        for (int i = 0; i < activeCount; i++) {
+            CustomRainParticle p = particles[i];
+            p.Position += (p.Speed + windOffset) * Engine.DeltaTime;
+            particles[i] = p;
         }
     }
 
     [ExA.Credits("karl2883 for optimizing Render performance")]
     public override void Render(Scene scene) {
         if (alpha > 0f && visibleFade > 0f && linearFade > 0f) {
-            Camera camera = (scene as Level).Camera;
+            Level level = scene as Level;
+            Camera camera = level.Camera;
             Vector2 screenSize = Miscs.Screen.Size;
-            for (int i = 0; i < particles.Length; i++) {
-                Vector2 position = new Vector2(NumberUtils.Mod(particles[i].Position.X - camera.X * Scroll.X, screenSize.X), NumberUtils.Mod(particles[i].Position.Y - camera.Y * Scroll.Y, screenSize.Y));
+            Vector2 windOffset = level.Wind * windStrength;
+            float colorFactor = alpha * linearFade * visibleFade;
 
-                Draw.Pixel.DrawCentered(position, 
-                    particles[i].color * alpha * linearFade * visibleFade, 
-                    particles[i].Scale,
-                    Calc.Angle(particles[i].Speed + (scene as Level).Wind * windStrength)
+            int getCount = activeCount.ClampMax(particles.Count - 1);
+            for (int i = 0; i < getCount; i++) {
+                CustomRainParticle p = particles[i];
+
+                Vector2 position = new Vector2(
+                    NumberUtils.Mod(p.Position.X - camera.X * Scroll.X, screenSize.X),
+                    NumberUtils.Mod(p.Position.Y - camera.Y * Scroll.Y, screenSize.Y));
+
+                Draw.Pixel.DrawCentered(position,
+                    p.color * colorFactor,
+                    p.Scale,
+                    Calc.Angle(p.Speed + windOffset)
                     );
             }
         }
