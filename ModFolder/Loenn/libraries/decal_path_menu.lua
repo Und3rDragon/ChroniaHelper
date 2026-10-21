@@ -31,6 +31,22 @@ local DECAL_SETTINGS_KEY = "convertDecalPathsToDecals"
 local SPINNER_SETTINGS_KEY = "convertSpinnerPathsToSpinners"
 local BOOSTER_SETTINGS_KEY = "convertBoosterPathsToBoosters"
 
+--[[
+    Every converter starts disabled, so plain copy and paste keeps working until
+    one of them is switched on from the Edit menu. The defaults are written once
+    so the stored state stays explicit instead of relying on missing keys.
+]]
+local function initSetting(key)
+    if modSettings[key] == nil then
+        modSettings[key] = false
+    end
+end
+
+initSetting(JUMPTHRU_SETTINGS_KEY)
+initSetting(DECAL_SETTINGS_KEY)
+initSetting(SPINNER_SETTINGS_KEY)
+initSetting(BOOSTER_SETTINGS_KEY)
+
 local INSTALL_FLAG = "keypressed_hooked_by_ChroniaHelperDecalPaths"
 
 local installed = false
