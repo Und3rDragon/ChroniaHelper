@@ -257,6 +257,11 @@
 		<Loop id="idle" path="Myn_idle" delay="0.15"/>
 	</ChroniaHelper_Myn>
 
+	<ChroniaHelper_Chronia path="ChroniaHelper/PettableChronia/" start="idle">
+		<Loop id="pet" path="petted" delay="0.15"/>
+		<Loop id="idle" path="idle" delay="0.15"/>
+	</ChroniaHelper_Chronia>
+
 	<ChroniaHelper_CatPetter path="ChroniaHelper/PettableMyn/ThePetter/" start="pet">
 		<Loop id="pet" path="player_pet" delay="0.15"/>
 	</ChroniaHelper_CatPetter>
