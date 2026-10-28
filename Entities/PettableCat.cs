@@ -14,7 +14,8 @@ namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/PettableCat")]
 [Credits("HollyMagala for HonlyHelper source code" +
-         "zXnder for default fox sprite")]
+         "zXnder for default fox sprite" +
+        "Myn for Myn sprite (huh?)")]
 public class PettableCat : NPC
 {
 
