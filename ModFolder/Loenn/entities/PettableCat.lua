@@ -26,6 +26,8 @@ cat.fieldInformation = {
         options = {
             "ChroniaHelper_Fox",
             "ChroniaHelper_Cat",
+            "ChroniaHelper_Myn",
+            "ChroniaHelper_Chronia",
         },
         editable = true,
     },
