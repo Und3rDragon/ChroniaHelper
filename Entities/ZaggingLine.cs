@@ -11,7 +11,9 @@ public class ZaggingLine : Entity
 
     private CColor bgLineColor;
     private List<CColor> lineColors = new(), nodeColors = new();
-    private MTexture nodeTexture;
+    private List<MTexture> nodeTexture;
+    private float nodeInterval = 0.1f;
+    private int nodeTextureIndex = 0;
 
     private bool showBgLine, showNodes;
 
@@ -41,7 +43,8 @@ public class ZaggingLine : Entity
 
         showNodes = data.Bool("showNodes", true);
         nodeColors = ParseColors(data.Attr("nodeColors", "ffffffff"), CColor.White);
-        nodeTexture = GFX.Game[data.Attr("nodeTexture", "ChroniaHelper/ZaggingLine/node00")];
+        nodeTexture = GFX.Game.GetAtlasSubtextures(data.Attr("nodeTexture", "ChroniaHelper/ZaggingLine/node"));
+        nodeInterval = data.Float("nodeTextureInterval", 0.1f).ClampMin(Engine.DeltaTime / 2f);
 
         thickness = data.Float("thickness", 2f).GetAbs();
         dashLength = data.Float("dashLength", 8f).GetAbs();
@@ -78,10 +81,15 @@ public class ZaggingLine : Entity
             Draw.Line(start, end, bgLineColor.Parsed(), thickness);
         }
 
-        if (showNodes)
+        if (showNodes && nodeTexture.Count > 0)
         {
-            nodeTexture.DrawCentered(start, PickColor(nodeColors, 0).Parsed());
-            nodeTexture.DrawCentered(end, PickColor(nodeColors, 1).Parsed());
+            if (SceneAs<Level>().OnInterval(nodeInterval))
+            {
+                nodeTextureIndex++;
+                nodeTextureIndex = nodeTextureIndex.Mod(nodeTexture.Count());
+            }
+            nodeTexture[nodeTextureIndex].DrawCentered(start, PickColor(nodeColors, 0).Parsed());
+            nodeTexture[nodeTextureIndex].DrawCentered(end, PickColor(nodeColors, 1).Parsed());
         }
 
         float period = dashLength + gapLength;

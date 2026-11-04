@@ -27,7 +27,8 @@ zaggingLine.placements = {
         showNodes = true,
         nodeColors = "ffffffff",
         depth = 9500,
-        nodeTexture = "ChroniaHelper/ZaggingLine/node00",
+        nodeTexture = "ChroniaHelper/ZaggingLine/node",
+        nodeTextureInterval = 0.1,
     }
 }
 
