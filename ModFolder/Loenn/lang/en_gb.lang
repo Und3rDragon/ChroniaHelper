@@ -1910,6 +1910,10 @@ entities.ChroniaHelper/BoundRefill.attributes.description.pulseFlag=Activates th
 
 entities.ChroniaHelper/LightningBreakerBoxWithNoBloomEffect.placements.name.default=Lightning Breaker Box (No Legacy Bloom Strength Effect)
 
+# ================= Zagging Line
+
+entities.ChroniaHelper/ZaggingLine.placements.name.zaggingLine=Zagging Line
+
 # ================= Loenn Menu
 
 ui.menubar.ChroniaHelper_convertPastedPaths=Convert Pasted Paths [ChroniaHelper]
@@ -1920,3 +1924,4 @@ ui.menubar.ChroniaHelper_convertSpinnerPaths=Convert Spinner Paths To Chronia Se
 ui.menubar.ChroniaHelper_convertBoosterPaths=Convert Booster Paths To Chronia Custom Booster [ChroniaHelper]
 ui.menubar.ChroniaHelper_convertSpikePaths=Convert Spike Paths To Vanilla Spikes [ChroniaHelper]
 ui.menubar.ChroniaHelper_convertChroniaSpikePaths=Convert Spike Paths To Chronia Spikes [ChroniaHelper]
+

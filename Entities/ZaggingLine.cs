@@ -1,143 +1,152 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Celeste.Mod.Entities;
-using ChroniaHelper.Cores;
 using ChroniaHelper.Utils;
-using static ChroniaHelper.Cores.ExtendedAttributes;
 
 namespace ChroniaHelper.Entities;
 
 [CustomEntity("ChroniaHelper/ZaggingLine")]
-[Obsoleted]
 public class ZaggingLine : Entity
 {
+    private Vector2 start, end, direction;
+    private float length;
+
+    private CColor bgLineColor;
+    private List<CColor> lineColors = new(), nodeColors = new();
+    private List<MTexture> nodeTexture;
+    private float nodeInterval = 0.1f;
+    private int nodeTextureIndex = 0;
+
+    private bool showBgLine, showNodes;
+
+    private float thickness, dashLength, gapLength, speed, fadeLength;
+    private int resolution;
+
+    private float dashOffset;
+    private int dashRotation;
+
     public ZaggingLine(EntityData data, Vector2 offset) : base(data.Position + offset)
     {
-        nodes = data.NodesWithPosition(offset);
+        Vector2[] nodes = data.NodesWithPosition(offset);
 
-        // bg line
-        hasBgLine = data.Bool("showBgLine", false);
-        bgLineColor = Calc.HexToColorWithAlpha(data.Attr("bgLineColor", "ffffffff"));
+        start = Position;
+        // nodes[0] is the entity position, nodes[1] is the actual node
+        end = nodes.Length > 1 ? nodes[1] : Position;
 
-        // node sprite
+        Vector2 delta = end - start;
+        length = delta.Length();
+        direction = length > 0f ? delta / length : Vector2.Zero;
+
+        CColor color = data.PackColor("color", "4da6ffff");
+        lineColors = ParseColors(data.Attr("lineColors", ""), color);
+
+        showBgLine = data.Bool("showBgLine", false);
+        bgLineColor = data.PackColor("bgLineColor", "ffffffff");
+
         showNodes = data.Bool("showNodes", true);
-        nodeSprite = new(GFX.Game, "ChroniaHelper/ZaggingLine/node");
-        nodeSprite.AddLoop("idle","", 0.1f);
-        Add(nodeSprite);
-        nodeSprite.JustifyOrigin(0.5f, 0.5f);
-        nodeSprite.Play("idle");
+        nodeColors = ParseColors(data.Attr("nodeColors", "ffffffff"), CColor.White);
+        nodeTexture = GFX.Game.GetAtlasSubtextures(data.Attr("nodeTexture", "ChroniaHelper/ZaggingLine/node"));
+        nodeInterval = data.Float("nodeTextureInterval", 0.1f).ClampMin(Engine.DeltaTime / 2f);
 
-        for(int i = 1; i < nodes.Length; i++)
-        {
-            Sprite _sprites = new(GFX.Game, "ChroniaHelper/ZaggingLine/node");
-            _sprites.AddLoop("idle", "", 0.1f);
-            Add(_sprites);
-            _sprites.JustifyOrigin(0.5f, 0.5f);
-            _sprites.RenderPosition = nodes[i];
-            _sprites.Play("idle");
-        }
-
-        string[] _nodeColor = data.Attr("nodeColors", "ffffffff").Split(",",StringSplitOptions.TrimEntries);
-        nodeColors = new Color[_nodeColor.Length]; 
-        for(int i = 0; i < _nodeColor.Length; i++)
-        {
-            nodeColors[i] = Calc.HexToColorWithAlpha(_nodeColor[i]);
-        }
-        
-
-        // main line
-        string[] _lineColors = data.Attr("lineColors", "ffffffff").Split(",",StringSplitOptions.TrimEntries);
-        fgLineColors = new Color[_lineColors.Length];
-        for(int i = 0; i < _lineColors.Length; i++)
-        {
-            fgLineColors[i] = Calc.HexToColorWithAlpha(_lineColors[i]);
-        }
-        timer = new float[fgLineColors.Length];
-
-        string[] _intervals = data.Attr("intervals", "1").Split(",",StringSplitOptions.TrimEntries);
-        intervals = new float[_intervals.Length];
-        for(int i = 0; i < _intervals.Length; i++)
-        {
-            float t = _intervals[i].Parse(1f);
-            if (t < Engine.DeltaTime) { t = Engine.DeltaTime; }
-            intervals[i] = t;
-        }
-        
-        string[] _durations = data.Attr("durations", "3").Split(",",StringSplitOptions.TrimEntries);
-        durations = new float[_durations.Length];
-        for(int i = 0; i < _durations.Length; i++)
-        {
-            float t = _durations[i].Parse(3f);
-            if(t < Engine.DeltaTime) { t = Engine.DeltaTime; }
-            durations[i] = t;
-        }
-
-        string[] _easers = data.Attr("ease", "sinein").Split(",", StringSplitOptions.TrimEntries);
-        easers = new EaseMode[_easers.Length];
-        for(int i = 0; i < _easers.Length; i++)
-        {
-            easers[i] = EaseUtils.StringToEaseMode(_easers[i]);
-        }
+        thickness = data.Float("thickness", 2f).GetAbs();
+        dashLength = data.Float("dashLength", 8f).GetAbs();
+        if (dashLength < 1f) { dashLength = 1f; }
+        gapLength = data.Float("gapLength", 6f).GetAbs();
+        speed = data.Float("speed", 40f);
+        fadeLength = data.Float("fadeLength", 3f).GetAbs();
+        resolution = data.Int("resolution", 10).ClampMin(1);
 
         Depth = data.Int("depth", 9500);
-    }
-    private Vector2[] nodes;
-    private bool hasBgLine, showNodes;
-    private Sprite nodeSprite;
-    private Color bgLineColor;
-    private Color[] fgLineColors, nodeColors;
-    private float[] intervals, durations;
-    private EaseMode[] easers;
-
-    private float[] timer;
-
-    public override void Added(Scene scene)
-    {
-        base.Added(scene);
-
-        timer = 0f.CreateArray(fgLineColors.Length);
     }
 
     public override void Update()
     {
         base.Update();
 
-        for(int i = 0; i < timer.Length; i++)
-        {
-            timer[i] += Engine.DeltaTime;
-        }
+        float period = dashLength + gapLength;
+        if (speed == 0f || period <= 0f) { return; }
 
-        for(int i = 0; i < fgLineColors.Length; i++)
-        {
-            if(timer.SafeGet(i) >= intervals.SafeGet(i) + durations.SafeGet(i))
-            {
-                CollectiveUtils.SafeSet(ref timer, i, 0f);
-            }
-        }
+        dashOffset += speed * Engine.DeltaTime;
+
+        while (dashOffset >= period) { dashOffset -= period; dashRotation++; }
+        while (dashOffset < 0f) { dashOffset += period; dashRotation--; }
     }
 
     public override void Render()
     {
         base.Render();
-        
-        for(int i = 0; i < nodes.MaxIndex(); i++)
+
+        if (length <= 0f) { return; }
+
+        if (showBgLine)
         {
-            Vector2 from = nodes[i], to = nodes[i + 1];
+            Draw.Line(start, end, bgLineColor.Parsed(), thickness);
+        }
 
-            for(int j = 0; j < fgLineColors.Length; j++)
+        if (showNodes && nodeTexture.Count > 0)
+        {
+            if (SceneAs<Level>().OnInterval(nodeInterval))
             {
-                float loopLength = intervals.SafeGet(j) + durations.SafeGet(j);
-
-                Vector2 p1 = FadeUtils.LerpValue(timer.SafeGet(j), 0f, durations.SafeGet(j), from, to, easers.SafeGet(j)),
-                    p2 = FadeUtils.LerpValue(timer.SafeGet(j), intervals.SafeGet(j), loopLength, from, to, easers.SafeGet(j));
-
-                Draw.Line(p1, p2, fgLineColors.SafeGet(j));
+                nodeTextureIndex++;
+                nodeTextureIndex = nodeTextureIndex.Mod(nodeTexture.Count());
             }
+            nodeTexture[nodeTextureIndex].DrawCentered(start, PickColor(nodeColors, 0).Parsed());
+            nodeTexture[nodeTextureIndex].DrawCentered(end, PickColor(nodeColors, 1).Parsed());
+        }
+
+        float period = dashLength + gapLength;
+        if (period <= 0f) { return; }
+
+        int first = (int)Math.Floor((-dashLength - dashOffset) / period);
+        int last = (int)Math.Ceiling((length - dashOffset) / period);
+
+        for (int i = first; i <= last; i++)
+        {
+            DrawDash(dashOffset + i * period, PickColor(lineColors, i + dashRotation));
         }
     }
 
+    private void DrawDash(float from, CColor lineColor)
+    {
+        float fadeRatio = Math.Clamp(fadeLength / dashLength, 0f, 0.5f);
+
+        for (int i = 0; i < resolution; i++)
+        {
+            float ratioA = i / (float)resolution, ratioB = (i + 1) / (float)resolution;
+            float distanceA = from + ratioA * dashLength, distanceB = from + ratioB * dashLength;
+
+            if (distanceB <= 0f || distanceA >= length) { continue; }
+
+            float alpha = FadeAlpha(ratioA, ratioB, fadeRatio);
+
+            Draw.Line(start + direction * Math.Clamp(distanceA, 0f, length),
+                start + direction * Math.Clamp(distanceB, 0f, length),
+                lineColor.Parsed(alpha), thickness);
+        }
+    }
+
+    private static float FadeAlpha(float ratioA, float ratioB, float fadeRatio)
+    {
+        if (fadeRatio <= 0f) { return 1f; }
+
+        float ratio = (ratioA + ratioB) * 0.5f;
+        return Math.Clamp(Math.Min(ratio / fadeRatio, (1f - ratio) / fadeRatio), 0f, 1f);
+    }
+
+    private static CColor PickColor(List<CColor> colors, int index)
+    {
+        return colors[NumberUtils.Mod(index, colors.Count)];
+    }
+
+    private static List<CColor> ParseColors(string attribute, CColor fallback)
+    {
+        List<CColor> result = new();
+
+        foreach (string entry in attribute.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+        {
+            result.Add(new CColor(entry));
+        }
+
+        if (result.Count == 0) { result.Add(fallback); }
+
+        return result;
+    }
 }

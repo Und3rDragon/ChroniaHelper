@@ -68,9 +68,9 @@ controller.sprite = function(room, entity)
 
     table.insert(sprite, iconSprite)
     
-    local text = require("structs.drawable_text").fromText(entity.flags, entity.x + 12, entity.y - 12, 48, 24)
+    --local text = require("structs.drawable_text").fromText(entity.flags, entity.x + 12, entity.y - 12, 48, 24)
     
-    table.insert(sprite, text)
+    --table.insert(sprite, text)
     
     return sprite
 end
