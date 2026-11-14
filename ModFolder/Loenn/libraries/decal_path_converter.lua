@@ -54,11 +54,11 @@ end
 --[[
     Turns an absolute image path into the texture name Lönn uses for atlases.
 
-    Everything from the decals folder onwards is kept, the extension is dropped
-    and a trailing run of digits is removed, so every animation frame resolves to
-    the same base name.
+    Everything from the decals folder onwards is kept and the extension is
+    dropped, so the frame digits stay on the name and are resolved once the whole
+    clipboard has been read.
 
-    For example, "E:/.../Gameplay/decals/a/b00.png" becomes "a/b".
+    For example, "E:/.../Gameplay/decals/a/b00.png" becomes "decals/a/b00".
 ]]
 local function pathToTexture(path)
     local markerStart = path:find(ATLAS_MARKER, 1, true)
@@ -75,14 +75,48 @@ local function pathToTexture(path)
         texture = texture:sub(1, -5)
     end
 
-    -- Drop the trailing digits, which mark an animation frame
-    texture = texture:gsub("%d+$", "")
-
     if texture == "decals/" then
         return nil
     end
 
     return texture
+end
+
+
+--[[
+    Splits a texture name into the animation sequence it belongs to and the
+    digits of its frame. Names without trailing digits return nil as digits.
+]]
+local function splitFrame(texture)
+    local digits = texture:match("(%d+)$")
+
+    if not digits then
+        return texture, nil
+    end
+
+    return texture:sub(1, #texture - #digits), digits
+end
+
+
+--[[
+    Resolves the texture written into a decal.
+
+    Names without trailing digits are used as they are. For animation frames the
+    first frame of the sequence is written: the pasted frame itself when its
+    digits are all zeros, otherwise the same name with zeros of the same length.
+
+    The second return value tells whether the name is a real first frame.
+]]
+local function resolveFrame(texture, base, digits)
+    if not digits then
+        return texture, false
+    end
+
+    if digits:find("[^0]") == nil then
+        return texture, true
+    end
+
+    return base .. string.rep("0", #digits), false
 end
 
 
@@ -149,6 +183,23 @@ local function serializeDecals(decals)
 end
 
 
+-- Builds a decal entry with the shared defaults filled in.
+local function newDecal(texture, layer)
+    local decal = {}
+
+    for key, value in pairs(DECAL_TEMPLATE) do
+        decal[key] = value
+    end
+
+    decal._fromLayer = layer
+    decal.texture = texture
+    decal.x = 0
+    decal.y = 0
+
+    return decal
+end
+
+
 --[[
     Picks the layer a generated decal should live on.
 
@@ -167,8 +218,10 @@ end
 --[[
     Builds decal entries from clipboard text.
 
-    Paths that resolve to the same texture are collapsed into a single entry, so
-    animation frames such as "timerA0" and "timerA1" count as one decal.
+    Frames of the same animation are collapsed into a single entry written as the
+    first frame, so "timerA0" and "timerA1" count as one decal. A first frame that
+    was not part of the paste is written with zeros of the same digit length,
+    which turns "timerA1" into "timerA0" and "timerA11" into "timerA00".
 
     The supplied editor layer decides whether the result lands on the foreground
     or background decals layer.
@@ -183,7 +236,7 @@ function decalBuilder.buildFromClipboardText(text, editorLayer)
 
     local layer = resolveLayer(editorLayer)
     local decals = {}
-    local seen = {}
+    local groups = {}
 
     for _, line in ipairs(splitLines(text)) do
         local texture = pathToTexture(normalizePath(line))
@@ -192,21 +245,26 @@ function decalBuilder.buildFromClipboardText(text, editorLayer)
             return nil, 0
         end
 
-        if not seen[texture] then
-            seen[texture] = true
+        local base, digits = splitFrame(texture)
 
-            local decal = {}
+        -- Plain textures and animation sequences are keyed apart, so that a
+        -- texture never merges with a sequence sharing its prefix.
+        local key = digits and ("frame:" .. base) or ("texture:" .. texture)
+        local frame, realFirstFrame = resolveFrame(texture, base, digits)
+        local group = groups[key]
 
-            for key, value in pairs(DECAL_TEMPLATE) do
-                decal[key] = value
-            end
+        if not group then
+            groups[key] = {
+                index = #decals + 1,
+                realFirstFrame = realFirstFrame,
+            }
 
-            decal._fromLayer = layer
-            decal.texture = texture
-            decal.x = 0
-            decal.y = 0
+            table.insert(decals, newDecal(frame, layer))
 
-            table.insert(decals, decal)
+        elseif realFirstFrame and not group.realFirstFrame then
+            -- A real first frame replaces the one synthesised from the digits
+            group.realFirstFrame = true
+            decals[group.index].texture = frame
         end
     end
 
