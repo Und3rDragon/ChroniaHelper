@@ -1,4 +1,5 @@
 local drawableSprite = require("structs.drawable_sprite")
+local dir = require("mods").requireFromPlugin("chroniaHelper.utils.directory")
 
 local refill = {}
 
@@ -51,15 +52,18 @@ function refill.sprite(room, entity)
     local vy = entity.visualOffsetY or 0;
 
     if vx ~= 0 or vy ~= 0 then
-        local main = drawableSprite.fromTexture(sprPath.."outline", entity)
+        --local main = drawableSprite.fromTexture(sprPath.."outline", entity)
+        local main = dir.fetchSprite(sprPath .. "outline", 0, entity)
         table.insert(sprites, main)
 
-        local offset_spr = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        --local offset_spr = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        local offset_spr = dir.fetchSprite(sprPath.."idle", 0, entity)
         offset_spr:setColor({1, 1, 1, 0.5})
         offset_spr:addPosition(vx, vy)
         table.insert(sprites, offset_spr)
     else
-        local main = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        --local main = drawableSprite.fromTexture(sprPath.."idle00", entity)
+        local main = dir.fetchSprite(sprPath .. "idle", 0, entity)
         table.insert(sprites, main)
     end
 
