@@ -21,6 +21,12 @@ refill.placements = {
             --speedYOnHorizontal = 140,
             --speedXOnVertical = 0,
             speedYOnVertical = 300,
+            shatterParticleColor = "ff3cfeff",
+            shatterParticleColor2 = "ff3cfeff",
+            regenParticleColor = "b95fb7ff",
+            regenParticleColor2 = "b95fb7ff",
+            glowParticleColor = "b95fb7ff",
+            glowParticleColor2 = "b95fb7ff",
         }
     },
 }
@@ -38,6 +44,36 @@ refill.fieldInformation = function(entity)
             ["Same as Dash"] = 4,
         },
         editable = false,
+    }
+
+    orig["shatterParticleColor"] = {
+        fieldType = "color",
+        useAlpha = true,
+    }
+
+    orig["shatterParticleColor2"] = {
+        fieldType = "color",
+        useAlpha = true,
+    }
+
+    orig["regenParticleColor"] = {
+        fieldType = "color",
+        useAlpha = true,
+    }
+
+    orig["regenParticleColor2"] = {
+        fieldType = "color",
+        useAlpha = true,
+    }
+
+    orig["glowParticleColor"] = {
+        fieldType = "color",
+        useAlpha = true,
+    }
+
+    orig["glowParticleColor2"] = {
+        fieldType = "color",
+        useAlpha = true,
     }
 
     return orig
