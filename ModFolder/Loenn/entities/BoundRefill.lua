@@ -27,6 +27,7 @@ refill.placements = {
             regenParticleColor2 = "b95fb7ff",
             glowParticleColor = "b95fb7ff",
             glowParticleColor2 = "b95fb7ff",
+            bloomColor = "",
         }
     },
 }
@@ -74,6 +75,12 @@ refill.fieldInformation = function(entity)
     orig["glowParticleColor2"] = {
         fieldType = "color",
         useAlpha = true,
+    }
+
+    orig["bloomColor"] = {
+        fieldType = "color",
+        useAlpha = true,
+        allowEmpty = true,
     }
 
     return orig
