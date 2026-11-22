@@ -1914,6 +1914,10 @@ entities.ChroniaHelper/LightningBreakerBoxWithNoBloomEffect.placements.name.defa
 
 entities.ChroniaHelper/ZaggingLine.placements.name.zaggingLine=Zagging Line
 
+# ================= Custom Spawn Point
+
+entities.ChroniaHelper/CustomSpawnPoint.placements.name.normal=Custom Spawn Point
+
 # ================= Loenn Menu
 
 ui.menubar.ChroniaHelper_convertPastedPaths=Convert Pasted Paths [ChroniaHelper]
