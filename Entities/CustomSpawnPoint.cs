@@ -1,7 +1,7 @@
-using Celeste.Editor;
 using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
+using ChroniaHelper.References;
 using ChroniaHelper.Utils;
 using System.Collections;
 
@@ -28,12 +28,15 @@ public class CustomSpawnPoint : Entity
             changeRespawn = new((p) => { }, c);
             playerCollide = new(null, false);
         }
+
+        camCatchup = data.Float("cameraCatchupSpeed", 1f);
     }
     //private PlayerCollider changeRespawn;
     private float zoneW, zoneH;
     private bool zoneE;
     PlayerCollider changeRespawn;
     DataPack<bool> playerCollide = new(null, false);
+    private float camCatchup;
 
     public override void Update()
     {
@@ -121,7 +124,17 @@ public class CustomSpawnPoint : Entity
             yield return null;
         }
 
-        player.Facing = data.Bool("playerFacingRight", true) ? Facings.Right : Facings.Left;
+        int facing = data.Int("playerFacingRight", 0);
+        if (facing != 0)
+        {
+            player.Facing = (Facings)facing;
+        }
+
+        float catchup = data.Float("cameraCatchupSpeed", -1f);
+        if (Md.MaddieLoaded && catchup > 0)
+        {
+            RefMaxHelpingHand.GetSession().CameraCatchupSpeed = catchup;
+        }
     }
 
     /// <summary>
@@ -194,7 +207,7 @@ public class CustomSpawnPoint : Entity
     public override void DebugRender(Camera camera)
     {
         base.DebugRender(camera);
-        
+
         Draw.Rect(-2f, -2f, 4f, 4f, Color.Red);
     }
 }

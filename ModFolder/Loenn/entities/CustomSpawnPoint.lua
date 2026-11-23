@@ -10,11 +10,23 @@ customSpawnPoint.placements = {
         cameraOffsetX = 0,
         cameraOffsetY = 0,
         setFlag = "",
-        playerFacingRight = true,
+        playerFacing = 0,
         autoChangeRespawn = true,
         changeRespawnZoneWidth = 32,
         changeRespawnZoneHeight = 48,
+        cameraCatchupSpeed = -1,
     }
+}
+
+customSpawnPoint.fieldInformation = {
+    playerFacing = {
+        fieldType = "integer",
+        options = {
+            ["Disable"] = 0,
+            ["Left"] = -1,
+            ["Right"] = 1,
+        },
+    },
 }
 
 function customSpawnPoint.sprite(room, entity)
