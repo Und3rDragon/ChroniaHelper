@@ -124,10 +124,10 @@ public class CustomSpawnPoint : Entity
             yield return null;
         }
 
-        int facing = data.Int("playerFacingRight", 0);
+        int facing = data.Int("playerFacing", 0);
         if (facing != 0)
         {
-            player.Facing = (Facings)facing;
+            player.Facing = facing > 0 ? Facings.Right : Facings.Left;
         }
 
         float catchup = data.Float("cameraCatchupSpeed", -1f);

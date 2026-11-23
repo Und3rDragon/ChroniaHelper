@@ -26,6 +26,10 @@ customSpawnPoint.fieldInformation = {
             ["Left"] = -1,
             ["Right"] = 1,
         },
+        editable = false,
+    },
+    setFlag = {
+        fieldType = "list_scroll",
     },
 }
 
