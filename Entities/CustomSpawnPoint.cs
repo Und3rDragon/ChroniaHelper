@@ -12,6 +12,7 @@ namespace ChroniaHelper.Entities;
 /// 参与所在房间的出生点列表，进房、死亡重生与切屏后的最近出生点判定都会算上它。
 /// </summary>
 [CustomEntity("ChroniaHelper/CustomSpawnPoint")]
+[Tracked]
 public class CustomSpawnPoint : Entity
 {
     public CustomSpawnPoint(EntityData data, Vc2 offset)
@@ -26,6 +27,7 @@ public class CustomSpawnPoint : Entity
             zoneH = data.Float("changeRespawnZoneHeight", 48);
             Collider c = new Hitbox(zoneW, zoneH, X - zoneW / 2, Y - zoneH);
             changeRespawn = new((p) => { }, c);
+            Add(changeRespawn);
             playerCollide = new(null, false);
         }
 
@@ -44,7 +46,7 @@ public class CustomSpawnPoint : Entity
 
         Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
 
-        playerCollide.SetValue(player?.Collider.Collide(changeRespawn.Collider) ?? false);
+        playerCollide.SetValue(changeRespawn.Collider.Collide(player));
 
         if(playerCollide.Value && !playerCollide._Value)
         {
