@@ -1,0 +1,1939 @@
+mods.ChroniaHelper.name=ChroniaHelper
+
+style.effects.ChroniaHelper/CustomRain.name=Custom Rain
+style.effects.ChroniaHelper/CustomRain.description.fadingX=多个渐隐器之间用 ";" 分隔\n每个渐隐器包含 4 个用逗号分隔的数字，依次表示 "positionFrom"、"positionTo"、"alphaFrom"、"alphaTo"\n例如："100,200,0,1"
+style.effects.ChroniaHelper/CustomRain.description.fadingY=多个渐隐器之间用 ";" 分隔\n每个渐隐器包含 4 个用逗号分隔的数字，依次表示 "positionFrom"、"positionTo"、"alphaFrom"、"alphaTo"\n例如："100,200,0,1"
+style.effects.ChroniaHelper/WindRainFG.name=Wind Rain (Combined to Custom Rain)
+style.effects.ChroniaHelper/WindRainFG.description.fadingX=多个渐隐器之间用 ";" 分隔\n每个渐隐器包含 4 个用逗号分隔的数字，依次表示 "positionFrom"、"positionTo"、"alphaFrom"、"alphaTo"\n例如："100,200,0,1"
+style.effects.ChroniaHelper/WindRainFG.description.fadingY=多个渐隐器之间用 ";" 分隔\n每个渐隐器包含 4 个用逗号分隔的数字，依次表示 "positionFrom"、"positionTo"、"alphaFrom"、"alphaTo"\n例如："100,200,0,1"
+style.effects.ChroniaHelper/WaterSurface.name=Water Surface
+style.effects.ChroniaHelper/ModifiedAnimatedParallax.name=Modified Animated Parallax
+
+# ================= WIPs
+
+entities.ChroniaHelper/LineIndicator.placements.name.default=Line Indicator
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.block=Multi-Node Flag Switch Gate (default)
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.mirror=Multi-Node Flag Switch Gate (mirror)
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.temple=Multi-Node Flag Switch Gate (temple)
+entities.ChroniaHelper/MultiNodeFlagSwitchGate.placements.name.stars=Multi-Node Flag Switch Gate (stars)
+
+# ================= Animated Zipmover
+
+entities.ChroniaHelper/AnimatedZipMover.placements.name.start=Animated Zipmover
+entities.ChroniaHelper/AnimatedZipMover.attributes.description.spritePath=你的路径文件夹内需要有多组图片序列\n"idle" 用于 zipmover 方块的静止状态\n"active" 用于方块的激活状态\n"return" 用于方块的返回动画\n"unlit" 用于回到静止状态的动画\n"innerSprite_idle" 同上，但用于中心贴图\n"innerSprite_active" 同上，但用于中心贴图\n"innerSprite_return" 同上，但用于中心贴图\n"innerSprite_unlit" 同上，但用于中心贴图
+
+# ================= Decrease Refill
+
+entities.ChroniaHelper/DecreaseRefill.placements.name.DecreaseRefill=Decrease Refill
+entities.ChroniaHelper/DecreaseRefill.attributes.description.dashes=该 Refill 会扣除的冲刺数，\n或用于兑换体力的冲刺数
+entities.ChroniaHelper/DecreaseRefill.attributes.description.decreaseStamina=是否从 Madeline 身上扣除体力；开启 "Trade for Stamina" 时此项无效
+entities.ChroniaHelper/DecreaseRefill.attributes.description.clearAllDashes=会扣除全部冲刺，忽略 "Dashes" 参数
+entities.ChroniaHelper/DecreaseRefill.attributes.description.tradeDashesToStamina=是否由该 Refill 扣除冲刺、同时补充体力
+entities.ChroniaHelper/DecreaseRefill.attributes.description.sprites=应用于 Refill 的贴图，目录相对于 Gameplay/，\n必须以 "/" 结尾，该文件夹内必须包含 "idle"、"flash" 与 "outline"
+entities.ChroniaHelper/DecreaseRefill.attributes.description.frameRates="idle" 与 "flash" 动画的帧率，逗号后需有一个空格\n例如："xxx, xxx"
+
+# ================= Seamless Spinner
+
+entities.ChroniaHelper/SeamlessSpinner.placements.name.SeamlessSpinner=Seamless Spinner
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.hitboxType="default" - 原版判定\n"loosened" - 判定为 r=6 的圆\n"seamless round" - 判定为 r=8 的圆\n"seamless square" - 判定为 16x16 px 的正方形
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.foreDirectory=从 "Gameplay/" 之后开始，到最后不含后缀的文件名结束。\n例如你的文件是 "Gameplay/danger/yourspinner/texture00.png"\n此处应填写 "danger/yourspinner/texture"。
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.backDirectory=从 "Gameplay/" 之后开始，到最后不含后缀的文件名结束。\n例如你的文件是 "Gameplay/danger/yourspinner/texture00.png"\n此处应填写 "danger/yourspinner/texture"。
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.customHitbox=当 "Hitbox Type" 设为 "custom" 时，可在此自定义判定。\n"r" 代表矩形，参数格式为 "r, width, height, posX, posY"\n"c" 代表圆形，参数格式为 "c, radius, posX, posY"\n留空时 Spinner 会使用默认值或忽略自定义判定。
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.solidTileCutoff=是否让 Spinner 的贴图被实体判定范围裁切
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.dynamic=游戏内是否使用动画播放贴图，\n而不是从图片序列中随机取一张\n注意：需重新打开此窗口才能看到新增选项
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.trigger=是否让该 Spinner 像 Timed Trigger Spikes 那样工作：默认关闭，\n玩家碰到后触发\n自定义只作用于主体贴图；为方便辨认，连接部分不参与自定义\n若要自定义触发动画，当 ForeDirectory 为 ".../xxx" 时，还需要另一组图片序列 ".../xxx_base"
+entities.ChroniaHelper/SeamlessSpinner.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+# ================= Player Indicator Zone
+
+entities.ChroniaHelper/PlayerIndicatorZone.placements.name.PlayerIndicatorZone=Player Indicator Zone (Old)
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.mode="Limited mode"：指示器只在该区域内显示\n"Toggle Mode"：只要房间内存在至少一个区域（无论多大），\n作用范围就是整个房间，但只有玩家碰到该区域时图标才会切换\n例如：把区域放在房间范围之外仍然有效，但区域内的开关设置\n无法生效，因为玩家碰不到该区域
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.renderBorder=是否在游戏内渲染该区域的边框
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.renderInside=是否在区域内部渲染一块填充区域
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.continuousLine=渲染的边框使用虚线还是实线
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.flagToggle=该区域如何控制 "flag"
+entities.ChroniaHelper/PlayerIndicatorZone.attributes.description.flag=受 "flag mode" 控制的 flag
+
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.normal= Player Indicator Zone
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.placements.name.PlayerIndicatorZoneCustom=Player Indicator Zone (Custom)
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.mode="Limited mode"：指示器只在该区域内显示\n"Toggle Mode"：只要房间内存在至少一个区域（无论多大），\n作用范围就是整个房间，但只有玩家碰到该区域时图标才会切换\n例如：把区域放在房间范围之外仍然有效，但区域内的开关设置\n无法生效，因为玩家碰不到该区域
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderBorder=是否在游戏内渲染该区域的边框
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderInside=是否在区域内部渲染一块填充区域
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.renderContinuousLine=渲染的边框使用虚线还是实线
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.flagMode=该区域如何控制 "flag"\n"Zone" 表示 flag 只在区域内激活，\n玩家离开后即被移除
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.flag=受 "flag toggle" 控制的 flag
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconPrefix=图标的根目录，例如 "icons/" 对应 "Gameplay/icons/xxx.png"
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.icons=图标的文件名，例如 "xxx" 对应 "Gameplay/icons/xxx.png"
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconOffsets=各图标的坐标，格式为\nx1, y1; x2, y2; x3, y3; ...
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.iconColors=各图标的颜色十六进制码，用逗号分隔
+entities.ChroniaHelper/PlayerIndicatorZoneCustom.attributes.description.independentFlag=区域控制 flag 时是否要求 "Mode" 不为 "None"
+
+# ================= Killer Series / Spring Block Series
+
+entities.ChroniaHelper/KillerBlock.placements.name.KillerBlock=Killer Block
+entities.ChroniaHelper/KillerBlock.attributes.description.standFall=玩家站在方块上是否会触发方块下落
+entities.ChroniaHelper/KillerBlock.attributes.description.fallDelay=方块最终开始下落前的抖动时间
+entities.ChroniaHelper/KillerBlock.attributes.description.movement=四个用逗号分隔的参数\n第一个数：方块刚开始下落时的速度，默认 0\n第二个数：最大速度，默认 130\n第三个数：加速度，默认 500\n第四个数：'finalBoss' 模式下的最大速度，默认 160
+entities.ChroniaHelper/KillerBlock.attributes.description.canTrigger=是否允许弹簧等实体触发方块下落\n开发中：关闭后该开关会切断对此方块的一切交互，包括站立、攀爬和弹簧等
+entities.ChroniaHelper/KillerBlock.attributes.description.springBlockOverride=覆盖模式：把该实体变成 Spring Block\n玩家每次碰到它都会被像弹簧一样弹开\n除非玩家正按住抓握键。
+
+entities.ChroniaHelper/GroupedKillerBlock.placements.name.GroupedKillerBlock=Grouped Killer Block
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.standFall=玩家站在方块上是否会触发方块下落
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.fallDelay=方块最终开始下落前的抖动时间
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.movement=四个用逗号分隔的参数\n第一个数：方块刚开始下落时的速度，默认 0\n第二个数：最大速度，默认 130\n第三个数：加速度，默认 500\n第四个数：'finalBoss' 模式下的最大速度，默认 160
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.canTrigger=是否允许弹簧等实体触发方块下落\n开发中：关闭后该开关会切断对此方块的一切交互，包括站立、攀爬和弹簧等
+entities.ChroniaHelper/GroupedKillerBlock.attributes.description.springBlockOverride=覆盖模式：把该实体变成 Spring Block\n玩家每次碰到它都会被像弹簧一样弹开\n除非玩家正按住抓握键。
+
+entities.ChroniaHelper/KillerWall.placements.name.KillerWall=Killer Wall
+entities.ChroniaHelper/KillerWall.attributes.description.springBlockOverride=覆盖模式：把该实体变成 Spring Block\n玩家每次碰到它都会被像弹簧一样弹开\n除非玩家正按住抓握键。
+
+entities.ChroniaHelper/ConnectedDashBlock.placements.name.ConnectedDashBlock=Connected Dash Block
+entities.ChroniaHelper/ConnectedDashBlock.attributes.description.blendin=让方块渲染成与关卡实体块融合的样子，而不是独立方块
+entities.ChroniaHelper/ConnectedDashBlock.attributes.description.permanent=方块破碎后，重新加载房间时是否保持已消失
+entities.ChroniaHelper/ConnectedDashBlock.attributes.description.canDash=冲刺撞上是否会击碎方块。关闭后，方块只在特定玩家状态下破碎
+
+entities.ChroniaHelper/SpringBlock.placements.name.SpringBlock=Spring Block
+entities.ChroniaHelper/SpringBlock.attributes.description.standFall=玩家站在方块上是否会触发方块下落
+entities.ChroniaHelper/SpringBlock.attributes.description.fallDelay=方块最终开始下落前的抖动时间
+entities.ChroniaHelper/SpringBlock.attributes.description.movement=四个用逗号分隔的参数\n第一个数：方块刚开始下落时的速度，默认 0\n第二个数：最大速度，默认 130\n第三个数：加速度，默认 500\n第四个数：'finalBoss' 模式下的最大速度，默认 160
+entities.ChroniaHelper/SpringBlock.attributes.description.canTrigger=是否允许弹簧等实体触发方块下落\n开发中：关闭后该开关会切断对此方块的一切交互，包括站立、攀爬和弹簧等
+entities.ChroniaHelper/SpringBlock.attributes.description.springBlockOverride=覆盖模式：把该实体变成 Spring Block\n玩家每次碰到它都会被像弹簧一样弹开\n除非玩家正按住抓握键。
+
+entities.ChroniaHelper/SpringBlockGrouped.placements.name.SpringBlockGrouped=Grouped Spring Block
+entities.ChroniaHelper/SpringBlockGrouped.attributes.description.standFall=玩家站在方块上是否会触发方块下落
+entities.ChroniaHelper/SpringBlockGrouped.attributes.description.fallDelay=方块最终开始下落前的抖动时间
+entities.ChroniaHelper/SpringBlockGrouped.attributes.description.movement=四个用逗号分隔的参数\n第一个数：方块刚开始下落时的速度，默认 0\n第二个数：最大速度，默认 130\n第三个数：加速度，默认 500\n第四个数：'finalBoss' 模式下的最大速度，默认 160
+entities.ChroniaHelper/SpringBlockGrouped.attributes.description.canTrigger=是否允许弹簧等实体触发方块下落\n开发中：关闭后该开关会切断对此方块的一切交互，包括站立、攀爬和弹簧等
+entities.ChroniaHelper/SpringBlockGrouped.attributes.description.springBlockOverride=覆盖模式：把该实体变成 Spring Block\n玩家每次碰到它都会被像弹簧一样弹开\n除非玩家正按住抓握键。
+
+entities.ChroniaHelper/SpringBlockWall.placements.name.SpringBlockWall=Spring Block Wall
+entities.ChroniaHelper/SpringBlockWall.attributes.description.springBlockOverride=覆盖模式：把该实体变成 Spring Block\n玩家每次碰到它都会被像弹簧一样弹开\n除非玩家正按住抓握键。
+
+# ================= Spikes
+
+entities.ChroniaHelper/UpSpikes.placements.name.UpSpikes=Spikes (Multi-Featured) (Up)
+entities.ChroniaHelper/DownSpikes.placements.name.DownSpikes=Spikes (Multi-Featured) (Down)
+entities.ChroniaHelper/LeftSpikes.placements.name.LeftSpikes=Spikes (Multi-Featured) (Left)
+entities.ChroniaHelper/RightSpikes.placements.name.RightSpikes=Spikes (Multi-Featured) (Right)
+
+entities.ChroniaHelper/UpSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/UpSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/UpSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/UpSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/UpSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/UpSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/UpSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/DownSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/DownSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/DownSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/DownSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/DownSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/DownSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/DownSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/LeftSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/LeftSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/LeftSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/LeftSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/LeftSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/LeftSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/LeftSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/RightSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/RightSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/RightSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/RightSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/RightSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/RightSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/RightSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+# ================= Bubble Field
+
+entities.ChroniaHelper/BubbleField.attributes.description.particleDirs=一系列粒子目录，用逗号分隔\n目录从 "Gameplay/" 之后开始\n例如 "Gameplay/yourMod/yourParticle" 在此处应写作 "yourMod/yourParticle"
+
+# ================= Omni Zip Mover
+
+entities.ChroniaHelper/OmniZipMover.placements.name.normal=Omni Zip Mover (Normal)
+entities.ChroniaHelper/OmniZipMover.placements.name.moon=Omni Zip Mover (Moon)
+entities.ChroniaHelper/OmniZipMover.placements.name.cliffside=Omni Zip Mover (Cliffside)
+entities.ChroniaHelper/OmniZipMover.attributes.description.customBlockTexture=旧版用法。请改用 Custom Skin 替换此 zip mover。\nConnected Block 自定义贴图的路径，从 Graphics/Atlases/Gameplay/objects/ 开始。\n模板位于 Mods/ChroniaHelper/Graphics/Atlases/Gameplay/objects/ChroniaHelper/customConnectedBlock。\n文件名不要包含扩展名（.png）。
+entities.ChroniaHelper/OmniZipMover.attributes.description.customSkin=Connected Zip Mover 的自定义贴图目录路径。\n相对于 Graphics/Atlases/Gameplay。\n若已设置，将覆盖 Theme 选项。\n设置为 Cliffside 主题等同于把此字段设为 objects/ChroniaHelper/OmniZipMover/cliffside。\n为了让 zipmover 在 Lonn 中正常显示，你需要这些文件：\n"block.png"、"light01.png"、"cog.png"、"innerCorners.png"\n为了让 zipmover 正常工作，你还需要 "innercog00.png"……
+entities.ChroniaHelper/OmniZipMover.attributes.description.theme=若未设置 Custom Skin，此选项决定 Connected Zip Mover 的外观。\n同时也决定所使用的音效。Cliffside 主题是自定义主题。
+entities.ChroniaHelper/OmniZipMover.attributes.description.permanent=Connected Zip Mover 停止后是否完全静止。
+entities.ChroniaHelper/OmniZipMover.attributes.description.waiting=Connected Zip Mover 是否在每个节点等待玩家。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/OmniZipMover.attributes.description.ticking=Connected Zip Mover 是否在每个节点倒计时，迫使玩家在限定时间内重新激活它。\n若玩家未重新激活则回到初始位置；若开启 "permanent" 则彻底固定不动。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/OmniZipMover.attributes.description.delays=zipmover 在各节点按顺序等待的时间，若未设置，\n默认时间为 0.2s
+entities.ChroniaHelper/OmniZipMover.attributes.description.easing=zipmover 在各节点之间的移动方式
+entities.ChroniaHelper/OmniZipMover.attributes.description.nodeSpeeds=zipmover 移动到各节点的速度倍率，若未正确设置，默认值为 1\n若数组长度小于节点数，后面的节点将沿用最后一个数值
+entities.ChroniaHelper/OmniZipMover.attributes.description.ticks=若开启 "ticking"，返回前需要经过多少次倒计时
+entities.ChroniaHelper/OmniZipMover.attributes.description.tickDelay=若开启 "ticking"，每次倒计时之间的间隔
+entities.ChroniaHelper/OmniZipMover.attributes.description.synced=开启后，所有 "rope Color" 相同的同步 zipmover 会一起激活
+entities.ChroniaHelper/OmniZipMover.attributes.description.syncTag=留空时，tag 会自动设为 rope 颜色\n若开启了 "synced"，可用 flag "ZipMoverSync:(你的同步Tag)" 激活该 zipmover
+entities.ChroniaHelper/OmniZipMover.attributes.description.dashable=玩家冲刺撞上时，该 zipmover 是否可被激活并把玩家弹起\n开启后可查看更多选项
+entities.ChroniaHelper/OmniZipMover.attributes.description.onlyDashActivate=开启后，玩家将无法再通过触碰激活它
+entities.ChroniaHelper/OmniZipMover.attributes.description.dashableOnce=只能冲刺撞它一次\n之后必须等它停下才能再次撞
+entities.ChroniaHelper/OmniZipMover.attributes.description.customSound=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipMover.attributes.description.tweakShakes=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipMover.attributes.description.tweakReturnParams=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipMover.attributes.description.returnedIrrespondingTime=zipmover 返回后的一段时间内不会响应玩家的交互
+entities.ChroniaHelper/OmniZipMover.attributes.description.nodeSound=zipmover 离开节点时，是否在每个节点播放 "start sound"
+entities.ChroniaHelper/OmniZipMover.attributes.description.startDelay=zipmover 开始移动前的延迟
+entities.ChroniaHelper/OmniZipMover.attributes.description.timeUnits=开启后，speeds 参数将按时间而不是倍率读取
+entities.ChroniaHelper/OmniZipMover.attributes.description.nodeFlags=使用 "{}" 为一组多个 flag 分组，若组内只有一个 flag，则 "{}" 可省略\n用逗号分隔各组，例如："{a,b,c},d,{e,f}"\n若此项不为空，zipmover 会被强制在各节点等待，直到对应组内的 flag 全部激活\n以上面的例子来说，第 1 组是 flag "a"、"b" 和 "c"\n第 2 组是 flag "d"，第 3 组是 flag "e" 和 "f"\n因此要让 zipmover 通过节点 1，第 1 组的 flag 必须全部为真\n要让 zipmover 通过节点 2，第 2 组的 flag 必须全部为真\n节点 3 同理。若存在节点 4 但没有第 4 组，节点 4 将沿用第 3 组的 flag\n注意：当此字段不为空时，"delays" 中各节点的延迟会在节点 flag 激活后作为新的 "Start Delay" 生效
+entities.ChroniaHelper/OmniZipMover.attributes.description.returnSpeeds=与 "node speeds" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示从最后一个节点到倒数第二个节点之间的速度
+entities.ChroniaHelper/OmniZipMover.attributes.description.returnDelays=与 "delays" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示反向到达第一个节点时 zipmover 停留的间隔
+entities.ChroniaHelper/OmniZipMover.attributes.description.sideFlag=开启后，zipmover 在检查 "ZipMoverSync:synctag" 时也会检查 flag "synctag"
+entities.ChroniaHelper/OmniZipMover.attributes.description.touchSensitive=是否能通过触碰激活该 zipmover（原版需要抓住或站在上面）
+
+# ================= ZipGlass
+
+entities.ChroniaHelper/ZipGlass.placements.name.zipglass=Omni Zip Mover (Glass Block Skin)
+entities.ChroniaHelper/ZipGlass.attributes.description.customSkin=Connected Zip Mover 的自定义贴图目录路径。\n相对于 Graphics/Atlases/Gameplay。\n为了让 zipmover 在 Lonn 中正常显示，你需要这些文件：\n"light01.png"、"cog.png"
+entities.ChroniaHelper/ZipGlass.attributes.description.theme=若未设置 Custom Skin，此选项决定 Connected Zip Mover 的外观。\n同时也决定所使用的音效。Cliffside 主题是自定义主题。
+entities.ChroniaHelper/ZipGlass.attributes.description.permanent=Connected Zip Mover 停止后是否完全静止。
+entities.ChroniaHelper/ZipGlass.attributes.description.waiting=Connected Zip Mover 是否在每个节点等待玩家。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/ZipGlass.attributes.description.ticking=Connected Zip Mover 是否在每个节点倒计时，迫使玩家在限定时间内重新激活它。\n若玩家未重新激活则回到初始位置；若开启 "permanent" 则彻底固定不动。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/ZipGlass.attributes.description.delays=zipmover 在各节点按顺序等待的时间，若未设置，\n默认时间为 0.2s
+entities.ChroniaHelper/ZipGlass.attributes.description.easing=zipmover 在各节点之间的移动方式
+entities.ChroniaHelper/ZipGlass.attributes.description.nodeSpeeds=zipmover 移动到各节点的速度倍率，若未正确设置，默认值为 1\n若数组长度小于节点数，后面的节点将沿用最后一个数值
+entities.ChroniaHelper/ZipGlass.attributes.description.ticks=若开启 "ticking"，返回前需要经过多少次倒计时
+entities.ChroniaHelper/ZipGlass.attributes.description.tickDelay=若开启 "ticking"，每次倒计时之间的间隔
+entities.ChroniaHelper/ZipGlass.attributes.description.synced=开启后，所有 "rope Color" 相同的同步 zipmover 会一起激活
+entities.ChroniaHelper/ZipGlass.attributes.description.syncTag=留空时，tag 会自动设为 rope 颜色\n若开启了 "synced"，可用 flag "ZipMoverSync:(你的同步Tag)" 激活该 zipmover
+entities.ChroniaHelper/ZipGlass.attributes.description.dashable=玩家冲刺撞上时，该 zipmover 是否可被激活并把玩家弹起\n开启后可查看更多选项
+entities.ChroniaHelper/ZipGlass.attributes.description.onlyDashActivate=开启后，玩家将无法再通过触碰激活它
+entities.ChroniaHelper/ZipGlass.attributes.description.dashableOnce=只能冲刺撞它一次\n之后必须等它停下才能再次撞
+entities.ChroniaHelper/ZipGlass.attributes.description.customSound=开启后可查看更多选项
+entities.ChroniaHelper/ZipGlass.attributes.description.tweakShakes=开启后可查看更多选项
+entities.ChroniaHelper/ZipGlass.attributes.description.tweakReturnParams=开启后可查看更多选项
+entities.ChroniaHelper/ZipGlass.attributes.description.returnedIrrespondingTime=zipmover 返回后的一段时间内不会响应玩家的交互
+entities.ChroniaHelper/ZipGlass.attributes.description.nodeSound=zipmover 离开节点时，是否在每个节点播放 "start sound"
+entities.ChroniaHelper/ZipGlass.attributes.description.startDelay=zipmover 开始移动前的延迟
+entities.ChroniaHelper/ZipGlass.attributes.description.starPath=相对于 "Gameplay/" 的路径
+entities.ChroniaHelper/ZipGlass.attributes.description.backgroundColor=定义水颜色或玻璃方块主体颜色的颜色值
+entities.ChroniaHelper/ZipGlass.attributes.description.timeUnits=开启后，speeds 参数将按时间而不是倍率读取
+entities.ChroniaHelper/ZipGlass.attributes.description.nodeFlags=使用 "{}" 为一组多个 flag 分组，若组内只有一个 flag，则 "{}" 可省略\n用逗号分隔各组，例如："{a,b,c},d,{e,f}"\n若此项不为空，zipmover 会被强制在各节点等待，直到对应组内的 flag 全部激活\n以上面的例子来说，第 1 组是 flag "a"、"b" 和 "c"\n第 2 组是 flag "d"，第 3 组是 flag "e" 和 "f"\n因此要让 zipmover 通过节点 1，第 1 组的 flag 必须全部为真\n要让 zipmover 通过节点 2，第 2 组的 flag 必须全部为真\n节点 3 同理。若存在节点 4 但没有第 4 组，节点 4 将沿用第 3 组的 flag\n注意：当此字段不为空时，"delays" 中各节点的延迟会在节点 flag 激活后作为新的 "Start Delay" 生效
+entities.ChroniaHelper/ZipGlass.attributes.description.returnSpeeds=与 "node speeds" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示从最后一个节点到倒数第二个节点之间的速度
+entities.ChroniaHelper/ZipGlass.attributes.description.returnDelays=与 "delays" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示反向到达第一个节点时 zipmover 停留的间隔
+entities.ChroniaHelper/ZipGlass.attributes.description.sideFlag=开启后，zipmover 在检查 "ZipMoverSync:synctag" 时也会检查 flag "synctag"
+entities.ChroniaHelper/ZipGlass.attributes.description.touchSensitive=是否能通过触碰激活该 zipmover（原版需要抓住或站在上面）
+
+# ================= Zip Water
+
+entities.ChroniaHelper/ZipWater.placements.name.zipwater=Omni Zip Mover (Water Skin)
+entities.ChroniaHelper/ZipWater.attributes.description.customSkin=Connected Zip Mover 的自定义贴图目录路径。\n相对于 Graphics/Atlases/Gameplay。\n为了让 zipmover 在 Lonn 中正常显示，你需要这些文件：\n"light01.png"、"cog.png"
+entities.ChroniaHelper/ZipWater.attributes.description.theme=若未设置 Custom Skin，此选项决定 Connected Zip Mover 的外观。\n同时也决定所使用的音效。Cliffside 主题是自定义主题。
+entities.ChroniaHelper/ZipWater.attributes.description.permanent=Connected Zip Mover 停止后是否完全静止。
+entities.ChroniaHelper/ZipWater.attributes.description.waiting=Connected Zip Mover 是否在每个节点等待玩家。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/ZipWater.attributes.description.ticking=Connected Zip Mover 是否在每个节点倒计时，迫使玩家在限定时间内重新激活它。\n若玩家未重新激活则回到初始位置；若开启 "permanent" 则彻底固定不动。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/ZipWater.attributes.description.delays=zipmover 在各节点按顺序等待的时间，若未设置，\n默认时间为 0.2s
+entities.ChroniaHelper/ZipWater.attributes.description.easing=zipmover 在各节点之间的移动方式
+entities.ChroniaHelper/ZipWater.attributes.description.nodeSpeeds=zipmover 移动到各节点的速度倍率，若未正确设置，默认值为 1\n若数组长度小于节点数，后面的节点将沿用最后一个数值
+entities.ChroniaHelper/ZipWater.attributes.description.ticks=若开启 "ticking"，返回前需要经过多少次倒计时
+entities.ChroniaHelper/ZipWater.attributes.description.tickDelay=若开启 "ticking"，每次倒计时之间的间隔
+entities.ChroniaHelper/ZipWater.attributes.description.synced=开启后，所有 "rope Color" 相同的同步 zipmover 会一起激活
+entities.ChroniaHelper/ZipWater.attributes.description.syncTag=留空时，tag 会自动设为 rope 颜色\n若开启了 "synced"，可用 flag "ZipMoverSync:(你的同步Tag)" 激活该 zipmover
+entities.ChroniaHelper/ZipWater.attributes.description.dashable=玩家冲刺撞上时，该 zipmover 是否可被激活并把玩家弹起\n开启后可查看更多选项
+entities.ChroniaHelper/ZipWater.attributes.description.onlyDashActivate=开启后，玩家将无法再通过触碰激活它
+entities.ChroniaHelper/ZipWater.attributes.description.dashableOnce=只能冲刺撞它一次\n之后必须等它停下才能再次撞
+entities.ChroniaHelper/ZipWater.attributes.description.customSound=开启后可查看更多选项
+entities.ChroniaHelper/ZipWater.attributes.description.tweakShakes=开启后可查看更多选项
+entities.ChroniaHelper/ZipWater.attributes.description.tweakReturnParams=开启后可查看更多选项
+entities.ChroniaHelper/ZipWater.attributes.description.returnedIrrespondingTime=zipmover 返回后的一段时间内不会响应玩家的交互
+entities.ChroniaHelper/ZipWater.attributes.description.nodeSound=zipmover 离开节点时，是否在每个节点播放 "start sound"
+entities.ChroniaHelper/ZipWater.attributes.description.startDelay=zipmover 开始移动前的延迟
+entities.ChroniaHelper/ZipWater.attributes.description.starPath=相对于 "Gameplay/" 的路径
+entities.ChroniaHelper/ZipWater.attributes.description.backgroundColor=定义水颜色或玻璃方块主体颜色的颜色值
+entities.ChroniaHelper/ZipWater.attributes.description.renderTank=水是否看起来像装在玻璃箱里
+entities.ChroniaHelper/ZipWater.attributes.description.timeUnits=开启后，speeds 参数将按时间而不是倍率读取
+entities.ChroniaHelper/ZipWater.attributes.description.nodeFlags=使用 "{}" 为一组多个 flag 分组，若组内只有一个 flag，则 "{}" 可省略\n用逗号分隔各组，例如："{a,b,c},d,{e,f}"\n若此项不为空，zipmover 会被强制在各节点等待，直到对应组内的 flag 全部激活\n以上面的例子来说，第 1 组是 flag "a"、"b" 和 "c"\n第 2 组是 flag "d"，第 3 组是 flag "e" 和 "f"\n因此要让 zipmover 通过节点 1，第 1 组的 flag 必须全部为真\n要让 zipmover 通过节点 2，第 2 组的 flag 必须全部为真\n节点 3 同理。若存在节点 4 但没有第 4 组，节点 4 将沿用第 3 组的 flag\n注意：当此字段不为空时，"delays" 中各节点的延迟会在节点 flag 激活后作为新的 "Start Delay" 生效
+entities.ChroniaHelper/ZipWater.attributes.description.returnSpeeds=与 "node speeds" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示从最后一个节点到倒数第二个节点之间的速度
+entities.ChroniaHelper/ZipWater.attributes.description.returnDelays=与 "delays" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示反向到达第一个节点时 zipmover 停留的间隔
+entities.ChroniaHelper/ZipWater.attributes.description.sideFlag=开启后，zipmover 在检查 "ZipMoverSync:synctag" 时也会检查 flag "synctag"
+entities.ChroniaHelper/ZipWater.attributes.description.touchSensitive=是否能通过触碰激活该 zipmover（原版需要抓住或站在上面）
+
+# ================= Real Zip Water
+
+entities.ChroniaHelper/OmniZipWater.placements.name.zipwater=Omni Zip Water
+entities.ChroniaHelper/OmniZipWater.attributes.description.customSkin=Connected Zip Mover 的自定义贴图目录路径。\n相对于 Graphics/Atlases/Gameplay。\n为了让 zipmover 在 Lonn 中正常显示，你需要这些文件：\n"light01.png"、"cog.png"
+entities.ChroniaHelper/OmniZipWater.attributes.description.theme=若未设置 Custom Skin，此选项决定 Connected Zip Mover 的外观。\n同时也决定所使用的音效。Cliffside 主题是自定义主题。
+entities.ChroniaHelper/OmniZipWater.attributes.description.permanent=Connected Zip Mover 停止后是否完全静止。
+entities.ChroniaHelper/OmniZipWater.attributes.description.waiting=Connected Zip Mover 是否在每个节点等待玩家。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/OmniZipWater.attributes.description.ticking=Connected Zip Mover 是否在每个节点倒计时，迫使玩家在限定时间内重新激活它。\n若玩家未重新激活则回到初始位置；若开启 "permanent" 则彻底固定不动。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/OmniZipWater.attributes.description.delays=zipmover 在各节点按顺序等待的时间，若未设置，\n默认时间为 0.2s
+entities.ChroniaHelper/OmniZipWater.attributes.description.easing=zipmover 在各节点之间的移动方式
+entities.ChroniaHelper/OmniZipWater.attributes.description.nodeSpeeds=zipmover 移动到各节点的速度倍率，若未正确设置，默认值为 1\n若数组长度小于节点数，后面的节点将沿用最后一个数值
+entities.ChroniaHelper/OmniZipWater.attributes.description.ticks=若开启 "ticking"，返回前需要经过多少次倒计时
+entities.ChroniaHelper/OmniZipWater.attributes.description.tickDelay=若开启 "ticking"，每次倒计时之间的间隔
+entities.ChroniaHelper/OmniZipWater.attributes.description.synced=开启后，所有 "rope Color" 相同的同步 zipmover 会一起激活
+entities.ChroniaHelper/OmniZipWater.attributes.description.syncTag=留空时，tag 会自动设为 rope 颜色\n若开启了 "synced"，可用 flag "ZipMoverSync:(你的同步Tag)" 激活该 zipmover
+entities.ChroniaHelper/OmniZipWater.attributes.description.dashable=玩家冲刺撞上时，该 zipmover 是否可被激活并把玩家弹起\n开启后可查看更多选项
+entities.ChroniaHelper/OmniZipWater.attributes.description.onlyDashActivate=开启后，玩家将无法再通过触碰激活它
+entities.ChroniaHelper/OmniZipWater.attributes.description.dashableOnce=只能冲刺撞它一次\n之后必须等它停下才能再次撞
+entities.ChroniaHelper/OmniZipWater.attributes.description.customSound=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipWater.attributes.description.tweakShakes=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipWater.attributes.description.tweakReturnParams=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipWater.attributes.description.returnedIrrespondingTime=zipmover 返回后的一段时间内不会响应玩家的交互
+entities.ChroniaHelper/OmniZipWater.attributes.description.nodeSound=zipmover 离开节点时，是否在每个节点播放 "start sound"
+entities.ChroniaHelper/OmniZipWater.attributes.description.startDelay=zipmover 开始移动前的延迟
+entities.ChroniaHelper/OmniZipWater.attributes.description.starPath=相对于 "Gameplay/" 的路径
+entities.ChroniaHelper/OmniZipWater.attributes.description.backgroundColor=定义水颜色或玻璃方块主体颜色的颜色值
+entities.ChroniaHelper/OmniZipWater.attributes.description.renderTank=水是否看起来像装在玻璃箱里
+entities.ChroniaHelper/OmniZipWater.attributes.description.timeUnits=开启后，speeds 参数将按时间而不是倍率读取
+entities.ChroniaHelper/OmniZipWater.attributes.description.nodeFlags=使用 "{}" 为一组多个 flag 分组，若组内只有一个 flag，则 "{}" 可省略\n用逗号分隔各组，例如："{a,b,c},d,{e,f}"\n若此项不为空，zipmover 会被强制在各节点等待，直到对应组内的 flag 全部激活\n以上面的例子来说，第 1 组是 flag "a"、"b" 和 "c"\n第 2 组是 flag "d"，第 3 组是 flag "e" 和 "f"\n因此要让 zipmover 通过节点 1，第 1 组的 flag 必须全部为真\n要让 zipmover 通过节点 2，第 2 组的 flag 必须全部为真\n节点 3 同理。若存在节点 4 但没有第 4 组，节点 4 将沿用第 3 组的 flag\n注意：当此字段不为空时，"delays" 中各节点的延迟会在节点 flag 激活后作为新的 "Start Delay" 生效
+entities.ChroniaHelper/OmniZipWater.attributes.description.returnSpeeds=与 "node speeds" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示从最后一个节点到倒数第二个节点之间的速度
+entities.ChroniaHelper/OmniZipWater.attributes.description.returnDelays=与 "delays" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示反向到达第一个节点时 zipmover 停留的间隔
+entities.ChroniaHelper/OmniZipWater.attributes.description.sideFlag=开启后，zipmover 在检查 "ZipMoverSync:synctag" 时也会检查 flag "synctag"
+entities.ChroniaHelper/OmniZipWater.attributes.description.touchSensitive=是否能通过触碰激活该 zipmover（原版需要抓住或站在上面）
+
+# ================= Zip Bumper
+
+entities.ChroniaHelper/OmniZipBumper.placements.name.zipbumper=Omni Zip Bumper
+entities.ChroniaHelper/OmniZipBumper.attributes.description.customSkin=Connected Zip Mover 的自定义贴图目录路径。\n相对于 Graphics/Atlases/Gameplay。\n为了让 zipmover 在 Lonn 中正常显示，你需要这些文件：\n"light01.png"、"cog.png"
+entities.ChroniaHelper/OmniZipBumper.attributes.description.theme=若未设置 Custom Skin，此选项决定 Connected Zip Mover 的外观。\n同时也决定所使用的音效。Cliffside 主题是自定义主题。
+entities.ChroniaHelper/OmniZipBumper.attributes.description.permanent=Connected Zip Mover 停止后是否完全静止。
+entities.ChroniaHelper/OmniZipBumper.attributes.description.waiting=Connected Zip Mover 是否在每个节点等待玩家。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/OmniZipBumper.attributes.description.ticking=Connected Zip Mover 是否在每个节点倒计时，迫使玩家在限定时间内重新激活它。\n若玩家未重新激活则回到初始位置；若开启 "permanent" 则彻底固定不动。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/OmniZipBumper.attributes.description.delays=zipmover 在各节点按顺序等待的时间，若未设置，\n默认时间为 0.2s
+entities.ChroniaHelper/OmniZipBumper.attributes.description.easing=zipmover 在各节点之间的移动方式
+entities.ChroniaHelper/OmniZipBumper.attributes.description.nodeSpeeds=zipmover 移动到各节点的速度倍率，若未正确设置，默认值为 1\n若数组长度小于节点数，后面的节点将沿用最后一个数值
+entities.ChroniaHelper/OmniZipBumper.attributes.description.ticks=若开启 "ticking"，返回前需要经过多少次倒计时
+entities.ChroniaHelper/OmniZipBumper.attributes.description.tickDelay=若开启 "ticking"，每次倒计时之间的间隔
+entities.ChroniaHelper/OmniZipBumper.attributes.description.synced=开启后，所有 "rope Color" 相同的同步 zipmover 会一起激活
+entities.ChroniaHelper/OmniZipBumper.attributes.description.syncTag=留空时，tag 会自动设为 rope 颜色\n若开启了 "synced"，可用 flag "ZipMoverSync:(你的同步Tag)" 激活该 zipmover
+entities.ChroniaHelper/OmniZipBumper.attributes.description.dashable=玩家冲刺撞上时，该 zipmover 是否可被激活并把玩家弹起\n开启后可查看更多选项
+entities.ChroniaHelper/OmniZipBumper.attributes.description.onlyDashActivate=开启后，玩家将无法再通过触碰激活它
+entities.ChroniaHelper/OmniZipBumper.attributes.description.dashableOnce=只能冲刺撞它一次\n之后必须等它停下才能再次撞
+entities.ChroniaHelper/OmniZipBumper.attributes.description.customSound=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipBumper.attributes.description.tweakShakes=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipBumper.attributes.description.tweakReturnParams=开启后可查看更多选项
+entities.ChroniaHelper/OmniZipBumper.attributes.description.returnedIrrespondingTime=zipmover 返回后的一段时间内不会响应玩家的交互
+entities.ChroniaHelper/OmniZipBumper.attributes.description.nodeSound=zipmover 离开节点时，是否在每个节点播放 "start sound"
+entities.ChroniaHelper/OmniZipBumper.attributes.description.startDelay=zipmover 开始移动前的延迟
+entities.ChroniaHelper/OmniZipBumper.attributes.description.starPath=相对于 "Gameplay/" 的路径
+entities.ChroniaHelper/OmniZipBumper.attributes.description.backgroundColor=定义水颜色或玻璃方块主体颜色的颜色值
+entities.ChroniaHelper/OmniZipBumper.attributes.description.renderTank=水是否看起来像装在玻璃箱里
+entities.ChroniaHelper/OmniZipBumper.attributes.description.timeUnits=开启后，speeds 参数将按时间而不是倍率读取
+entities.ChroniaHelper/OmniZipBumper.attributes.description.nodeFlags=使用 "{}" 为一组多个 flag 分组，若组内只有一个 flag，则 "{}" 可省略\n用逗号分隔各组，例如："{a,b,c},d,{e,f}"\n若此项不为空，zipmover 会被强制在各节点等待，直到对应组内的 flag 全部激活\n以上面的例子来说，第 1 组是 flag "a"、"b" 和 "c"\n第 2 组是 flag "d"，第 3 组是 flag "e" 和 "f"\n因此要让 zipmover 通过节点 1，第 1 组的 flag 必须全部为真\n要让 zipmover 通过节点 2，第 2 组的 flag 必须全部为真\n节点 3 同理。若存在节点 4 但没有第 4 组，节点 4 将沿用第 3 组的 flag\n注意：当此字段不为空时，"delays" 中各节点的延迟会在节点 flag 激活后作为新的 "Start Delay" 生效
+entities.ChroniaHelper/OmniZipBumper.attributes.description.returnSpeeds=与 "node speeds" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示从最后一个节点到倒数第二个节点之间的速度
+entities.ChroniaHelper/OmniZipBumper.attributes.description.returnDelays=与 "delays" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示反向到达第一个节点时 zipmover 停留的间隔
+entities.ChroniaHelper/OmniZipBumper.attributes.description.sideFlag=开启后，zipmover 在检查 "ZipMoverSync:synctag" 时也会检查 flag "synctag"
+entities.ChroniaHelper/OmniZipBumper.attributes.description.touchSensitive=是否能通过触碰激活该 zipmover（原版需要抓住或站在上面）
+
+# ================= Zip Dream
+
+entities.ChroniaHelper/ZipDream.placements.name.zipdreamblock=Omni Zip Mover (Dream Block Skin)
+entities.ChroniaHelper/ZipDream.attributes.description.customSkin=Connected Zip Mover 的自定义贴图目录路径。\n相对于 Graphics/Atlases/Gameplay。\n为了让 zipmover 在 Lonn 中正常显示，你需要这些文件：\n"light01.png"、"cog.png"
+entities.ChroniaHelper/ZipDream.attributes.description.theme=若未设置 Custom Skin，此选项决定 Connected Zip Mover 的外观。\n同时也决定所使用的音效。Cliffside 主题是自定义主题。
+entities.ChroniaHelper/ZipDream.attributes.description.permanent=Connected Zip Mover 停止后是否完全静止。
+entities.ChroniaHelper/ZipDream.attributes.description.waiting=Connected Zip Mover 是否在每个节点等待玩家。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/ZipDream.attributes.description.ticking=Connected Zip Mover 是否在每个节点倒计时，迫使玩家在限定时间内重新激活它。\n若玩家未重新激活则回到初始位置；若开启 "permanent" 则彻底固定不动。\n仅在节点数大于 1 时有效。
+entities.ChroniaHelper/ZipDream.attributes.description.delays=zipmover 在各节点按顺序等待的时间，若未设置，\n默认时间为 0.2s
+entities.ChroniaHelper/ZipDream.attributes.description.easing=zipmover 在各节点之间的移动方式
+entities.ChroniaHelper/ZipDream.attributes.description.nodeSpeeds=zipmover 移动到各节点的速度倍率，若未正确设置，默认值为 1\n若数组长度小于节点数，后面的节点将沿用最后一个数值
+entities.ChroniaHelper/ZipDream.attributes.description.ticks=若开启 "ticking"，返回前需要经过多少次倒计时
+entities.ChroniaHelper/ZipDream.attributes.description.tickDelay=若开启 "ticking"，每次倒计时之间的间隔
+entities.ChroniaHelper/ZipDream.attributes.description.synced=开启后，所有 "rope Color" 相同的同步 zipmover 会一起激活
+entities.ChroniaHelper/ZipDream.attributes.description.syncTag=留空时，tag 会自动设为 rope 颜色\n若开启了 "synced"，可用 flag "ZipMoverSync:(你的同步Tag)" 激活该 zipmover
+entities.ChroniaHelper/ZipDream.attributes.description.dashable=玩家冲刺撞上时，该 zipmover 是否可被激活并把玩家弹起\n开启后可查看更多选项
+entities.ChroniaHelper/ZipDream.attributes.description.onlyDashActivate=开启后，玩家将无法再通过触碰激活它
+entities.ChroniaHelper/ZipDream.attributes.description.dashableOnce=只能冲刺撞它一次\n之后必须等它停下才能再次撞
+entities.ChroniaHelper/ZipDream.attributes.description.customSound=开启后可查看更多选项
+entities.ChroniaHelper/ZipDream.attributes.description.tweakShakes=开启后可查看更多选项
+entities.ChroniaHelper/ZipDream.attributes.description.tweakReturnParams=开启后可查看更多选项
+entities.ChroniaHelper/ZipDream.attributes.description.returnedIrrespondingTime=zipmover 返回后的一段时间内不会响应玩家的交互
+entities.ChroniaHelper/ZipDream.attributes.description.nodeSound=zipmover 离开节点时，是否在每个节点播放 "start sound"
+entities.ChroniaHelper/ZipDream.attributes.description.startDelay=zipmover 开始移动前的延迟
+entities.ChroniaHelper/ZipDream.attributes.description.starPath=相对于 "Gameplay/" 的路径
+entities.ChroniaHelper/ZipDream.attributes.description.backgroundColor=定义水颜色或玻璃方块主体颜色的颜色值
+entities.ChroniaHelper/ZipDream.attributes.description.timeUnits=开启后，speeds 参数将按时间而不是倍率读取
+entities.ChroniaHelper/ZipDream.attributes.description.nodeFlags=使用 "{}" 为一组多个 flag 分组，若组内只有一个 flag，则 "{}" 可省略\n用逗号分隔各组，例如："{a,b,c},d,{e,f}"\n若此项不为空，zipmover 会被强制在各节点等待，直到对应组内的 flag 全部激活\n以上面的例子来说，第 1 组是 flag "a"、"b" 和 "c"\n第 2 组是 flag "d"，第 3 组是 flag "e" 和 "f"\n因此要让 zipmover 通过节点 1，第 1 组的 flag 必须全部为真\n要让 zipmover 通过节点 2，第 2 组的 flag 必须全部为真\n节点 3 同理。若存在节点 4 但没有第 4 组，节点 4 将沿用第 3 组的 flag\n注意：当此字段不为空时，"delays" 中各节点的延迟会在节点 flag 激活后作为新的 "Start Delay" 生效
+entities.ChroniaHelper/ZipDream.attributes.description.returnSpeeds=与 "node speeds" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示从最后一个节点到倒数第二个节点之间的速度
+entities.ChroniaHelper/ZipDream.attributes.description.returnDelays=与 "delays" 相同，但在作用于 zipmover 时数字顺序相反\n简单来说，第一个数字表示反向到达第一个节点时 zipmover 停留的间隔
+entities.ChroniaHelper/ZipDream.attributes.description.sideFlag=开启后，zipmover 在检查 "ZipMoverSync:synctag" 时也会检查 flag "synctag"
+entities.ChroniaHelper/ZipDream.attributes.description.touchSensitive=是否能通过触碰激活该 zipmover（原版需要抓住或站在上面）
+
+# ================= Flag Touch Switch Wall
+
+entities.ChroniaHelper/FlagTouchSwitch.placements.name.touch_switch=~ Chronia Touch Switch / Chronia Switch Wall
+entities.ChroniaHelper/FlagTouchSwitch.placements.description.touch_switch=该实体现已并入 Maddie's Helping Hand 并由其处理
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.flag=该触摸开关设置的 session flag。给多个触摸开关和开关门设置相同的值即可分组。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.icon=触摸开关图标的名称（相对于 objects/MaxHelpingHand/flagTouchSwitch），或填 "vanilla" 使用默认图标。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.borderTexture=用作图标背景的贴图路径。\n若要自制，把它放到你的 mod 文件夹的 Graphics/Atlases/Gameplay/myfolder/myborder.png，然后在此填写 "myfolder/myborder"。\n原版边框可在 graphics dump 中找到：Graphics/Atlases/Gameplay/objects/touchswitch/container.png。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.persistent=开启后，玩家死亡或切换房间时触摸开关仍保持激活。\n该触摸开关激活时还会设置一个 flag：[flagName]_switch[entityID]
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.inactiveColor=尚未触发时的开关颜色。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.activeColor=已触发但组内尚未全部完成时的开关颜色。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.finishColor=组内全部完成时的开关颜色。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.smoke=组内全部完成时，触摸开关是否冒烟。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.inverted=触摸开关是否应当关闭该 flag 而不是开启。该选项须在组内所有触摸开关上保持一致。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.allowDisable=组内全部完成后、且 flag 变更被还原时，触摸开关是否可被禁用。对非持久化的 flag 开关门无效。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.playerCanActivate=玩家能否激活该触摸开关。关闭后只有可投掷物能激活它。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.hitSound=玩家碰到开关时播放的音效。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.completeSoundFromSwitch=组内全部完成时，由最后收集到的那个开关发出的音效。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.completeSoundFromScene=组内全部完成时发出的全局音效。与 "Complete Sound (Switch)" 不同，该音效不是由某个具体开关发出的。
+entities.ChroniaHelper/FlagTouchSwitch.attributes.name.completeSoundFromSwitch=Complete Sound (Switch)
+entities.ChroniaHelper/FlagTouchSwitch.attributes.name.completeSoundFromScene=Complete Sound (Global)
+entities.ChroniaHelper/FlagTouchSwitch.attributes.description.hideIfFlag=若在此指定一个 session flag，开启它会让该触摸开关消失，并让房间内其它触摸开关在判定组内完成时忽略它。
+
+# ================= Moving Flag Touch Switch
+
+entities.ChroniaHelper/MovingFlagTouchSwitch.placements.name.touch_switch=Flag Touch Switch (Moving)
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.flag=该触摸开关设置的 session flag。给多个触摸开关和开关门设置相同的值即可分组。
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.icon=触摸开关图标的名称（相对于 objects/ChroniaHelper/flagTouchSwitch），或填 "vanilla" 使用默认图标。
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.persistent=开启后，玩家死亡或切换房间时触摸开关仍保持激活。\n该触摸开关激活时还会设置一个 flag：[flagName]_switch[entityID]
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.movingDelay=触摸开关从一个位置移动到另一个位置所需的时间（秒）。
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.inactiveColor=尚未触发时的开关颜色。
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.movingColor=在两个位置之间移动时的开关颜色。
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.activeColor=已触发但组内尚未全部完成时的开关颜色。
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.finishColor=组内全部完成时的开关颜色。
+entities.ChroniaHelper/MovingFlagTouchSwitch.attributes.description.hideIfFlag=若在此指定一个 session flag，开启它会让该触摸开关消失，并让房间内其它触摸开关在判定组内完成时忽略它。
+
+# ================= Flag Switch Gate
+
+entities.ChroniaHelper/FlagSwitchGate.placements.name.block=~ Chronia Switch Gate (Block)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.mirror=~ Chronia Switch Gate (Mirror)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.temple=~ Chronia Switch Gate (Temple)
+entities.ChroniaHelper/FlagSwitchGate.placements.name.stars=~ Chronia Switch Gate (Stars)
+entities.ChroniaHelper/FlagSwitchGate.placements.description.block=该实体现已并入 Maddie's Helping Hand 并由其处理
+entities.ChroniaHelper/FlagSwitchGate.placements.description.mirror=该实体现已并入 Maddie's Helping Hand 并由其处理
+entities.ChroniaHelper/FlagSwitchGate.placements.description.temple=该实体现已并入 Maddie's Helping Hand 并由其处理
+entities.ChroniaHelper/FlagSwitchGate.placements.description.stars=该实体现已并入 Maddie's Helping Hand 并由其处理
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.flag=该开关门响应的 session flag。给多个触摸开关和开关门设置相同的值即可分组。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.icon=开关门图标的名称（相对于 objects/MaxHelpingHand/flagSwitchGate），或填 "vanilla" 使用默认图标。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.persistent=开启后，玩家死亡或切换房间时开关门保持开启。\n该开关门激活时还会设置一个 flag：[flagName]_gate[entityID]
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.inactiveColor=尚未触发时的门图标颜色。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.activeColor=已触发但组内尚未全部完成时的门图标颜色。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.finishColor=组内全部完成时的门图标颜色。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.sprite=门方块使用的贴图。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.shakeTime=方块开始移动前的抖动时间（秒）。原版数值为 0.5 秒。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.moveTime=抖动结束后方块移动到目的地所需的时间（秒）。原版数值为 1.8 秒。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.moveEased=方块在到达最终位置前是否减速。不勾选则方块匀速移动。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.allowReturn=flag 关闭时方块是否回到初始位置。仅在门为持久化时有效。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.moveSound=门开始移动时播放的音效。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.finishedSound=门移动完成时播放的音效。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.smoke=开关门到达最终位置时是否冒烟。
+entities.ChroniaHelper/FlagSwitchGate.attributes.description.surfaceIndex=在开关门上行走时的脚步声。
+
+# ================= Camera Offset
+
+triggers.ChroniaHelper/AxisCameraOffset.placements.name.AxisCameraOffset=Camera Offset (Single Axis Support)
+triggers.ChroniaHelper/SmoothToOffsetCamera.placements.name.SmoothToOffsetCamera=Smooth Camera Offset (Adaptive Start)
+triggers.ChroniaHelper/AxisCameraOffset.attributes.description.units=偏移长度单位预设\n"offset"：使用默认设置\n"offsetSquared"：偏移 1.0 = 48 px\n"tiles"：偏移 1.0 = 8 px
+
+# ================= Refill
+
+entities.ChroniaHelper/Refill.placements.name.Refill=Refill
+entities.ChroniaHelper/Refill.placements.name.TwoDashesRefill=Refill (Two Dashes)
+entities.ChroniaHelper/Refill.attributes.description.freeze=冻结帧数
+entities.ChroniaHelper/Refill.attributes.description.fewerMode=当玩家的某项数值小于 "fewer" 参数时，\n玩家才能与该实体交互\n否则无法交互\nALWAYS COLLECT：玩家经过时总是会收集该 Refill
+entities.ChroniaHelper/Refill.attributes.description.resetMode=玩家交互时该实体产生的效果
+entities.ChroniaHelper/Refill.attributes.description.sprite=该 Refill 的贴图或动画文件夹，相对于 Gameplay 文件夹\n若以 "/" 结尾，则读取其中的图片序列\n若不以 "/" 结尾，则作为单张图片读取\n若为文件夹，其中应包含多组图片序列："idle"、"flash" 与 "outline"
+entities.ChroniaHelper/Refill.attributes.description.connectedTag=若不为空，tag 相同的 Refill 会在其中一个被收集时一起触发\n随后各自进入重生流程\n若想通过 flag 让某个 Refill 进入队列，待玩家满足普通 Refill 条件（无体力、无冲刺等）后再触发\n请使用 flag "ChroniaHelper_ConnectedRefill_{Refill 的 ID 数字}_queue"\n例如该 Refill 在 Lonn 中标为 ID: 5，则队列 flag 应为 "ChroniaHelper_ConnectedRefill_5_queue"\n若想通过 flag 强制收集某个 Refill\n请使用 flag "ChroniaHelper_ConnectedRefill_{Refill 的 ID 数字}_collect"\n例如该 Refill 在 Lonn 中标为 ID: 7，则收集 flag 应为 "ChroniaHelper_ConnectedRefill_7_collect"
+entities.ChroniaHelper/Refill.attributes.description.changePlayerMax=开启后，"reset dashes" 与 "reset stamina" 不仅决定玩家恢复到的数值，\n还会成为玩家的默认上限（即最大冲刺数与最大体力会被修改并锁定）\n若要解除冲刺与体力的修改：\n再放一个 Refill，把 "reset dashes" 设为你期望的最大冲刺数，\n并把 "reset stamina" 设为小于 0 以解除最大体力限制\n注意：多数情况下这么做时，建议把 "fewer mode" 设为 ALWAYS COLLECT
+
+# ================= Refill Wall
+
+entities.ChroniaHelper/RefillWall.placements.name.RefillWall=Refill Wall
+entities.ChroniaHelper/RefillWall.placements.name.TwoDashesRefillWall=Refill Wall (Two Dashes)
+entities.ChroniaHelper/RefillWall.attributes.description.freeze=冻结帧数
+entities.ChroniaHelper/RefillWall.attributes.description.fewerMode=当玩家的某项数值小于 "fewer" 参数时，\n玩家才能与该实体交互\n否则无法交互\nALWAYS COLLECT：玩家经过时总是会收集该 Refill
+entities.ChroniaHelper/RefillWall.attributes.description.resetMode=玩家交互时该实体产生的效果
+entities.ChroniaHelper/RefillWall.attributes.description.sprite=该 Refill 的贴图或动画文件夹，相对于 Gameplay 文件夹\n若以 "/" 结尾，则读取其中的图片序列\n若不以 "/" 结尾，则作为单张图片读取\n若为文件夹，其中应包含多组图片序列："idle"、"flash" 与 "outline"
+entities.ChroniaHelper/RefillWall.attributes.description.connectedTag=若不为空，tag 相同的 Refill 会在其中一个被收集时一起触发\n随后各自进入重生流程\n若想通过 flag 让某个 Refill 进入队列，待玩家满足普通 Refill 条件（无体力、无冲刺等）后再触发\n请使用 flag "ChroniaHelper_ConnectedRefill_{Refill 的 ID 数字}_queue"\n例如该 Refill 在 Lonn 中标为 ID: 5，则队列 flag 应为 "ChroniaHelper_ConnectedRefill_5_queue"\n若想通过 flag 强制收集某个 Refill\n请使用 flag "ChroniaHelper_ConnectedRefill_{Refill 的 ID 数字}_collect"\n例如该 Refill 在 Lonn 中标为 ID: 7，则收集 flag 应为 "ChroniaHelper_ConnectedRefill_7_collect"
+entities.ChroniaHelper/RefillWall.attributes.description.changePlayerMax=开启后，"reset dashes" 与 "reset stamina" 不仅决定玩家恢复到的数值，\n还会成为玩家的默认上限（即最大冲刺数与最大体力会被修改并锁定）\n若要解除冲刺与体力的修改：\n再放一个 Refill，把 "reset dashes" 设为你期望的最大冲刺数，\n并把 "reset stamina" 设为小于 0 以解除最大体力限制\n注意：多数情况下这么做时，建议把 "fewer mode" 设为 ALWAYS COLLECT
+
+# ================= Refill Circle
+
+entities.ChroniaHelper/RefillCircle.placements.name.RefillCircle=Refill Circle
+entities.ChroniaHelper/RefillCircle.placements.name.TwoDashesRefillCircle=Refill Circle (Two Dashes)
+entities.ChroniaHelper/RefillCircle.attributes.description.freeze=冻结帧数
+entities.ChroniaHelper/RefillCircle.attributes.description.fewerMode=当玩家的某项数值小于 "fewer" 参数时，\n玩家才能与该实体交互\n否则无法交互\nALWAYS COLLECT：玩家经过时总是会收集该 Refill
+entities.ChroniaHelper/RefillCircle.attributes.description.resetMode=玩家交互时该实体产生的效果
+entities.ChroniaHelper/RefillCircle.attributes.description.sprite=该 Refill 的贴图或动画文件夹，相对于 Gameplay 文件夹\n若以 "/" 结尾，则读取其中的图片序列\n若不以 "/" 结尾，则作为单张图片读取\n若为文件夹，其中应包含多组图片序列："idle"、"flash" 与 "outline"
+entities.ChroniaHelper/RefillCircle.attributes.description.connectedTag=若不为空，tag 相同的 Refill 会在其中一个被收集时一起触发\n随后各自进入重生流程\n若想通过 flag 让某个 Refill 进入队列，待玩家满足普通 Refill 条件（无体力、无冲刺等）后再触发\n请使用 flag "ChroniaHelper_ConnectedRefill_{Refill 的 ID 数字}_queue"\n例如该 Refill 在 Lonn 中标为 ID: 5，则队列 flag 应为 "ChroniaHelper_ConnectedRefill_5_queue"\n若想通过 flag 强制收集某个 Refill\n请使用 flag "ChroniaHelper_ConnectedRefill_{Refill 的 ID 数字}_collect"\n例如该 Refill 在 Lonn 中标为 ID: 7，则收集 flag 应为 "ChroniaHelper_ConnectedRefill_7_collect"
+entities.ChroniaHelper/RefillCircle.attributes.description.changePlayerMax=开启后，"reset dashes" 与 "reset stamina" 不仅决定玩家恢复到的数值，\n还会成为玩家的默认上限（即最大冲刺数与最大体力会被修改并锁定）\n若要解除冲刺与体力的修改：\n再放一个 Refill，把 "reset dashes" 设为你期望的最大冲刺数，\n并把 "reset stamina" 设为小于 0 以解除最大体力限制\n注意：多数情况下这么做时，建议把 "fewer mode" 设为 ALWAYS COLLECT
+
+# ================= Advanced Spikes
+
+entities.ChroniaHelper/UpAdvancedSpikes.placements.name.UpAdvancedSpikes=Advanced Spikes (Up)
+entities.ChroniaHelper/DownAdvancedSpikes.placements.name.DownAdvancedSpikes=Advanced Spikes (Down)
+entities.ChroniaHelper/LeftAdvancedSpikes.placements.name.LeftAdvancedSpikes=Advanced Spikes (Left)
+entities.ChroniaHelper/RightAdvancedSpikes.placements.name.RightAdvancedSpikes=Advanced Spikes (Right)
+
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.dream=允许你冲刺穿过尖刺
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/UpAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.dream=允许你冲刺穿过尖刺
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/DownAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.dream=允许你冲刺穿过尖刺
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/LeftAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.sprite=尖刺的贴图，相对于 "Gameplay/"\n路径示例："path/to/file/texture"\n那么文件名应为："texture_up00.png"
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现\n开启后可查看更多选项
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.randomTexture=开启后，游戏内会像原版尖刺那样随机选择尖刺贴图\n关闭后只使用 "texture_(direction)00.png"
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.dream=允许你冲刺穿过尖刺
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/RightAdvancedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+
+# ================= Animated Spikes
+
+entities.ChroniaHelper/UpAnimatedSpikes.placements.name.UpAnimatedSpikes=Animated Spikes (Up)
+entities.ChroniaHelper/DownAnimatedSpikes.placements.name.DownAnimatedSpikes=Animated Spikes (Down)
+entities.ChroniaHelper/LeftAnimatedSpikes.placements.name.LeftAnimatedSpikes=Animated Spikes (Left)
+entities.ChroniaHelper/RightAnimatedSpikes.placements.name.RightAnimatedSpikes=Animated Spikes (Right)
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.disabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.disabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.disabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.disabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.enabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.enabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.enabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.enabledSprite=尖刺未触发时使用的贴图，路径从 "Gameplay/" 之后开始\n文件名应形如 "textureName_up00.png"，例如你的文件是 "Gameplay/danger/mySpikes_up00.png"\n则应填写 "danger/mySpikes"
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.trigger=开启后尖刺会像定时尖刺那样工作\n关闭后尖刺与普通尖刺一致\n注意！若开启 "Wait For Player Leave"，"Trigger Delay" 的计时会从\n玩家离开尖刺起算到尖刺重新出现
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.triggerDelay=若开启 "trigger"，此参数为尖刺伸出的时间
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.retractDelay=若开启 "trigger"，此参数为尖刺缩回、之后可再次交互的时间\n将 Retract Delay 设为 <= 0 会关闭该功能
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.childMode=若不希望该实体杀死玩家，可在此填入一个 Danger Bubbler 的 ID 作为返回目标
+
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+entities.ChroniaHelper/UpAnimatedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+entities.ChroniaHelper/DownAnimatedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+entities.ChroniaHelper/LeftAnimatedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.afterTriggerMinLerpArgument=尖刺伸出到多少比例可被认定为 "完全触发"\n该参数会影响 "Refill Dash After Triggered" 的触发\n取值范围为 0 到 1
+entities.ChroniaHelper/RightAnimatedSpikes.attributes.description.clip=开启后只绘制实体框内（尖刺长度 × 8 像素）的那部分尖刺贴图，框外部分会被裁掉。
+
+# ================= Crumble Block
+
+entities.ChroniaHelper/CrumbleBlock.placements.name.CrumbleBlock=Crumble Block
+entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayTouchTop=若玩家正踩在方块顶部\nTouchTop Delay 或 JumpOff Delay 大于 0 会触发方块崩塌\n其中 JumpOff Delay 优先
+entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayOnClimb=若玩家正在攀爬，此计时会覆盖其它计时
+entities.ChroniaHelper/CrumbleBlock.attributes.description.crumbleDelayJumpoff=若玩家正踩在方块顶部\nTouchTop Delay 或 JumpOff Delay 大于 0 会触发方块崩塌\n其中 JumpOff Delay 优先
+
+# ================= Corner Boost Block
+
+entities.ChroniaHelper/CornerBoostBlock.placements.name.CornerBoostBlock=Corner Boost Block
+
+# ================= Moon Boost Block
+
+entities.ChroniaHelper/MoonBoostBlock.placements.name.MoonBoostBlock=Moon Boost Block
+
+# ================= No Coyote Time Block
+
+entities.ChroniaHelper/NoCoyoteTimeBlock.placements.name.NoCoyoteTimeBlock=No Coyote Time Block
+
+# ================= Flag Triggers (Yocto Legacy)
+
+triggers.ChroniaHelper/FlagAddTrigger.placements.name.FlagAddTrigger=Flag Add Trigger
+triggers.ChroniaHelper/FlagRemoveTrigger.placements.name.FlagRemoveTrigger=Flag Remove Trigger
+triggers.ChroniaHelper/FlagClearTrigger.placements.name.FlagClearTrigger=Flag Clear Trigger
+triggers.ChroniaHelper/FlagReplaceTrigger.placements.name.FlagReplaceTrigger=Flag Replace Trigger
+triggers.ChroniaHelper/FlagIfTrigger.placements.name.FlagIfTrigger=Flag If Trigger
+triggers.ChroniaHelper/FlagSwitchTrigger.placements.name.FlagSwitchTrigger=Flag Switch Trigger
+triggers.ChroniaHelper/FlagListTrigger.placements.name.FlagListTrigger=Flag List Trigger
+triggers.ChroniaHelper/FlagChooseTrigger.placements.name.FlagChooseTrigger=Flag Choose Trigger
+triggers.ChroniaHelper/FlagRandomTrigger.placements.name.FlagRandomTrigger=Flag Random Trigger
+triggers.ChroniaHelper/FlagCarouselTrigger.placements.name.FlagCarouselTrigger=Flag Carousel Trigger
+triggers.ChroniaHelper/FlagCarouselManageTrigger.placements.name.FlagCarouselManageTrigger=Flag Carousel Manage Trigger
+triggers.ChroniaHelper/FlagStateTrigger.placements.name.FlagStateTrigger=Flag State Trigger
+
+triggers.ChroniaHelper/FlagCarouselTrigger.attributes.description.carouselId=该轮播列表的 id 数字。\n注意！每个触发器只能有一个轮播 id。
+triggers.ChroniaHelper/FlagCarouselManageTrigger.attributes.description.carouselId=该轮播列表的 id 数字。\n注意！每个触发器只能有一个轮播 id。
+triggers.ChroniaHelper/FlagListTrigger.attributes.description.flagList=形如 "{a,b,c},{d,e},f..." 的 flag 列表\n玩家每次与该触发器交互，列表就向前推进一格\n按上面的例子，第一次碰到该触发器时 flag "a"、"b" 和 "c" 会被激活\n再次碰到时这些 flag 会被移除，"d" 和 "e" 被激活，再下一次则激活 "f"。
+triggers.ChroniaHelper/FlagChooseTrigger.attributes.description.flagDictionary=形如 "{a1, a2: b}" 的 flag 列表\n当 "a1" 与 "a2" 都激活且玩家碰到该触发器时，"b" 会被激活。\n若开启 "MultiExecute"，可输入多行此类定义，用逗号分隔。\n例如 "{a1, a2: b}, {b1, b2: c1, c2}..."
+
+triggers.ChroniaHelper/FlagIfTrigger.attributes.description.trueFlag=与触发器交互且 "If Flag" 为真时要激活的 flag
+triggers.ChroniaHelper/FlagIfTrigger.attributes.description.falseFlag=与触发器交互且 "If Flag" 为假时要激活的 flag
+
+triggers.ChroniaHelper/FlagRandomTrigger.attributes.description.randomFlagDictionary=一组 flag 与数字，数字定义了玩家与触发器交互时随机激活 flag 的概率权重\n每组定义用逗号分隔，形如 "{flags:scale}"\n举例：若写成 "{a,b:1},{c,d,e:2.5},{f:6.5}" 则玩家交互后 flag "a" 与 "b" 各有 10% 概率被触发，\nflag "c"、"d" 和 "e" 各有 25% 概率被触发，\nflag "f" 有 65% 概率被触发
+
+triggers.ChroniaHelper/FlagSwitchTrigger.attributes.description.defaultFlag=是否需要其中某个 flag 处于激活状态，该触发器才会工作
+
+# ================= Teleport Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/TeleportPositionTrigger.placements.name.TeleportPositionTrigger=Teleport Position Trigger
+triggers.ChroniaHelper/TeleportTargetTrigger.placements.name.TeleportTargetTrigger=Teleport Target Trigger
+
+# ================= Target Id Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/TargetIdTrigger.placements.name.TargetIdTrigger=Target Id Trigger
+
+# ================= Bloom Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/BloomTrigger.placements.name.BloomTrigger=Bloom Trigger
+triggers.ChroniaHelper/BloomFadeTrigger.placements.name.BloomFadeTrigger=Bloom Fade Trigger
+
+# ================= Lighting Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/LightingTrigger.placements.name.LightingTrigger=Lighting Trigger
+triggers.ChroniaHelper/LightingTrigger.attributes.description.lightingAlpha=注意：\n此字段在原版中被硬编码为"仅一次"，每次经过一个房间，\n该数值都会自动衰减为 "base lighting alpha" 与 "lighting alpha add" 之和，\n因此若你没改后两个字段、只改了这个值，效果只会持续一个房间。\n另外，如果你设置的 lighting alpha 小于我上面说的那个和，\n会像原版第 5 章神庙亮起时那样发出一个音效
+triggers.ChroniaHelper/LightingFadeTrigger.placements.name.LightingFadeTrigger=Lighting Fade Trigger
+triggers.ChroniaHelper/LightingFadeTrigger.attributes.description.lightingAlphaFrom=注意：\n此字段在原版中被硬编码为"仅一次"，每次经过一个房间，\n该数值都会自动衰减为 "base lighting alpha" 与 "lighting alpha add" 之和，\n因此若你没改后两个字段、只改了这个值，效果只会持续一个房间。\n另外，如果你设置的 lighting alpha 小于我上面说的那个和，\n会像原版第 5 章神庙亮起时那样发出一个音效
+triggers.ChroniaHelper/LightingFadeTrigger.attributes.description.lightingAlphaTo=注意：\n此字段在原版中被硬编码为"仅一次"，每次经过一个房间，\n该数值都会自动衰减为 "base lighting alpha" 与 "lighting alpha add" 之和，\n因此若你没改后两个字段、只改了这个值，效果只会持续一个房间。\n另外，如果你设置的 lighting alpha 小于我上面说的那个和，\n会像原版第 5 章神庙亮起时那样发出一个音效
+
+# ================= Music Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/MusicTrigger.placements.name.MusicTrigger=Music Trigger
+triggers.ChroniaHelper/MusicFadeTrigger.placements.name.MusicFadeTrigger=Music Fade Trigger
+
+# ================= Ambience Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/AmbienceTrigger.placements.name.AmbienceTrigger=Ambience Trigger
+triggers.ChroniaHelper/AmbienceFadeTrigger.placements.name.AmbienceFadeTrigger=Ambience Fade Trigger
+
+# ================= Sub Pixel Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/SubPixelTrigger.placements.name.SubPixelTrigger=Sub Pixel Trigger
+triggers.ChroniaHelper/SubPixelTrigger.attributes.description.subPixelX=玩家进入地图时默认 subpixelX 为 0.5，\n此数值是相对它的偏移。例如想让玩家 subpixelX 变成 0.9\n应填写 0.4
+triggers.ChroniaHelper/SubPixelTrigger.attributes.description.subPixelY=玩家进入地图时默认 subpixelY 为 0.5，\n此数值是相对它的偏移。例如想让玩家 subpixelY 变成 0.9\n应填写 0.4
+
+# ================= Fast Fall Collider Trigger (Yocto Legacy)
+
+triggers.ChroniaHelper/FastFallColliderTrigger.placements.name.FastFallColliderTrigger=Fast Fall Collider Trigger
+
+# ================= Custom Core Message
+
+entities.ChroniaHelper/CustomCoreMessage.placements.name.CustomCoreMessage=Custom Core Message
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.dialog=ChroniaHelper CustomCoreMessage 支持按帧显示的计时器\n可在选项菜单中查看计时器显示设置\n名称后缀为 "Static" 的 Dialog 只会在每次加载房间时变化\n使用 flag "ChroniaHelperTimer.pause" 暂停计时\n使用 flag "ChroniaHelperTimer.reset" 重置计时\n若要显示在 ChroniaHelper/Keyboard 中输入的文本，请使用内置 Dialog ID "keyboardSync_(tagID)"\n"tagID" 指 Password Keyboard 中的 "tag" 选项
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.wholeDialog=该选项会忽略 "line" 选项，显示全部 Dialog 而不是单行
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.detectSessionExpression=Session Expression 是从 Frost Helper 引入的功能\n开启后，该实体将需要 FrostHelper 作为依赖\n并开始检测选项中是否包含会触发 Frost Helper Session Expression 机制的语法
+entities.ChroniaHelper/CustomCoreMessage.attributes.description.LanguageScaleSpecify=一组语言缩放定义\n每条定义形如：language, scale\n语言在选项菜单中给出，scale 可以是数字或 slider 名
+
+# ================= Custom Timer by AppleSheep
+
+entities.ChroniaHelper/TimerRecordStuff.placements.name.timeRecordStuff=Custom Timer Recorder
+entities.ChroniaHelper/CustomTimer.placements.name.CustomTimer=Custom Timer
+triggers.ChroniaHelper/TimerControlTrigger.placements.name.TimerControlTrigger=Custom Timer Control Trigger
+
+entities.ChroniaHelper/CustomTimer.attributes.description.checkIsValidRun=该实体会检查玩家是否使用了 debug map，若是则时间不被视为有效
+entities.ChroniaHelper/TimerRecordStuff.attributes.description.text=计时器上方显示的标题
+entities.ChroniaHelper/CustomTimer.attributes.description.checkTimeLimit=开启时限检查：超时后文本颜色会改变
+entities.ChroniaHelper/CustomTimer.attributes.description.text=计时器上方显示的标题
+
+# ================= Tile Block
+
+entities.ChroniaHelper/TileBlock.placements.name.TileBlock=Tile Block
+entities.ChroniaHelper/AlternateTileBlock.placements.name.TileBlock=Tile Block (Nine Patch)
+entities.ChroniaHelper/CustomNegaBlock.placements.name.CustomNegaBlock=Custom Nega Block
+
+# ================= Custom Billboard
+
+entities.ChroniaHelper/CustomBillboard.placements.name.customBillboard=Custom Billboard
+
+# ================= Custom Dust Bunny
+
+entities.ChroniaHelper/CustomDustBunny.placements.name.CustomDustBunny=Custom Dust Bunny
+
+# ================= BG Tile Entity
+
+entities.ChroniaHelper/StaticBgTile.placements.name.tile=BG Tile Entity
+
+# ================= Seperated Tile
+
+entities.ChroniaHelper/SeperatedTile.placements.name.SeperatedTile=Floaty Bg Tile (Seperated)
+
+# ================= Auto Skip Dialog Trigger
+
+triggers.ChroniaHelper/AutoDialogSkipTrigger.placements.name.AutoSkipTrigger=Auto Dialog Skip Trigger
+
+# ================= Custom Torch
+
+entities.ChroniaHelper/CustomTorch.placements.name.main=Custom Torch
+entities.ChroniaHelper/CustomTorch.attributes.description.RegisterRadius=玩家可以点亮灯光时该实体的判定大小
+
+# ================= Open URL
+
+triggers.ChroniaHelper/OpenUrlTrigger.placements.name.normal=Open URL Trigger
+
+# ================= Custom Booster
+
+entities.ChroniaHelper/CustomBooster.placements.name.normal=Custom Booster
+entities.ChroniaHelper/CustomBooster.attributes.description.directory=相对于 Gameplay 的文件夹路径\n文件夹内必须包含多组动画（图片序列）：\n"loop"、"inside"、"spin" 与 "pop"\n若该 booster 是红色 booster（开启 "red" 选项）\n则还需要 "appear" 动画
+entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillDashes=开启后，该 booster 会直接设定玩家冲刺数，而不是补充
+entities.ChroniaHelper/CustomBooster.attributes.description.setOrRefillStamina=开启后，该 booster 会直接设定玩家体力，而不是补充
+entities.ChroniaHelper/CustomBooster.attributes.description.XMLOverride=开启后，"directory" 会作为 XML 对象 tag 使用\n选项中的所有动画参数都会被忽略
+entities.ChroniaHelper/CustomBooster.attributes.description.holdTime=玩家在里面停留多久后它才激活并开始移动
+entities.ChroniaHelper/CustomBooster.attributes.description.playerFollow=若玩家在其中时 booster 位置发生变化，玩家会跟着 booster 一起移动
+entities.ChroniaHelper/CustomBooster.attributes.description..keepPlayerSpeed=booster 会记录玩家进入时的速度，并在放出玩家时保持该速度。\n会受放出速度倍率影响。
+
+entities.ChroniaHelper/CustomBoosterXML.placements.name.normal=Custom Booster (XML Sprite)
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.directory=Sprites.xml 中的 XML tag
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.setOrRefillDashes=开启后，该 booster 会直接设定玩家冲刺数，而不是补充
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.setOrRefillStamina=开启后，该 booster 会直接设定玩家体力，而不是补充
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.XMLOverride=开启后，"directory" 会作为 XML 对象 tag 使用\n选项中的所有动画参数都会被忽略
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.holdTime=玩家在里面停留多久后它才激活并开始移动
+entities.ChroniaHelper/CustomBoosterXML.attributes.description.playerFollow=若玩家在其中时 booster 位置发生变化，玩家会跟着 booster 一起移动
+entities.ChroniaHelper/CustomBoosterXML.attributes.description..keepPlayerSpeed=booster 会记录玩家进入时的速度，并在放出玩家时保持该速度。\n会受放出速度倍率影响。
+
+# ================= Custom Glider
+
+entities.ChroniaHelper/CustomGlider.placements.name.glider=Custom Jellyfish
+entities.ChroniaHelper/CustomGlider.attributes.description.Directory=贴图文件夹路径\n其中应包含："idle"、"held"、"fall"、"fallLoop" 与 "death" 动画
+entities.ChroniaHelper/CustomGlider.attributes.description.hitboxParameters=一组数字，依次表示\n判定宽度、判定高度、判定 X、判定 Y
+entities.ChroniaHelper/CustomGlider.attributes.description.holdableParameters=一组数字，依次表示\n可持握判定宽度、可持握判定高度、\n可持握判定 X、可持握判定 Y
+entities.ChroniaHelper/CustomGlider.attributes.description.XMLOverride=开启后，"directory" 会作为 XML 对象 tag 使用\n选项中的所有动画参数都会被忽略
+entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedY=无风等情况下 glider 的最大下落速度
+entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedX=扔出 glider 后，glider 的 Speed X 会减速\n此选项设定该 glider 最终的 Speed X
+entities.ChroniaHelper/CustomGlider.attributes.description.droppingSpeedXMultiplier=开启后，"dropping speed x" 中填入的值会作为扔出速度的倍率，\n而不是一个确定值
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderFastFall=手持 Custom Glider 并按上：最大下落速度（原版：120）
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderWindUpFall=手持 Custom Glider，在被风吹起上升时按上：下落速度（原版：-32，负数表示上升）
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderSlowFall=手持 Custom Glider 并按上：最大下落速度（原版：24）
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderMaxFall=手持 Custom Glider 且无任何输入：最大下落速度（原版：40）
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderWindMaxFall=手持 Custom Glider 并被风吹起：最大下落速度（原版：0，即悬停）
+entities.ChroniaHelper/CustomGlider.attributes.description.holdingMaxRun=手持 Custom Glider 在地面行走：最大水平速度（原版：70）。\n需要 glider 的 "Slow Run" 行为
+entities.ChroniaHelper/CustomGlider.attributes.description.gliderMaxRun=手持 Custom Glider 在空中移动：最大水平速度（原版：108.000008）
+entities.ChroniaHelper/CustomGlider.attributes.description.holdingAccelerationMultiplier=手持 Custom Glider 在空中：作用于水平加速度的倍率（原版：0.5，即一半加速度）
+entities.ChroniaHelper/CustomGlider.attributes.description.holdingGravityMultiplier=手持 Custom Glider：作用于重力的倍率，即垂直速度接近目标下落速度的快慢。它不会改变最终下落速度本身（原版：0.5，即一半重力）
+
+entities.ChroniaHelper/CustomGliderXML.placements.name.glider=Custom Glider (XML Sprite)
+entities.ChroniaHelper/CustomGliderXML.attributes.description.Directory=Sprites.xml 中的 XML tag
+entities.ChroniaHelper/CustomGliderXML.attributes.description.hitboxParameters=一组数字，依次表示\n判定宽度、判定高度、判定 X、判定 Y
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdableParameters=一组数字，依次表示\n可持握判定宽度、可持握判定高度、\n可持握判定 X、可持握判定 Y
+entities.ChroniaHelper/CustomGliderXML.attributes.description.XMLOverride=开启后，"directory" 会作为 XML 对象 tag 使用\n选项中的所有动画参数都会被忽略
+entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedY=无风等情况下 glider 的最大下落速度
+entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedX=扔出 glider 后，glider 的 Speed X 会减速\n此选项设定该 glider 最终的 Speed X
+entities.ChroniaHelper/CustomGliderXML.attributes.description.droppingSpeedXMultiplier=开启后，"dropping speed x" 中填入的值会作为扔出速度的倍率，\n而不是一个确定值
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderFastFall=手持 Custom Glider 并按上：最大下落速度（原版：120）
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderWindUpFall=手持 Custom Glider，在被风吹起上升时按上：下落速度（原版：-32，负数表示上升）
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderSlowFall=手持 Custom Glider 并按上：最大下落速度（原版：24）
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderMaxFall=手持 Custom Glider 且无任何输入：最大下落速度（原版：40）
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderWindMaxFall=手持 Custom Glider 并被风吹起：最大下落速度（原版：0，即悬停）
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdingMaxRun=手持 Custom Glider 在地面行走：最大水平速度（原版：70）。\n需要 glider 的 "Slow Run" 行为
+entities.ChroniaHelper/CustomGliderXML.attributes.description.gliderMaxRun=手持 Custom Glider 在空中移动：最大水平速度（原版：108.000008）
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdingAccelerationMultiplier=手持 Custom Glider 在空中：作用于水平加速度的倍率（原版：0.5，即一半加速度）
+entities.ChroniaHelper/CustomGliderXML.attributes.description.holdingGravityMultiplier=手持 Custom Glider：作用于重力的倍率，即垂直速度接近目标下落速度的快慢。它不会改变最终下落速度本身（原版：0.5，即一半重力）
+
+# ================= Real Flag Switch
+
+entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitch=Flag Button
+entities.ChroniaHelper/RealFlagSwitch.attributes.description.passwordID=ChroniaHelper/PasswordKeyboard 的 tag\n留空则关闭密码保护
+entities.ChroniaHelper/RealFlagSwitch.placements.name.flagswitchwall=Flag Button Wall
+
+entities.ChroniaHelper/VanillaFlagButton.placements.name.flagswitch=Flag Button (Vanilla Styled)
+entities.ChroniaHelper/VanillaFlagButton.attributes.description.passwordID=ChroniaHelper/PasswordKeyboard 的 tag\n留空则关闭密码保护
+entities.ChroniaHelper/VanillaFlagButton.placements.name.flagswitchwall=Flag Button Wall (Vanilla Styled)
+
+# ================= Real Flag Switch Alt
+
+entities.ChroniaHelper/RealFlagSwitchAlt.placements.name.flagswitch=(Obsoleted) Flag Button (Alternate)
+entities.ChroniaHelper/RealFlagSwitchAlt.attributes.description.passwordID=ChroniaHelper/PasswordKeyboard 的 tag\n留空则关闭密码保护
+
+# ================= Real Flag Switch 2 (Animation Recoded)
+
+entities.ChroniaHelper/RealFlagSwitch2.placements.name.flagswitch=Custom Flag Button
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.passwordID=ChroniaHelper/PasswordKeyboard 的 tag\n留空则关闭密码保护
+entities.ChroniaHelper/RealFlagSwitch2.placements.name.flagswitchwall=Custom Flag Button Wall
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.icon=包含以下动画的文件夹路径：\n"idle"、"spin"、"finishing"、"finished"
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.iconIdleAnimation="idle" 的动画间隔
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.iconSpinAnimation="spin" 的动画间隔
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.iconFinishingAnimation="finishing" 的动画间隔
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.iconFinishedAnimation="finished" 的动画间隔
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.borderTexture=图标背后描边贴图的文件路径，\n不包含后缀数字\n例如你的文件是 "objects/ChroniaHelper/myCustomSwitch/container00.png"\n则应填写：objects/ChroniaHelper/myCustomSwitch/container
+entities.ChroniaHelper/RealFlagSwitch2.attributes.description.borderAnimation=边框的动画间隔
+
+entities.ChroniaHelper/VanillaCustomFlagButton.placements.name.flagswitch=Custom Flag Button (Vanilla Styled)
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.passwordID=ChroniaHelper/PasswordKeyboard 的 tag\n留空则关闭密码保护
+entities.ChroniaHelper/VanillaCustomFlagButton.placements.name.flagswitchwall=Custom Flag Button Wall (Vanilla Styled)
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.icon=包含以下动画的文件夹路径：\n"idle"、"spin"、"finishing"、"finished"
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconIdleAnimation="idle" 的动画间隔
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconSpinAnimation="spin" 的动画间隔
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconFinishingAnimation="finishing" 的动画间隔
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.iconFinishedAnimation="finished" 的动画间隔
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.borderTexture=图标背后描边贴图的文件路径，\n不包含后缀数字\n例如你的文件是 "objects/ChroniaHelper/myCustomSwitch/container00.png"\n则应填写：objects/ChroniaHelper/myCustomSwitch/container
+entities.ChroniaHelper/VanillaCustomFlagButton.attributes.description.borderAnimation=边框的动画间隔
+
+
+# ================= Summit Cloud
+
+entities.ChroniaHelper/CustomSummitCloud.placements.name.cloud=Custom Summit Cloud
+entities.ChroniaHelper/CustomSummitCloud.attributes.description.alignment=基准位置为左上角
+
+# ================= Summit Cloud 2
+
+entities.ChroniaHelper/CustomSummitCloud2.placements.name.cloud=Custom Summit Cloud 2
+
+# ================= Auto Skip Trigger
+
+triggers.ChroniaHelper/AutoDialogSkipTrigger.placements.name.AutoSkipTrigger=Auto Dialog Trigger
+triggers.ChroniaHelper/AutoDialogSkipTrigger.attributes.description.dialogId=若想使用自动跳过功能\n包含 {trigger 0} 开始自动跳过\n包含 {trigger 1} 停止自动跳过
+
+# ================= Flag String Trigger
+
+triggers.ChroniaHelper/FlagStringTrigger.placements.name.FlagStringTrigger=Flag String Trigger
+triggers.ChroniaHelper/FlagStringTrigger.attributes.description.baseString=作为参数用于查找、以编辑 flag 字符串的基准字符串
+triggers.ChroniaHelper/FlagStringTrigger.attributes.description.newString=要操作的新字符串
+
+# ================= Wind Tunnels
+
+entities.ChroniaHelper/WindTunnel.attributes.description.direction=可从选项中挑选\n也可直接填入具体数值，0 为向右，90 为向上
+
+# ================= Resort Lantern
+
+entities.ChroniaHelper/CustomResortLantern.placements.name.lantern=Custom Resort Lantern
+entities.ChroniaHelper/CustomResortLantern.attributes.description.spriteDirectory=贴图文件夹，相对于 "Gameplay/"\n该文件夹内应有静态图 "holder.png" 与图片序列 "lantern"\n注意："holder" 图片不是必须的，若文件夹中没有该图片，此 lantern 的 holder 会被自动忽略\n若确实想要 holder，请查看 Graphics Dump 了解 holder 图片的初始朝向
+
+# ================= Flag Date Trigger
+
+triggers.ChroniaHelper/FlagDateTrigger.placements.name.FlagDateTrigger=Flag Date Trigger
+triggers.ChroniaHelper/FlagDateTrigger.attributes.description.requirements=一组用 ';' 分隔的条件\n每条条件形如："format, A, B"\nA 与 B 为两个整数，该写法表示某种时间格式的数值应大于 A（包含）\n且小于 B（不包含），所有条件都满足时该触发器才会激活\n特别的，形如 "format, A" 的条件表示时间应大于 A\n形如 "format, , B" 的条件表示时间应小于 B\n若条件的第一段以感叹号 '!' 开头\n例如 "!second, 10, 20"，则该条件在判定时取反\n注意：若你填入的条件无效或格式不正确，\n它会被忽略，并在触发器检查该条件时直接视为 "true"
+
+# ================= Custom Playback
+
+entities.ChroniaHelper/CustomPlayback.placements.name.main=Custom Playback (Flag-control)
+
+# ================= Patient Booster
+
+entities.ChroniaHelper/PatientBooster.placements.name.default=Patient Booster
+entities.ChroniaHelper/PatientBooster.placements.name.red=Patient Booster (Red)
+entities.ChroniaHelper/PatientBooster.attributes.description.customHitbox=可在此自定义判定。\n"r" 代表矩形，参数格式为 "r, width, height, posX, posY"\n"c" 代表圆形，参数格式为 "c, radius, posX, posY"\n留空时 Spinner 会使用默认值或忽略自定义判定。
+
+# ================= Dash gate block
+
+# ================= most tooltips stolen from maddie's helping hand
+# ================= https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang# =================L194
+entities.ChroniaHelper/DashGateBlock.placements.name.Both=Omni Dash Gate Block (Both, Multi-node)
+entities.ChroniaHelper/DashGateBlock.placements.name.Horizontal=Omni Dash Gate Block (Horizontal, Multi-node)
+entities.ChroniaHelper/DashGateBlock.placements.name.Vertical=Omni Dash Gate Block (Vertical, Multi-node)
+entities.ChroniaHelper/DashGateBlock.placements.name.kevinswitchgate=Omni Kevin Switch Gate (Multi-node)
+entities.ChroniaHelper/DashGateBlock.attributes.description.inactiveColor=尚未触发时方块的颜色。
+entities.ChroniaHelper/DashGateBlock.attributes.description.activeColor=移动中方块的颜色。
+entities.ChroniaHelper/DashGateBlock.attributes.description.finishColor=到达目的地后方块的颜色。
+entities.ChroniaHelper/DashGateBlock.attributes.description.blockSprite=方块的贴图路径。\n文件组织方式可参考 SorbetHelper.zip 中的 Graphics/Atlases/Gameplay/objects/SorbetHelper/gateblock/dash/。
+entities.ChroniaHelper/DashGateBlock.attributes.description.iconSprite=方块中心图标的贴图路径。
+entities.ChroniaHelper/DashGateBlock.attributes.description.shakeTime=方块开始移动前的抖动时间（秒）。默认值为 0.5 秒。
+entities.ChroniaHelper/DashGateBlock.attributes.description.moveTime=抖动结束后方块移动到目的地所需的时间（秒）。默认值为 1.8 秒。
+entities.ChroniaHelper/DashGateBlock.attributes.description.moveEased=方块在到达最终位置前是否减速。不勾选则方块匀速移动。
+entities.ChroniaHelper/DashGateBlock.attributes.description.allowReturn=多次激活时，方块是否在起点与节点之间循环。
+entities.ChroniaHelper/DashGateBlock.attributes.description.persistent=开启后，玩家死亡或切换房间时方块仍保持激活。
+entities.ChroniaHelper/DashGateBlock.attributes.description.moveSound=门开始移动时播放的音效。
+entities.ChroniaHelper/DashGateBlock.attributes.description.finishedSound=门移动完成时播放的音效。
+entities.ChroniaHelper/DashGateBlock.attributes.description.smoke=方块到达最终位置时是否冒烟。
+entities.ChroniaHelper/DashGateBlock.attributes.description.allowWavedash=是否可以站在方块顶部 wavedash。
+entities.ChroniaHelper/DashGateBlock.attributes.name.dashCornerCorrection=Easier Wallbounce
+entities.ChroniaHelper/DashGateBlock.attributes.description.dashCornerCorrection=让方块上的墙角反弹（wallbounce）更宽容（允许从底部冲刺时最多水平深入方块 4 像素）。
+entities.ChroniaHelper/DashGateBlock.attributes.name.axes=Dashable Axes
+entities.ChroniaHelper/DashGateBlock.attributes.description.axes=决定可从方块的哪些侧面冲刺进入。
+entities.ChroniaHelper/DashGateBlock.attributes.name.linkTag=Flag On Activate
+entities.ChroniaHelper/DashGateBlock.attributes.description.linkTag=方块激活时可选择性开启的 session flag。
+
+# ================= Touch gate block
+
+# ================= most tooltips stolen from maddie's helping hand
+# ================= https://github.com/maddie480/MaddieHelpingHand/blob/1297e45c72dbf27972e8396139406dd55e65c227/Loenn/lang/en_gb.lang# =================L194
+entities.ChroniaHelper/TouchGateBlock.placements.name.normal=Omni Touch Gate Block (Multi-node)
+entities.ChroniaHelper/TouchGateBlock.placements.name.normalaltname=Omni Gate Block (Touch Activated) (Activate On Touch) (Multi-node)
+entities.ChroniaHelper/TouchGateBlock.attributes.description.inactiveColor=尚未触发时方块的颜色。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.activeColor=移动中方块的颜色。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.finishColor=到达目的地后方块的颜色。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.blockSprite=方块的贴图路径。\n文件组织方式可参考 SorbetHelper.zip 中的 Graphics/Atlases/Gameplay/objects/SorbetHelper/gateblock/dash/。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.iconSprite=方块中心图标的贴图路径。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.shakeTime=方块开始移动前的抖动时间（秒）。默认值为 0.5 秒。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveTime=抖动结束后方块移动到目的地所需的时间（秒）。默认值为 1.8 秒。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveEased=方块在到达最终位置前是否减速。不勾选则方块匀速移动。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.allowReturn=多次激活时，方块是否在起点与节点之间循环。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.persistent=开启后，玩家死亡或切换房间时方块仍保持激活。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveSound=门开始移动时播放的音效。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.finishedSound=门移动完成时播放的音效。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.smoke=方块到达最终位置时是否冒烟。
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveOnGrab=玩家攀爬方块侧面时是否应激活该方块。
+entities.ChroniaHelper/TouchGateBlock.attributes.name.moveOnStaticMover=Static Mover Activated
+entities.ChroniaHelper/TouchGateBlock.attributes.description.moveOnStaticMover=该方块是否可被附着在其上的静态移动物（如弹簧）激活。
+entities.ChroniaHelper/TouchGateBlock.attributes.name.linkTag=Flag On Activate
+entities.ChroniaHelper/TouchGateBlock.attributes.description.linkTag=方块激活时可选择性开启的 session flag。
+
+# ================= Zip Booster
+
+entities.ChroniaHelper/BoosterZipper.placements.name.zipbooster=Zip Booster
+
+# ================= Sprite Entity
+
+entities.ChroniaHelper/SpriteEntity.placements.name.SpriteEntity=Sprite Entity
+entities.ChroniaHelper/SpriteEntity.attributes.description.commands=请查看子菜单以获取分项选项的说明，\n带括号() 的表示该子元素若不想设置可以忽略并删除，\n以问号? 结尾的表示应为布尔值\n以井号# ================= 开头的表示应为字符串，\n否则为数字\n----------警告：----------\n使用子菜单（右侧带 "v" 图标的选项）查看指令时，\n请确保列表中只剩一项（即右侧只有一个带 "v" 图标的选项），\n否则会看得混乱。
+entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionX=视差为 0 时贴图的渲染位置
+entities.ChroniaHelper/SpriteEntity.attributes.description.camPositionY=视差为 0 时贴图的渲染位置
+
+entities.ChroniaHelper/SpriteEntity2.placements.name.SpriteEntity=Sprite Entity 2 (wip)
+entities.ChroniaHelper/SpriteEntity2.attributes.description.commands=请查看子菜单以获取分项选项的说明，\n带括号() 的表示该子元素若不想设置可以忽略并删除，\n以问号? 结尾的表示应为布尔值\n以井号# ================= 开头的表示应为字符串，\n否则为数字\n----------警告：----------\n使用子菜单（右侧带 "v" 图标的选项）查看指令时，\n请确保列表中只剩一项（即右侧只有一个带 "v" 图标的选项），\n否则会看得混乱。
+entities.ChroniaHelper/SpriteEntity2.attributes.description.camPositionX=视差为 0 时贴图的渲染位置
+entities.ChroniaHelper/SpriteEntity2.attributes.description.camPositionY=视差为 0 时贴图的渲染位置
+
+# ================= Password Keyboard
+
+entities.ChroniaHelper/PasswordKeyboard.placements.name.normal=Password Keyboard
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.mode=Normal Mode：需要输入正确密码才能激活 flag\n支持逐级密码，多个密码用 ";" 分隔，多个 flag 用 "," 分隔\n密码 1 解锁 Flag 1，密码 2 解锁 Flag 2\n只有密码 1 匹配后，密码 2 才会参与检测\nExclusive Mode：输入内容会存入 Helper session，其它实体可据此反应\nOutput Flag Mode：输入内容会被转换成 flag，建议配合 "Use Times" 限制使用\nSystematic Mode：输入多个密码用 ";" 分隔，多个 flag 用 "," 分隔，密码 1 解锁 Flag 1，密码 2 解锁 Flag 2，以此类推。flag 根据你输入的密码解锁
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.flagToEnable=密码正确时会被激活的 flag
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.accessZone=一个相对的 {X, Y, width, height} 设置，用于定义玩家可访问键盘的范围
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.accessZoneIndicator=开启后，Lonn 中会显示一个矩形标示当前区域\n游戏内无效果
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.texture=相对于 "Gameplay/" 的贴图路径
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.tag=用于分组或区分各密码键盘的标签
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.talkIconPosition=气泡图标相对于实体位置的渲染位置
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.passwordEncrypted=你填入的 "password" 是否已加密，还是原始文本\n若要使用加密，请按以下步骤操作：\n1. 在 "Password" 选项中填入你设定的密码，操作前请勾选 "Case Sensitive"\n2. 开启 "Show Encrypted Password In Console"\n3. 进入地图，在控制台查看加密后的密码\n4. 复制加密后的密码并粘贴到 "Password" 选项\n5. 关闭 "Show Encrypted Password In Console"\n6. 完成！\n另外，Aurora 也提供了一个可在网站上加密密码的页面，地址：\nhttps://hash.modded-celeste.com/\n密钥应为 "tag + password"\n例如你的键盘 tag 是 "keyboard"，密码是 "password"\n则应在网站中输入 "keyboardpassword" 以获得正确的加密结果
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.showEncryptedPasswordInConsole=开启后，加密后的密码会显示在控制台供你复制
+entities.ChroniaHelper/PasswordKeyboard.attributes.description.caseSensitive=校验密码时是否把所有字母视为小写\n若你使用 Aurora 的网站生成加密密码，请在网站中勾选 "Hash input in lowercase"
+
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.placements.name.normal=Invisible Password Keyboard Trigger
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.mode=Normal Mode：需要输入正确密码才能激活 flag\n支持逐级密码，多个密码用 ";" 分隔，多个 flag 用 "," 分隔\n密码 1 解锁 Flag 1，密码 2 解锁 Flag 2\n只有密码 1 匹配后，密码 2 才会参与检测\nExclusive Mode：输入内容会存入 Helper session，其它实体可据此反应\nOutput Flag Mode：输入内容会被转换成 flag，建议配合 "Use Times" 限制使用\nSystematic Mode：输入多个密码用 ";" 分隔，多个 flag 用 "," 分隔，密码 1 解锁 Flag 1，密码 2 解锁 Flag 2，以此类推。flag 根据你输入的密码解锁
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.flagToEnable=密码正确时会被激活的 flag
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.accessZone=一个相对的 {X, Y, width, height} 设置，用于定义玩家可访问键盘的范围
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.accessZoneIndicator=开启后，Lonn 中会显示一个矩形标示当前区域\n游戏内无效果
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.texture=相对于 "Gameplay/" 的贴图路径
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.tag=用于分组或区分各密码键盘的标签
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.talkIconPosition=气泡图标相对于实体位置的渲染位置
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.passwordEncrypted=你填入的 "password" 是否已加密，还是原始文本\n若要使用加密，请按以下步骤操作：\n1. 在 "Password" 选项中填入你设定的密码，操作前请勾选 "Case Sensitive"\n2. 开启 "Show Encrypted Password In Console"\n3. 进入地图，在控制台查看加密后的密码\n4. 复制加密后的密码并粘贴到 "Password" 选项\n5. 关闭 "Show Encrypted Password In Console"\n6. 完成！\n另外，Aurora 也提供了一个可在网站上加密密码的页面，地址：\nhttps://hash.modded-celeste.com/\n密钥应为 "tag + password"\n例如你的键盘 tag 是 "keyboard"，密码是 "password"\n则应在网站中输入 "keyboardpassword" 以获得正确的加密结果
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.showEncryptedPasswordInConsole=开启后，加密后的密码会显示在控制台供你复制
+triggers.ChroniaHelper/InvisiblePasswordKeyboardTrigger.attributes.description.caseSensitive=校验密码时是否把所有字母视为小写\n若你使用 Aurora 的网站生成加密密码，请在网站中勾选 "Hash input in lowercase"
+
+triggers.ChroniaHelper/PasswordKeyboardTrigger.placements.name.normal=Password Keyboard Trigger
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.mode=Normal Mode：需要输入正确密码才能激活 flag\n支持逐级密码，多个密码用 ";" 分隔，多个 flag 用 "," 分隔\n密码 1 解锁 Flag 1，密码 2 解锁 Flag 2\n只有密码 1 匹配后，密码 2 才会参与检测\nExclusive Mode：输入内容会存入 Helper session，其它实体可据此反应\nOutput Flag Mode：输入内容会被转换成 flag，建议配合 "Use Times" 限制使用\nSystematic Mode：输入多个密码用 ";" 分隔，多个 flag 用 "," 分隔，密码 1 解锁 Flag 1，密码 2 解锁 Flag 2，以此类推。flag 根据你输入的密码解锁
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.flagToEnable=密码正确时会被激活的 flag
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.accessZone=一个相对的 {X, Y, width, height} 设置，用于定义玩家可访问键盘的范围
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.accessZoneIndicator=开启后，Lonn 中会显示一个矩形标示当前区域\n游戏内无效果
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.texture=相对于 "Gameplay/" 的贴图路径
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.tag=用于分组或区分各密码键盘的标签
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.talkIconPosition=气泡图标相对于实体位置的渲染位置
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.passwordEncrypted=你填入的 "password" 是否已加密，还是原始文本\n若要使用加密，请按以下步骤操作：\n1. 在 "Password" 选项中填入你设定的密码，操作前请勾选 "Case Sensitive"\n2. 开启 "Show Encrypted Password In Console"\n3. 进入地图，在控制台查看加密后的密码\n4. 复制加密后的密码并粘贴到 "Password" 选项\n5. 关闭 "Show Encrypted Password In Console"\n6. 完成！\n另外，Aurora 也提供了一个可在网站上加密密码的页面，地址：\nhttps://hash.modded-celeste.com/\n密钥应为 "tag + password"\n例如你的键盘 tag 是 "keyboard"，密码是 "password"\n则应在网站中输入 "keyboardpassword" 以获得正确的加密结果
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.showEncryptedPasswordInConsole=开启后，加密后的密码会显示在控制台供你复制
+triggers.ChroniaHelper/PasswordKeyboardTrigger.attributes.description.caseSensitive=校验密码时是否把所有字母视为小写\n若你使用 Aurora 的网站生成加密密码，请在网站中勾选 "Hash input in lowercase"
+
+# ================= Platform Line Controller
+
+entities.ChroniaHelper/PlatformLineController.placements.name.platfromLineController=Platform Line Controller
+entities.ChroniaHelper/PlatformLineController.attributes.description.edgeColor=平台线的边缘颜色
+entities.ChroniaHelper/PlatformLineController.attributes.description.centerColor=平台主轨道颜色
+entities.ChroniaHelper/PlatformLineController.attributes.description.renderMode=该控制器应响应哪一类平台线\n注意：单项设置的优先级高于整体设置\n例如你同时放置了 "overall" 控制器与 "moving platform" 控制器，则 "overall" 控制器会被移除
+
+# ================= Flag Trigger
+
+triggers.ChroniaHelper/FlagTrigger.placements.name.FlagTrigger=Flag Trigger
+triggers.ChroniaHelper/FlagTrigger.attributes.description.temporary=玩家死亡时，setup 中的 flag 会还原为进入时的状态
+triggers.ChroniaHelper/FlagTrigger.attributes.description.global=flag 变更会写入存档数据，每次加载地图只生效一次\n例如玩家死亡、F5、F6 等
+triggers.ChroniaHelper/FlagTrigger.attributes.description.resetOnLeave=玩家离开触发器时，flag 会还原为进入时的状态
+triggers.ChroniaHelper/FlagTrigger.attributes.description.ignoreUnchanged=例如游戏内该 flag 已开启，而你的 setup 也是开启该 flag\n则触发器处理 flag 状态时该 flag 会被忽略，因为看起来不该发生变化
+triggers.ChroniaHelper/FlagTrigger.attributes.description.onStay=玩家在触发器内部时，flag 设置会持续生效
+triggers.ChroniaHelper/FlagTrigger.attributes.description.flag=用逗号分隔的 flag 列表，支持 "!" 作为取反符
+triggers.ChroniaHelper/FlagTrigger.attributes.description.perRoom=该 flag 是否只在当前房间有效
+
+# ================= Flag Serial Trigger
+
+triggers.ChroniaHelper/FlagSerialTrigger.placements.name.FlagSerialTrigger=Flag Serial Trigger
+triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.serialFlag=包含 "target symbol" 的序列 flag 语法\n当玩家进入触发器时，若位置模式不为 "No effect"\n触发器会把目标符号替换为数字并启用对应 flag\n例如目标符号为 "&"、序列 flag 为 "flag_&"，进入触发器后\nflag "flag_0" 会被激活，随后 "flag_0" 关闭、"flag_1" 开启，依此类推
+triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.interval=每一步 flag 之间的间隔，仅在位置模式不为 "No effect" 时可用
+triggers.ChroniaHelper/FlagSerialTrigger.attributes.description.staircase=通常会先移除数组中的前一个 flag 再处理下一个 flag，\n开启后前一个 flag 也会保留，激活的 flag 看起来像阶梯
+
+# ================= Flag Array Trigger
+
+triggers.ChroniaHelper/FlagArrayTrigger.placements.name.FlagArrayTrigger=Flag Array Trigger
+triggers.ChroniaHelper/FlagArrayTrigger.attributes.description.intervals=每次切换 flag 之间的间隔，仅在位置模式不为 "No effect" 时可用
+triggers.ChroniaHelper/FlagArrayTrigger.attributes.description.staircase=通常会先移除数组中的前一个 flag 再处理下一个 flag，\n开启后前一个 flag 也会保留，激活的 flag 看起来像阶梯
+
+# ================= Flag Timer Trigger
+
+triggers.ChroniaHelper/FlagTimerTrigger.placements.name.FlagTimerTrigger=Flag Timer Trigger
+triggers.ChroniaHelper/FlagTimerTrigger.attributes.description.setups=flag A,持续 A 秒; flag B, 持续 B 秒; ...
+triggers.ChroniaHelper/FlagTimerTrigger.attributes.description.range="room"：玩家离开时，该房间内所有 flag 都会被设为 false\n"map"：该 flag 只会在本张地图中时间耗尽后才失效
+
+# ================= Flag Choose Trigger 2
+
+triggers.ChroniaHelper/FlagChooseTrigger2.placements.name.FlagChooseTrigger2=Flag Choose Trigger 2
+triggers.ChroniaHelper/FlagChooseTrigger2.attributes.description.flagDictionary=表示各 flag 之间如何相互作用的公式\n示例：flag1, !flag2 >>flag3, *flag4, !*flag5\n">>" 语法表示右侧（结果）用逗号分隔的 flag\n会响应左侧（条件）用逗号分隔的 flag\n条件中带 "!" 的 flag 为需要取反的项\n结果中带 "!" 的 flag 是本触发器应关闭的项，\n带 "*" 的 flag 是本触发器应作为全局 flag 开启的项，\n两者都带的则是本触发器应从全局 flag 中关闭的项\n例如上面的示例表示：当 flag1 开启、flag2 关闭时，本触发器会开启 flag3、开启全局 flag4，并关闭全局 flag5\n上面这种写法称为一个公式，同一行内可用 ";" 分隔多个公式\n新增语法 "# =================" 是通配符写法，以 "flag_# =================_a, flag_# ================= >> flag_b_# =================" 为例\n当关卡内任意形如 "flag_??_a" 的 flag（例如 flag "flag_X_a"）被开启\n且与之匹配的 "flag_X" 也被开启时（注意它们共享同一段字母 "X"）\n结果就是 flag "flag_b_X" 被开启。此例中通配符 "# =================" 代表 "X"。
+
+# ================= Flag Dictionary Trigger
+
+triggers.ChroniaHelper/FlagDictionaryTrigger.placements.name.FlagDictionaryTrigger=Flag Dictionary Trigger
+triggers.ChroniaHelper/FlagDictionaryTrigger.attributes.description.flagDictionary=表示各 flag 之间如何相互作用的公式\n示例：flag1, !flag2 >>flag3, *flag4, !*flag5\n">>" 语法表示右侧（结果）用逗号分隔的 flag\n会响应左侧（条件）用逗号分隔的 flag\n条件中带 "!" 的 flag 为需要取反的项\n结果中带 "!" 的 flag 是本触发器应关闭的项，\n带 "*" 的 flag 是本触发器应作为全局 flag 开启的项，\n两者都带的则是本触发器应从全局 flag 中关闭的项\n例如上面的示例表示：当 flag1 开启、flag2 关闭时，本触发器会开启 flag3、开启全局 flag4，并关闭全局 flag5\n上面这种写法称为一个公式，同一行内可用 ";" 分隔多个公式
+
+# ================= Custom Core Block
+
+entities.ChroniaHelper/CustomCoreBlock.placements.name.fire=Custom Core Block (Fire)
+entities.ChroniaHelper/CustomCoreBlock.placements.name.ice=Custom Core Block (Ice)
+entities.ChroniaHelper/CustomCoreBlock.attributes.description.iceBlockTexture=冰块状态方块的贴图。\n若要修改方块中心的晶体，请查看原版 Sprites.xml 中的 "bumpBlockCenterIce" 列
+entities.ChroniaHelper/CustomCoreBlock.attributes.description.fireBlockTexture=火块状态方块的贴图。\n若要修改方块中心的晶体，请查看原版 Sprites.xml 中的 "bumpBlockCenterFire" 列
+
+# ================= Puffer Bomb Spring
+
+entities.ChroniaHelper/PufferBombSpringUp.placements.name.up=Puffer Bomb Spring (Up)
+entities.ChroniaHelper/PufferBombSpringRight.placements.name.right=Puffer Bomb Spring (Right)
+entities.ChroniaHelper/PufferBombSpringLeft.placements.name.left=Puffer Bomb Spring (Left)
+entities.ChroniaHelper/PufferBombSpringDown.placements.name.down=Puffer Bomb Spring (Down)
+
+entities.ChroniaHelper/PufferBombSpringUp.placements.description.up=Puffer Bomb Spring（实现来自 City of Broken Dreams）
+entities.ChroniaHelper/PufferBombSpringRight.placements.description.right=Puffer Bomb Spring（实现来自 City of Broken Dreams）
+entities.ChroniaHelper/PufferBombSpringLeft.placements.description.left=Puffer Bomb Spring（实现来自 City of Broken Dreams）
+entities.ChroniaHelper/PufferBombSpringDown.placements.description.down=Puffer Bomb Spring（实现来自 City of Broken Dreams）
+
+entities.ChroniaHelper/PufferBombSpringUp.attributes.description.sprite=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+entities.ChroniaHelper/PufferBombSpringRight.attributes.description.sprite=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+entities.ChroniaHelper/PufferBombSpringLeft.attributes.description.sprite=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+entities.ChroniaHelper/PufferBombSpringDown.attributes.description.sprite=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+
+# ================= Shifting Switch
+
+entities.ChroniaHelper/ShiftingSwitch.placements.description.Shifting Switch=Shifting Switch（实现来自 City of Broken Dreams）
+entities.ChroniaHelper/ShiftingSwitch.attributes.description.sprite=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+entities.ChroniaHelper/ShiftingSwitch.attributes.description.oneConnector=开启后，shifting switch 只显示与它第一个节点最近方块的连接\n而不是显示它所有的连接
+
+# ================= Shifting Block
+
+entities.ChroniaHelper/ShiftingBlock.placements.description.Shifting Block=Shifting Block（实现来自 City of Broken Dreams）
+entities.ChroniaHelper/ShiftingBlock.attributes.description.noConnector=开启后，方块中心不显示连接器
+
+# ================= Puffer Bomb
+
+entities.ChroniaHelper/PufferBomb.placements.description.Puffer Bomb=Puffer Bomb（实现来自 City of Broken Dreams）
+entities.ChroniaHelper/PufferBomb.attributes.description.sprite=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+entities.ChroniaHelper/PufferBomb.attributes.description.rangeIndicator=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+entities.ChroniaHelper/PufferBomb.attributes.description.basicColliders=用 ";" 分隔的判定数组，每个判定可定义为：\n"r,width,height,offsetX,offsetY" 为矩形判定\n"c,radius,offsetX,offsetY" 为圆形判定
+entities.ChroniaHelper/PufferBomb.attributes.description.playerColliders=会影响玩家交互的判定数组，用 ";" 分隔，每个判定可定义为：\n"r,width,height,offsetX,offsetY" 为矩形判定\n"c,radius,offsetX,offsetY" 为圆形判定
+entities.ChroniaHelper/PufferBomb.attributes.description.detectCollider=用于检测是否发生爆炸的矩形判定
+entities.ChroniaHelper/PufferBomb.attributes.description.wallbreakCollider=用于定义爆炸可影响范围（当爆炸需要破坏某些墙时）的圆形判定
+
+# ================= Kevins
+
+entities.ChroniaHelper/DreamKevin.placements.name.DreamKevin=Dream Kevin
+entities.ChroniaHelper/ReskinnableKevin.placements.name.both=Kevin (Reskinnable, Both)
+entities.ChroniaHelper/ReskinnableKevin.placements.name.horizontal=Kevin (Reskinnable, Horizontal)
+entities.ChroniaHelper/ReskinnableKevin.placements.name.vertical=Kevin (Reskinnable, Vertical)
+
+entities.ChroniaHelper/ReskinnableKevin.attributes.description.spriteDirectory=包含所有必要贴图的文件夹\n一般请参考预设文件夹中的必需文件\n即：objects/Fangame/FASF2025/DreamKevin/
+entities.ChroniaHelper/ReskinnableKevin.attributes.description.faceSpriteXML=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+entities.ChroniaHelper/ReskinnableKevin.attributes.description.giantFaceSpriteXML=该实体的 XML 引用\n即 Sprites.xml 中 <XXX path="somePath"> 的 "XXX" 部分
+
+# ================= Changed Room Flag Controller
+
+entities.ChroniaHelper/ResetChangedRoomFlagsController.placements.name.Controller=Reset Changed Room Flags Controller
+entities.ChroniaHelper/ResetChangedRoomFlagsController.placements.description.Controller=如标题所述，该控制器监听房间内所有 flag 变化并记录下来，\n房间重新加载时会针对这些变化的 flag 执行操作
+
+# ================= Input Controller
+
+entities.ChroniaHelper/InputFlagController.placements.name.controller=Input Flag Controller (Input Listener)
+entities.ChroniaHelper/InputFlagController.attributes.description.flags=要操作的 flag，可用 ";" 分组、用 "," 分隔
+entities.ChroniaHelper/InputFlagController.attributes.description.ifFlagCondition=该控制器生效所需的 flag，带 "!" 前缀的 flag 需要处于关闭状态\nflag 之间用逗号分隔
+entities.ChroniaHelper/InputFlagController.attributes.description.restraints=启用使用次数限制
+entities.ChroniaHelper/InputFlagController.attributes.description.resetCounter=离开房间时是否重置该控制器的 session counter
+entities.ChroniaHelper/InputFlagController.attributes.description.activateByDefault=可通过 ModSettings - Communal Helper 中设置的自定义键激活该控制器
+entities.ChroniaHelper/InputFlagController.attributes.description.controllerIDPrefix=每个控制器都有一个 session counter，用于统计触发键被按下的次数，\n这是 session counter 名称的前缀，会在 "Counter Suffix" 模式下作为显示内容，\n也用于计算限制，可通过 "Reset Counter" 重置\nSession Counter ID：控制器 ID 前缀 + ID，ID 即上方显示的实体 ID 数字
+entities.ChroniaHelper/InputFlagController.attributes.description.detectCounterID=统计设置键累计按下次数的 session counter，\n不会被计入限制，可通过 "Reset Detect Session" 重置
+entities.ChroniaHelper/InputFlagController.attributes.description.resetDetectSession=玩家离开房间时重置统计设置键累计按下次数的关卡 session counter，\n由于 counter ID 可以相同，这可用于把多次输入累积成一个输出\n并用于 FrostHelper 表达式等
+
+# ================= Trigger Extension
+
+triggers.ChroniaHelper/TriggerExtension.placements.name.TriggerExtension=Trigger Extension
+triggers.ChroniaHelper/TriggerExtension.placements.description.TriggerExtension=Trigger Extension 像普通触发器一样工作，但与普通触发器不同，\n玩家穿过触发器边界时它不会重新激活，\n可用于串联多个"离开时重置"的触发器
+triggers.ChroniaHelper/TriggerExtension.attributes.description.extensionTag=进入具有相同 extension tag 的触发器时\n拥有最大 ID 的主触发器（非 Trigger Extension）会被触发\n效果由主触发器代理
+triggers.ChroniaHelper/TriggerExtension.attributes.description.overrideID=若此字段不为空，该 extension 会针对该 ID 的触发器生效，而不是按 extensionTag
+
+triggers.ChroniaHelper/TriggerExtensionTarget.placements.name.TriggerExtensionTarget=Trigger Extension Target
+triggers.ChroniaHelper/TriggerExtensionTarget.attributes.description.extensionTag
+
+# ================= Fall Through
+
+entities.ChroniaHelper/FallThrough.placements.name.wood=Fall Through (Wood)
+entities.ChroniaHelper/FallThrough.placements.name.dream=Fall Through (Dream)
+entities.ChroniaHelper/FallThrough.placements.name.temple=Fall Through (Temple)
+entities.ChroniaHelper/FallThrough.placements.name.templeB=Fall Through (Alternate Temple)
+entities.ChroniaHelper/FallThrough.placements.name.cliffside=Fall Through (Cliffside)
+entities.ChroniaHelper/FallThrough.placements.name.reflection=Fall Through (Reflection)
+entities.ChroniaHelper/FallThrough.placements.name.core=Fall Through (Core)
+entities.ChroniaHelper/FallThrough.placements.name.moon=Fall Through (Moon)
+
+entities.ChroniaHelper/FallThrough.placements.description.wood=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+entities.ChroniaHelper/FallThrough.placements.description.dream=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+entities.ChroniaHelper/FallThrough.placements.description.temple=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+entities.ChroniaHelper/FallThrough.placements.description.templeB=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+entities.ChroniaHelper/FallThrough.placements.description.cliffside=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+entities.ChroniaHelper/FallThrough.placements.description.reflection=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+entities.ChroniaHelper/FallThrough.placements.description.core=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+entities.ChroniaHelper/FallThrough.placements.description.moon=与普通 jump through 相比，玩家在上面下蹲时会\n直接穿过该实体掉下去
+
+entities.ChroniaHelper/FallThrough.attributes.description.ignoreAllJumpthrus=开启后，玩家会忽略所有 jump thru 并从中掉落穿过
+entities.ChroniaHelper/FallThrough.attributes.description.mechanicTime=玩家下落时，其速度会被覆盖这段时间\n若你选择忽略所有 jumpthru，这也是该效果的持续时间
+
+# ================= Custom Fake Wall
+
+entities.ChroniaHelper/CustomFakeWall.placements.name.CustomFakeWall=Custom Fake Wall
+entities.ChroniaHelper/CustomFakeWall.attributes.description.playReveal=定义该音效是否在转场过程中播放
+entities.ChroniaHelper/CustomFakeWall.attributes.description.recover=开启后，玩家从内部离开后方块会恢复\n会被 "permanent" 覆盖
+entities.ChroniaHelper/CustomFakeWall.attributes.description.playSoundOnEachTrigger=玩家每次碰到它时都会播放显现音效
+
+# ================= Polygon Series (Vivhelper legacy)
+
+entities.ChroniaHelper/PolygonKillbox.placements.name.PolygonKillbox=Polygon Killbox
+entities.ChroniaHelper/PolygonKillbox.attributes.description.flag=该 killbox 是否需要 flag 才能工作
+
+entities.ChroniaHelper/PolygonTrigger.placements.name.PolygonTrigger=Polygon Trigger Entity
+entities.ChroniaHelper/PolygonTrigger.attributes.description.triggerIDs=多边形触发器的目标，用逗号分隔
+entities.ChroniaHelper/PolygonTrigger.attributes.description.extensionTag=若触发器 ID 为空，该触发器会尝试激活具有相同 extension tag 的触发器
+
+# ================= BG Tiles Collide Controller
+
+entities.ChroniaHelper/BGTileCollideController.placements.name.controller=BG Tiles Collide Controller
+entities.ChroniaHelper/BGTileCollideController.placements.description.controller=BG Tiles Collide Controller 会检测玩家背后是否有 BG Tiles\n若没有，则执行它应执行的操作
+
+# ================= Comprehensive Controller
+
+entities.ChroniaHelper/ComprehensiveController.placements.name.controller=Comprehensive Controller
+entities.ChroniaHelper/ComprehensiveController.placements.description.controller=通过检测若干对象或状态，\n把 flag 或数据写入地图的实体
+entities.ChroniaHelper/ComprehensiveController.attributes.description.Introduction=通过检测若干对象或状态，\n把 flag 或数据写入地图的实体
+
+# ================= Final Boost Trigger
+
+triggers.ChroniaHelper/FinalBoostTrigger.placements.name.FinalBoostTrigger=Final Boost Trigger
+
+entities.ChroniaHelper/RoomTagCreator.placements.name.Creator=Room Tag Creator
+entities.ChroniaHelper/RoomTagCreator.placements.description.Creator=在关卡名与房间 tag 之间建立联系，房间 tag 可用于其它用途
+entities.ChroniaHelper/RoomTagCreator.attributes.description.setRoomTag=表示 tag 应如何生成的字符串，\n生成 tag 时符号 & 会被替换为关卡房间名\n符号 # 会被替换为关卡房间索引
+
+entities.ChroniaHelper/RoomTagSessionController.placements.name.Controller=Room Tag Session Controller
+
+# ================= Chronia Flag Trigger
+
+triggers.ChroniaHelper/ChroniaFlagTrigger.placements.name.FlagTrigger=Chronia Flag Trigger (Debug)
+triggers.ChroniaHelper/ChroniaFlagTrigger.placements.description.FlagTrigger=如果你不知道这是什么，请不要使用
+
+# ================= Chronia Counter Trigger
+
+triggers.ChroniaHelper/ChroniaCounterTrigger.placements.name.trigger=Chronia Counter Trigger (Debug)
+triggers.ChroniaHelper/ChroniaCounterTrigger.placements.description.trigger=如果你不知道这是什么，请不要使用
+
+# ================= Chronia Slider Trigger
+
+triggers.ChroniaHelper/ChroniaSliderTrigger.placements.name.trigger=Chronia Slider Trigger (Debug)
+triggers.ChroniaHelper/ChroniaSliderTrigger.placements.description.trigger=如果你不知道这是什么，请不要使用
+
+# ================= Cornerboost Falling Dream Block
+
+entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.normal=Cornerboost Falling Dream Block (Normal)
+entities.ChroniaHelper/CornerBoostFallingDreamBlock.placements.name.chained=Cornerboost Falling Dream Block (Chained)
+
+# ================= Bezier Zip Mover
+
+entities.ChroniaHelper/BezierZipmover.placements.name.zipmover=Bezier Zip Mover
+entities.ChroniaHelper/BezierZipmover.attributes.description.directory=贴图文件夹路径，以 "/" 结尾\n需要以下动画：block、light、cog、innercog\n"light" 动画必须与原版一样正好 4 帧
+entities.ChroniaHelper/BezierZipmover.attributes.description.renderGap=若 renderGap 为 0，zipmover 路径会渲染成连续的贴图\n若大于 0，zipmover 路径会渲染成虚线
+entities.ChroniaHelper/BezierZipmover.attributes.description.renderStyle=提供 2 种预设样式供你选择
+entities.ChroniaHelper/BezierZipmover.attributes.description.triggerFlag=若不为空，该 flag 会让 zipmover 无论上面有没有玩家都开始移动
+entities.ChroniaHelper/BezierZipmover.attributes.description.syncWithAdventureHelperZipmovers=开启后，zipmover 会监听并发出 AdventureHelper Synced Zipmover 信号
+entities.ChroniaHelper/BezierZipmover.attributes.description.uniformity=贝塞尔计算较为复杂，所以曲线看起来没那么平滑\n简单来说，当 lerp 点为 50% 时，它不一定等于曲线的中点\n因此该选项改为按距离而非 lerp 点对曲线做线性插值\n这样移动才能真正保持直线\n但因为是两次插值，性能可能会有卡顿
+
+# ================= Stopclock Flag Controller
+
+entities.ChroniaHelper/StopclockFlagController.placements.name.controller=Stopclock Flag Controller
+entities.ChroniaHelper/StopclockFlagController.placements.description.controller=一个把若干 Stopclock 数据拆分成独立 flag 的控制器
+entities.ChroniaHelper/StopclockFlagController.attributes.description.stopclockTags=用逗号分隔的 stopclock tag 列表\n该控制器会把 stopclock 的数字转成游戏内 flag，以便按位使用（例如 flag decal 等）
+
+# ================= Stopclock Action Controller
+
+entities.ChroniaHelper/StopclockActionController.placements.name.controller=Stopclock Action Controller
+entities.ChroniaHelper/StopclockActionController.attributes.description.setFlag=若不为空，stopclock 完成时会启用该 flag
+
+# ================= Stopclock Trigger
+
+triggers.ChroniaHelper/StopclockTrigger.placements.name.trigger=Stopclock Trigger
+
+# ================= Stopclock Renderer
+
+entities.ChroniaHelper/StopclockRenderer.placements.name.renderer=Stopclock Renderer
+entities.ChroniaHelper/StopclockRenderer.attributes.description.sourcePath=字体文件路径，从 Gameplay 之后开始，不含结尾数字
+entities.ChroniaHelper/StopclockRenderer.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/StopclockRenderer.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/StopclockRenderer.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/StopclockRenderer.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/StopclockRenderer.attributes.description.segmentDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/StopclockRenderer.attributes.description.segmentOffset=若需要，可为每个字符附加偏移，每个偏移形如："index, x, y"\n偏移之间用 ";" 分隔
+
+# ================= Real Time Renderer
+
+entities.ChroniaHelper/RealTimeRenderer.placements.name.renderer=Real Time Renderer
+
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.segmentDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/RealTimeRenderer.attributes.description.segmentOffset=若需要，可为每个字符附加偏移，每个偏移形如："index, x, y"\n偏移之间用 ";" 分隔
+
+# ================= Message Displayer
+
+entities.ChroniaHelper/MessageDisplayer.placements.name.renderer=Message Displayer
+entities.ChroniaHelper/MessageDisplayer.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayer.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayer.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayer.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayer.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/MessageDisplayer.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/MessageDisplayer.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/MessageDisplayer.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/MessageDisplayer.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/MessageDisplayer.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/MessageDisplayer.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+entities.ChroniaHelper/MessageDisplayZone.placements.name.renderer=Message Display Zone
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/MessageDisplayZone.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+entities.ChroniaHelper/MessageDisplayerNormal.placements.name.renderer=Message Displayer (Non-HD)
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/MessageDisplayerNormal.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+entities.ChroniaHelper/MessageDisplayZoneNormal.placements.name.renderer=Message Display Zone (Non-HD)
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/MessageDisplayZoneNormal.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+# ================= Counter and Slider Fades
+
+entities.ChroniaHelper/TimeFadeCounterController.placements.name.controller=Time Fade Counter Controller
+entities.ChroniaHelper/TimeFadeSliderController.placements.name.controller=Time Fade Slider Controller
+triggers.ChroniaHelper/CounterFadeTrigger.placements.name.trigger=Counter Fade Trigger
+triggers.ChroniaHelper/SliderFadeTrigger.placements.name.trigger=Slider Fade Trigger
+
+# ================= Danger Bubbler
+
+entities.ChroniaHelper/DangerBubbler.placements.name.controller=Danger Bubbler
+
+# ================= HUD Controller
+
+entities.ChroniaHelper/HUDController.placements.name.controller=HUD Controller
+
+# ================= Danger Range Controller
+
+entities.ChroniaHelper/DangerRangeController.placements.name.controller=Danger Range Controller
+entities.ChroniaHelper/DangerRangeController.attributes.description.value=世界坐标
+
+# ================= Die Outside Camera Controller
+
+entities.ChroniaHelper/DieOutsideCameraController.placements.name.controller=Die Outside Camera Controller
+
+# ================= Chinese Characters Auto-Lining Controller
+
+entities.ChroniaHelper/ChineseCharactersAutoLiningController.placements.name.controller=Chinese Characters Auto-Lining Controller
+
+# ================= Condition Delay Trigger
+
+triggers.ChroniaHelper/ConditionDelayTrigger.placements.name.trigger=Condition Delay Trigger
+triggers.ChroniaHelper/ConditionDelayTrigger.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+
+# ================= Condition Delay Listener
+
+entities.ChroniaHelper/ConditionDelayListener.placements.name.controller=Condition Delay Listener
+entities.ChroniaHelper/ConditionDelayListener.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+
+# ================= Operation Codes Listener
+
+entities.ChroniaHelper/OperationCodesListener.placements.name.controller=Operation Codes Listener
+
+#================== SSC Random Packed Flag
+
+triggers.ChroniaHelper/RandomPackedFlagTrigger.placements.name.trigger=Random Packed Flag Trigger
+
+triggers.ChroniaHelper/ClearPackedFlagsTrigger.placements.name.trigger=Clear Packed Flags Trigger
+
+entities.ChroniaHelper/FlagPacker.placements.name.controller=Flag Packer
+entities.ChroniaHelper/FlagPacker.attributes.description.flags=以 "!" 开头的 flag 为临时 flag，"*" 开头的为全局 flag
+
+#================== Flag Listener Stopclock Controller
+
+entities.ChroniaHelper/FlagListenerStopclockController.placements.name.controller=Flag Listener Stopclock Controller
+
+#================== Fnt Displayer
+
+entities.ChroniaHelper/FntDisplayerHD.placements.name.renderer=Fnt Displayer (HD)
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/FntDisplayerHD.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+entities.ChroniaHelper/FntDisplayer.placements.name.renderer=Fnt Displayer
+entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayer.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayer.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayer.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayer.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/FntDisplayer.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/FntDisplayer.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/FntDisplayer.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/FntDisplayer.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/FntDisplayer.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/FntDisplayer.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+entities.ChroniaHelper/FntDisplayZone.placements.name.renderer=Fnt Display Zone
+entities.ChroniaHelper/FntDisplayZone.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayZone.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayZone.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayZone.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayZone.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/FntDisplayZone.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/FntDisplayZone.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/FntDisplayZone.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/FntDisplayZone.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/FntDisplayZone.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/FntDisplayZone.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+entities.ChroniaHelper/FntDisplayZoneHD.placements.name.renderer=Fnt Display Zone (HD)
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.parallaxX=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.parallaxY=游戏内文字的视差
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.screenX=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.screenY=视差为 0 时，文字相对于左上角的坐标
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.textures=源文件路径，从 Gameplay 之后开始，不含后缀数字
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.characterReference=与字体文件精确对应的字符表\n注意："space" 必须有一个空的参考文件，且必须在此处 "space" 对应的索引位置留一个空格\n因为 "space" 文件的索引被用作默认的兜底贴图
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.lineDistance=Compact 模式：一行贴图底部到下一行贴图顶部的距离\nEqual Distance 模式：各行中心之间的距离
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDistance=Compact 模式：每个字体贴图之间间隙的距离\nEqual Distance 模式：贴图中心之间的距离
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.letterDisplayInterval=Typewrite 模式下字母出现的速度
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.triggerFlag=若不为空，需要该 flag 才能使文字出现
+entities.ChroniaHelper/FntDisplayZoneHD.attributes.description.renderDistance=玩家进入半径内时文字出现
+
+# ================= Code Button Target Controller
+
+entities.ChroniaHelper/CodeButtonTargetController.placements.name.controller=Code Button Target Controller
+
+# ================= Code Button
+
+entities.ChroniaHelper/CodeButton.placements.name.codeButton=Code Button
+
+# ================= Set Flag Controller
+
+entities.ChroniaHelper/SetFlagController.placements.name.controller=Set Flag Controller
+entities.ChroniaHelper/SetFlagController.attributes.description.flags=flag 之间用逗号分隔\n带 "!" 的 flag 会关闭\n带 "*" 的 flag 为全局 flag\n带 "?" 的 flag 为死亡后清除的临时 flag\n带 "#" 的 flag 为换房间后清除的临时 flag
+entities.ChroniaHelper/SetFlagController.attributes.description.parameters=模式为 "On Interval" 时，此字段为间隔\n模式为 "On Flags" 时，请输入一串用逗号分隔的 flag\n以 "!" 开头的 flag 表示取反
+entities.ChroniaHelper/SetFlagController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetFlagController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+entities.ChroniaHelper/SetFlagController.attributes.description.valueType=若设为 "General Toggle" 模式，与 "flags" 说明中描述的不同，\nflag 中的 "!" 会被当作普通字符而不是语法
+
+# ================= Camera Grid
+
+entities.ChroniaHelper/CameraGrid.placements.name.grid=Camera Grid
+entities.ChroniaHelper/CameraGrid.attributes.description.Introduction=一个没用的小实体，用于标示常见的 320 * 180 相机网格
+
+# ================= Screenshake Setting Trigger
+
+triggers.ChroniaHelper/ScreenshakeSettingTrigger.placements.name.normal=Screenshake Setting Trigger
+
+# ================= Omni Switch Gate
+
+entities.ChroniaHelper/OmniSwitchGate.placements.name.block=Omni Switch Gate (Normal)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.mirror=Omni Switch Gate (Mirror)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.temple=Omni Switch Gate (Temple)
+entities.ChroniaHelper/OmniSwitchGate.placements.name.stars=Omni Switch Gate (Stars)
+
+# ================= Bumper Block
+
+entities.ChroniaHelper/ModifiedBumperBlock.placements.name.both=Bumper Block (Modified, Both)
+entities.ChroniaHelper/ModifiedBumperBlock.placements.name.vertical=Bumper Block (Modified, Vertical)
+entities.ChroniaHelper/ModifiedBumperBlock.placements.name.horizontal=Bumper Block (Modified, Horizontal)
+
+# ================= Balloon
+
+entities.ChroniaHelper/Balloon.placements.name.balloon=Balloon (Customizable)
+
+# ================= SetFlagSequenceController
+
+entities.ChroniaHelper/SetFlagSequenceController.placements.name.controller=Set Flag Sequence Controller
+entities.ChroniaHelper/SetFlagSequenceController.attributes.description.flagSequence=表示该实体应如何操作 flag 的序列。序列中可以包含 flag 或延迟。\n序列用 ";" 分隔，例如 "flagA;0.5;flagB"。\n延迟直接写一个数字即可。\nflag 可以是多个用逗号分隔的 flag，例如 "flag1,!flag2,?flag3,*flag4"。\n"flag" 表示激活该 flag。\n"!flag" 表示关闭该 flag。\n"?flag" 表示启用一个临时 flag。\n"*flag" 表示设置一个全局 flag。\n示例已填入字段中。
+entities.ChroniaHelper/SetFlagSequenceController.attributes.description.parameters=当 "mode" 设为 "On Flags" 时，在此输入所需的 flag。\n当模式为 "On Chronia Expression" 或 "On Frost Expression" 时，在此输入表达式。
+entities.ChroniaHelper/SetFlagSequenceController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetFlagSequenceController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+
+# ================= Grouped Wind Tunnel
+
+entities.ChroniaHelper/GroupedWindTunnel.placements.name.GroupedWindTunnel=Grouped Wind Tunnel
+
+# ================= Grouped Wind Tunnel Controller
+
+entities.ChroniaHelper/GroupedWindTunnelController.placements.name.GroupedWindTunnelController=Grouped Wind Tunnel Controller
+
+# ================= Ice Floor
+
+entities.ChroniaHelper/IceFloor.placements.name.IceFloor=Ice Floor
+
+# ================= Solid Modifier
+
+entities.ChroniaHelper/SolidModifier.placements.name.main=Solid Modifier
+entities.ChroniaHelper/SolidModifier.placements.name.cb=Solid Modifier (Cornerboost on Speed)
+entities.ChroniaHelper/SolidModifier.placements.name.touch=Solid Modifier (Trigger on Touch)
+
+# ================= Entity Duplicator
+
+entities.ChroniaHelper/EntityDuplicator.placements.name.duplicator=Entity Duplicator
+entities.ChroniaHelper/EntityDuplicator.attributes.description.duplicatorTag=与 Entity Duplicator Target 匹配的 tag
+entities.ChroniaHelper/EntityDuplicator.attributes.description.generateFlag=每次该 flag 由假变真时，都会生成该实体
+entities.ChroniaHelper/EntityDuplicator.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/EntityDuplicator.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+entities.ChroniaHelper/EntityDuplicatorTarget.placements.name.target=Entity Duplicator Target
+entities.ChroniaHelper/EntityDuplicatorTarget.attributes.description.duplicatorTag=与复制器匹配目标的 tag
+
+# ================= Refill On Wall
+
+entities.ChroniaHelper/RefillOnWall.placements.name.wall=Refill On Wall
+entities.ChroniaHelper/RefillOnWall.attributes.description.directory=贴图文件夹，必须包含 "top"、"mid" 与 "bottom" 的贴图\n有多张图片时，实体会在其中随机选择
+
+# ================= Entity Text Box
+
+entities.ChroniaHelper/EntityTextbox.placements.name.box=Entity Text Box
+entities.ChroniaHelper/EntityTextbox.attributes.description.maxHeight=作为参考：英文在字体中高度约为 63 px
+entities.ChroniaHelper/EntityTextbox.attributes.description.operationFlag=flag 开启时对话开始播放。\nflag 关闭时实体立即消失并重置对话
+
+# ================= Set Flag On Mouse Controller
+
+entities.ChroniaHelper/SetFlagOnMouseController.placements.name.controller=Set Flag On Mouse Controller
+
+# ================= Counter Cassette Block
+
+entities.ChroniaHelper/CounterCassetteBlock.placements.name.block=Counter Cassette Block
+
+entities.ChroniaHelper/CounterCassetteBlockManager.placements.name.controller=Counter Cassette Block Manager
+entities.ChroniaHelper/CounterCassetteBlockManager.attributes.description.maxCassetteBlockIndex=若设为小于 0，管理器会自动寻找方块的最大索引
+
+# ================= Fish Market
+
+entities.ChroniaHelper/FishPriceController.placements.name.controller=Fish Price Controller
+
+# ================= Counter Camera Offset
+
+triggers.ChroniaHelper/CounterCameraOffset.placements.name.offset=Camera Offset (Counter-Toggled)
+
+# ================= Mouse Respriter
+
+entities.ChroniaHelper/MouseIndicatorOverrider.placements.name.controller=Mouse Indicator Overrider
+
+# ================= Parallax Text
+
+entities.ChroniaHelper/ParallaxText.placements.name.parallax_text=Parallax Text (Node-targeted)
+
+# ================= Custom Shield
+
+entities.ChroniaHelper/CustomShield.placements.name.shield=Custom Shield
+
+# ================= Custom Cloud
+
+entities.ChroniaHelper/CustomCloud.placements.name.normal=Custom Cloud (Normal)
+entities.ChroniaHelper/CustomCloud.placements.name.fragile=Custom Cloud (Fragile)
+
+# ================= Flag Swap Block
+
+entities.ChroniaHelper/FlagSwapBlock.placements.name.swapblock=Swap Block (Flag-toggled)
+
+# ================= Random Generators
+
+entities.ChroniaHelper/TimedRandomSliderController.placements.name.Controller=Random Slider Controller
+entities.ChroniaHelper/TimedRandomCounterController.placements.name.Controller=Random Counter Controller
+triggers.ChroniaHelper/RandomSliderTrigger.placements.name.trigger=Random Slider
+triggers.ChroniaHelper/RandomCounterTrigger.placements.name.trigger=Random Counter
+entities.ChroniaHelper/RandomMusicController.placements.name.Controller=Random Music Controller
+entities.ChroniaHelper/FlagWhenCounterController.placements.name.Controller=Flag When Counter Controller
+entities.ChroniaHelper/FlagWhenSliderController.placements.name.Controller=Flag When Slider Controller
+
+# ================== Formula Blocks
+
+entities.ChroniaHelper/FormulaBlockLinear.placements.name.FormulaBlockLinear=Formula Block (Linear)
+entities.ChroniaHelper/FormulaBlockLinear.attributes.description.tutorial=放置若干个方块，确保它们设置相同以便分组\n然后选中其中一个作为参考的方块\n按 'N' 从它添加一个节点，拖到你期望它经过的位置\n再设置 "duration"，当 "flag" 激活时方块会在该时长内移动到经过点\n若 "reverseFlag" 激活，方块会朝相反方向移动
+entities.ChroniaHelper/FormulaBlockTimeEquation.placements.name.FormulaBlockTimeEquation=Formula Block (Time Function)
+entities.ChroniaHelper/FormulaBlockSpeedEquation.placements.name.FormulaBlockSpeedEquation=Formula Block (Speed Function)
+entities.ChroniaHelper/FormulaBlockTimeEquation.attributes.description.tutorial=若想了解 FrostHelper Session Expression，请查看 FrostHelper 的 Github\n注意 FrostHelper Session Expression 中实现了一个特殊变量\n"t" 或 "time"，表示从 flag 启用时开始计数的计时器\n\n对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/FormulaBlockSpeedEquation.attributes.description.tutorial=若想了解 FrostHelper Session Expression，请查看 FrostHelper 的 Github\n注意 FrostHelper Session Expression 中实现了一个特殊变量\n"t" 或 "time"，表示从 flag 启用时开始计数的计时器\n\n对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+
+# ================== BPM Counter
+
+entities.ChroniaHelper/BPMCounter.placements.name.controller=BPM Counter
+
+# ================== Entity Text Adder
+
+entities.ChroniaHelper/EntityTextAdder.placements.name.EntityTextAdder=Entity Text Adder
+
+# ================== Custom Theo Crystal
+
+entities.ChroniaHelper/CustomTheoCrystal.placements.name.theo_crystal=Custom Theo Crystal
+entities.ChroniaHelper/CustomTheoCrystal.attributes.description.displayTutorial=与原版一致，该选项需要 flag "foundTheoInCrystal" 才能生效
+
+# ================== Force Movement Controller
+
+entities.ChroniaHelper/ForceMovementController.placements.name.controller=Force Movement Controller
+
+# ================= Set Counter Controller
+
+entities.ChroniaHelper/SetCounterController.placements.name.controller=Set Counter Controller
+entities.ChroniaHelper/SetCounterController.attributes.description.flags=flag 之间用逗号分隔\n带 "!" 的 flag 会关闭\n带 "*" 的 flag 为全局 flag\n带 "?" 的 flag 为死亡后清除的临时 flag\n带 "#" 的 flag 为换房间后清除的临时 flag
+entities.ChroniaHelper/SetCounterController.attributes.description.parameters=模式为 "On Interval" 时，此字段为间隔\n模式为 "On Flags" 时，请输入一串用逗号分隔的 flag\n以 "!" 开头的 flag 表示取反
+entities.ChroniaHelper/SetCounterController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetCounterController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+entities.ChroniaHelper/SetCounterController.attributes.description.value2=仅在开启 "randomize" 时，与 "value" 一起定义取值范围
+entities.ChroniaHelper/SetCounterController.attributes.description.randomizeValue=若 "value 2" 不为空，counter 会被设为 "value" 与 "value 2" 之间的随机数
+
+# ================= Set Slider Controller
+
+entities.ChroniaHelper/SetSliderController.placements.name.controller=Set Slider Controller
+entities.ChroniaHelper/SetSliderController.attributes.description.flags=flag 之间用逗号分隔\n带 "!" 的 flag 会关闭\n带 "*" 的 flag 为全局 flag\n带 "?" 的 flag 为死亡后清除的临时 flag\n带 "#" 的 flag 为换房间后清除的临时 flag
+entities.ChroniaHelper/SetSliderController.attributes.description.parameters=模式为 "On Interval" 时，此字段为间隔\n模式为 "On Flags" 时，请输入一串用逗号分隔的 flag\n以 "!" 开头的 flag 表示取反
+entities.ChroniaHelper/SetSliderController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetSliderController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+entities.ChroniaHelper/SetSliderController.attributes.description.value2=仅在开启 "randomize" 时，与 "value" 一起定义取值范围
+entities.ChroniaHelper/SetSliderController.attributes.description.randomizeValue=若 "value 2" 不为空，counter 会被设为 "value" 与 "value 2" 之间的随机数
+
+# ================= Set Chronia Helper Random Seed Controller
+
+entities.ChroniaHelper/SetChroniaHelperRandomSeedController.placements.name.controller=Set ChroniaHelper Random Seed Controller
+entities.ChroniaHelper/SetChroniaHelperRandomSeedController.attributes.description.parameters=模式为 "On Interval" 时，此字段为间隔\n模式为 "On Flags" 时，请输入一串用逗号分隔的 flag\n以 "!" 开头的 flag 表示取反
+entities.ChroniaHelper/SetChroniaHelperRandomSeedController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetChroniaHelperRandomSeedController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+
+# ================= Modified Drivable Car
+
+entities.ChroniaHelper/DrivableCar.placements.name.car=Drivable IntroCar (Reskinnable)
+
+# ================= Auto Move Controller
+
+entities.ChroniaHelper/AutoMoveController.placements.name.controller=Auto Move Controller
+
+# ================= Custom Puffer
+
+entities.ChroniaHelper/CustomPuffer.placements.name.left=Custom Puffer (left)
+entities.ChroniaHelper/CustomPuffer.placements.name.right=Custom Puffer (right)
+entities.ChroniaHelper/CustomPuffer.attributes.description.colliders="r" 代表矩形，参数格式为 "r, width, height, posX, posY"\n"c" 代表圆形，参数格式为 "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer.attributes.description.playerColliders="r" 代表矩形，参数格式为 "r, width, height, posX, posY"\n"c" 代表圆形，参数格式为 "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer.attributes.description.right=puffer 的视觉朝向。
+entities.ChroniaHelper/CustomPuffer.attributes.description.static=puffer 是否漫无目的地飘动。
+entities.ChroniaHelper/CustomPuffer.attributes.description.alwaysShowOutline=爆炸半径是否始终可见。
+entities.ChroniaHelper/CustomPuffer.attributes.description.pushAnyDir=puffer 可被推向任意方向，还是只能沿其角度方向。
+entities.ChroniaHelper/CustomPuffer.attributes.description.oneUse=puffer 爆炸后是否重生。
+entities.ChroniaHelper/CustomPuffer.attributes.description.angle=爆炸半圆的角度（度）。0 = 下方，90 = 左侧，依此类推。
+entities.ChroniaHelper/CustomPuffer.attributes.description.radius=爆炸半径的大小。
+entities.ChroniaHelper/CustomPuffer.attributes.description.launchSpeed=爆炸把你弹出去的速度。
+entities.ChroniaHelper/CustomPuffer.attributes.description.respawnTime=puffer 爆炸后重生的速度。
+entities.ChroniaHelper/CustomPuffer.attributes.description.sprite=pufferfish 在 Sprites.xml 中的贴图名。在 Lönn 中不体现。
+entities.ChroniaHelper/CustomPuffer.attributes.description.deathFlag=pufferfish 爆炸时要设置的 flag。
+entities.ChroniaHelper/CustomPuffer.attributes.description.holdable=玩家是否可以拾取并投掷 pufferfish。
+entities.ChroniaHelper/CustomPuffer.attributes.description.outlineColor=虚线半径轮廓的颜色。
+entities.ChroniaHelper/CustomPuffer.attributes.description.returnToStart=puffer 是否在其起始位置重生。
+entities.ChroniaHelper/CustomPuffer.attributes.description.holdFlip=puffer 被持握时是否随玩家一起翻转。
+entities.ChroniaHelper/CustomPuffer.attributes.description.boostMode=puffer 爆炸对玩家的作用方式。\nSet Speed：puffer 的默认行为，把玩家速度设为指定角度上的弹射速度。\nRedirect Speed：若玩家当前速度大于指定弹射速度，则把该速度应用到新角度上。\nRedirect + Add Speed：取玩家当前速度并重定向，再叠加 puffer 的弹射速度。
+entities.ChroniaHelper/CustomPuffer.attributes.description.legacyBoost=puffer 的弹射是否使用旧的、较严格的玩家输入检测方式（只接受冻结帧之前的输入，而不是之后）。
+entities.ChroniaHelper/CustomPuffer.attributes.description.absoluteVector=为真时，弹射的重定向模式会使用玩家的完整速度（含垂直与水平），而不只是水平速度。
+entities.ChroniaHelper/CustomPuffer.attributes.description.tangible=控制 puffer 是否能被玩家撞击。
+entities.ChroniaHelper/CustomPuffer.attributes.description.happyFlag=开启后，puffer 会切换为开心贴图
+
+entities.ChroniaHelper/CustomPuffer2.placements.name.left=Custom Puffer 2 (left)
+entities.ChroniaHelper/CustomPuffer2.placements.name.right=Custom Puffer 2 (right)
+entities.ChroniaHelper/CustomPuffer2.attributes.description.colliders="r" 代表矩形，参数格式为 "r, width, height, posX, posY"\n"c" 代表圆形，参数格式为 "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer2.attributes.description.playerColliders="r" 代表矩形，参数格式为 "r, width, height, posX, posY"\n"c" 代表圆形，参数格式为 "c, radius, posX, posY"
+entities.ChroniaHelper/CustomPuffer2.attributes.description.right=puffer 的视觉朝向。
+entities.ChroniaHelper/CustomPuffer2.attributes.description.spriteXMLTag=pufferfish 在 Sprites.xml 中的贴图名。在 Lönn 中不体现。
+entities.ChroniaHelper/CustomPuffer2.attributes.description.indicatorColor=虚线半径轮廓的颜色。
+
+# ======================== Outliner
+
+entities.ChroniaHelper/OutlinerCircle.placements.name.circle=Outliner (Circle)
+entities.ChroniaHelper/OutlinerRectangle.placements.name.normal=Outliner (Rectangle)
+
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.visibleFlag=形如 "flagA, !flagB" 的一组 flag，含义是：\n要让轮廓出现，flagA 必须为真、flagB 必须为假
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.visibleFade=用于定义轮廓在检测条件满足时如何出现或变色的渐变器
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.displayFadeTime=若大于 0，表示过渡时间\n（淡入淡出、颜色变化）
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.detectedFlag=当该部分轮廓满足检测条件时设置一个 flag\n否则关闭该 flag
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.detectedColor=仅在检测条件满足时改变轮廓颜色\n留空则关闭颜色变化
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.detectFlags=检测条件：形如 "flagA, !flagB" 的一组 flag 是否满足，即：\nflagA 必须为真、flagB 必须为假\n留空则关闭该条件
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.detectActor=检测条件：该部分轮廓是否与 Actor 实体碰撞
+entities.ChroniaHelper/OutlinerRectangle.attributes.description.detectPlayer=检测条件：该部分轮廓是否与 Player 碰撞
+
+entities.ChroniaHelper/OutlinerCircle.attributes.description.visibleFlag=形如 "flagA, !flagB" 的一组 flag，含义是：\n要让轮廓出现，flagA 必须为真、flagB 必须为假
+entities.ChroniaHelper/OutlinerCircle.attributes.description.visibleFade=用于定义轮廓在检测条件满足时如何出现或变色的渐变器
+entities.ChroniaHelper/OutlinerCircle.attributes.description.displayFadeTime=若大于 0，表示过渡时间\n（淡入淡出、颜色变化）
+
+# ======================== Another Tile Entity
+
+entities.ChroniaHelper/AnotherTileEntity.placements.name.tile=Another Tile Entity
+
+# ======================== Set Session Value Sequence Controller
+
+entities.ChroniaHelper/SetSessionValueSequenceController.placements.name.controller=Set Session Value Sequence Controller
+entities.ChroniaHelper/SetSessionValueSequenceController.attributes.description.sequence=一串以 ';' 分隔的命令，每条命令也可以\n用 ',' 拆成子命令\n\n命令与子命令：\n直接写一个数字（例如 "...; 0.5; ..."）表示延迟\n一个等式，由若干个用 '=' 连接的名字开头（例如 "flagA = flagB = ..."）\n表示这些值会从最后一个值起逐个赋值\n最后一个值显然是最重要的\n若最后一个值为布尔值（例如 "flagA = true"），左侧的名字会被当作 flag\n于是 "flagA" 会被激活\n若最后一个值为整数（例如 "counterA = 1"），左侧的名字会被当作 counter\n于是 "counterA" 会被设为 1\n若最后一个值为浮点数（例如 "sliderA = 1.0"），左侧的名字会被当作 slider\n于是 "sliderA" 会被设为 1.0\n\n声明：\n若已知某些名字是 flag、counter 或 slider，\n可以通过在名字前加前缀来声明类型\n（例如 "flag:flagA"、"counter:counterA"、"slider:sliderA"）\n这样 "flagA" 只会被当作 flag：最终值为真（bool）或非零（数字）时被设为 true\n"counterA" 只会被当作 counter，"sliderA" 只会被当作 slider，\n最终值为数字时会被设置；最终值为布尔真时设为 1，\n布尔假时设为 0。
+entities.ChroniaHelper/SetSessionValueSequenceController.attributes.description.parameters=当 "mode" 设为 "On Flags" 时，在此输入所需的 flag。\n当模式为 "On Chronia Expression" 或 "On Frost Expression" 时，在此输入表达式。
+entities.ChroniaHelper/SetSessionValueSequenceController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetSessionValueSequenceController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+
+# ======================== Reskinned Pet Cat
+
+entities.ChroniaHelper/PettableCat.placements.name.default=Pettable Fox (Reskinnable)
+
+# ======================== Anti Gravity Glider
+
+entities.ChroniaHelper/ReversedGravityJelly.placements.name.glider=Reversed Gravity Jelly
+
+# ======================== General Environment Fade Controller
+
+entities.ChroniaHelper/GeneralEnviromentController.placements.name.controller=General Environment Controller (Timed Fade)
+entities.ChroniaHelper/GeneralEnviromentController.attributes.description.fadeTime=若等于或小于 0，数值会立即改变。否则作为渐变时长使用
+entities.ChroniaHelper/GeneralEnviromentController.attributes.description.parameters=当 "mode" 设为 "On Flags" 时，在此输入所需的 flag。\n当模式为 "On Chronia Expression" 或 "On Frost Expression" 时，在此输入表达式。
+entities.ChroniaHelper/GeneralEnviromentController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/GeneralEnviromentController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+
+# ======================== Lighting Trigger 2
+
+triggers.ChroniaHelper/LightingTrigger2.placements.name.LightingTrigger2=Lighting Trigger
+
+# ======================== Formula Converter
+
+entities.ChroniaHelper/FormulaConverter.placements.name.controller=Formula Converter
+entities.ChroniaHelper/FormulaConverter.attributes.description.timerSlider=其数值将作为公式中时间变量的 slider 名
+entities.ChroniaHelper/FormulaConverter.attributes.description.targetName=公式的输出会写入该 slider/counter 名
+entities.ChroniaHelper/FormulaConverter.attributes.description.isCounter=为真时最终值会设为 counter，否则设为 slider
+entities.ChroniaHelper/FormulaConverter.attributes.description.formulaTimeFields=一串时间值，用于定义时间变量小于某个值时的情况\n会使用匹配的公式进行计算\n例如 "1,3,5" 表示：时间值小于 1 时用第 1 个公式计算，\n时间值小于 3 时用第 2 个公式，\n时间值小于 5 时用第 3 个公式\n注意：若公式数量多于 3 个，\n时间值等于或大于 5 时会使用第 4 个表达式
+entities.ChroniaHelper/FormulaConverter.attributes.description.formulaExpressions=与时间字段相匹配的一组表达式
+entities.ChroniaHelper/FormulaConverter.attributes.description.parameters=当 "mode" 设为 "On Flags" 时，在此输入所需的 flag。\n当模式为 "On Chronia Expression" 或 "On Frost Expression" 时，在此输入表达式。
+
+# ========================= Set Flag Logic Controller
+
+entities.ChroniaHelper/SetFlagLogicController.placements.name.controller=Set Flag Logic Controller
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.emptyExpressionValue=当 "value" 字段为空时会使用该值
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.emptyRevertExpressionValue=当 "revertValue" 字段为空时会使用该值
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.parameters=当 "mode" 设为 "On Flags" 时，在此输入所需的 flag。\n当模式为 "On Chronia Expression" 或 "On Frost Expression" 时，在此输入表达式。
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetFlagLogicController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+
+# ========================== Set General Environment Controller
+
+entities.ChroniaHelper/SetGeneralEnvironmentController.placements.name.controller=General Environment Controller (Session Value)
+entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.parameters=当 "mode" 设为 "On Flags" 时，在此输入所需的 flag。\n当模式为 "On Chronia Expression" 或 "On Frost Expression" 时，在此输入表达式。
+entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SetGeneralEnvironmentController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+
+# ========================== General Environment Trigger
+
+triggers.ChroniaHelper/GeneralEnviromentTrigger.placements.name.EnvironmentTrigger=General Environment Trigger
+
+# ========================== Wiggle Liner
+
+entities.ChroniaHelper/WiggleLiner.placements.name.line=Wiggle Liner
+
+# ========================== Language Session Specifier
+
+entities.ChroniaHelper/LanguageSessionSpecifier.placements.name.controller=Language Session Specifier
+entities.ChroniaHelper/LanguageSessionSpecifier.attributes.description.targetName=当 "session type" 为 "Flag" 时，这是语言匹配时要设置的 flag 名\n（前提是语言选项不为空）\n当 "session type" 为 "Counter" 时，这是要设置的 counter 名，\n（前提是匹配的语言选项填入的是整数）\n当 "session type" 为 "Slider" 时，这是要设置的 slider 名，\n（前提是匹配的语言选项填入的是浮点数）
+entities.ChroniaHelper/LanguageSessionSpecifier.attributes.description.LanguageScaleSpecify=形如 "schinese, 1.25" 的说明符列表\n一个说明符由 2 或 3 个参数组成\n第一个参数是除英语外的语言名，全小写，例如 "french" 代表法语\n"simplifiedchinese" 或 "schinese" 代表简体中文\n第二个参数是缩放数值；若有第三个参数，则第二个数值只作用于 Scale X\n第三个参数同样是缩放数值，会覆盖 Scale Y
+
+# ========================== Shattersong Zone
+
+entities.ChroniaHelper/ShattersongZone.placements.name.normal=Shattersong Zone
+
+# ========================== Sample Jump Through
+
+entities.ChroniaHelper/SampleJumpThroughUp.placements.name.up=Sample Jump Through (Up)
+entities.ChroniaHelper/SampleJumpThroughRight.placements.name.right=Sample Jump Through (Right)
+entities.ChroniaHelper/SampleJumpThroughDown.placements.name.down=Sample Jump Through (Down)
+entities.ChroniaHelper/SampleJumpThroughLeft.placements.name.left=Sample Jump Through (Left)
+
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.texture=板子的贴图，相对于 \"Gameplay/objects/jumpthru/\"\n可从 atlas 中浏览并选择\n留空则使用当前区域的 jump through 贴图
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.surfaceIndex=与板子交互时使用的音效索引\n-1 表示使用当前区域的音效
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.animationDelay=板子动画的播放速度\n0 表示不播放动画
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughUp.attributes.description.attached=开启后，板子会粘住所接触的实体块\n并随之移动
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.texture=板子的贴图，相对于 \"Gameplay/objects/jumpthru/\"\n可从 atlas 中浏览并选择\n留空则使用当前区域的 jump through 贴图
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.surfaceIndex=与板子交互时使用的音效索引\n-1 表示使用当前区域的音效
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.animationDelay=板子动画的播放速度\n0 表示不播放动画
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.allowClimbing=Allow Climbing
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.allowClimbing=开启后，玩家可以在板子表面攀爬
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.allowWallJumping=Allow Wall Jumping
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.allowWallJumping=开启后，玩家可以从板子表面蹬墙跳
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.letSeekersThrough=Let Seekers Through
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.letSeekersThrough=开启后，seeker 会忽略该板子
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.cornerCorrect=Corner Correct
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.cornerCorrect=开启后，玩家冲刺撞到板子边缘时\n会被轻微推到板子表面
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughRight.attributes.description.attached=开启后，板子会粘住所接触的实体块\n并随之移动
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.texture=板子的贴图，相对于 \"Gameplay/objects/jumpthru/\"\n可从 atlas 中浏览并选择\n留空则使用当前区域的 jump through 贴图
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.surfaceIndex=与板子交互时使用的音效索引\n-1 表示使用当前区域的音效
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.animationDelay=板子动画的播放速度\n0 表示不播放动画
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.squishPlayer=Squish Player
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.squishPlayer=开启后，当附着的板子压向玩家\n且无法被推开时，玩家会被压扁
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.pushPlayer=Push Player
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.pushPlayer=开启后，玩家顶着板子时\n会沿被阻挡的方向被推开
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughDown.attributes.description.attached=开启后，板子会粘住所接触的实体块\n并随之移动
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.texture=Texture
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.texture=板子的贴图，相对于 \"Gameplay/objects/jumpthru/\"\n可从 atlas 中浏览并选择\n留空则使用当前区域的 jump through 贴图
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.surfaceIndex=Surface Index
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.surfaceIndex=与板子交互时使用的音效索引\n-1 表示使用当前区域的音效
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.animationDelay=Animation Delay
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.animationDelay=板子动画的播放速度\n0 表示不播放动画
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.allowClimbing=Allow Climbing
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.allowClimbing=开启后，玩家可以在板子表面攀爬
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.allowWallJumping=Allow Wall Jumping
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.allowWallJumping=开启后，玩家可以从板子表面蹬墙跳
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.letSeekersThrough=Let Seekers Through
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.letSeekersThrough=开启后，seeker 会忽略该板子
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.cornerCorrect=Corner Correct
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.cornerCorrect=开启后，玩家冲刺撞到板子边缘时\n会被轻微推到板子表面
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.name.attached=Attached
+entities.ChroniaHelper/SampleJumpThroughLeft.attributes.description.attached=开启后，板子会粘住所接触的实体块\n并随之移动
+
+# ========================== Counter Modifier
+
+entities.ChroniaHelper/CounterModifier.placements.name.modifier=Counter Modifier
+entities.ChroniaHelper/CounterModifier.attributes.name.targetName=Target Name
+entities.ChroniaHelper/CounterModifier.attributes.description.targetName=该实体读写所用的 session counter 名称\n默认为 "targetCounter"
+entities.ChroniaHelper/CounterModifier.attributes.name.offsetY=Offset Y
+entities.ChroniaHelper/CounterModifier.attributes.description.offsetY=counter 数值显示在实体上方多远处，\n负值表示向上。默认为 -24
+entities.ChroniaHelper/CounterModifier.attributes.name.step=Step of the changes
+entities.ChroniaHelper/CounterModifier.attributes.description.step=每次按左或右时 counter 的变化量，\n按左为减、按右为加。默认为 1
+
+# ========================== Slider Modifier
+
+entities.ChroniaHelper/SliderModifier.placements.name.modifier=Slider Modifier
+entities.ChroniaHelper/SliderModifier.attributes.name.targetName=Target Name
+entities.ChroniaHelper/SliderModifier.attributes.description.targetName=该实体读写所用的 session counter 名称\n默认为 "targetCounter"
+entities.ChroniaHelper/SliderModifier.attributes.name.offsetY=Offset Y
+entities.ChroniaHelper/SliderModifier.attributes.description.offsetY=counter 数值显示在实体上方多远处，\n负值表示向上。默认为 -24
+entities.ChroniaHelper/SliderModifier.attributes.name.step=Step of the changes
+entities.ChroniaHelper/SliderModifier.attributes.description.step=每次按左或右时 counter 的变化量，\n按左为减、按右为加。默认为 1
+
+# ========================== Move Block (No Outline)
+
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_steer_fast=Move Block (Up, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_steer_slow=Move Block (Up, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_nosteer_fast=Move Block (Up, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.up_nosteer_slow=Move Block (Up, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_steer_fast=Move Block (Down, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_steer_slow=Move Block (Down, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_nosteer_fast=Move Block (Down, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.down_nosteer_slow=Move Block (Down, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_steer_fast=Move Block (Right, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_steer_slow=Move Block (Right, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_nosteer_fast=Move Block (Right, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.right_nosteer_slow=Move Block (Right, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_fast=Move Block (Left, Steerable, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_steer_slow=Move Block (Left, Steerable, Slow, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_fast=Move Block (Left, Fast, No Outline)
+entities.ChroniaHelper/MoveBlockNoOutline.placements.name.left_nosteer_slow=Move Block (Left, Slow, No Outline)
+
+# ========================== Move Block Outline Remover
+
+triggers.ChroniaHelper/MoveBlockOutlineRemover.placements.name.outlineRemover=Move Block Outline Remover
+
+# ========================== Holdable Flag Controller
+
+entities.ChroniaHelper/HoldableFlagController.placements.name.controller=Holdable Flag Controller
+
+# ========================== Slider Wind Controller
+
+entities.ChroniaHelper/SliderWindController.placements.name.controller=Slider Wind Controller
+entities.ChroniaHelper/SliderWindController.attributes.description.chroniaFlagLogicExpression=使用 "&&" 表示与、"||" 表示或、"()" 分层的表达式，\n其它符号都会被视为 flag 名，例如：\n(flagA || flagB) && (flagC || (flagD && flagE))
+entities.ChroniaHelper/SliderWindController.attributes.description.chroniaMathExpession=对于 ChroniaHelper Chronia Expressions，规则如下：\n有一些内置词代表常量，例如 "pi"、"e" 等\n任何无法识别的字符串都会被当作 Session.Slider 的值\n例如 "hahaha"、"Undefined123" 等\n可使用常规运算符号连接不同的值。\n例如 "1+2"、"someSlider-anotherSlider+25"\n只能用括号进行分层。\n例如 "(3+4)*mySlider-(27+3)*15"\n使用 "{}" 可读取游戏内的 flag 值，为真的 flag 等于 1，为假的等于 0\n例如 "{myFlag}+({anotherFlag}-3)*17"\n可使用 "[]" 定义函数，目前仅支持少量表达式，\n例如 "sin"、"cos"、"tan"、"log"、"pow"、"sqrt" 等。\n例如 "8*sin[2*pow[t,2]]+4"
+entities.ChroniaHelper/SliderWindController.attributes.description.parameters=模式为 "On Interval" 时，此字段为间隔\n模式为 "On Flags" 时，请输入一串用逗号分隔的 flag\n以 "!" 开头的 flag 表示取反
+
+# ========================== Event Volume Fade
+
+triggers.T8MC/EventVolumeFadeTrigger.placements.name.trigger=Event Volume Fade
+
+# ========================== Level Data To Session Controller
+
+entities.ChroniaHelper/LevelDataToSessionController.placements.name.controller=Level Data To Session Controller
+
+# ========================== Crumble Block On Jump
+
+entities.ChroniaHelper/CrumbleBlockOnJump.placements.name.default=Crumble Block On Jump (Groupped)
+
+# ========================== Custom Falling Block
+
+entities.ChroniaHelper/CustomFallingBlock.placements.name.default=Custom Falling Block (Groupped)
+
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.tiletype=该方块由哪种 tile 构成。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.direction=方块下落的方向（0 = 下，1 = 左，2 = 上，3 = 右）。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.accel=方块加速到最大下落速度的快慢。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.maxSpeed=方块的最大下落速度。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.fallDelay=方块被触发后、开始下落前等待的时间。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.climbFall=开启后，玩家攀爬其侧面时方块也会下落。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.bufferClimbFall=开启后，玩家在侧面缓冲抓握时方块会提前下落。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.legacy=开启后，使用旧版触发行为（一旦触发就立刻出现 metatriggering）。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.behind=开启后，方块绘制在玩家背后。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.crushBlockTrigger=开启后，方块也可被 crush block 触发。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.breakDashBlocks=开启后，方块下落时会破坏途经的 dash block。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.shakeForAllFalls=开启后，方块每次下落都会抖动，而不是只在第一次抖动。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagTrigger=触发方块下落的 flag。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnFall=方块下落期间设置的 flag。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnGround=方块落地时设置的 flag。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.flagOnly=开启后，方块只在被其 flag 触发时下落，忽略玩家。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.finalBoss=开启后，方块使用最终 Boss 行为（高亮层与更短的延迟）。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.shakeSfx=方块下落前抖动时播放的音效。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.impactSfx=方块落地时播放的音效。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.blendIn=开启后，方块会与周围的 tile 融合。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.bgTexture=开启后，方块使用背景 tileset。
+entities.ChroniaHelper/CustomFallingBlock.attributes.description.depth=方块的绘制深度。
+
+# ========================== Custom Push Block
+
+entities.ChroniaHelper/CustomPushBlock.placements.name.default=Custom Push Block (Groupped)
+
+entities.ChroniaHelper/CustomPushBlock.attributes.description.tiletype=该方块由哪种 tile 构成。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyTop=开启后，若正上方有物体方块会忽略重力，因而能悬在天花板上。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyBottom=开启后，方块被视为附着在其下方的地板上。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyLeft=开启后，若正左方有物体方块会忽略重力，因而能贴在墙上。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.stickyRight=开启后，若正右方有物体方块会忽略重力，因而能贴在墙上。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.debrisTileset=方块被冲刺推动时出现的碎屑所使用的 tileset。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.blendIn=开启后，方块会与周围的 tile 融合。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.bgTexture=开启后，方块使用背景 tileset。
+entities.ChroniaHelper/CustomPushBlock.attributes.description.depth=方块的绘制深度。
+
+# ================= Flag Filter / Regex Series
+
+triggers.ChroniaHelper/FlagFilterOperation.placements.name.trigger=Flag Filter Operation Trigger
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.contains=flag 名应包含的子串。\n留空则跳过该条件。
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.startsWith=flag 名应以之开头的子串。\n留空则跳过该条件。
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.endsWith=flag 名应以之结尾的子串。\n留空则跳过该条件。
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.mode=匹配到的 flag 如何修改：\n"Off" - 关闭所有匹配的 flag\n"Set as flag value" - 把匹配的 flag 设为 "Parameter" 中作为 flag 名读取的值\n"Equals to Chronia Helper Expression not 0" - 按 "Parameter" 中 Chronia 数学表达式的结果（不为 0 即真）设置匹配的 flag\n"Equals to Frost Session Expression not 0" - 按 "Parameter" 中 Frost Helper session 表达式的结果（不为 0 即真）设置匹配的 flag
+triggers.ChroniaHelper/FlagFilterOperation.attributes.description.parameter="Mode" 用于决定要应用的值所读取的来源。\n取决于所选模式，它会被当作 flag 名、Chronia 数学表达式或 Frost session 表达式读取。
+
+triggers.ChroniaHelper/FlagRegexOperation.placements.name.trigger=Flag Regex Operation Trigger
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.regex=对每个 session flag 进行匹配的正则表达式。
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.mode=匹配到的 flag 如何处理：\n"Off" - 关闭所有匹配该正则的 flag\n"Replace" - 把每个 flag 名中匹配的部分替换为 "Parameter"；flag 本身不会改名\n"Count" - 统计匹配该正则的 flag 数量，并把数量作为 counter 存入 "Parameter"
+triggers.ChroniaHelper/FlagRegexOperation.attributes.description.parameter=当 "Mode" 为 "Replace" 时作为替换文本，\n或当 "Mode" 为 "Count" 时作为目标 counter 名。\n"Mode" 为 "Off" 时被忽略。
+
+entities.ChroniaHelper/FlagFilterController.placements.name.controller=Flag Filter Controller
+entities.ChroniaHelper/FlagFilterController.attributes.description.contains=flag 名应包含的子串。\n留空则跳过该条件。
+entities.ChroniaHelper/FlagFilterController.attributes.description.startsWith=flag 名应以之开头的子串。\n留空则跳过该条件。
+entities.ChroniaHelper/FlagFilterController.attributes.description.endsWith=flag 名应以之结尾的子串。\n留空则跳过该条件。
+entities.ChroniaHelper/FlagFilterController.attributes.description.operationMode=匹配到的 flag 如何修改：\n"Off" - 关闭所有匹配的 flag\n"Set as flag value" - 把匹配的 flag 设为 "Operation Parameter" 中作为 flag 名读取的值\n"Equals to Chronia Helper Expression not 0" - 按 "Operation Parameter" 中 Chronia 数学表达式的结果设置匹配的 flag\n"Equals to Frost Session Expression not 0" - 按 "Operation Parameter" 中 Frost Helper session 表达式的结果设置匹配的 flag
+entities.ChroniaHelper/FlagFilterController.attributes.description.operationParameter="Operation Mode" 用于决定要应用的值所读取的来源。\n取决于所选模式，它会被当作 flag 名、Chronia 数学表达式或 Frost session 表达式读取。
+
+entities.ChroniaHelper/FlagRegexController.placements.name.controller=Flag Regex Controller
+entities.ChroniaHelper/FlagRegexController.attributes.description.regex=对每个 session flag 进行匹配的正则表达式。
+entities.ChroniaHelper/FlagRegexController.attributes.description.regexMode=匹配到的 flag 如何处理：\n"Off" - 关闭所有匹配该正则的 flag\n"Replace" - 把每个 flag 名中匹配的部分替换为 "Regex Parameter"；flag 本身不会改名\n"Count" - 统计匹配该正则的 flag 数量，并把数量作为 counter 存入 "Regex Parameter"
+entities.ChroniaHelper/FlagRegexController.attributes.description.regexParameter=当 "Regex Mode" 为 "Replace" 时作为替换文本，\n或当 "Regex Mode" 为 "Count" 时作为目标 counter 名。\n"Regex Mode" 为 "Off" 时被忽略。
+
+entities.ChroniaHelper/CoreModeFlagController.placements.name.controller=Core Mode Flag Controller
+entities.ChroniaHelper/CoreModeFlagController.attributes.description.coreMode=该控制器响应的 core mode：\n"None"、"Cold" 或 "Hot"。
+entities.ChroniaHelper/CoreModeFlagController.attributes.description.flag=当房间的 core mode 与 "Core Mode" 匹配时该 flag 保持激活，否则关闭。
+
+triggers.ChroniaHelper/FlagToggleTrigger.placements.name.trigger=Flag Toggle Trigger
+triggers.ChroniaHelper/FlagToggleTrigger.attributes.description.flag=玩家每次进入该触发器时都会被翻转取值的 flag。
+
+# ================= Breaker Box
+
+entities.ChroniaHelper/LightningBreakerBox.placements.name.box=Lightning Breaker Box (Disabled Bloom Strength Modifications)
+
+# ================= Bound Refill
+
+entities.ChroniaHelper/BoundRefill.placements.name.bound=Bound Refill (Custom Direction)
+entities.ChroniaHelper/BoundRefill.placements.description.bound=来自 KAERRA 的 Furry Week。给玩家一个类似弹簧的冲刺。
+entities.ChroniaHelper/BoundRefill.attributes.description.oneUse=Refill 被收集后是否消失。
+entities.ChroniaHelper/BoundRefill.attributes.description.respawnTime=Refill 重生所需的时间。
+entities.ChroniaHelper/BoundRefill.attributes.description.visualOffsetX=仅对 Refill 贴图施加水平视觉偏移。\n不影响 Refill 的判定。
+entities.ChroniaHelper/BoundRefill.attributes.description.visualOffsetY=仅对 Refill 贴图施加垂直视觉偏移。\n不影响 Refill 的判定。
+entities.ChroniaHelper/BoundRefill.attributes.description.direction=冲刺被取消时的反弹方向（0 = 上，1 = 左，2 = 右，3 = 下）。
+entities.ChroniaHelper/BoundRefill.attributes.description.pulseFlag=Refill 被收集时在一帧内激活该 flag。字段为空时无效果。\n若要实现其它 flag 行为，可用例如 Frost Helper 的 Activator 监听这个 1 帧的 flag 脉冲。
+
+# ================= Lightning Box
+
+entities.ChroniaHelper/LightningBreakerBoxWithNoBloomEffect.placements.name.default=Lightning Breaker Box (No Legacy Bloom Strength Effect)
+
+# ================= Zagging Line
+
+entities.ChroniaHelper/ZaggingLine.placements.name.zaggingLine=Zagging Line
+
+# ================= Custom Spawn Point
+
+entities.ChroniaHelper/CustomSpawnPoint.placements.name.normal=Custom Spawn Point
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.effectZone=按 "N" 添加一个节点，把它放在你期望区域范围的左上角\n再按 "N" 添加另一个节点，把它放在该区域范围的右下角
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.cameraOffsetX=玩家进入效果区域时调整相机偏移
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.cameraOffsetY=玩家进入效果区域时调整相机偏移
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.setFlag=玩家进入效果区域时要设置的 flag 列表，用逗号分隔\n以 '!' 开头的 flag 则会被关闭
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.playerFacing=重生时改变玩家的朝向
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.autoChangeRespawn=玩家进入效果区域时是否自动设置重生点
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.cameraCatchupSpeed=玩家进入效果区域时是否设置 Camera Catch Up Speed\n-1 表示不做任何调整
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.clearFlagsBeforeSet=设置 flag 前是否先清空 flag
+
+# ================= Loenn Menu
+
+ui.menubar.ChroniaHelper_convertPastedPaths=转换粘贴的路径 [ChroniaHelper]
+ui.menubar.ChroniaHelper_enableOneOnly=只启用一个
+ui.menubar.ChroniaHelper_convertDecalPaths=把 Decal 路径转换为 Decal [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertJumpThruPaths=把 Jump Through 路径转换为原版 Jump Through [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertSpinnerPaths=把 Spinner 路径转换为 Chronia Seamless Spinner [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertBoosterPaths=把 Booster 路径转换为 Chronia 的 Custom Booster [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertSpikePaths=把尖刺路径转换为原版 Spikes [ChroniaHelper]
+ui.menubar.ChroniaHelper_convertChroniaSpikePaths=把尖刺路径转换为 Chronia 的 Spikes [ChroniaHelper]
+
