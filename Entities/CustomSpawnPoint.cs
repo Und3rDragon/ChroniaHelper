@@ -6,12 +6,6 @@ using ChroniaHelper.Utils;
 
 namespace ChroniaHelper.Entities;
 
-/// <summary>
-/// 自定义出生点。放在原版 Player 出生点的位置时与原版出生点等价：参与所在房间的出生点列表，
-/// 进房、死亡重生、切屏与调试地图的出生点判定都会算上它。勾选 isDefaultSpawn 时成为该房间的
-/// 默认出生点，playerFacing 决定玩家在这个点出生时的朝向。
-/// 拉出两个节点会构成一块效果区域，玩家进入时触发一次相机偏移、相机跟随速度、flag 与重生点切换。
-/// </summary>
 [CustomEntity("ChroniaHelper/CustomSpawnPoint")]
 [Tracked]
 public class CustomSpawnPoint : BaseEntity
@@ -21,7 +15,8 @@ public class CustomSpawnPoint : BaseEntity
     {
         playerFacing = data.Int("playerFacing", 0);
 
-        camOffset = data.Vector2("cameraOffsetX", "cameraOffsetY", Vc2.Zero);
+        setupOffset = data.Attr("cameraOffsetX").HasValidContent() && data.Attr("cameraOffsetY").HasValidContent() ?
+            data.Vector2("cameraOffsetX", "cameraOffsetY", Vc2.Zero) : null;
         setFlag = data.Attr("setFlag");
         autoRespawn = data.Bool("autoChangeRespawn", true);
         catchup = data.Float("cameraCatchupSpeed", -1f);
@@ -35,7 +30,7 @@ public class CustomSpawnPoint : BaseEntity
     }
     private int playerFacing;
 
-    private Vc2 camOffset;
+    private Vc2? setupOffset;
     private string setFlag;
     private bool autoRespawn;
     private float catchup;
@@ -59,12 +54,14 @@ public class CustomSpawnPoint : BaseEntity
         if (colliding.Value && !colliding._Value)
         {
             ApplyEffects();
+
+            if (autoRespawn)
+            {
+                SetRespawnPoint(level.Session);
+            }
         }
     }
 
-    /// <summary>
-    /// 让玩家面朝设置好的方向。0 表示不改变朝向。
-    /// </summary>
     public void ApplyPlayerFacing(Player player)
     {
         if (playerFacing == 0)
@@ -75,14 +72,14 @@ public class CustomSpawnPoint : BaseEntity
         player.Facing = playerFacing > 0 ? Facings.Right : Facings.Left;
     }
 
-    /// <summary>
-    /// 玩家进入效果区域时应用一次全部设置。
-    /// </summary>
     private void ApplyEffects()
     {
         Level level = SceneAs<Level>();
 
-        SetCameraOffset(level);
+        if (setupOffset != null)
+        {
+            SetCameraOffset(level);
+        }
 
         if (clear)
         {
@@ -110,19 +107,11 @@ public class CustomSpawnPoint : BaseEntity
         {
             RefMaxHelpingHand.GetSession().CameraCatchupSpeed = catchup;
         }
-
-        if (autoRespawn)
-        {
-            SetRespawnPoint(level.Session);
-        }
     }
 
-    /// <summary>
-    /// 相机偏移按原版房间的 cameraOffsetX/Y 换算，数值 1 等于 48x32 像素。
-    /// </summary>
     private void SetCameraOffset(Level level)
     {
-        level.CameraOffset = new Vector2(Level.CameraOffsetXInterval, Level.CameraOffsetYInterval) * camOffset;
+        level.CameraOffset = new Vector2(Level.CameraOffsetXInterval, Level.CameraOffsetYInterval) * (Vc2)setupOffset;
     }
 
     private void SetRespawnPoint(Session session)
@@ -181,7 +170,7 @@ public class CustomSpawnPoint : BaseEntity
     /// <summary>
     /// 玩家确实在这个出生点上出生时，按出生点的设置应用朝向。
     /// </summary>
-    private static void ApplyPlayerFacing(Level level)
+    private static void AfterSpawning(Level level)
     {
         Session session = level.Session;
 
@@ -205,6 +194,8 @@ public class CustomSpawnPoint : BaseEntity
             }
 
             spawn.ApplyPlayerFacing(player);
+
+            spawn.ApplyEffects();
         }
     }
 
@@ -228,7 +219,7 @@ public class CustomSpawnPoint : BaseEntity
 
         orig(self, playerIntro, isFromLoader);
 
-        ApplyPlayerFacing(self);
+        AfterSpawning(self);
     }
 
     private static void MapData_Reload(On.Celeste.MapData.orig_Reload orig, MapData self)

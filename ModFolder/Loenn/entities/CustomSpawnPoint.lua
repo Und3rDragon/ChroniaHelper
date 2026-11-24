@@ -10,11 +10,12 @@ customSpawnPoint.placements = {
         isDefaultSpawn = false,
         playerFacing = 0,
 
-        cameraOffsetX = 0,
-        cameraOffsetY = 0,
-        setFlag = "",
-        autoChangeRespawn = true,
+        cameraOffsetX = "",
+        cameraOffsetY = "",
         cameraCatchupSpeed = -1,
+        setFlag = "",
+        
+        autoChangeRespawn = true,
         effectZone = "See Tooltip",
         clearFlagsBeforeSet = false,
     }
