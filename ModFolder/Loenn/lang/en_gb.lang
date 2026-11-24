@@ -1917,6 +1917,7 @@ entities.ChroniaHelper/ZaggingLine.placements.name.zaggingLine=Zagging Line
 # ================= Custom Spawn Point
 
 entities.ChroniaHelper/CustomSpawnPoint.placements.name.normal=Custom Spawn Point
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.effectZone=Press "N" to add a node, and place it onto the top left of the zone you desired\nThen press "N" again to add another node, and place it to the bottom right of the zone you desired
 
 # ================= Loenn Menu
 

@@ -2,8 +2,10 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.References;
+using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils;
 using System.Collections;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Entities;
 
@@ -13,44 +15,50 @@ namespace ChroniaHelper.Entities;
 /// </summary>
 [CustomEntity("ChroniaHelper/CustomSpawnPoint")]
 [Tracked]
-public class CustomSpawnPoint : Entity
+public class CustomSpawnPoint : BaseEntity
 {
     public CustomSpawnPoint(EntityData data, Vc2 offset)
-        : base(data.Position + offset)
+        : base(data, offset)
     {
         RegisterSpawns((Engine.Scene as Level ?? (Engine.Scene as LevelLoader)?.Level)?.Session?.LevelData);
-        GlobalCoroutines.Register($"ChroniaHelper_SpawnPoint_{data.ID}", Processor(data));
         
-        if(zoneE = data.Bool("autoChangeRespawn", true))
+        camCatchup = data.Float("cameraCatchupSpeed", 1f);
+
+        if(nodes.Length >= 3)
         {
-            zoneW = data.Float("changeRespawnZoneWidth", 32);
-            zoneH = data.Float("changeRespawnZoneHeight", 48);
-            Collider c = new Hitbox(zoneW, zoneH, X - zoneW / 2, Y - zoneH);
-            changeRespawn = new((p) => { }, c);
-            Add(changeRespawn);
-            playerCollide = new(null, false);
+            Vc2 delta = nodes[1] - nodes[2];
+            Collider = new Hitbox(delta.X, delta.Y, float.Min(nodes[1].X, nodes[2].X), float.Min(nodes[1].Y, nodes[2].Y));
         }
 
-        camCatchup = data.Float("cameraCatchupSpeed", 1f);
-    }
-    //private PlayerCollider changeRespawn;
-    private float zoneW, zoneH;
-    private bool zoneE;
-    PlayerCollider changeRespawn;
-    DataPack<bool> playerCollide = new(null, false);
-    private float camCatchup;
+        camOffset = data.Vector2("cameraOffsetX", "cameraOffsetY", Vc2.Zero);
+        setFlag = data.Attr("setFlag");
 
+        catchup = data.Float("cameraCatchupSpeed", -1f);
+
+        clear = data.Bool("clearFlagsBeforeSet", false);
+
+        GlobalCoroutines.Register($"ChroniaHelper_CustomSpawnPoint_{data.ID}", ProcessOnSpawn(data));
+    }
+    private float camCatchup;
+    private Vc2 camOffset;
+    private string setFlag;
+    private float catchup;
+    private bool clear;
+
+    private DataPack<bool> Colliding = new(null, false);
     public override void Update()
     {
         base.Update();
 
         Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
 
-        playerCollide.SetValue(changeRespawn.Collider.Collide(player));
+        Colliding.SetValue(CollideCheck(player));
 
-        if(playerCollide.Value && !playerCollide._Value)
+        if(Colliding.Value && !Colliding._Value)
         {
             ChangeRespawn(player);
+
+            ApplyConstantValues();
         }
     }
 
@@ -78,7 +86,43 @@ public class CustomSpawnPoint : Entity
         return true;
     }
 
-    private IEnumerator Processor(EntityData data)
+    private void ApplyConstantValues()
+    {
+        Level level = SceneAs<Level>();
+
+        level.CameraOffset = camOffset;
+
+        if (clear)
+        {
+            level.Session.Flags.Clear();
+        }
+
+        if (setFlag.HasValidContent())
+        {
+            var s = setFlag.Split(',', StringSplitOptions.TrimEntries);
+
+            foreach (var i in s)
+            {
+                string name = i;
+                if (i.StartsWith('!'))
+                {
+                    name = i.TrimStart('!');
+                    level.Session.SetFlag(name, false);
+                }
+                else
+                {
+                    level.Session.SetFlag(name, true);
+                }
+            }
+        }
+
+        if (Md.MaddieLoaded && catchup > 0)
+        {
+            RefMaxHelpingHand.GetSession().CameraCatchupSpeed = catchup;
+        }
+    }
+
+    private IEnumerator ProcessOnSpawn(EntityData data)
     {
         while(Engine.Scene is not Level)
         {
@@ -97,27 +141,6 @@ public class CustomSpawnPoint : Entity
             yield break;
         }
 
-        level.CameraOffset = data.Vector2("cameraOffsetX", "cameraOffsetY", Vc2.Zero);
-
-        if (data.Attr("setFlag").HasValidContent())
-        {
-            var s = data.StringArray("setFlag");
-
-            foreach(var i in s)
-            {
-                string name = i;
-                if (i.StartsWith('!'))
-                {
-                    name = i.TrimStart('!');
-                    level.Session.SetFlag(name, false);
-                }
-                else
-                {
-                    level.Session.SetFlag(name, true);
-                }
-            }
-        }
-
         Player player = level.Tracker.GetEntity<Player>();
 
         while(player.Scene == null)
@@ -130,12 +153,6 @@ public class CustomSpawnPoint : Entity
         if (facing != 0)
         {
             player.Facing = facing > 0 ? Facings.Right : Facings.Left;
-        }
-
-        float catchup = data.Float("cameraCatchupSpeed", -1f);
-        if (Md.MaddieLoaded && catchup > 0)
-        {
-            RefMaxHelpingHand.GetSession().CameraCatchupSpeed = catchup;
         }
     }
 

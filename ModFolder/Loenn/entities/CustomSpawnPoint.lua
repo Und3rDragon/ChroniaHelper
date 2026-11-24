@@ -3,6 +3,7 @@ local customSpawnPoint = {}
 customSpawnPoint.name = "ChroniaHelper/CustomSpawnPoint"
 customSpawnPoint.depth = 0
 customSpawnPoint.justification = {0.5, 1.0}
+customSpawnPoint.nodeLimits = {0, 2}
 customSpawnPoint.placements = {
     name = "normal",
     data = {
@@ -12,9 +13,9 @@ customSpawnPoint.placements = {
         setFlag = "",
         playerFacing = 0,
         autoChangeRespawn = true,
-        changeRespawnZoneWidth = 32,
-        changeRespawnZoneHeight = 48,
         cameraCatchupSpeed = -1,
+        effectZone = "See Tooltip",
+        clearFlagsBeforeSet = false,
     }
 }
 
@@ -31,26 +32,55 @@ customSpawnPoint.fieldInformation = {
     setFlag = {
         fieldType = "list_scroll",
     },
+    effectZone = {
+        editable = false,
+    },
 }
 
 function customSpawnPoint.sprite(room, entity)
     local sprites = {}
     local playerSprite = require("structs.drawable_sprite").fromTexture("characters/player/sitDown00", entity)
-    local rectangle = require("structs.drawable_rectangle").fromRectangle("bordered", entity.x - entity.changeRespawnZoneWidth / 2, entity.y - entity.changeRespawnZoneHeight, entity.changeRespawnZoneWidth, entity.changeRespawnZoneHeight, {1,1,1,0.1}, {1,1,1,0.4})
 
     playerSprite:setJustification(0.5, 1)
 
     table.insert(sprites, playerSprite)
 
-    if entity.autoChangeRespawn then
-        table.insert(sprites, rectangle)
+    if entity.nodes ~= nil then
+        if #entity.nodes > 0 then
+            for _, node in ipairs(entity.nodes) do
+                local rec = require("structs.drawable_rectangle").fromRectangle("fill", node.x - 2, node.y - 2, 4, 4, {1,1,1,1})
+            
+                table.insert(sprites, rec)
+            end
+        end
+
+        if #entity.nodes >= 2 then
+            local p1 = entity.nodes[1]
+            local p2 = entity.nodes[2]
+            local rectangle = require("structs.drawable_rectangle").fromRectangle("bordered", p1.x, p1.y, p2.x - p1.x, p2.y - p1.y, {1,1,1,0.1}, {1,1,1,0.4})
+
+            table.insert(sprites, rectangle)
+        end
     end
 
     return sprites
 end
 
-customSpawnPoint.selection = function(room, entity)
-	return utils.rectangle(entity.x - 6, entity.y - 16, 12, 16)
+function customSpawnPoint.selection(room, entity)
+    local baseRec = utils.rectangle(entity.x - 6, entity.y - 16, 12, 16)
+
+    local nodeRecs = {}
+    if entity.nodes ~= nil then
+        if #entity.nodes > 0 then
+            for _, node in ipairs(entity.nodes) do
+                local nodeRec = utils.rectangle(node.x - 2, node.y - 2, 4, 4)
+
+                table.insert(nodeRecs, nodeRec)
+            end
+        end
+    end
+
+	return baseRec, nodeRecs
 end
 
 return customSpawnPoint
