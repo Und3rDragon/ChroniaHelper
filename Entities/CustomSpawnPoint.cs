@@ -2,16 +2,15 @@ using Celeste.Mod.Entities;
 using ChroniaHelper.Components;
 using ChroniaHelper.Cores;
 using ChroniaHelper.References;
-using ChroniaHelper.Triggers;
 using ChroniaHelper.Utils;
-using System.Collections;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChroniaHelper.Entities;
 
 /// <summary>
-/// 自定义出生点。放置在原版 Player 出生点的位置，行为与原版出生点一致：
-/// 参与所在房间的出生点列表，进房、死亡重生与切屏后的最近出生点判定都会算上它。
+/// 自定义出生点。放在原版 Player 出生点的位置时与原版出生点等价：参与所在房间的出生点列表，
+/// 进房、死亡重生、切屏与调试地图的出生点判定都会算上它。勾选 isDefaultSpawn 时成为该房间的
+/// 默认出生点，playerFacing 决定玩家在这个点出生时的朝向。
+/// 拉出两个节点会构成一块效果区域，玩家进入时触发一次相机偏移、相机跟随速度、flag 与重生点切换。
 /// </summary>
 [CustomEntity("ChroniaHelper/CustomSpawnPoint")]
 [Tracked]
@@ -20,77 +19,70 @@ public class CustomSpawnPoint : BaseEntity
     public CustomSpawnPoint(EntityData data, Vc2 offset)
         : base(data, offset)
     {
-        RegisterSpawns((Engine.Scene as Level ?? (Engine.Scene as LevelLoader)?.Level)?.Session?.LevelData);
-        
-        camCatchup = data.Float("cameraCatchupSpeed", 1f);
-
-        if(nodes.Length >= 3)
-        {
-            Vc2 delta = nodes[1] - nodes[2];
-            Collider = new Hitbox(delta.X, delta.Y, float.Min(nodes[1].X, nodes[2].X), float.Min(nodes[1].Y, nodes[2].Y));
-        }
+        playerFacing = data.Int("playerFacing", 0);
 
         camOffset = data.Vector2("cameraOffsetX", "cameraOffsetY", Vc2.Zero);
         setFlag = data.Attr("setFlag");
-
+        autoRespawn = data.Bool("autoChangeRespawn", true);
         catchup = data.Float("cameraCatchupSpeed", -1f);
-
         clear = data.Bool("clearFlagsBeforeSet", false);
 
-        GlobalCoroutines.Register($"ChroniaHelper_CustomSpawnPoint_{data.ID}", ProcessOnSpawn(data));
+        if (nodes.Length >= 3)
+        {
+            Collider = new Hitbox((nodes[2] - nodes[1]).X.GetAbs(), (nodes[2] - nodes[1]).Y.GetAbs(),
+                float.Min(nodes[1].X, nodes[2].X) - Position.X, float.Min(nodes[1].Y, nodes[2].Y) - Position.Y);
+        }
     }
-    private float camCatchup;
+    private int playerFacing;
+
     private Vc2 camOffset;
     private string setFlag;
+    private bool autoRespawn;
     private float catchup;
     private bool clear;
 
-    private DataPack<bool> Colliding = new(null, false);
+    private DataPack<bool> colliding = new(null, false);
+
     public override void Update()
     {
         base.Update();
 
+        if (Collider == null)
+        {
+            return;
+        }
+
         Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
 
-        Colliding.SetValue(CollideCheck(player));
+        colliding.SetValue(player?.Scene != null && player.CollideCheck(this));
 
-        if(Colliding.Value && !Colliding._Value)
+        if (colliding.Value && !colliding._Value)
         {
-            ChangeRespawn(player);
-
-            ApplyConstantValues();
+            ApplyEffects();
         }
     }
 
-    private void ChangeRespawn(Player player)
+    /// <summary>
+    /// 让玩家面朝设置好的方向。0 表示不改变朝向。
+    /// </summary>
+    public void ApplyPlayerFacing(Player player)
     {
-        Vc2 spawn = SceneAs<Level>().GetSpawnPoint(Position);
-
-        Session session = (base.Scene as Level).Session;
-        if (SolidCheck(spawn) && (!session.RespawnPoint.HasValue || session.RespawnPoint.Value != spawn))
+        if (playerFacing == 0)
         {
-            session.HitCheckpoint = true;
-            session.RespawnPoint = spawn;
-            session.UpdateLevelStartDashes();
-        }
-    }
-
-    private bool SolidCheck(Vc2 spawn)
-    {
-        Vector2 point = spawn + Vector2.UnitY * -4f;
-        if (base.Scene.CollideCheck<Solid>(point))
-        {
-            return base.Scene.CollideCheck<FloatySpaceBlock>(point);
+            return;
         }
 
-        return true;
+        player.Facing = playerFacing > 0 ? Facings.Right : Facings.Left;
     }
 
-    private void ApplyConstantValues()
+    /// <summary>
+    /// 玩家进入效果区域时应用一次全部设置。
+    /// </summary>
+    private void ApplyEffects()
     {
         Level level = SceneAs<Level>();
 
-        level.CameraOffset = camOffset;
+        SetCameraOffset(level);
 
         if (clear)
         {
@@ -99,19 +91,17 @@ public class CustomSpawnPoint : BaseEntity
 
         if (setFlag.HasValidContent())
         {
-            var s = setFlag.Split(',', StringSplitOptions.TrimEntries);
+            string[] flags = setFlag.Split(',', StringSplitOptions.TrimEntries);
 
-            foreach (var i in s)
+            foreach (string flag in flags)
             {
-                string name = i;
-                if (i.StartsWith('!'))
+                if (flag.StartsWith('!'))
                 {
-                    name = i.TrimStart('!');
-                    level.Session.SetFlag(name, false);
+                    level.Session.SetFlag(flag.TrimStart('!'), false);
                 }
                 else
                 {
-                    level.Session.SetFlag(name, true);
+                    level.Session.SetFlag(flag, true);
                 }
             }
         }
@@ -120,48 +110,39 @@ public class CustomSpawnPoint : BaseEntity
         {
             RefMaxHelpingHand.GetSession().CameraCatchupSpeed = catchup;
         }
-    }
 
-    private IEnumerator ProcessOnSpawn(EntityData data)
-    {
-        while(Engine.Scene is not Level)
+        if (autoRespawn)
         {
-            yield return null;
-        }
-
-        Level level = Engine.Scene as Level;
-
-        while (level.Transitioning)
-        {
-            yield return null;
-        }
-
-        if (level.Session.RespawnPoint != Position)
-        {
-            yield break;
-        }
-
-        Player player = level.Tracker.GetEntity<Player>();
-
-        while(player.Scene == null)
-        {
-            player = level.Tracker.GetEntity<Player>();
-            yield return null;
-        }
-
-        int facing = data.Int("playerFacing", 0);
-        if (facing != 0)
-        {
-            player.Facing = facing > 0 ? Facings.Right : Facings.Left;
+            SetRespawnPoint(level.Session);
         }
     }
 
     /// <summary>
-    /// 把某个房间数据里的自定义出生点补进出生点列表，使 Debug Map 等直接读 LevelData 的场景也能识别它们。
+    /// 相机偏移按原版房间的 cameraOffsetX/Y 换算，数值 1 等于 48x32 像素。
     /// </summary>
-    private static void RegisterSpawns(LevelData levelData)
+    private void SetCameraOffset(Level level)
     {
-        if (levelData == null)
+        level.CameraOffset = new Vector2(Level.CameraOffsetXInterval, Level.CameraOffsetYInterval) * camOffset;
+    }
+
+    private void SetRespawnPoint(Session session)
+    {
+        if (session.RespawnPoint.HasValue && session.RespawnPoint.Value == Position)
+        {
+            return;
+        }
+
+        session.HitCheckpoint = true;
+        session.RespawnPoint = Position;
+        session.UpdateLevelStartDashes();
+    }
+
+    /// <summary>
+    /// 把某个房间数据里的自定义出生点补进出生点列表。同一个位置只补一次。
+    /// </summary>
+    private static void RegisterLevelSpawns(LevelData levelData)
+    {
+        if (levelData?.Entities == null)
         {
             return;
         }
@@ -177,6 +158,7 @@ public class CustomSpawnPoint : BaseEntity
             }
 
             found = true;
+
             Vc2 position = entity.Position + offset;
 
             if (!levelData.Spawns.Contains(position))
@@ -184,7 +166,7 @@ public class CustomSpawnPoint : BaseEntity
                 levelData.Spawns.Add(position);
             }
 
-            if (entity.Bool("isDefaultSpawn", false))
+            if (!levelData.DefaultSpawn.HasValue && entity.Bool("isDefaultSpawn", false))
             {
                 levelData.DefaultSpawn = position;
             }
@@ -196,16 +178,57 @@ public class CustomSpawnPoint : BaseEntity
         }
     }
 
+    /// <summary>
+    /// 玩家确实在这个出生点上出生时，按出生点的设置应用朝向。
+    /// </summary>
+    private static void ApplyPlayerFacing(Level level)
+    {
+        Session session = level.Session;
+
+        if (session?.RespawnPoint == null || level.Transitioning)
+        {
+            return;
+        }
+
+        Player player = level.Tracker.GetEntity<Player>();
+
+        if (player == null || player.Position != session.RespawnPoint.Value)
+        {
+            return;
+        }
+
+        foreach (CustomSpawnPoint spawn in level.Tracker.GetEntities<CustomSpawnPoint>())
+        {
+            if (spawn.Position != session.RespawnPoint.Value)
+            {
+                continue;
+            }
+
+            spawn.ApplyPlayerFacing(player);
+        }
+    }
+
     [ExA.LoadHook]
     private static void Load()
     {
+        On.Celeste.Level.LoadLevel += Level_LoadLevel;
         On.Celeste.MapData.Reload += MapData_Reload;
     }
 
     [ExA.UnloadHook]
     private static void Unload()
     {
+        On.Celeste.Level.LoadLevel -= Level_LoadLevel;
         On.Celeste.MapData.Reload -= MapData_Reload;
+    }
+
+    private static void Level_LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
+    {
+        RegisterLevelSpawns(self.Session?.LevelData);
+
+        orig(self, playerIntro, isFromLoader);
+
+        ApplyPlayerFacing(self);
     }
 
     private static void MapData_Reload(On.Celeste.MapData.orig_Reload orig, MapData self)
@@ -217,16 +240,9 @@ public class CustomSpawnPoint : BaseEntity
             return;
         }
 
-        foreach (LevelData level in self.Levels)
+        foreach (LevelData levelData in self.Levels)
         {
-            RegisterSpawns(level);
+            RegisterLevelSpawns(levelData);
         }
-    }
-
-    public override void DebugRender(Camera camera)
-    {
-        base.DebugRender(camera);
-
-        Draw.Rect(-2f, -2f, 4f, 4f, Color.Red);
     }
 }

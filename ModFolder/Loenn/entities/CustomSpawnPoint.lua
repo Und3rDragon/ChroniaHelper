@@ -8,10 +8,11 @@ customSpawnPoint.placements = {
     name = "normal",
     data = {
         isDefaultSpawn = false,
+        playerFacing = 0,
+
         cameraOffsetX = 0,
         cameraOffsetY = 0,
         setFlag = "",
-        playerFacing = 0,
         autoChangeRespawn = true,
         cameraCatchupSpeed = -1,
         effectZone = "See Tooltip",
