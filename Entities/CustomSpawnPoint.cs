@@ -168,7 +168,7 @@ public class CustomSpawnPoint : BaseEntity
     }
 
     /// <summary>
-    /// 玩家确实在这个出生点上出生时，按出生点的设置应用朝向。
+    /// 玩家确实在这个出生点上出生时，应用出生点朝向与效果区域设置，并立即把镜头对齐到目标位置。
     /// </summary>
     private static void AfterSpawning(Level level)
     {
@@ -186,6 +186,8 @@ public class CustomSpawnPoint : BaseEntity
             return;
         }
 
+        bool applied = false;
+
         foreach (CustomSpawnPoint spawn in level.Tracker.GetEntities<CustomSpawnPoint>())
         {
             if (spawn.Position != session.RespawnPoint.Value)
@@ -196,6 +198,15 @@ public class CustomSpawnPoint : BaseEntity
             spawn.ApplyPlayerFacing(player);
 
             spawn.ApplyEffects();
+
+            spawn.colliding.SetValue(true);
+
+            applied = true;
+        }
+
+        if (applied)
+        {
+            level.Camera.Position = level.GetFullCameraTargetAt(player, player.Position);
         }
     }
 
