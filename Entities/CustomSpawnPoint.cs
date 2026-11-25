@@ -126,12 +126,30 @@ public class CustomSpawnPoint : BaseEntity
         session.UpdateLevelStartDashes();
     }
 
+    private static readonly HashSet<LevelData> registeredLevels = new();
+
+    /// <summary>
+    /// 把整张地图里所有房间的自定义出生点一次补全。
+    /// </summary>
+    private static void RegisterMapSpawns(MapData mapData)
+    {
+        if (mapData?.Levels == null)
+        {
+            return;
+        }
+
+        foreach (LevelData levelData in mapData.Levels)
+        {
+            RegisterLevelSpawns(levelData);
+        }
+    }
+
     /// <summary>
     /// 把某个房间数据里的自定义出生点补进出生点列表。同一个位置只补一次。
     /// </summary>
     private static void RegisterLevelSpawns(LevelData levelData)
     {
-        if (levelData?.Entities == null)
+        if (levelData?.Entities == null || !registeredLevels.Add(levelData))
         {
             return;
         }
@@ -226,7 +244,7 @@ public class CustomSpawnPoint : BaseEntity
 
     private static void Level_LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
     {
-        RegisterLevelSpawns(self.Session?.LevelData);
+        RegisterMapSpawns(self.Session?.MapData);
 
         orig(self, playerIntro, isFromLoader);
 
@@ -237,14 +255,6 @@ public class CustomSpawnPoint : BaseEntity
     {
         orig(self);
 
-        if (self?.Levels == null)
-        {
-            return;
-        }
-
-        foreach (LevelData levelData in self.Levels)
-        {
-            RegisterLevelSpawns(levelData);
-        }
+        RegisterMapSpawns(self);
     }
 }
