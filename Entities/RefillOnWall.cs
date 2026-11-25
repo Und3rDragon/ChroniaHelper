@@ -21,13 +21,14 @@ public class RefillOnWall : BaseEntity
         sides = (Sides)data.Int("sides", 0);
 
         ColliderList detectionRange = new();
+        float size = 3f;
         if(sides == Sides.Left || sides == Sides.Both)
         {
-            detectionRange.Add(new Hitbox(2f, data.Height, -2f, 0f));
+            detectionRange.Add(new Hitbox(size, data.Height, -size, 0f));
         }
         if(sides == Sides.Right || sides == Sides.Both)
         {
-            detectionRange.Add(new Hitbox(2f, data.Height, data.Width, 0f));
+            detectionRange.Add(new Hitbox(size, data.Height, data.Width, 0f));
         }
         pc = new PlayerCollider(OnPlayer, detectionRange);
 
