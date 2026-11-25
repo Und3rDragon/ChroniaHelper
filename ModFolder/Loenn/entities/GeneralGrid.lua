@@ -14,8 +14,11 @@ controller.placements = {
         cellWidth = 8,
         cellHeight = 8,
         zoom = 1,
+        depth = 0,
     }
 }
+
+controller.depth = function(room, entity) return entity.depth or 0 end
 
 controller.ignoredFields = {
     "_x", "_y", "x", "y"
@@ -41,6 +44,11 @@ controller.fieldInformation = {
         fieldType = "integer",
         minimumValue = 1,
     },
+    depth = {
+        fieldType = "integer",
+        options = require("mods").requireFromPlugin("consts.depths"),
+        editable = true,
+    }
 }
 
 function controller.selection(room, entity)
