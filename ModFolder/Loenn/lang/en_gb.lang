@@ -1383,6 +1383,11 @@ entities.ChroniaHelper/SetFlagController.attributes.description.valueType=If set
 entities.ChroniaHelper/CameraGrid.placements.name.grid=Camera Grid
 entities.ChroniaHelper/CameraGrid.attributes.description.Introduction=A small useless entity that indicates a usual camera grid of 320 * 180
 
+# ================= General Grid
+
+entities.ChroniaHelper/GeneralGrid.placements.name.grid=General Grid
+entities.ChroniaHelper/GeneralGrid.attributes.description.Introduction=A small useless entity that indicates a usual camera grid of 320 * 180
+
 # ================= Screenshake Setting Trigger
 
 triggers.ChroniaHelper/ScreenshakeSettingTrigger.placements.name.normal=Screenshake Setting Trigger
