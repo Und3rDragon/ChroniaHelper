@@ -99,7 +99,7 @@ public class BoundRefill : CustomRefill
     private ParticleType _pGlow;
 
     public BoundRefill(Vector2 position, EntityData data)
-        : base(position, false, data.Bool("oneUse", false), data.String("pulseFlag", ""))
+        : base(position, false, data.Bool("oneUse", false), data.Attr("pulseFlag", ""))
     {
         Ldm.LoadHook<BoundRefill>();
 
@@ -140,6 +140,13 @@ public class BoundRefill : CustomRefill
 
         horizontal = data.Vector2("speedXOnHorizontal", "speedYOnHorizontal", new Vc2(240f, 140f));
         vertical = data.Vector2("speedXOnVertical", "speedYOnVertical", new Vc2(0, 300f));
+
+        if(data.Has("bloomColor") && data.Attr("bloomColor").HasValidContent())
+        {
+            CColor color = data.PackColor("bloomColor", Color.White);
+            Add(new BloomPoint(color.alpha, 64f),
+                new VertexLight(color.color, color.alpha, 16, 48));
+        }
     }
     private Vc2 horizontal, vertical;
     private CColor shatterColor, shatterColor2, regenColor, regenColor2, glowColor, glowColor2;

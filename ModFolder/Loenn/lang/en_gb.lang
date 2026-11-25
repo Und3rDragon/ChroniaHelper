@@ -1383,6 +1383,11 @@ entities.ChroniaHelper/SetFlagController.attributes.description.valueType=If set
 entities.ChroniaHelper/CameraGrid.placements.name.grid=Camera Grid
 entities.ChroniaHelper/CameraGrid.attributes.description.Introduction=A small useless entity that indicates a usual camera grid of 320 * 180
 
+# ================= General Grid
+
+entities.ChroniaHelper/GeneralGrid.placements.name.grid=General Grid
+entities.ChroniaHelper/GeneralGrid.attributes.description.Introduction=A small useless entity that indicates a usual camera grid of 320 * 180
+
 # ================= Screenshake Setting Trigger
 
 triggers.ChroniaHelper/ScreenshakeSettingTrigger.placements.name.normal=Screenshake Setting Trigger
@@ -1913,6 +1918,18 @@ entities.ChroniaHelper/LightningBreakerBoxWithNoBloomEffect.placements.name.defa
 # ================= Zagging Line
 
 entities.ChroniaHelper/ZaggingLine.placements.name.zaggingLine=Zagging Line
+
+# ================= Custom Spawn Point
+
+entities.ChroniaHelper/CustomSpawnPoint.placements.name.normal=Custom Spawn Point
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.effectZone=Press "N" to add a node, and place it onto the top left of the zone you desired\nThen press "N" again to add another node, and place it to the bottom right of the zone you desired
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.cameraOffsetX=Adjust the camera offset when player enters the effect zone
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.cameraOffsetY=Adjust the camera offset when player enters the effect zone
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.setFlag=A list of flags separated by comma to set when player enters the effect zone\nFlags starts with '!' will be disabled instead
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.playerFacing=Change the player facing when respawned
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.autoChangeRespawn=Should the respawn be automatically set when player enters the effect zone
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.cameraCatchupSpeed=Whether to set up Camera Catch Up Speed when player enters the effect zone\n-1 means not to adjust anything
+entities.ChroniaHelper/CustomSpawnPoint.attributes.description.clearFlagsBeforeSet=Whether to clear the flags first before setting flags
 
 # ================= Loenn Menu
 
