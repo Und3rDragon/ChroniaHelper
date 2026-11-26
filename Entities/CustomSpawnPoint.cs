@@ -105,7 +105,7 @@ public class CustomSpawnPoint : BaseEntity
 
         if (Md.MaddieLoaded && catchup > 0)
         {
-            RefMaxHelpingHand.GetSession().CameraCatchupSpeed = catchup;
+            RefMaxHelpingHand.SetCameraCatchupSpeed(catchup);
         }
     }
 
