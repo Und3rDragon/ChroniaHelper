@@ -11,7 +11,7 @@ using static ChroniaHelper.Cores.ExtendedAttributes;
 namespace ChroniaHelper.Settings;
 
 /// <summary>
-/// 在使用 Loenn 的 Teleporter 传送之后暂停关卡，直到玩家有操作输入为止。
+/// 在使用 Another Loenn Plugin 的 Teleporter 传送之后暂停关卡，直到玩家有操作输入为止。
 /// 仅在设置项 PauseTimeWhenTeleportInLoenn 打开时生效。
 /// </summary>
 public static class LoennTeleportPause
@@ -127,6 +127,12 @@ public static class LoennTeleportPause
             if (frozenLevel != null && frozenLevel != self)
             {
                 frozenLevel = null;
+            }
+
+            if (frozenLevel == null && self.Frozen && self.TimerStopped)
+            {
+                frozenLevel = self;
+                previousTimerStopped = false;
             }
 
             if (frozenLevel == self && PlayerWantsToAct())
