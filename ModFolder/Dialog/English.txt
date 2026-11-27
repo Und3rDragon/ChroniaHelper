@@ -82,3 +82,4 @@ modoptions_ChroniaHelper_showMouse=Display Mouse
 modoptions_ChroniaHelper_entityInfoDisplayer=Entity Info on Mouse Click
 modoptions_ChroniaHelper_DisplayEntityInfoInConsole=Entity Info on Mouse Click in Console
 modoptions_ChroniaHelper_mouseSize=Mouse Indicator Size
+modoptions_ChroniaHelper_PauseTimeWhenTeleportInLoenn=Pause Time When Teleport In Loenn

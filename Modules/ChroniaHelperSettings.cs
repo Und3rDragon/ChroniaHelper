@@ -14,6 +14,7 @@ public class ChroniaHelperSettings : EverestModuleSettings
     [SettingRange(0, 1000, true)]
     public int mouseSize { get; set; } = 32;
     public bool DisplayEntityInfoInConsole { get; set; } = false;
+    public bool PauseTimeWhenTeleportInLoenn { get; set; } = false;
 
     public class CommonDisplayer
     {

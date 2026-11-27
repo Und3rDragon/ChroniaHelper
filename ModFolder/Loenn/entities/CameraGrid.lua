@@ -14,8 +14,11 @@ controller.placements = {
         roomBorder = "ffffffff",
         grid = "ffffff16",
         axisNumbers = true,
+        depth = 0,
     }
 }
+
+controller.depth = function(room, entity) return entity.depth or 0 end
 
 controller.ignoredFields = {
     "_x", "_y", "x", "y"
@@ -33,6 +36,11 @@ controller.fieldInformation = {
         fieldType = "color",
         useAlpha = true,
     },
+    depth = {
+        fieldType = "integer",
+        options = require("mods").requireFromPlugin("consts.depths"),
+        editable = true,
+    }
 }
 
 function controller.selection(room, entity)

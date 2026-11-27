@@ -24,6 +24,14 @@ public static class RefMaxHelpingHand
         return MaxHelpingHandModule.Instance.Session;
     }
 
+    /// <summary>
+    /// 设置相机跟随速度。
+    /// </summary>
+    public static void SetCameraCatchupSpeed(float speed)
+    {
+        GetSession().CameraCatchupSpeed = speed;
+    }
+
     public static MaxHelpingHandSettings GetSettings()
     {
         return MaxHelpingHandModule.Instance.Settings;

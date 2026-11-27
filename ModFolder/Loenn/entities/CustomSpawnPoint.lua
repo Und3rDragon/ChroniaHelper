@@ -50,7 +50,7 @@ function customSpawnPoint.sprite(room, entity)
     if entity.nodes ~= nil then
         if #entity.nodes > 0 then
             for _, node in ipairs(entity.nodes) do
-                local rec = require("structs.drawable_rectangle").fromRectangle("fill", node.x - 2, node.y - 2, 4, 4, {1,1,1,1})
+                local rec = require("structs.drawable_rectangle").fromRectangle("fill", node.x - 3, node.y - 3, 6, 6, {1,1,1,1})
             
                 table.insert(sprites, rec)
             end
@@ -75,7 +75,7 @@ function customSpawnPoint.selection(room, entity)
     if entity.nodes ~= nil then
         if #entity.nodes > 0 then
             for _, node in ipairs(entity.nodes) do
-                local nodeRec = utils.rectangle(node.x - 2, node.y - 2, 4, 4)
+                local nodeRec = utils.rectangle(node.x - 3, node.y - 3, 6, 6)
 
                 table.insert(nodeRecs, nodeRec)
             end
